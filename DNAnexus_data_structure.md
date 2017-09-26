@@ -3,7 +3,7 @@
 
 ## Guidance
 * Each bulletin points are folder names,
-  * with each daughter folders/files shown bellow
+  * with each daughter folders/files shown below
 
 ```
 File names with extensions are provided in this block.
@@ -18,11 +18,13 @@ Once we visit a VGP project, the top level folders are expected to have:
 
 * genomic_data
   * pacbio
-    * bam
+    * bam_subreads
         ```
         subreads.bam
         subreads.bam.pbi
-        subreads.bam.bai
+        ```
+    * bam_scraps
+        ```
         scraps.bam
         ```
     * fasta (or fastq)
