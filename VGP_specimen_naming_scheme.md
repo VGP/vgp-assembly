@@ -70,33 +70,152 @@ If this scheme were to extend beyond vertebrates in the VGP, the below is a prop
 This is meant as a pragmatic division rather then a strict taxonomic one.
 
 
-| prefix | class                        | count  | group     | notes                                                                                     | 
-|:-------|:-----------------------------|:-------|:----------|:------------------------------------------------------------------------------------------| 
-| a      | amphibians                   | 6439   | chordates |                                                                                           | 
-| b      | birds                        | 10301  | chordates |                                                                                           | 
-| c      | bacteria                     | 6468   |           |                                                                                           | 
-| d      | dicots                       | 200000 | plants    | not monophyletic                                                                          | 
-| e      | echinoderm                   | 6753   | animals   |                                                                                           | 
-| f      | fishes                       | 31862  | chordates | lobe-finned and ray finned = Osteichthyes = Teleostomi (excluding tetrapods)              | 
-| g      | fungi                        | 123126 |           |                                                                                           | 
-| h      | archea                       | 281    |           |                                                                                           | 
-| i      | insects                      | 795000 | animals   |                                                                                           | 
-| j      | jellyfish and other cnidaria | 9747   | animals   |                                                                                           | 
-| k      | other chordates              | 1926   | chordates | hemichordates, cephalochordates, urochordates (tunicates), jawless fish; not monophyletic | 
-| l      | monocots                     | 51595  | plants    | 'l' for lily                                                                              | 
-| m      | mammals                      | 4863   | chordates |                                                                                           | 
-| n      | nematodes                    | 3455   | animals   |                                                                                           | 
-| o      | sponges                      | 8499   | animals   |                                                                                           | 
-| p      | protists                     | 12695  |           | defined here as eukaryotes not animals or plants or fungi; not monophyletic               | 
-| q      | other arthropods             | 120000 | animals   | not insects; not monophyletic                                                             | 
-| r      | reptiles                     | 9789   | chordates | excluding birds                                                                           | 
-| s      | sharks and relatives         | 1149   | chordates | Chondricthyes = Elasmobranchs and Chimaeras                                               | 
-| t      | ctenophores                  | 165    | animals   |                                                                                           | 
-| u      | algae                        | 2056   | plants    | not monophyletic                                                                          | 
-| v      | other vascular plants        | 66717  | plants    | ferns, cycads, conifers, gingko etc.; not monophyletic                                    | 
-| w      | annelids (worms)             | 12738  | animals   |                                                                                           | 
-| x      | molluscs                     | 41646  | animals   | the "scs" in "moluscs" sounds a bit like it contains an 'x'                               | 
-| y      | platyhelminths               | 9164   | animals   |                                                                                           | 
-| z      | non-vascular plants          | 14222  | plants    | mosses, liverworts, hornworts; not monophyletic                                           | 
-| -      | viruses                      |        |           | '-' for missing                                                                           | 
+| prefix | class                        | count  | group            | notes                                                                                     | 
+|:-------|:-----------------------------|:-------|:-----------------|:------------------------------------------------------------------------------------------| 
+| a      | amphibians                   | 6439   | chordates        |                                                                                           | 
+| b      | birds                        | 10301  | chordates        |                                                                                           | 
+| c      | non-vascular plants          | 14222  | plants           |                                                                                           | 
+| d      | dicotyledons                 | 200000 | plants           | not monophyletic                                                                          | 
+| e      | echinoderm                   | 6753   | other animals    |                                                                                           | 
+| f      | fishes                       | 31862  | chordates        | lobe-finned and ray finned = Osteichthyes = Teleostomi (excluding tetrapods)              | 
+| g      | fungi                        | 123126 | other eukaryotes |                                                                                           | 
+| h      | platyhelminths               | 9164   | other animals    |                                                                                           | 
+| i      | insects                      | 795000 | other animals    |                                                                                           | 
+| j      | jellyfish and other cnidaria | 9747   | other animals    |                                                                                           | 
+| k      | other chordates              | 1926   | chordates        | cephalochordates, urochordates (tunicates), jawless fish; not monophyletic                | 
+| l      | monocotyledons (lilies etc.) | 51595  | plants           | 'l' for lily                                                                              | 
+| m      | mammals                      | 4863   | chordates        |                                                                                           | 
+| n      | nematodes                    | 3455   | other animals    |                                                                                           | 
+| o      | sponges                      | 8499   | other animals    |                                                                                           | 
+| p      | protists                     | 12695  | other eukaryotes | defined here as eukaryotes not animals or plants or fungi; not monophyletic               | 
+| q      | other arthropods             | 120000 | other animals    | not insects; not monophyletic                                                             | 
+| r      | reptiles                     | 9789   | chordates        | excluding birds                                                                           | 
+| s      | sharks and relatives         | 1149   | chordates        | Chondricthyes = Elasmobranchs and Chimaeras                                               | 
+| t      | other animal phyla           | 165    | other animals    |                                                                                           | 
+| u      | algae                        | 2056   | plants           | not monophyletic                                                                          | 
+| v      | other vascular plants        | 66717  | plants           | ferns, cycads, conifers, gingko etc.; not monophyletic                                    | 
+| w      | annelids (worms)             | 12738  | other animals    |                                                                                           | 
+| x      | molluscs                     | 41646  | other animals    | the "scs" in "moluscs" sounds a bit like it contains an 'x'                               | 
+| y      | bacteria                     | 6468   | prokaryotes      |                                                                                           | 
+| z      | archea                       | 281    | prokaryotes      | mosses, liverworts, hornworts; not monophyletic                                           | 
+| -      | viruses                      |        |                  | '-' for missing                                                                           | 
 
+
+Equivalently, presented by group:
+
+<table>
+  <tr>
+    <th>group</th>
+    <th>prefix</th>
+    <th>class</th>
+  </tr>
+  <tr>
+    <td rowspan="7">chordates (including vertebrates)</td>
+    <td>m</td>
+    <td>mammals</td>
+  </tr>
+  <tr>
+    <td>b</td>
+    <td>birds</td>
+  </tr>
+  <tr>
+    <td>r</td>
+    <td>reptiles</td>
+  </tr>
+  <tr>
+    <td>a</td>
+    <td>amphibians</td>
+  </tr>
+  <tr>
+    <td>f</td>
+    <td>fishes</td>
+  </tr>
+  <tr>
+    <td>s</td>
+    <td>sharks</td>
+  </tr>
+  <tr>
+    <td>k</td>
+    <td>other chordates</td>
+  </tr>
+  <tr>
+    <td rowspan="10">other animals</td>
+    <td>e</td>
+    <td>echinoderms</td>
+  </tr>
+  <tr>
+    <td>x</td>
+    <td>molluscs</td>
+  </tr>
+  <tr>
+    <td>i</td>
+    <td>insects</td>
+  </tr>
+  <tr>
+    <td>q</td>
+    <td>other arthropods</td>
+  </tr>
+  <tr>
+    <td>w</td>
+    <td>annelids (worms)</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td>nematodes</td>
+  </tr>
+  <tr>
+    <td>h</td>
+    <td>platyhelminths</td>
+  </tr>
+  <tr>
+    <td>j</td>
+    <td>jellyfish and other cnidaria</td>
+  </tr>
+  <tr>
+    <td>o</td>
+    <td>sponges</td>
+  </tr>
+  <tr>
+    <td>t</td>
+    <td>other animal phyla</td>
+  </tr>
+  <tr>
+    <td rowspan="5">plants</td>
+    <td>d</td>
+    <td>dicotyledons</td>
+  </tr>
+  <tr>
+    <td>l</td>
+    <td>monocotyledons</td>
+  </tr>
+  <tr>
+    <td>v</td>
+    <td>other vascular plants</td>
+  </tr>
+  <tr>
+    <td>c</td>
+    <td>non-vascular plants</td>
+  </tr>
+  <tr>
+    <td>u</td>
+    <td>algae</td>
+  </tr>
+  <tr>
+    <td rowspan="2">other eukaryotes</td>
+    <td>g</td>
+    <td>fungi</td>
+  </tr>
+  <tr>
+    <td>p</td>
+    <td>protists</td>
+  </tr>
+  <tr>
+    <td rowspan="2">prokaryotes</td>
+    <td>y</td>
+    <td>bacteria</td>
+  </tr>
+  <tr>
+    <td>z</td>
+    <td>archaea</td>
+  </tr>
+</table>
