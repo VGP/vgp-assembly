@@ -66,8 +66,7 @@ Once we visit a VGP project, the top level folders are expected to have:
 * assembly_\[ver\]
   * intermediates
     * fcnz   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FALCON unzip intermediate files
-    * spnv	&nbsp;&nbsp;&nbsp;&nbsp; Supernova intermediate files
-    * qm	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Quickmerge intermediate files
+    * scaff10x	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Scaff10X intermediate files
     * tgh &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bionano TGH intermediate files
     * salsa &nbsp;&nbsp;&nbsp;&nbsp; Salsa intermediate files
     * pbjelly &nbsp;&nbsp; PBJelly intermediate files
@@ -78,9 +77,7 @@ Once we visit a VGP project, the top level folders are expected to have:
     ```
     c_f1.fasta	Pacbio FALCONunzip assembly haplotype 1
     c_f2.fasta	Pacbio FALCONunzip assembly haplotype 2
-    c_t1.fasta	10X Genomics Supernova assembly haplotype 1
-    c_t2.fasta	10X Genomics Supernova assembly haplotype 2
-    s_1a.fasta	2-rounds of quickmerge; joining c_f1.fasta and c_t1.fasta
+    s_1a.fasta	2-rounds of scaff10x; scaffolding c_f1.fasta
     s_1b.fasta	Bionano TGH; hybrid scaffold of 2 enzymes over s_1a.fasta
     s_1c.fasta	1-round of Salsa scaffolding from Arima hiC libraries over s_1b.fasta
     s_3a.fasta	Bionano tgh over s_1c.fasta + c_f2.fasta
