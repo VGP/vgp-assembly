@@ -20,48 +20,46 @@ Once we visit a VGP project, the top level folders are expected to have:
   * pacbio
     * bam_subreads
         ```
-        subreads.bam
-        subreads.bam.pbi
+        <movie>.subreads.bam
+        <movie>.subreads.bam.pbi
         ```
     * bam_scraps
         ```
-        scraps.bam
+        <movie>.scraps.bam
         ```
     * fasta (or fastq)
         ```
-        subreads.fasta
+        <movie>.subreads.fasta.gz
         ```
   * 10X
     * fastq
       ```
-      <sample>_S1_L001_I1_001.fastq
-      <sample>_S1_L001_R1_001.fastq
-      <sample>_S1_L001_R2_001.fastq
+      <sample>_S1_L001_I1_001.fastq.gz
+      <sample>_S1_L001_R1_001.fastq.gz
+      <sample>_S1_L001_R2_001.fastq.gz
       ```
-  * bionano
+  * bionano [platform=Irys|Saphyr]
     * bnx
       ```
-      bspqi.bnx
-      bsssi.bnx
+      <sample>_<platform>_<enzyme>.bnx.gz
       ```
     * cmap
       ```
-      bspqi.cmap
-      bsssi.cmap
+      <sample>_<platform>_<enzyme>.cmap.gz
       ```
   * arima
     *	fastq
          ```
-         R1.fastq
-         R2.fastq
+         <sample>.<runID>.R1.fastq.gz
+         <sample>.<runID>.R2.fastq.gz
          re_bases.txt	(ex. GATC,GANTC)
          ```
-   * illumina (Optional)
-     * fastq
-       ```
-       R1.fastq
-       R2.fastq
-       ```
+  * illumina (Optional)
+    * fastq
+      ```
+      <sample>.<runID>.R1.fastq.gz
+      <sample>.<runID>.R2.fastq.gz
+      ```
 
 * assembly_\[ver\]
   * intermediates
