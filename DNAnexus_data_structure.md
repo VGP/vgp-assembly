@@ -68,20 +68,18 @@ Once we visit a VGP project, the top level folders are expected to have:
     * tgh &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bionano TGH intermediate files
     * salsa &nbsp;&nbsp;&nbsp;&nbsp; Salsa intermediate files
     * pbjelly &nbsp;&nbsp; PBJelly intermediate files
-    * arrow &nbsp;&nbsp;&nbsp; Arrow intermediate files
     * longr &nbsp;&nbsp;&nbsp;&nbsp; Longranger intermediate files
-    * pilon &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pilon intermediate files
+    * freebayes &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pilon intermediate files
     * ...
     ```
-    c_f1.fasta	Pacbio FALCONunzip assembly haplotype 1
-    c_f2.fasta	Pacbio FALCONunzip assembly haplotype 2
-    s_1a.fasta	2-rounds of scaff10x; scaffolding c_f1.fasta
-    s_1b.fasta	Bionano TGH; hybrid scaffold of 2 enzymes over s_1a.fasta
-    s_1c.fasta	1-round of Salsa scaffolding from Arima hiC libraries over s_1b.fasta
-    s_3a.fasta	Bionano tgh over s_1c.fasta + c_f2.fasta
-    s_3b.fasta	PBJelly over s_3a.fasta
-    s_3c.fasta	Arrow over s_3b.fasta
-    s_3d.fasta	2 rounds of pilon with 10X reads over s_3c.fasta
+    <sample>_<ver>_c1.fasta	Pacbio FALCON-Unzip assembly primary contigs (haplotype 1)
+    <sample>_<ver>_c2.fasta	Pacbio FALCON-Unzip assembly associated haplotigs (haplotype 2)
+    <sample>_<ver>_s1.fasta	2-rounds of scaff10x; scaffolding c1.fasta
+    <sample>_<ver>_s2.fasta	Bionano TGH; hybrid scaffold of 2 enzymes over s1.fasta
+    <sample>_<ver>_s3.fasta	1-round of Salsa scaffolding with Arima hiC libraries over s2.fasta
+    <sample>_<ver>_t1.fasta	Bionano TGH + manual curation over s3.fasta
+    <sample>_<ver>_t2.fasta	PBJelly over t1.fasta
+    <sample>_<ver>_t3.fasta	polishing with 10X reads over t2.fasta
     ```
 
   ```
