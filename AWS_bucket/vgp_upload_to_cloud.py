@@ -151,7 +151,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
     for object in updated_files:
         folder_path, filename = os.path.split('/' + object)
         # remove species_name and species_id from folder path
-        folder_path = folder_path.replace('/{0}/{1}'.format(species_name, species_id), '')
+        folder_path = folder_path.replace('/species/{0}/{1}'.format(species_name, species_id), '')
         
         # create new dx file
         file = dxpy.api.file_new({'project': dx_project.id,
