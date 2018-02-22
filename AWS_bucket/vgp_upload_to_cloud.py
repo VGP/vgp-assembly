@@ -4,17 +4,18 @@ and create a link to a corresponding file object in DNAnexus.
 
 The directory structure created in S3 will be as follows:
 s3://bucketname/
-|-- species_name
-|   |-- species_id
-|   |   |-- genomic_data
-|   |   |   |-- 10x
-|   |   |   |-- arima
-|   |   |   |-- bionano
-|   |   |   |-- pacbio
-|   |   |-- transcriptomic_data
-|   |   |   |-- tissue
+|--species
+|   |-- <species_name>
+|   |   |-- <species_id>
+|   |   |   |-- genomic_data
+|   |   |   |   |-- 10x
+|   |   |   |   |-- arima
+|   |   |   |   |-- bionano
 |   |   |   |   |-- pacbio
-|   |   |   |   |-- illumina
+|   |   |   |-- transcriptomic_data
+|   |   |   |   |-- <tissue_id>
+|   |   |   |   |   |-- pacbio
+|   |   |   |   |   |-- illumina
 
 In DNAnexus, 'species_id' will be converted to the project name with the directory structure preserved as above
 
@@ -114,9 +115,9 @@ def locate_or_create_dx_project(project_name):
 def main(path, profile, species_name, species_id, datatype, tissue=None):
     # determine directory to upload to
     if tissue:
-        upload_path = os.path.join(species_name, species_id, 'transcriptomic_data', tissue, datatype)
+        upload_path = os.path.join('species', species_name, species_id, 'transcriptomic_data', tissue, datatype)
     else:
-        upload_path = os.path.join(species_name, species_id, 'genomic_data', datatype)
+        upload_path = os.path.join('species', species_name, species_id, 'genomic_data', datatype)
 
     # determine whether file or folder
     if os.path.isfile(path):

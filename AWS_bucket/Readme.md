@@ -30,31 +30,32 @@ Allowed datatypes are:
 The script will create the following directory structure based on provided inputs:
 ```
 .
-└── species_name
-	└── species_id
-    	├── genomic_data
-    	│   ├── bionano
-    	│   │   ├── testfile1.txt
-    	│   │   ├── testfile2.txt
-    	│   │   ├── testfile3.txt
-    	│   │   └── testfile4.txt
-    	│   └── pacbio
-    	│       ├── testfile1.txt
-    	│       ├── testfile2.txt
-    	│       ├── testfile3.txt
-    	│       └── testfile4.txt
-    	└── transcriptomic_data
-        	└── tissue1
-            	├── illumina
-            	│   ├── testfile1.txt
-            	│   ├── testfile2.txt
-            	│   ├── testfile3.txt
-            	│   └── testfile4.txt
-            	└── pacbio
-                	├── testfile1.txt
-                	├── testfile2.txt
-                	├── testfile3.txt
-                	└── testfile4.txt
+└── species
+    └── <species_name>
+       └── <species_id>
+            ├── genomic_data
+            │   ├── bionano
+            │   │   ├── testfile1.txt
+            │   │   ├── testfile2.txt
+            │   │   ├── testfile3.txt
+            │   │   └── testfile4.txt
+            │   └── pacbio
+            │       ├── testfile1.txt
+            │       ├── testfile2.txt
+            │       ├── testfile3.txt
+            │       └── testfile4.txt
+            └── transcriptomic_data
+                └── <tissue_id>
+                    ├── illumina
+                    │   ├── testfile1.txt
+                    │   ├── testfile2.txt
+                    │   ├── testfile3.txt
+                    │   └── testfile4.txt
+                    └── pacbio
+                        ├── testfile1.txt
+                        ├── testfile2.txt
+                        ├── testfile3.txt
+                        └── testfile4.txt
 ```
 
 In DNAnexus, the directory structure is replicated with 'species_id' serving as the Project name. The 'species_name' is not used but is added as a tag to all files.
