@@ -72,9 +72,11 @@ dx api drive new '{"name": "VGP-test",
 ```
 
 return:
-```{
+```
+{
     "id": "drive-Kq7XjpkgZb9PzQYQGxBz8VvJ"
-}```
+}
+```
 
 To pull up user drives on DNAnexus:
 ```
