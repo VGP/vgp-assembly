@@ -163,8 +163,9 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
                                     "container": "{region}:{bucket}".format(region='us-east-1', bucket=VGP_BUCKET),
                                     "object": object
                                     },
-                                'details': {'object-key': object}
-                                })
+                                'details': {'container': VGP_BUCKET,
+                                            'object': object}
+                                  })
         print('Associated object {obj} with DNAnexus file {file}'.format(obj=object, file=file['id']))
 
 if __name__ == '__main__':
