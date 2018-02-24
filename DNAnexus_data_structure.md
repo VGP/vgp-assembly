@@ -18,48 +18,33 @@ Once we visit a VGP project, the top level folders are expected to have:
 
 * genomic_data
   * pacbio
-    * bam_subreads
-        ```
-        <movie>.subreads.bam
-        <movie>.subreads.bam.pbi
-        ```
-    * bam_scraps
-        ```
-        <movie>.scraps.bam
-        ```
-    * fasta (or fastq)
-        ```
-        <movie>.subreads.fasta.gz
-        ```
+    ```
+    <movie>.subreads.bam
+    <movie>.subreads.bam.pbi
+    <movie>.scraps.bam
+    ```
   * 10X
-    * fastq
-      ```
-      <sample>_S1_L001_I1_001.fastq.gz
-      <sample>_S1_L001_R1_001.fastq.gz
-      <sample>_S1_L001_R2_001.fastq.gz
-      ```
+    ```
+    <sample>_S1_L001_I1_001.fastq.gz
+    <sample>_S1_L001_R1_001.fastq.gz
+    <sample>_S1_L001_R2_001.fastq.gz
+    ```
   * bionano [platform=Irys|Saphyr]
-    * bnx
-      ```
-      <sample>_<platform>_<enzyme>.bnx.gz
-      ```
-    * cmap
-      ```
-      <sample>_<platform>_<enzyme>.cmap.gz
-      ```
+    ```
+    <sample>_<platform>_<enzyme>.bnx.gz
+    <sample>_<platform>_<enzyme>.cmap.gz
+    ```
   * arima
-    *	fastq
-         ```
-         <sample>.<runID>.R1.fastq.gz
-         <sample>.<runID>.R2.fastq.gz
-         re_bases.txt	(ex. GATC,GANTC)
-         ```
+    ```
+    <sample>.<runID>.R1.fastq.gz
+    <sample>.<runID>.R2.fastq.gz
+    re_bases.txt	(ex. GATC,GANTC)
+    ```
   * illumina (Optional)
-    * fastq
-      ```
-      <sample>.<runID>.R1.fastq.gz
-      <sample>.<runID>.R2.fastq.gz
-      ```
+    ```
+    <sample>.<runID>.R1.fastq.gz
+    <sample>.<runID>.R2.fastq.gz
+    ```
 
 * assembly_\[ver\]
   * intermediates
@@ -84,8 +69,8 @@ Once we visit a VGP project, the top level folders are expected to have:
 
   ```
   <sample>_<ver>.fasta       Final <ver> (i.e. v1) assembly
-  <sample>_<ver>_hap1.fasta				
-  <sample>_<ver>_hap2.fasta				
+  <sample>_<ver>_hap1.fasta
+  <sample>_<ver>_hap2.fasta
   <sample>_<ver>.agp          optional
   <sample>_<ver>.gfa.bed      pe bed format file using hap1 as 1st pair, hap2 as 2nd pair
   <sample>_<ver>.gfa
@@ -94,18 +79,16 @@ Once we visit a VGP project, the top level folders are expected to have:
 * transcriptomic_data
   * \[tissue\]{#}
     * pacbio
-      * bam
-        ```
-        subreads.bam
-        subreads.bam.pbi
-        subreadset.xml
-        ```
-      * illumina
-        * fastq
-          ```
-          R1.fastq
-          R2.fastq
-          ```
+      ```
+      <movie>.subreads.bam
+      <movie>.subreads.bam.pbi
+      <movie>.subreadset.xml
+      ```
+    * illumina
+      ```
+      <sample>.R1.fastq.gz
+      <sample>.R2.fastq.gz
+      ```
 
 ## Detailed intermediate assembly names and rules for v1b
 
