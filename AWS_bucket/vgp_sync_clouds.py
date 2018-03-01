@@ -10,6 +10,7 @@ import argparse
 import os
 
 VGP_BUCKET = "genomeark-test"
+SHARE_WITH = "org-vgp"
 
 def locate_or_create_dx_drive(drive_name='genomeark'):
     # findDrives is an API method that has not been explicitly added to dxpy yet, so call the API method explicitly.
@@ -36,20 +37,26 @@ def locate_or_create_dx_drive(drive_name='genomeark'):
         print("More than one drives found with name '{0}'".format(drive_name))
         sys.exit(1)
 
-def locate_or_create_dx_project(project_name):
+def locate_or_create_dx_project(project_name, billTo=None, skip_share=False):
     '''Try to find the project with the given name.  If one doesn't exist,
     we'll create it.'''
     project = dxpy.find_projects(name=project_name, name_mode='glob', return_handler=True)
 
     project = [p for p in project]
     if len(project) < 1:
-        project = dxpy.DXProject(dxpy.api.project_new({'name': project_name, 'summary': 'FALCON Unzip Assembly'})['id'])
+        project_params = {'name': project_name, 'summary': 'VGP Data Project'}
+        if billTo:
+            project_params['billTo'] = billTo
+        project = dxpy.DXProject(dxpy.api.project_new(project_params)['id'])
     elif len(project) > 1:
         print 'Found more than 1 project matching ' + project_name + '.'
         print 'Please provide a unique project!'
         sys.exit(1)
     else:
         project = project[0]
+    
+    if skip_share is False:
+        project.invite(SHARE_WITH, "VIEW")
 
     return project
 
@@ -66,9 +73,19 @@ def parse_args():
                     action='store_true',
                     required=False)
 
+
+    ap.add_argument('-b', '--bill-to',
+                    help='Organization to set as \'bill-to\' for newly created DNAnexus projects',
+                    required=False)
+
+    ap.add_argument('-s', '--skip-share',
+                    help='Newly created projects will be shared with {0} by default. If this option is enabled new projects will not be shared.'.format(SHARE_WITH),
+                    required=False,
+                    action='store_true')
+
     return ap.parse_args()
 
-def main(profile, delete_links=True):
+def main(profile, delete_links=False, bill_to = None, skip_share=False):
     # connect to S3 using Boto3 client
     s3client = boto3.session.Session(profile_name=profile).resource('s3')
     
@@ -85,7 +102,7 @@ def main(profile, delete_links=True):
     # iterate over all the projects / species_ids
     for species_id in species_ids:
         # grab the DNAnexus project
-        project = locate_or_create_dx_project(species_id)
+        project = locate_or_create_dx_project(species_id, billto, share)
         
         # find all data in the DNAnexus project
         dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
@@ -139,4 +156,4 @@ def main(profile, delete_links=True):
 
 if __name__ == '__main__':
     ap = parse_args()
-    main(ap.profile, ap.delete_links)
+    main(ap.profile, ap.delete_links, ap.billTo, ap.skip_share)
