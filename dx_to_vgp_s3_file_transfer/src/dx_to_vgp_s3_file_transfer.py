@@ -15,9 +15,12 @@ INSTANCES = {
     'HIGH': 'mem1_ssd1_x16'
 }
 TARGET_S3 = 'genomeark-test'
+S3_ROOT_FOLDER = '/species'
 DX_DRIVE_NAME = 'genomeark'
-AWS_ACCESS_KEY = #@TODO <ENTER ACCESS KEY HERE>
-AWS_SECRET_ACCESS_KEY = #@TODO <ENTER SECRET ACCESS KEY HERE>
+#AWS_ACCESS_KEY = #@TODO <ENTER ACCESS KEY HERE>
+#AWS_SECRET_ACCESS_KEY = #@TODO <ENTER SECRET ACCESS KEY HERE>
+AWS_ACCESS_KEY = 'AKIAJVBGPNF6XXNRUZ3A'
+AWS_SECRET_ACCESS_KEY = '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'
 CREDENTIALS = '''[default]
 aws_access_key_id={aws_access_key}
 aws_secret_access_key={aws_secret_access_key}
@@ -133,6 +136,14 @@ def create_sym_link(f_id, f_name, f_folder, target_s3, upload_dest):
     dxf.remove()
 
 
+def _get_species_name():
+    project_desc = dxpy.describe(dxpy.PROJECT_CONTEXT_ID, input_params={'properties': True})
+    if 'species_name' in project_desc['properties']:
+        return project_desc['properties']['species_name']
+    else:
+        raise dxpy.AppInternalError('No species name was provided as input or as a property of this project.')
+
+
 @dxpy.entry_point('s3_upload')
 def s3_upload(target_s3, assigned_files, up_dir):
     # info
@@ -197,16 +208,19 @@ def create_upload_report(filelinks):
 
 
 @dxpy.entry_point('main')
-def main(worker_max, f_ids, bandwidth):
+def main(worker_max, f_ids, bandwidth, species_name=None):
     """
     Input variables removed:
     """
     _run_cmd('aws --version', True)
     print('file ids: ' + str(f_ids))
 
+    if species_name is None:
+        species_name = _get_species_name()
+
     # Set upload root to user specified directory or project
     projdx = dxpy.DXProject(os.environ['DX_PROJECT_CONTEXT_ID'])
-    dir_file = projdx.name
+    dir_file = os.path.join(S3_ROOT_FOLDER, species_name, projdx.name)
 
     # Trim trailing / in upload dir
     dir_file = dir_file.rstrip('/')
