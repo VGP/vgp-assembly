@@ -36,7 +36,7 @@
       "label": "Species name",
       "class": "string",
       "optional": true,
-      "help": "This parameter provides the species name for the given data.  If not provided, we will look for a project property called species_name.  If that too is not provided, we will use a species name of 'unnamed species'.",
+      "help": "This parameter provides the species name for the given data.  If not provided, we will look for a project property called species_name.  If neither is provided, the app will throw an error.",
       "group": "Transfer Options"
     },
     {
