@@ -147,7 +147,10 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
     # now link the newly uploaded files to DNAnexus
     dx_drive = locate_or_create_dx_drive(profile)
     dx_project = locate_or_create_dx_project(species_id)
-    
+
+    # in case project properties doesn't have species_name, update it
+    dx_project.set_properties({'species_name': species_name})
+
     for object in updated_files:
         folder_path, filename = os.path.split('/' + object)
         # remove species_name and species_id from folder path
