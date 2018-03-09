@@ -16,13 +16,13 @@ INSTANCES = {
 }
 TARGET_S3 = 'genomeark-test'
 S3_ROOT_FOLDER = '/species'
-DX_DRIVE_NAME = 'genomeark'
-AWS_ACCESS_KEY = #@TODO <ENTER ACCESS KEY HERE>
-AWS_SECRET_ACCESS_KEY = #@TODO <ENTER SECRET ACCESS KEY HERE>
+DX_DRIVE_NAME = 'genomeark2'
+AWS_DIR = '/home/dnanexus/.aws'
+AWS_ACCESS_KEY_FILENAME = '/home/dnanexus/accessKeys_dnanexus.csv'
 CREDENTIALS = '''[default]
 aws_access_key_id={aws_access_key}
 aws_secret_access_key={aws_secret_access_key}
-region=us-east-1'''.format(aws_access_key=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+region=us-east-1'''
 
 def _run_cmd(cmd, returnOutput=False):
     print(cmd)
@@ -32,6 +32,23 @@ def _run_cmd(cmd, returnOutput=False):
         return output
     else:
         subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+
+
+def _get_aws_key():
+    # Read in the credentials from the csv file provided by AWS.
+    with open(AWS_ACCESS_KEY_FILENAME) as fh:
+        access_key, secret_access_key = fh.read().strip().split('\n')[1].split(',')
+
+    return access_key, secret_access_key
+
+
+def _write_aws_credential_file():
+    access_key, secret_access_key = _get_aws_key()
+    # Write the AWS config file into the aws directory
+    if not os.path.exists(AWS_DIR):
+        os.makedirs(AWS_DIR)
+    with open(os.path.join(AWS_DIR, 'config'), 'w') as fh:
+        fh.write(CREDENTIALS.format(aws_access_key=access_key, aws_secret_access_key=secret_access_key))
 
 
 def instance_from_bandwidth(bandwidth):
@@ -101,12 +118,13 @@ def locate_or_create_dx_drive():
         return drives[0]
     elif len(drives) == 0:
         # if no drive exists, create it
+        access_key, secret_access_key = _get_aws_key()
         print('Creating drive with name: {0}'.format(DX_DRIVE_NAME))
         # create drive using API call
         new_drive_def = {'name': DX_DRIVE_NAME,
                          'cloud': 'aws',
-                         'credentials': {'accessKeyId': AWS_ACCESS_KEY,
-                                         'secretAccessKey': AWS_SECRET_ACCESS_KEY}}
+                         'credentials': {'accessKeyId': access_key,
+                                         'secretAccessKey': secret_access_key}}
         drive_id = dxpy.DXHTTPRequest('/drive/new', new_drive_def)
         print('Created drive with id: {0}'.format(DX_DRIVE_NAME))
         return drive_id
@@ -118,18 +136,20 @@ def locate_or_create_dx_drive():
 def create_sym_link(f_id, f_name, f_folder, target_s3, upload_dest):
     dx_drive = locate_or_create_dx_drive()
     # create new dx file
-    file = dxpy.api.file_new({'project': dxpy.PROJECT_CONTEXT_ID,
-                              'folder': f_folder,
-                              'parents': True,
-                              'name': f_name,
-                              'drive': dx_drive['id'],
-                              'symlinkPath': {
-                                    'container': '{region}:{bucket}'.format(region='us-east-1', bucket=target_s3),
-                                    'object': upload_dest
-                              },
-                              'details': {'container': target_s3,
-                                            'object': upload_dest}
-                              })
+    sym_link_details = {'project': dxpy.PROJECT_CONTEXT_ID,
+                        'folder': f_folder,
+                        'parents': True,
+                        'name': f_name,
+                        'drive': dx_drive['id'],
+                        'symlinkPath': {
+                            'container': '{region}:{bucket}'.format(region='us-east-1', bucket=target_s3),
+                            'object': str(upload_dest)
+                        },
+                        'details': {'container': target_s3,
+                                    'object': upload_dest}
+                        }
+    print(str(sym_link_details))
+    file = dxpy.api.file_new(sym_link_details)
     dxf = dxpy.DXFile(f_id, project=dxpy.PROJECT_CONTEXT_ID)
     dxf.remove()
 
@@ -148,17 +168,11 @@ def s3_upload(target_s3, assigned_files, up_dir):
     print('Total size: {0}'.format(sum([item['size'] for item in assigned_files])))
     print('Total files: {0}'.format(len(assigned_files)))
 
-    with open('config', 'w') as fh:
-        fh.write(CREDENTIALS)
-    
-    aws_dir = '.aws'
-    if not os.path.exists(aws_dir):
-        os.makedirs(aws_dir)
-    shutil.move('config', aws_dir + '/config')
+    _write_aws_credential_file()
 
     # Append user added options
     options = ''
-    
+
     # Upload files via stream
     for i, f_info in enumerate(assigned_files):
         # Set upload dir
