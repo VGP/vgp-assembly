@@ -101,6 +101,7 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
     
     # iterate over all the projects / species_ids
     for species_id in species_ids:
+        
         # grab the DNAnexus project
         project = locate_or_create_dx_project(species_id, billto, share)
         
@@ -109,6 +110,12 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
         
         # filter AWS objects to data that should match DNAnexus data
         aws_project_files = [object.key for object in all_objects if object.key.split('/')[2] == species_id]
+
+        # grab the species_name from the AWS path
+        species_name = aws_project_files[0].split('/')[1]
+        
+        # in case project properties doesn't have species_name, update it
+        project.set_properties({'species_name': species_name})
 
         found_links = []
         links_to_delete = []
@@ -136,7 +143,6 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
         # add the new links
         for object in links_to_add:
             folder_path, filename = os.path.split('/' + object)
-            species_name = object.split('/')[1]
             folder_path = folder_path.replace('species/{0}/{1}'.format(species_name, species_id), '')
             
             file = dxpy.api.file_new({
