@@ -4,7 +4,7 @@
   "summary": "Transfers files from the DNAnexus platform to VGP's external S3 bucket",
   "dxapi": "1.0.0",
   "version": "1.0.0",
-  "developers": ["user-bhannigan", "user-msimbirsky"],
+  "developers": ["user-bhannigan", "user-msimbirsky", "user-bhannigan_b10k"],
   "categories": [
       "Export"
     ],

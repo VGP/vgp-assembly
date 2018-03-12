@@ -14,9 +14,9 @@ INSTANCES = {
     'NORMAL': 'mem1_ssd1_x2',
     'HIGH': 'mem1_ssd1_x16'
 }
-TARGET_S3 = 'genomeark-test'
+TARGET_S3 = 'genomeark'
 S3_ROOT_FOLDER = '/species'
-DX_DRIVE_NAME = 'genomeark2'
+DX_DRIVE_NAME = 'genomeark_prod'
 AWS_DIR = '/home/dnanexus/.aws'
 AWS_ACCESS_KEY_FILENAME = '/home/dnanexus/accessKeys_dnanexus.csv'
 CREDENTIALS = '''[default]
@@ -219,6 +219,12 @@ def create_upload_report(filelinks):
     return {'reportDXLink': reportDXlink}
 
 
+def _is_symlink(f_id):
+    dxf = dxpy.DXFile(f_id)
+    desc = dxf.describe(fields={'symlinkPath':True})
+    return 'symlinkPath' in desc
+
+
 @dxpy.entry_point('main')
 def main(worker_max, f_ids, bandwidth, species_name=None):
     """
@@ -226,6 +232,9 @@ def main(worker_max, f_ids, bandwidth, species_name=None):
     """
     _run_cmd('aws --version', True)
     print('file ids: ' + str(f_ids))
+
+    # Remove any files which are already symlinks
+    f_ids = filter(lambda x: not _is_symlink(x), f_ids)
 
     if species_name is None:
         species_name = _get_species_name()
