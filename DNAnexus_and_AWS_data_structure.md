@@ -31,7 +31,7 @@ Once we visit a VGP project, the top level folders are expected to have:
     ```
   * bionano [platform=Irys|Saphyr]
     ```
-    <sample>_<platform>_<enzyme>.bnx.gz
+    <sample>_<platform>_<enzyme>[_jobid].bnx.gz
     <sample>_<platform>_<enzyme>.cmap.gz
     ```
   * arima
