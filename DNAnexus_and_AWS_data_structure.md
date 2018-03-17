@@ -1,4 +1,4 @@
-# Assembly data structure on DNAnexus and AWS GenomeArk
+# Data structure on DNAnexus and AWS GenomeArk
 
 
 ## Guidance
