@@ -41,7 +41,6 @@ The eTag will be the md5 (or md5sum) for files <5 Gb, and a combined hash of mul
 ```
 ./check_etag.sh mXXXX.subreads.bam
 ```
-Here is a MacOS version of check_etag.sh: 
 
 There are ways to change the eTag, but please use the default behavior of the aws cli and not change the eTag.
 
