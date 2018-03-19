@@ -5,7 +5,7 @@ There are many ways to upload your data.
 ## Upload from a local cluster
 
 ### Obtain credentials
-Contact the Genome10K VGP (vgp-assembly @ googlegroups.com) to obtain access credentials for uploading.
+Submit a ticket to contact the Genome10K VGP to obtain access credentials for uploading.
 Of note, the VGP does not require any credentials for downloading. By downloading the data,
 you agree and accept the [data use policy](https://genome10k.soe.ucsc.edu/about/data_use_policy#embargo).
 
