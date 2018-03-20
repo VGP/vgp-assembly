@@ -73,7 +73,6 @@ def parse_args():
                     action='store_true',
                     required=False)
 
-
     ap.add_argument('-b', '--bill-to',
                     help='Organization to set as \'bill-to\' for newly created DNAnexus projects',
                     required=False)
