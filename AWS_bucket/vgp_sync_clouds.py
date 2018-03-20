@@ -83,9 +83,17 @@ def parse_args():
                     required=False,
                     action='store_true')
 
+    ap.add_argument('-i', '--species-id',
+                    help='Specify the species-id to sync.',
+                    required=True)
+
+    ap.add_argument('-n', '--species-name',
+                    help='Specify the species-name to sync.',
+                    required=True)
+
     return ap.parse_args()
 
-def main(profile, delete_links=False, bill_to = None, skip_share=False):
+def main(profile, delete_links=False, bill_to = None, skip_share=False, species_id=None, species_name=None):
     # connect to S3 using Boto3 client
     s3client = boto3.session.Session(profile_name=profile).resource('s3')
     
@@ -93,26 +101,28 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
     dx_drive = locate_or_create_dx_drive(profile)
 
     # list objects in the bucket under 'species' directory
-    all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/')
+    all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id )
     
     # identify the species identifiers which correspond to DNAnexus projects
     # all of the objects should have key: species/species_name/species_id/...
-    species_ids = list(set([object.key.split('/')[2] for object in all_objects]))
-    
+    # species_ids = list(set([object.key.split('/')[2] for object in all_objects]))
+    # instead, directly get the species_ids
+    species_ids = [species_id]    
+
     # iterate over all the projects / species_ids
     for species_id in species_ids:
         
         # grab the DNAnexus project
-        project = locate_or_create_dx_project(species_id, billto, share)
+        project = locate_or_create_dx_project(species_id, bill_to, share)
         
         # find all data in the DNAnexus project
         dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
         
         # filter AWS objects to data that should match DNAnexus data
-        aws_project_files = [object.key for object in all_objects if object.key.split('/')[2] == species_id]
+        aws_project_files = [object.key for object in all_objects #if object.key.split('/')[2] == species_id]
 
         # grab the species_name from the AWS path
-        species_name = aws_project_files[0].split('/')[1]
+        # species_name = aws_project_files[0].split('/')[1] ## Comment this out because we already have it
         
         # in case project properties doesn't have species_name, update it
         project.set_properties({'species_name': species_name})
@@ -162,4 +172,4 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
 
 if __name__ == '__main__':
     ap = parse_args()
-    main(ap.profile, ap.delete_links, ap.billTo, ap.skip_share)
+    main(ap.profile, ap.delete_links, ap.bill_to, ap.skip_share, ap.species_id, ap.species_name)
