@@ -22,7 +22,7 @@ def locate_or_create_dx_drive(drive_name='genomeark'):
     
     if len(drives) == 1:
         # Make sure the drive we found is up to date with the latest credentials
-        drive_id = drives[0]
+        drive_id = drives[0]['id']
         update = {'credentials': {'accessKeyId': profile.access_key,
                                   "secretAccessKey": profile.secret_key}}
         drive_id = dxpy.DXHTTPRequest('/{0}/update'.format(drive_id), update)
