@@ -92,7 +92,7 @@ def parse_args():
 
     return ap.parse_args()
 
-def main(profile, delete_links=False, bill_to = None, skip_share=False, species_id=None, species_name=None):
+def main(profile, delete_links=False, bill_to =None, skip_share=False, species_id=None, species_name=None):
     # connect to S3 using Boto3 client
     s3client = boto3.session.Session(profile_name=profile).resource('s3')
     
@@ -102,72 +102,60 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False, species_
     # list objects in the bucket under 'species' directory
     all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id )
     
-    # identify the species identifiers which correspond to DNAnexus projects
-    # all of the objects should have key: species/species_name/species_id/...
-    # species_ids = list(set([object.key.split('/')[2] for object in all_objects]))
-    # instead, directly get the species_ids
-    species_ids = [species_id]    
+    # grab the DNAnexus project
+    project = locate_or_create_dx_project(species_id, bill_to, skip_share)
 
-    # iterate over all the projects / species_ids
-    for species_id in species_ids:
+    # find all data in the DNAnexus project
+    dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
         
-        # grab the DNAnexus project
-        project = locate_or_create_dx_project(species_id, bill_to, share)
-        
-        # find all data in the DNAnexus project
-        dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
-        
-        # filter AWS objects to data that should match DNAnexus data
-        aws_project_files = [object.key for object in all_objects #if object.key.split('/')[2] == species_id]
+    # filter AWS objects to data that should match DNAnexus data
+    aws_project_files = [object.key for object in all_objects if object.key.split('/')[2] == species_id]
 
-        # grab the species_name from the AWS path
-        # species_name = aws_project_files[0].split('/')[1] ## Comment this out because we already have it
-        
-        # in case project properties doesn't have species_name, update it
-        project.set_properties({'species_name': species_name})
+    # in case project properties doesn't have species_name, update it
+    #project.set_properties({'species_name': species_name})
 
-        found_links = []
-        links_to_delete = []
-        # iterate and compare links and objects
-        for link in dx_project_files:
-            # if this is a real dx file and not a symlink, skip it
-            if 'drive' not in link['describe']:
-                continue
+    found_links = []
+    links_to_delete = []
+    # iterate and compare links and objects
+    for link in dx_project_files:
+        # if this is a real dx file and not a symlink, skip it
+        if 'drive' not in link['describe']:
+            continue
             
-            # now check if this link has object key matching our bucket objects 
-            # or if it's a dead link we should delete
-            object_key = link['describe']['details'].get('object')
-            if object_key in aws_project_files:
-                found_links.append(object_key)
-            else:
-                links_to_delete.append(link['id'])
+        # now check if this link has object key matching our bucket objects 
+        # or if it's a dead link we should delete
+        object_key = link['describe']['details'].get('object')
+        if object_key in aws_project_files:
+            found_links.append(object_key)
+        else:
+            links_to_delete.append(link['id'])
 
-        # any links that are in AWS but weren't found in DNAnexus should be added
-        links_to_add = [object for object in aws_project_files if object not in found_links]
+    # any links that are in AWS but weren't found in DNAnexus should be added
+    links_to_add = [object for object in aws_project_files if object not in found_links]
 
-        # delete the bad links
-        if delete_links is True:
-            project.remove_objects(links_to_delete)
+    # delete the bad links
+    if delete_links is True:
+        project.remove_objects(links_to_delete)
+    
+    # add the new links
+    for object in links_to_add:
+        folder_path, filename = os.path.split('/' + object)
+        folder_path = folder_path.replace('species/{0}/{1}'.format(species_name, species_id), '')
         
-        # add the new links
-        for object in links_to_add:
-            folder_path, filename = os.path.split('/' + object)
-            folder_path = folder_path.replace('species/{0}/{1}'.format(species_name, species_id), '')
-            
-            file = dxpy.api.file_new({
-                                'project': project.id,
-                                'folder': folder_path,
-                                'parents': True,
-                                'name': filename,
-                                'drive': dx_drive["id"],
-                                'tags': [species_name, species_id],
-                                'symlinkPath': {
-                                    "container": "{region}:{bucket}".format(region='us-east-1', bucket=VGP_BUCKET),
-                                    "object": object
-                                    },
-                                'details': {'container': VGP_BUCKET,
-                                            'object': object}
-                                  })
+        file = dxpy.api.file_new({
+                            'project': project.id,
+                            'folder': folder_path,
+                            'parents': True,
+                            'name': filename,
+                            'drive': dx_drive["id"],
+                            'tags': [species_name, species_id],
+                            'symlinkPath': {
+                                "container": "{region}:{bucket}".format(region='us-east-1', bucket=VGP_BUCKET),
+                                "object": object
+                                },
+                            'details': {'container': VGP_BUCKET,
+                                        'object': object}
+                              })
 
 if __name__ == '__main__':
     ap = parse_args()
