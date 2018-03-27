@@ -40,9 +40,9 @@ def locate_or_create_dx_drive(drive_name='genomeark'):
 def locate_or_create_dx_project(project_name, billTo=None, skip_share=False):
     '''Try to find the project with the given name.  If one doesn't exist,
     we'll create it.'''
-    project = dxpy.find_projects(name=project_name, name_mode='glob', return_handler=True)
+    projects = dxpy.find_projects(name=project_name, name_mode='glob', return_handler=True, level='CONTRIBUTE')
 
-    project = [p for p in project]
+    project = [p for p in projects]
     if len(project) < 1:
         project_params = {'name': project_name, 'summary': 'VGP Data Project'}
         if billTo:
