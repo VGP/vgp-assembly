@@ -115,7 +115,7 @@ def main(profile, delete_links=False, bill_to = None, skip_share=False):
         species_name = aws_project_files[0].split('/')[1]
         
         # in case project properties doesn't have species_name, update it
-        project.set_properties({'species_name': species_name})
+        dxpy.api.project_set_properties(project.id, input_params={'properties': {'species_name': species_name}})
 
         found_links = []
         links_to_delete = []

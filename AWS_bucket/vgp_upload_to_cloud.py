@@ -149,7 +149,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
     dx_project = locate_or_create_dx_project(species_id)
 
     # in case project properties doesn't have species_name, update it
-    dx_project.set_properties({'species_name': species_name})
+    dxpy.api.project_set_properties(dx_project.id, input_params={'properties': {'species_name': species_name}})
 
     for object in updated_files:
         folder_path, filename = os.path.split('/' + object)
