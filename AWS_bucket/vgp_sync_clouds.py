@@ -90,9 +90,14 @@ def parse_args():
                     help='Specify the species-name to sync.',
                     required=True)
 
+    ap.add_argument('-t', '--target-project',
+                    help='Specify the DNAnexus project to sync to. Species ID will be used by default.',
+                    required=False)
+
     return ap.parse_args()
 
-def main(profile, delete_links=False, bill_to =None, skip_share=False, species_id=None, species_name=None):
+def main(profile, delete_links=False, bill_to =None, skip_share=False, 
+         species_id=None, species_name=None, target_project=None):
     # connect to S3 using Boto3 client
     s3client = boto3.session.Session(profile_name=profile).resource('s3')
     
@@ -103,7 +108,10 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False, species_i
     all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id )
     
     # grab the DNAnexus project
-    project = locate_or_create_dx_project(species_id, bill_to, skip_share)
+    if target_project:
+        project = locate_or_create_dx_project(target_project, bill_to, skip_share)
+    else:
+        project = locate_or_create_dx_project(species_id, bill_to, skip_share)
 
     # find all data in the DNAnexus project
     dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
@@ -159,4 +167,5 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False, species_i
 
 if __name__ == '__main__':
     ap = parse_args()
-    main(ap.profile, ap.delete_links, ap.bill_to, ap.skip_share, ap.species_id, ap.species_name)
+    main(ap.profile, ap.delete_links, ap.bill_to, ap.skip_share, ap.species_id,
+         ap.species_name, ap.target_project)
