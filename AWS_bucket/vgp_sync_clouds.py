@@ -9,7 +9,7 @@ import dxpy
 import argparse
 import os
 
-VGP_BUCKET = "genomeark-test"
+VGP_BUCKET = "genomeark"
 SHARE_WITH = "org-vgp"
 
 def locate_or_create_dx_drive(drive_name='genomeark'):
@@ -113,7 +113,7 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
 
     # list objects in the bucket under 'species' directory
     all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id )
-    
+
     # grab the DNAnexus project
     if target_project:
         project = locate_or_create_dx_project(target_project, bill_to, skip_share)
@@ -124,7 +124,8 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
     dx_project_files = dxpy.find_data_objects(project=project.id, describe={'defaultFields': True, 'details': True})
 
     # filter AWS objects to data that should match DNAnexus data
-    aws_project_files = [object.key for object in all_objects if object.key.split('/')[2] == species_id]
+    aws_project_files = [object.key for object in all_objects] #if object.key.split('/')[2] == species_id]
+    print len(aws_project_files)
 
     # in case project properties doesn't have species_name, update it
     dxpy.api.project_set_properties(project.id, input_params={'properties': {'species_name': species_name}})
@@ -154,6 +155,10 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
     
     # add the new links
     for object in links_to_add:
+	if object.endswith('/'):
+	   continue
+
+	print "[DEBUG] :: Adding s3://" + VGP_BUCKET + "/" + object
         folder_path, filename = os.path.split('/' + object)
         folder_path = folder_path.replace('species/{0}/{1}'.format(species_name, species_id), '')
         
