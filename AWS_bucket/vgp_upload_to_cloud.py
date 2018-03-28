@@ -74,14 +74,21 @@ def locate_or_create_dx_drive(drive_name='genomeark'):
     # findDrives is an API method that has not been explicitly added to dxpy yet, so call the API method explicitly.
     drives = dxpy.DXHTTPRequest('/system/findDrives', {'name': drive_name}, always_retry=True)['results']
 
+    # use boto to read the profile info from aws config file
+    s3client = boto3.session.Session(profile_name=drive_name)
+    profile = s3client.get_credentials()
+    
     if len(drives) == 1:
-        return drives[0]
+        # Make sure the drive we found is up to date with the latest credentials
+        drive_id = drives[0]['id']
+        update = {'credentials': {'accessKeyId': profile.access_key,
+                                  "secretAccessKey": profile.secret_key}}
+        drive_id = dxpy.DXHTTPRequest('/{0}/update'.format(drive_id), update)
+
+        return drive_id
     elif len(drives) == 0:
         # if no drive exists, create it
         print("Creating drive with name: {0}".format(drive_name))
-        # use boto to read the profile info from aws config file
-        s3client = boto3.session.Session(profile_name=drive_name)
-        profile = s3client.get_credentials()
 
         # create drive using API call
         new_drive_def = {'name': drive_name,
@@ -94,6 +101,7 @@ def locate_or_create_dx_drive(drive_name='genomeark'):
     elif len(drives) > 1:
         print("More than one drives found with name '{0}'".format(drive_name))
         sys.exit(1)
+
 
 def locate_or_create_dx_project(project_name):
     '''Try to find the project with the given name.  If one doesn't exist,
