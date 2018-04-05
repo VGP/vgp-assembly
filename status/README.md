@@ -21,6 +21,10 @@ java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 
 ### Status as of 2018-04-05
 
+O: Available
+X: Not Available
+
+Total num. objects under s3://genomeark/species: 1,649
 | species_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_tgh	| bionano_dls	| bionano_bnx	| bionano_cmap	| hic |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |
 | Calypte_anna	| bCalAnn1	| 4	| 189	| 0	| 1	| O	| O	| O	| O	| arima |
@@ -34,9 +38,10 @@ java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 | Aquila_chrysaetos	| bAquChr1	| 2	| 16	| 0	| 12	| X	| X	| X	| X	|  |
 | Denticeps_clupeoides	| fDenClu1	| 2	| 8	| 0	| 4	| X	| X	| X	| X	|  |
 | Astatotilapia_calliptera	| fAstCal1	| 2	| 67	| 0	| 4	| X	| X	| O	| O	|  |
-| Amblyraja_radiata	| sAmbRad1	| 2	| 46	| 45	| 0	| O	| X	| O	| X	|  |
+| Amblyraja_radiata	| sAmbRad1	| 2	| 50	| 50	| 0	| O	| X	| O	| X	|  |
 | Streptopelia_turtur	| bStrTur1	| 2	| 18	| 0	| 12	| X	| X	| X	| X	|  |
 | Erpetoichthys_calabaricus	| fErpCal1	| 2	| 53	| 0	| 8	| X	| X	| X	| X	|  |
 | Archocentrus_centrarchus	| fArcCen1	| 2	| 18	| 0	| 0	| X	| X	| X	| X	| phase |
 | Zeus_faber	| fZeuFab1	| 2	| 27	| 0	| 4	| X	| X	| X	| X	|  |
 | Gopherus_evgoodei	| rGopEvg1	| 1	| 19	| 19	| 0	| X	| X	| X	| X	|  |
+| Lynx_canadensis	| mLynCan4	| 1	| 24	| 23	| 0	| X	| X	| X	| X	|  |
