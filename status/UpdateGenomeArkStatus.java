@@ -19,7 +19,7 @@ public class UpdateGenomeArkStatus {
 	public static void main(String[] args) {
 		
 		if (args.length > 0 && args[0].contains("help")) {
-			System.out.println("Usage: java -jar UpdateGenomeArkStatus.jar [-md]");
+			System.out.println("Usage: java -cp .:third-party/lib/* UpdateGenomeArkStatus [-md] [-help]");
 			System.exit(0);
 		}
 		
