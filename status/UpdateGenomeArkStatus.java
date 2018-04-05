@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import com.amazonaws.AmazonClientException;
@@ -88,9 +90,32 @@ public class UpdateGenomeArkStatus {
             System.err.println("Total num. objects under s3://genomeark/species: " + String.format("%,.0f", countKeys));
             
             VGPData.printHeader(isMDstyle);
+            
+            // Sort by internal score
+            ArrayList<Integer> sortedScores = new ArrayList<Integer>();
+            HashMap<Integer, ArrayList<VGPData>> scoreToDataMap = new HashMap<Integer, ArrayList<VGPData>>();
+            ArrayList<VGPData> dataList = new ArrayList<VGPData>();
+            int score;
             for (String id : dataMap.keySet()) {
-            	dataMap.get(id).printVGPData(isMDstyle);
+            	score = dataMap.get(id).getInternalScore();
+            	if (!sortedScores.contains(score)) {
+            		sortedScores.add(score);
+            		dataList = new ArrayList<VGPData>();
+            	} else {
+            		dataList = scoreToDataMap.get(score);
+            	}
+            	dataList.add(dataMap.get(id));
+            	scoreToDataMap.put(score, dataList);
             }
+            Collections.sort(sortedScores);
+            
+            for (int i = sortedScores.size() - 1; i >= 0; i--) {
+            	dataList = scoreToDataMap.get(sortedScores.get(i));
+            	for (VGPData dataObj : dataList) {
+            		dataObj.printVGPData(isMDstyle);
+            	}
+            }
+            
         } catch (AmazonServiceException ase) {
             System.err.println("Caught an AmazonServiceException, which means your request made it "
                     + "to Amazon S3, but was rejected with an error response for some reason.");
