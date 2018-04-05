@@ -19,10 +19,14 @@ public class UpdateGenomeArkStatus {
 	public static void main(String[] args) {
 		
 		if (args.length > 0 && args[0].contains("help")) {
-			System.out.println("Usage: java -jar UpdateGenomeArkStatus.jar");
+			System.out.println("Usage: java -jar UpdateGenomeArkStatus.jar [-md]");
 			System.exit(0);
 		}
 		
+		boolean isMDstyle = false;
+		if (args.length > 0 && args[0].contains("md")) {
+			isMDstyle = true;
+		}
 		
         AmazonS3 s3 = AmazonS3ClientBuilder.standard()
             .withRegion("us-east-1")
@@ -83,9 +87,9 @@ public class UpdateGenomeArkStatus {
             }
             System.err.println("Total num. objects under s3://genomeark/species: " + String.format("%,.0f", countKeys));
             
-            VGPData.printHeader();
+            VGPData.printHeader(isMDstyle);
             for (String id : dataMap.keySet()) {
-            	dataMap.get(id).printVGPData();
+            	dataMap.get(id).printVGPData(isMDstyle);
             }
         } catch (AmazonServiceException ase) {
             System.err.println("Caught an AmazonServiceException, which means your request made it "

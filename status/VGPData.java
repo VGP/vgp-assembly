@@ -58,28 +58,55 @@ public class VGPData {
 		}
 	}
 	
-	public void printVGPData() {
+	public void printVGPData(boolean isMDstyle) {
 		if (bspqi && bsssi) {
 			tgh = true;
 		}
 		
-		System.out.println(speciesName + "\t" +
-				speciesId + "\t" +
-				numSubreadBams + "\t" + 
-				numScrapsBams + "\t" +
-				num10xR1 + "\t" +
-				(tgh ? "Y" : "N") + "\t" +
-				(dls ? "Y" : "N") + "\t" +
-				(hasBnx ? "Y" : "N") + "\t" +
-				(hasCmap ? "Y" : "N") + "\t" +
-				listHiC());
+		if (isMDstyle) {
+			System.out.println("| " + speciesName + "\t" +
+					"| " + speciesId + "\t" +
+					"| " + numSubreadBams + "\t" + 
+					"| " + numScrapsBams + "\t" +
+					"| " + num10xR1 + "\t" +
+					"| " + (tgh ? "O" : "X") + "\t" +
+					"| " + (dls ? "O" : "X") + "\t" +
+					"| " + (hasBnx ? "O" : "X") + "\t" +
+					"| " + (hasCmap ? "O" : "X") + "\t" +
+					"| " + listHiC() + " |");
+		} else {
+			System.out.println(speciesName + "\t" +
+					speciesId + "\t" +
+					numSubreadBams + "\t" + 
+					numScrapsBams + "\t" +
+					num10xR1 + "\t" +
+					(tgh ? "O" : "X") + "\t" +
+					(dls ? "O" : "X") + "\t" +
+					(hasBnx ? "O" : "X") + "\t" +
+					(hasCmap ? "O" : "X") + "\t" +
+					listHiC());
+		}
 	}
 	
-	public static void printHeader() {
-		System.out.println("species_name\tspecies_id\t"
-				+ "pacbio_subreads\tpacbio_scrubs\t10x\t"
-				+ "bionano_tgh\tbionano_dls\tbionano_bnx\tbionano_cmap\t"
-				+ "hic");
+	public static void printHeader(boolean isMDstyle) {
+		if (isMDstyle) {
+			System.out.println("| species_name\t"
+					+ "| species_id\t"
+					+ "| pacbio_subreads\t"
+					+ "| pacbio_scrubs\t"
+					+ "| 10x\t"
+					+ "| bionano_tgh\t"
+					+ "| bionano_dls\t"
+					+ "| bionano_bnx\t"
+					+ "| bionano_cmap\t"
+					+ "| hic |");
+			System.out.println("| :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |");
+		} else {
+			System.out.println("species_name\tspecies_id\t"
+					+ "pacbio_subreads\tpacbio_scrubs\t10x\t"
+					+ "bionano_tgh\tbionano_dls\tbionano_bnx\tbionano_cmap\t"
+					+ "hic");
+		}
 	}
 	
 	private String listHiC() {
