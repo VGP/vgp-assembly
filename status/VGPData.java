@@ -66,10 +66,6 @@ public class VGPData {
 	}
 	
 	public void printVGPData(boolean isMDstyle) {
-		if (bspqi && bsssi) {
-			tgh = true;
-		}
-
 		updateTechCount();
 		if (isMDstyle) {
 			System.out.println("| " + speciesName + "\t" +
@@ -100,6 +96,9 @@ public class VGPData {
 	
 	private void updateTechCount() {
 		if (updateCount) {
+			if (bspqi && bsssi) {
+		        tgh = true;
+		    }
 			if (numSubreadBams + numScrapsBams > 0) {
 				tech_count++;
 				internal_score++;
