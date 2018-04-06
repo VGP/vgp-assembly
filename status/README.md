@@ -19,7 +19,7 @@ By default, data will be printed in tab-delimited format.
 java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 ```
 
-### Status as of 2018-04-05
+### Status as of 2018-04-06
 
 O: Available
 X: Not Available
@@ -46,4 +46,4 @@ Total num. objects under s3://genomeark/species: 1,649
 | Archocentrus_centrarchus	| fArcCen1	| 2	| 18	| 0	| 0	| X	| X	| X	| X	| phase |
 | Zeus_faber	| fZeuFab1	| 2	| 27	| 0	| 4	| X	| X	| X	| X	|  |
 | Gopherus_evgoodei	| rGopEvg1	| 1	| 19	| 19	| 0	| X	| X	| X	| X	|  |
-| Lynx_canadensis	| mLynCan4	| 1	| 24	| 23	| 0	| X	| X	| X	| X	|  |
+| Lynx_canadensis	| mLynCan4	| 1	| 35	| 35	| 0	| X	| X	| X	| X	|  |
