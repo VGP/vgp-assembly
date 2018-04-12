@@ -25,9 +25,9 @@ Once we visit a VGP project, the top level folders are expected to have:
     ```
   * 10x
     ```
-    <sample>_S1_L001_I1.fastq.gz
-    <sample>_S1_L001_R1.fastq.gz
-    <sample>_S1_L001_R2.fastq.gz
+    <sample>_S1_L001_I1_001.fastq.gz
+    <sample>_S1_L001_R1_001.fastq.gz
+    <sample>_S1_L001_R2_001.fastq.gz
     ```
   * bionano [platform=Irys|Saphyr]
     ```
