@@ -47,12 +47,12 @@ main() {
     fi
     numCores=`grep -c ^processor /proc/cpuinfo`
 
-    wtdbg-1.2.8 -f -t $numCores $inputType input_reads.fasta -fo dbg -S 2 --edge-min 2 --rescue-low-cov-edges
+    /opt/wtdbg-1.2.8/wtdbg-1.2.8 -f -t $numCores $inputType input_reads.fasta -fo dbg -S 2 --edge-min 2 --rescue-low-cov-edges
     if [ ! -e dbg.ctg.lay ]; then
         dx-jobutil-report-error "Error: assembly failed, no layout generated"
         exit 1
     fi
-    wtdbg-cns -f -t $numCores -i dbg.ctg.lay -o dbg.ctg.lay.fasta
+    /opt/wtdbg-1.2.8/wtdbg-cns -f -t $numCores -i dbg.ctg.lay -o dbg.ctg.lay.fasta
     if [ ! -e dbg.ctg.lay.fasta ]; then
         dx-jobutil-report-error "Error: consensus failed, no fasta generated"
     else

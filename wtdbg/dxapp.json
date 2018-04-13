@@ -3,7 +3,7 @@
   "title": "wtdbg 1.2.8",
   "summary": "A fuzzy Bruijn graph approach to long noisy reads assembly (https://github.com/ruanjue/wtdbg)",
   "dxapi": "1.0.0",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "inputSpec": [
     {
       "name": "input_files",
@@ -45,6 +45,14 @@
     }
   ],
   "runSpec": {
+    "execDepends": [
+        {"name": "wtdbg",
+         "package_manager": "git",
+         "url": "https://github.com/ruanjue/wtdbg-1.2.8.git",
+         "tag": "master",
+         "destdir": "/opt/",
+         "build_commands": "make"}
+         ],
     "timeoutPolicy": {
       "*": {
         "hours": 72
@@ -59,5 +67,10 @@
     },
     "distribution": "Ubuntu",
     "release": "14.04"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
   }
 }
