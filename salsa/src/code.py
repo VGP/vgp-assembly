@@ -63,7 +63,7 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
         dx_utils.run_cmd(cmd)
 
     # now sort the bed file
-    cmd = "sort -T . -gk4 {0}.filtered.bed > {0}.sorted.bed".format(alignment_prefix)
+    cmd = "sort -T . -k4 {0}.filtered.bed > {0}.sorted.bed".format(alignment_prefix)
     dx_utils.run_cmd(cmd)
 
     cmd = 'python /opt/SALSA/run_pipeline.py -a {0} -b {1}.sorted.bed -l {0}.fai -o {2} -e {3} -m yes -p yes '
