@@ -1,0 +1,92 @@
+{
+  "name": "salsa",
+  "title": "Salsa",
+  "summary": "salsa",
+  "dxapi": "1.0.0",
+  "version": "1.0.2",
+  "inputSpec": [
+    {
+      "name": "input_assembly",
+      "label": "Assembly to scaffold",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fa", "*.fasta", "*.fa.gz", "*.fasta.gz"],
+      "optional": false
+    },
+    {
+      "name": "hic_alignments",
+      "label": "Hi-C alignment",
+      "help": "",
+      "class": "array:file",
+      "patterns": ["*.bam", "*.bam.gz"],
+      "optional": false
+    },
+    {
+      "name": "restriction_enzyme_bases",
+      "label": "Restriction enzyme bases",
+      "help": "",
+      "class": "array:string",
+      "optional": false
+    },
+    {
+      "name": "filter_alignments",
+      "label": "Filter bam file to exclude mappings to non-existent contigs?",
+      "class": "boolean",
+      "optional": false,
+      "default": true,
+      "help": ""
+    },
+    {
+      "name": "input_assembly_graph",
+      "label": "Assembly graph for assembly to scaffold",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.gfa", "*.gfa.gz"],
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "scaffold",
+      "label": "Scaffold",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.tar.gz"]
+    }
+  ],
+  "runSpec": {
+    "execDepends": [
+        {"name": "samtools"},
+        {"name": "bedtools"},
+        {"name": "libboost-dev"},
+        {"name": "networkx",
+         "package_manager": "pip",
+         "version": "1.2"},
+        {"name": "salsa",
+         "package_manager": "git",
+         "url": "https://github.com/machinegun/SALSA.git",
+         "tag": "master",
+         "destdir": "/opt/",
+         "build_commands": "make"}
+         ],
+    "timeoutPolicy": {
+      "*": {
+        "hours": 24
+      }
+    },
+    "interpreter": "python2.7",
+    "file": "src/code.py",
+    "systemRequirements": {
+      "*": {
+        "instanceType": "mem1_ssd1_x8"
+      }
+    },
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  }
+}
