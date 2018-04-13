@@ -66,10 +66,6 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
     cmd = "sort -T . -gk4 {0}.filtered.bed > {0}.sorted.bed".format(alignment_prefix)
     dx_utils.run_cmd(cmd)
 
-    # index the ref
-    cmd = 'samtools faidx {0} '.format(input_assembly)
-    dx_utils.run_cmd(cmd)
-
     cmd = 'python /opt/SALSA/run_pipeline.py -a {0} -b {1}.sorted.bed -l {0}.fai -o {2} -e {3} -m yes -p yes '
     cmd = cmd.format(input_assembly, alignment_prefix, './', ','.join(restriction_enzyme_bases))
     if input_assembly_graph is not  None:
