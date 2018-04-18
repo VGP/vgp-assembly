@@ -19,13 +19,13 @@ By default, data will be printed in tab-delimited format.
 java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 ```
 
-### Status as of 2018-04-13
+### Status as of 2018-04-18
 
 O: Available
 
 X: Not Available
 
-Total num. objects under s3://genomeark/species: 3,705
+Total num. objects under s3://genomeark/species: 9,282
 
 | species_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_tgh	| bionano_dls	| bionano_bnx	| bionano_cmap	| hic |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |
@@ -57,6 +57,8 @@ Total num. objects under s3://genomeark/species: 3,705
 | Takifugu_rubripes	| fTakRub1	| 2	| 4	| 4	| 0	| X	| X	| X	| X	| arima |
 | Gopherus_evgoodei	| rGopEvg1	| 2	| 19	| 19	| 0	| X	| O	| O	| X	|  |
 | Erpetoichthys_calabaricus	| fErpCal1	| 2	| 53	| 53	| 8	| X	| X	| X	| X	|  |
+| Ornithorhynchus_anatinus	| mOrnAna2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| dovetail |
 | Parambassis_ranga	| fParRan2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| arima |
+| Choloepus_didactylus	| mChoDid1	| 1	| 35	| 35	| 0	| X	| X	| X	| X	|  |
 | Nomonyx_dominicus	| bNomDom1	| 1	| 0	| 0	| 0	| O	| X	| O	| X	|  |
 | Cottoperca_gobio	| fCotGob2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| arima |
