@@ -19,13 +19,13 @@ By default, data will be printed in tab-delimited format.
 java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 ```
 
-### Status as of 2018-04-18
+### Status as of 2018-04-19
 
 O: Available
 
 X: Not Available
 
-Total num. objects under s3://genomeark/species: 9,282
+Total num. objects under s3://genomeark/species: 9,045
 
 | species_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_tgh	| bionano_dls	| bionano_bnx	| bionano_cmap	| hic |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |
