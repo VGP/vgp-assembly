@@ -25,7 +25,7 @@ O: Available
 
 X: Not Available
 
-Total num. objects under s3://genomeark/species: 27,219
+Total num. objects under s3://genomeark/species: 27,221
 
 | species_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_tgh	| bionano_dls	| bionano_bnx	| bionano_cmap	| hic |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |
@@ -62,6 +62,7 @@ Total num. objects under s3://genomeark/species: 27,219
 | Cariama_cristata	| bCarCri1	| 2	| 8	| 8	| 0	| X	| O	| O	| X	|  |
 | Acanthisitta_chloris	| bAcaChl1	| 1	| 0	| 0	| 0	| X	| O	| O	| X	|  |
 | Ornithorhynchus_anatinus	| mOrnAna2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| dovetail |
+| Dermochelys_coriacea	| rDerCor1	| 1	| 0	| 0	| 0	| X	| O	| O	| X	|  |
 | Parambassis_ranga	| fParRan2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| arima |
 | Sciurus_vulgaris	| mSciVul1	| 1	| 36	| 36	| 0	| X	| X	| X	| X	|  |
 | Choloepus_didactylus	| mChoDid1	| 1	| 35	| 35	| 0	| X	| X	| X	| X	|  |
