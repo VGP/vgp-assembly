@@ -19,13 +19,13 @@ By default, data will be printed in tab-delimited format.
 java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 ```
 
-### Status as of 2018-05-04
+### Status as of 2018-05-10
 
 O: Available
 
 X: Not Available
 
-Total num. objects under s3://genomeark/species: 27,221
+Total num. objects under s3://genomeark/species: 27,357
 
 | species_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_tgh	| bionano_dls	| bionano_bnx	| bionano_cmap	| hic |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- | :----- |
@@ -60,6 +60,7 @@ Total num. objects under s3://genomeark/species: 27,221
 | Zeus_faber	| fZeuFab1	| 2	| 27	| 27	| 4	| X	| X	| X	| X	|  |
 | Gopherus_evgoodei	| rGopEvg1	| 2	| 19	| 19	| 0	| X	| O	| O	| X	|  |
 | Cariama_cristata	| bCarCri1	| 2	| 8	| 8	| 0	| X	| O	| O	| X	|  |
+| Scyliorhinus_canicula	| sScyCan1	| 2	| 34	| 34	| 16	| X	| X	| X	| X	|  |
 | Acanthisitta_chloris	| bAcaChl1	| 1	| 0	| 0	| 0	| X	| O	| O	| X	|  |
 | Ornithorhynchus_anatinus	| mOrnAna2	| 1	| 0	| 0	| 0	| X	| X	| X	| X	| dovetail |
 | Dermochelys_coriacea	| rDerCor1	| 1	| 0	| 0	| 0	| X	| O	| O	| X	|  |
