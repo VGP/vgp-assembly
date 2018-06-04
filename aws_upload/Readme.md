@@ -24,7 +24,7 @@ The next step is to configure your credentials obtained from the assembly-group.
 ```
 aws configure
 ```
-Type in your given ws_access_key_id and aws_secret_access_key_id when prompted.
+Type in your given aws_access_key_id and aws_secret_access_key_id when prompted.
 
 Copy a file following the [data_structure]("https://github.com/VGP/vgp-assembly/blob/master/DNAnexus_and_AWS_data_structure.md").
 ```
@@ -36,7 +36,7 @@ aws s3 mXXXX.subreads.bam s3://genomeark-upload/species/Calypte_anna/bCalAnn1/pa
 ```
 
 ### Check your file after transfer is completed
-Run [check_etag.sh](vgp-assembly/aws_upload/utils/check_etag.sh) and see if it matches the eTag on the uploaded file.
+Run [check_etag.sh](utils/check_etag.sh) and see if it matches the eTag on the uploaded file.
 The eTag will be the md5 (or md5sum) for files <5 Gb, and a combined hash of multi-part files when larger than 5Gb.
 ```
 ./check_etag.sh mXXXX.subreads.bam
