@@ -21,8 +21,6 @@ java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 
 ### Status as of 2018-06-26
 
-O: Available
-
 X: Not Available
 
 Total num. objects under s3://genomeark/species: 29,103
