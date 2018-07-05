@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-	echo "Usage: ./run.sh <genome_id>"
+	echo "Usage: ./_submit_scaff10x.sh <genome_id>"
 	exit -1
 fi
 
@@ -10,7 +10,7 @@ mkdir -p logs
 cpus=48
 mem=48g
 name=scaff10x_$1
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/scaff10x/scaff10x.sh
+script=pipeline/scaff10x/scaff10x.sh
 args=$1
 walltime=3-0
 dependency=""
