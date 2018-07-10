@@ -13,10 +13,11 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 public class UpdateGenomeArkStatus {
 	
 	private static final int SPECIES_NAME = 1;
-	private static final int SPECIES_ID = 2;
+	private static final int GENOME_ID = 2;
 	private static final int DATA_TYPE = 3;
 	private static final int SEQ_PLATFORM = 4;
 	private static final int FILE = 5;
+	private static final int ASSEMBLY = 4;
 
 	public static void main(String[] args) {
 		
@@ -49,7 +50,7 @@ public class UpdateGenomeArkStatus {
             Double countKeys = 0d;
             
             String[] tokens;
-            String speciesId;
+            String genomeId;
             String seqPlatform;
             String file;
             HashMap<String, VGPData> dataMap = new HashMap<String, VGPData>();
@@ -59,14 +60,14 @@ public class UpdateGenomeArkStatus {
             		//System.err.println(objectSummary.getKey());
             		countKeys++;
             		tokens = objectSummary.getKey().split("/");
-            		if (tokens.length < 6) continue;
-            		if (tokens[DATA_TYPE].equals("genomic_data")) {
-            			speciesId = tokens[SPECIES_ID];
-            			if (dataMap.containsKey(speciesId)) {
-            				data = dataMap.get(speciesId);
+            		if (tokens.length < 4) continue;
+            		if (tokens[DATA_TYPE].equals("genomic_data") && tokens.length > 5) {
+            			genomeId = tokens[GENOME_ID];
+            			if (dataMap.containsKey(genomeId)) {
+            				data = dataMap.get(genomeId);
             			} else {
-            				data = new VGPData(speciesId, tokens[SPECIES_NAME]);
-            				dataMap.put(speciesId, data);
+            				data = new VGPData(genomeId, tokens[SPECIES_NAME]);
+            				dataMap.put(genomeId, data);
             			}
             			seqPlatform = tokens[SEQ_PLATFORM].toLowerCase();
             			file = tokens[FILE].toLowerCase();
@@ -79,6 +80,16 @@ public class UpdateGenomeArkStatus {
             			} else {
             				data.addHiC(seqPlatform);
             			}
+            		} else if (tokens[DATA_TYPE].equals("assembly_v1") && tokens.length == 5) {
+            			genomeId = tokens[GENOME_ID];
+            			if (dataMap.containsKey(genomeId)) {
+            				data = dataMap.get(genomeId);
+            			} else {
+            				data = new VGPData(genomeId, tokens[SPECIES_NAME]);
+            				dataMap.put(genomeId, data);
+            			}
+            			file = tokens[ASSEMBLY];
+            			data.addAssembly(file);
             		}
             	}
             	if (objectListing.isTruncated()) {
