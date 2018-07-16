@@ -1,0 +1,119 @@
+{
+  "name": "bionano_hybrid_2enzyme",
+  "title": "Bionano Hybrid Scaffolding - Two Enzyme Workflow",
+  "dxapi": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "bng_enzyme1",
+      "label": "Bionano Enzyme 1 RefineFinal CMAP",
+      "help": "The CMAP file produced by merging the CMAPs from the refineFinal step of the BioNano assembly pipeline",
+      "class": "file",
+      "patterns": ["*.cmap", "*.cmap.gz"],
+      "optional": false
+    },
+    {
+      "name": "bng_enzyme2",
+      "label": "Bionano Enzyme 2 RefineFinal CMAP",
+      "help": "The CMAP file produced by merging the CMAPs from the refineFinal step of the BioNano assembly pipeline",
+      "class": "file",
+      "patterns": ["*.cmap", "*.cmap.gz"],
+      "optional": false
+    },
+    {
+      "name": "enzyme1_name",
+      "label": "Bionano Enzyme 1 Name",
+      "class": "string",
+      "optional": false,
+      "choices": [
+        "BSSSI",
+        "BSPQI",
+        "BBVCI",
+        "BSMI",
+        "BSRDI",
+        "BSECI",
+        "DLE1"
+      ]
+    },
+    {
+      "name": "enzyme2_name",
+      "label": "Bionano Enzyme 2 Name",
+      "class": "string",
+      "optional": false,
+      "choices": [
+        "BSSSI",
+        "BSPQI",
+        "BBVCI",
+        "BSMI",
+        "BSRDI",
+        "BSECI",
+        "DLE1"
+      ]
+    },
+    {
+      "name": "ngs_fasta_or_cmap",
+      "label": "FASTA or CMAP file from NGS",
+      "help": "An assembly produced from sequencing technologies such as PacBio or Illumina",
+      "class": "file",
+      "patterns": ["*.fasta", "*.cmap", "*.fasta.gz", "*.cmap.gz", "*.fa", "*.fa.gz"],
+      "optional": false
+    },
+    {
+      "name": "cuts1_file",
+      "label": "Conflict Resolution File BNG1",
+      "help": "(Optional) Input a conflict resolution file indicating which NGS and BioNano conflicting contigs to be cut (Overwrites -B and -N filter levels)",
+      "class": "file",
+      "optional": true
+    },
+    {
+      "name": "cuts2_file",
+      "label": "Conflict Resolution File BNG2",
+      "help": "(Optional) Input a conflict resolution file indicating which NGS and BioNano conflicting contigs to be cut (Overwrites -B and -N filter levels)",
+      "class": "file",
+      "optional": true
+    },
+    {
+      "name": "args_xml",
+      "label": "Arguments XML file",
+      "help": "(Optional) The arguments XML file for hybrid scaffolding. If not specified, default parameters are used.",
+      "class": "file",
+      "patterns": ["*.xml", "*.xml.gz"],
+      "optional": true
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "scaffold_fasta",
+      "label": "Hybrid scaffold fasta output",
+      "class": "array:file",
+      "optional": true
+    },
+    {
+      "name": "scaffold_output",
+      "label": "Hybrid scaffold output",
+      "class": "array:file",
+      "optional": true
+    },
+    {
+      "name": "scaffold_targz",
+      "label": "Hybrid scaffold tar",
+      "class": "file"
+    }
+  ],
+  "runSpec": {
+    "file": "src/code.py",
+    "release": "14.04",
+    "interpreter": "python2.7",
+    "distribution": "Ubuntu"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGVz00Q0Q1zB3fPk3JqVfKzZ"} ]},
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGXxb8Q9Z8XYPXBv9b3q56kF"} ]}
+  }
+}

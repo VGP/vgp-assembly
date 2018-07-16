@@ -1,0 +1,129 @@
+{
+    "name": "bionano_hybrid_1enzyme",
+    "title": "Bionano Hybrid Scaffolding - One Enzyme Workflow",
+    "version": "0.0.1",
+    "inputSpec": [
+        {
+            "name": "refinefinal_merged_cmap",
+            "class": "file",
+            "optional": false,
+            "patterns": ["*.cmap", "*.cmap.gz"],
+            "label": "Merged refineFinal CMAP file",
+            "help": "The CMAP file produced by merging the CMAPs from the refineFinal step of the BioNano assembly pipeline"
+        },
+        {
+            "name": "ngs_fasta_or_cmap",
+            "class": "file",
+            "patterns": ["*.fasta", "*.cmap", "*.fasta.gz", "*.cmap.gz", "*.fa", "*.fa.gz"],
+            "optional": false,
+            "label": "FASTA or CMAP file from NGS",
+            "help": "An assembly produced from sequencing technologies such as PacBio or Illumina"
+        },
+        {
+            "name": "b_conflict_filter",
+            "class": "int",
+            "choices": [1, 2, 3],
+            "default": 2,
+            "optional": false,
+            "label": "Conflict Resolution Filter Level for Bionano Contigs",
+            "help": "1 no filter, 2 cut contig at conflict, 3 exclude conflicting contig"
+        },
+        {
+            "name": "n_conflict_filter",
+            "class": "int",
+            "choices": [1, 2, 3],
+            "optional": false,
+            "default": 2,
+            "label": "Conflict Resolution Filter Level for NGS Contigs",
+            "help": "1 no filter, 2 cut contig at conflict, 3 exclude conflicting contig"
+        },
+        {
+            "name": "conflict_resolution_file",
+            "class": "file",
+            "optional": true,
+            "label": "Conflict Resolution File",
+            "help": "Input a conflict resolution file indicating which NGS and BioNano conflicting contigs to be cut (Overwrites -B and -N filter levels)"
+        },
+        {
+            "name": "generate_molecules",
+            "class": "boolean",
+            "optional": false,
+            "default": false,
+            "label": "Generate Molecules?",
+            "help": "generate molecules to hybrid scaffold alignment and molecules to genome map alignment. Requires Input BioNano molecules BNX and Input De Novo assembly xml file."
+        },
+        {
+            "name": "molecules_bnx",
+            "class": "file",
+            "optional": true,
+            "label": "Input Molecules BNX File",
+            "help": "Input BioNano molecules BNX [optional]; required for Generate Molecules and Generate Chimeric Quality Score options"
+        },
+        {
+            "name": "optargs_xml",
+            "class": "file",
+            "optional": true,
+            "label": "De Novo Assembly OptArgs XML",
+            "help": "De novo assembly optargs XML file [optional]; required for Generate Molecules option"
+        },
+        {
+            "name": "err_files",
+            "class": "array:file",
+            "optional": true,
+            "label": "Autonoise .err and .errbin files",
+            "help": "Autonoise .err and .errbin files. Recommended for Generate Chimeric Quality Score flag."
+        },
+        {
+            "name": "generate_chimeric",
+            "class": "boolean",
+            "optional": false,
+            "default": false,
+            "label": "Generate Chimeric Quality Score?",
+            "help": "generate chimeric quality score. Requires Input BioNano molecules BNX and Autonoise .err and .errbin files."
+        },
+        {
+            "name": "args_xml",
+            "class": "file",
+            "label": "Arguments XML file",
+            "patterns": ["*.xml"],
+            "optional": true,
+            "help": "The arguments XML file for hybrid scaffolding"
+        }
+    ],
+    "outputSpec": [
+        {
+            "name": "scaffold_targz",
+            "class": "file",
+            "label": "Hybrid scaffold output directory"
+        },
+        {
+            "name": "scaffold_output",
+            "class": "array:file",
+            "label": "Hybrid scaffold output files"
+        },
+        {
+            "name": "cut_and_conflict",
+            "class": "array:file",
+            "label": "Cut Sites and Conflict Files"
+        },
+        {
+            "name": "scaffold_final",
+            "class": "array:file",
+            "label": "Hybrid scaffold Final files"
+        }
+    ],
+    "runSpec":
+    {
+      "execDepends": [{"name": "tree"}],
+        "file": "src/bionano_hybrid_scaffold.py",
+        "interpreter": "python2.7",
+        "distribution": "Ubuntu",
+        "release": "14.04"
+    },
+    "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGVz00Q0Q1zB3fPk3JqVfKzZ"} ]},
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGXxb8Q9Z8XYPXBv9b3q56kF"} ]}
+  }
+}

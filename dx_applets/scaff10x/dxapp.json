@@ -1,0 +1,140 @@
+{
+  "name": "scaff10x",
+  "title": "Scaff10x: The genome assembly pipeline based on read clustering",
+  "summary": "The genome assembly pipeline based on read clustering",
+  "dxapi": "1.0.1",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "assemble_genome_fastagz",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.gz", "*.fa.gz", "*.fasta", "*.fa"],
+      "optional": false
+    },
+    {
+      "name": "scaff_R1_fastqgz",
+      "help": "",
+      "class": "array:file",
+      "patterns": ["*R1_001.fastq.gz", "*R1_001.fq.gz", "*R1_001.fastq", "*R1_001.fq", "*BC_1.fastq.gz"],
+      "optional": false
+    },
+    {
+      "name": "scaff_R2_fastqgz",
+      "help": "",
+      "class": "array:file",
+      "patterns": ["*R2_001.fastq.gz", "*R2_001.fq.gz", "*R2_001.fastq", "*R2_001.fq", "*BC_2.fastq.gz"],
+      "optional": false
+    },
+    {
+      "name": "is_raw",
+      "help": "Input scaff_R1 and scaff_R2 reads are raw reads or has been processed",
+      "class": "boolean",
+      "optional": false,
+      "default": true
+    },
+    {
+      "name": "mapper_choice",
+      "help": "",
+      "class": "string",
+      "optional": false,
+      "default": "BWA",
+      "choices": [
+        "BWA",
+        "SMALT"
+      ]
+    },
+    {
+      "name": "mapping_file",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.bam", "*.sam"],
+      "optional": true
+    },
+    {
+      "name": "alignment_option",
+      "help": "do not provide -sam even if it is provided",
+      "class": "string",
+      "optional": false,
+      "default": "-longread 1 -gap 100 -matrix 2000 -reads 12 -link 10 -block 50000"
+    },
+    {
+      "name": "disable_break10x",
+      "help": "Disable the break10x step",
+      "class": "boolean",
+      "optional": false,
+      "default": true
+    },
+    {
+      "name": "break10x_option",
+      "help": "",
+      "class": "string",
+      "optional": true,
+      "default": "-reads 5 -gap 100 -score 20 -cover 50 -ratio 15"
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "scaffold",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.gz,*.fa.gz"]
+    },
+    {
+      "name": "breakpoint",
+      "help": "",
+      "class": "file",
+      "patterns": ["*"],
+      "optional": true
+    },
+    {
+      "name": "breakpoint_name",
+      "help": "",
+      "class": "file",
+      "patterns": ["*"],
+      "optional": true
+    },
+    {
+      "name": "read_bc1",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fastq.gz"],
+      "optional": true
+    },
+    {
+      "name": "read_bc2",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fastq.gz"],
+      "optional": true
+    },
+    {
+      "name": "other_outputs",
+      "help": "",
+      "class": "array:file",
+      "patterns": ["*"],
+      "optional": true
+    }
+  ],
+  "runSpec": {
+    "file": "src/code.sh",
+    "release": "14.04",
+    "interpreter": "bash",
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "distribution": "Ubuntu"
+  },
+  "details": {
+    "upstreamUrl": "https://sourceforge.net/projects/phusion2/files/scaff10x/",
+    "upstreamVersion": "2.0",
+    "upstreamAuthor": "Zemin Ning",
+    "whatsNew": ""
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd2_x16"}}},
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}}}
+  }
+}
