@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class VGPData {
 
-	private String speciesId;
+	private String genomeId;
 	private String speciesName;
 	
 	private int numSubreadBams = 0;
@@ -12,13 +12,14 @@ public class VGPData {
 	ArrayList<String> bionanoReBnx = new ArrayList<String>();
 	ArrayList<String> bionanoReCmap = new ArrayList<String>();
 	ArrayList<String> hicVenders = new ArrayList<String>();
+	ArrayList<String> assemblies = new ArrayList<String>();
 	
 	private boolean updateCount = false;
 	private int tech_count = 0;
 	private int internal_score = 0;
 	
-	public VGPData(String speciesId, String speciesName) {
-		this.speciesId = speciesId;
+	public VGPData(String genomeId, String speciesName) {
+		this.genomeId = genomeId;
 		this.speciesName = speciesName;
 	}
 	
@@ -69,24 +70,26 @@ public class VGPData {
 		
 		if (isMDstyle) {
 			System.out.println("| " + speciesName + "\t" +
-					"| " + speciesId + "\t" +
+					"| " + genomeId + "\t" +
 					"| " + tech_count + "\t" +
 					"| " + numSubreadBams + "\t" + 
 					"| " + numScrapsBams + "\t" +
 					"| " + num10xR1 + "\t" +
 					"| " + list(bionanoReBnx) + "\t" +
 					"| " + list(bionanoReCmap) + "\t" +
-					"| " + list(hicVenders) + " |");
+					"| " + list(hicVenders) + "\t" +
+					"| " + list(assemblies) + " |");
 		} else {
 			System.out.println(speciesName + "\t" +
-					speciesId + "\t" +
+					genomeId + "\t" +
 					tech_count + "\t" +
 					numSubreadBams + "\t" + 
 					numScrapsBams + "\t" +
 					num10xR1 + "\t" +
 					list(bionanoReBnx) + "\t" +
 					list(bionanoReCmap) + "\t" +
-					list(hicVenders));
+					list(hicVenders) + "\t" +
+					list(assemblies));
 		}
 	}
 	
@@ -134,7 +137,7 @@ public class VGPData {
 	}
 	public static void printHeader(boolean isMDstyle) {
 		if (isMDstyle) {
-			System.out.println("| species_name\t"
+			System.out.println("| genome_name\t"
 					+ "| species_id\t"
 					+ "| tech_count\t"
 					+ "| pacbio_subreads\t"
@@ -142,14 +145,16 @@ public class VGPData {
 					+ "| 10x\t"
 					+ "| bionano_bnx\t"
 					+ "| bionano_cmap\t"
-					+ "| hic |");
-			System.out.println("| :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :-----  |");
+					+ "| hic \t"
+					+ "| assembly |");
+			System.out.println("| :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- |");
 		} else {
-			System.out.println("species_name\tspecies_id\t"
+			System.out.println("genome_name\tspecies_id\t"
 					+ "tech_count\t"
 					+ "pacbio_subreads\tpacbio_scrubs\t10x\t"
 					+ "bionano_bnx\tbionano_cmap\t"
-					+ "hic");
+					+ "hic\t"
+					+ "assembly");
 		}
 	}
 	
@@ -165,5 +170,12 @@ public class VGPData {
 			elements = "X";
 		}
 		return elements;
+	}
+
+	public void addAssembly(String file) {
+		if(file.contains(".fasta")) {
+			assemblies.add(file.substring(file.indexOf("_") + 1, file.indexOf(".fasta")));
+		}
+		
 	}
 }
