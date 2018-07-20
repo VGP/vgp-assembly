@@ -1,13 +1,13 @@
 #!/bin/bash
 
-name=$1
-BMAP1=$2.cmap # BSPQI.cmap
-BMAP2=$3.cmap # BSSSI.cmap
-ENZYME1=$2	# BSPQI
-ENZYME2=$3	# BSSSI
+BMAP1=BSPQI.cmap # DSPQI.cmap
+BMAP2=BSSSI.cmap # BSSSI.cmap
+ENZYME1=BSPQI	# BSPQI
+ENZYME2=BSSSI	# BSSSI
 ASM=asm.fasta	# ln -s to the asm.fasta
-CONFIG=$4
+CONFIG=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/TGH/hybridScaffold_two_enzymes.xml
 RefAligner=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner
+name=$1
 
 module load python
 #### Python 2.7.15 :: Anaconda custom (64-bit)
@@ -19,8 +19,6 @@ module load R
 #### Loading openmpi 3.0.0  for GCC 7.2.0 
 #### Loading R 3.5.0_build2
 
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
 echo "\
 Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
         $CONFIG \
@@ -29,7 +27,8 @@ Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/0412201
         --OutputDir $PWD/$name \
         --RefAlignerPath $RefAligner \
         --Enzyme1 $ENZYME1 \
-        --Enzyme2 $ENZYME2
+        --Enzyme2 $ENZYME2 \
+	> scaffold.out
 "
 
 Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
@@ -39,4 +38,5 @@ Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/0412201
         --OutputDir $PWD/$name \
         --RefAlignerPath $RefAligner \
         --Enzyme1 $ENZYME1 \
-        --Enzyme2 $ENZYME2
+        --Enzyme2 $ENZYME2 \
+        > scaffold.out 2>&1

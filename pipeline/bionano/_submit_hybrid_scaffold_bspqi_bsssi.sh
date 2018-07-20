@@ -7,12 +7,14 @@ if [ -z $1 ]; then
 	exit -1
 fi
 
-cpus=8
-mem=80g
-partition=norm
+pipeline=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline
+
+cpus=64
+mem=560g
+partition=largemem
 name=$1
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/hybrid_scaffold_two.sh
-args="$1 BSPQI BSSSI /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/TGH/hybridScaffold_two_enzymes.xml"
+script=$pipeline/bionano/hybrid_scaffold_two.sh
+args="$1 BSPQI BSSSI $pipeline/bionano/hybridScaffold_two_enzymes_largemem.xml"
 walltime=4-0
 
 mkdir -p logs

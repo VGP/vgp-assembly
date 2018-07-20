@@ -1,10 +1,10 @@
 #!/bin/bash
 
-name=$1
-BMAP=$2.cmap # DLE1.cmap
+BMAP=DLE1.cmap # DLE1.cmap
 ASM=asm.fasta	# ln -s to the asm.fasta
-CONFIG=$3
+CONFIG=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/hybridScaffold_DLE1_config.xml
 RefAligner=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner
+name=$1
 
 module load python
 #### Python 2.7.15 :: Anaconda custom (64-bit)
@@ -15,8 +15,6 @@ module load R
 #### Loading GSL 2.4 for GCC 7.2.0 ... 
 #### Loading openmpi 3.0.0  for GCC 7.2.0 
 #### Loading R 3.5.0_build2
-
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 echo "\
 perl /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/hybridScaffold.pl \
@@ -35,4 +33,5 @@ perl /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/h
 	-r $RefAligner \
 	-B 2 \
 	-N 2 \
-        -o $PWD/$name
+        -o $PWD/$name \
+        > scaffold.out 2>&1
