@@ -14,10 +14,10 @@ name=$1
 fastq_map=fastq.map
 ref=$name.fasta
 log=logs/map_${name}.%A.%a.log
-jobid=$3
+jobid=$2
 script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/salsa/arima_mapping_pipeline.sh
 
-bwa_indexing=/home/rhiea/codes/_run_index.sh
+bwa_indexing=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/salsa/index.sh
 
 wait_until=""
 
@@ -27,8 +27,8 @@ if ! [ -z $jobid ] ; then
 	    wait_until="--dependency=afterok:$jobid"
 elif [ ! -e $ref.fai ]; then
 	echo "\
-	sh $bwa_indexing $ref > logs/index_$name.log"
-	sh $bwa_indexing $ref > logs/index_$name.log
+	sbatch --partition=quick --time=4:00:00 --cpus-per-task=2 --mem=4g --error=logs/index_${name}.%A.log --output=logs/_${name}.%A.log --job-name=$name.index $bwa_indexing $ref > logs/index_$name.log"
+	sbatch --partition=quick --time=4:00:00 --cpus-per-task=2 --mem=4g --error=logs/index_${name}.%A.log --output=logs/_${name}.%A.log --job-name=$name.index $bwa_indexing $ref > logs/index_$name.log
 	jobid=`cat logs/index_$name.log | tail -n 1`
 	wait_until="--dependency=afterok:$jobid"
 fi

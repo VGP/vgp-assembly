@@ -1,7 +1,8 @@
 #!/bin/bash
 
 name=$1
-BMAP=$2.cmap # DLE1.cmap
+ENZYME=$2
+BMAP=$ENZYME.cmap # DLE1.cmap
 ASM=asm.fasta	# ln -s to the asm.fasta
 CONFIG=$3
 RefAligner=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner

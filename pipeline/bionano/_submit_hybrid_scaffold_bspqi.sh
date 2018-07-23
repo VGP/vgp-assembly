@@ -12,13 +12,13 @@ if [ -e $1 ]; then
 	exit -1
 fi
 
-cpus=8
-mem=80g
-partition=norm
+cpus=32
+mem=180g
+partition=largemem
 name=$1
 script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/hybrid_scaffold.sh
-args="$1 BSPQI /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/hybridScaffold_config.xml"
-walltime=4-0
+args="$1 BSPQI /data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/hybridScaffold_config_BSPQI.xml"
+walltime=3-0
 
 mkdir -p logs
 log=$PWD/logs/$name.%A_%a.log
