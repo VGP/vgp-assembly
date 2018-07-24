@@ -22,11 +22,11 @@ These steps describe how to call with freebayes and then use `bcftools consensus
 
 3. Make a list of the output files (in the same order as the reference) to be concatenated together when done:
 
-		awk '{print $1":1-"$2".vcf.gz"}' $ref.fai > concat_list.txt
+		awk '{print $1":1-"$2".bcf"}' $ref.fai > concat_list.txt
 
 4. When all parallel jobs finished, concatenate and normalise non-REF variants:
 
-		bcftools concat -nf concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Oz -f $fasta -o $sample.bcf
+		bcftools concat -nf concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f $fasta -o $sample.bcf
 		bcftools index $sample.bcf
 
 5. Create the polished fasta with `bcftools consensus`. This will do very basic filtering of the callset (`QUAL>1`) and select only homozygous REF and heterozygous non-REF sites. At heterozygous non-REF sites (both alleles do not match the reference fasta), the longest allele will be chosen.
