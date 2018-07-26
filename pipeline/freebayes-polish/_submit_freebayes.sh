@@ -15,23 +15,22 @@ fi
 
 mkdir -p logs
 cpus=2
-mem=8g
+mem=12g
 name=$1.freebayes
 script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/freebayes-polish/freebayes.sh
 args=$sample
-walltime=8:00:00
+walltime=2-0
 log=logs/$name.%A_%a.log
 
 mkdir -p bcf
 
 if ! [ -z $2 ]; then
 	wait_for="--dependency=afterok:$2"
-else
-	echo "\
-	sbatch --partition=norm --array=1-100 -D $PWD --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
-	sbatch --partition=norm --array=1-100 -D $PWD --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > freebayes_jid
-	wait_for="--dependency=afterok:`cat freebayes_jid`"
 fi
+echo "\
+sbatch --partition=norm --array=1-100 $wait_for -D $PWD --cpus-per-task=$cpus -J $name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
+sbatch --partition=norm --array=1-100 $wait_for -D $PWD --cpus-per-task=$cpus -J $name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > freebayes_jid
+wait_for="--dependency=afterok:`cat freebayes_jid`"
 
 cpus=2
 mem=4g

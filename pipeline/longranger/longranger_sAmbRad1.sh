@@ -1,12 +1,13 @@
 #!/bin/bash
 
 if [ -z $1 ] ; then
-	echo "Usage: ./longranger.sh <genome_id>"
+	echo "Usage: ./longranger.sh <genome_id> <lib>"
 	echo "Assumes we have asm.fasta"
 	exit -1
 fi
 
 genome=$1
+lib=$2
 ref=asm.fasta
 ref=${ref/.fasta/}      ## if contains .fasta, remove it
 
@@ -21,8 +22,8 @@ fi
 
 echo "=== start running longranger wgs ==="
 /data/Phillippy/tools/longranger/longranger-2.2.2/longranger align \
---id=$genome \
---fastq=/data/rhiea/genome10k/$genome/genomic_data/10x/ \
+--id=${genome}_${lib} \
+--fastq=/data/rhiea/genome10k/$genome/genomic_data/10x/$lib \
 --sample=$genome \
 --reference=refdata-$ref \
 --jobmode=slurm \

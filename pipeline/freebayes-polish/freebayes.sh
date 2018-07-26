@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 i=$SLURM_ARRAY_TASK_ID
 sample=$1
@@ -18,7 +19,8 @@ module load samtools
 #### [+] Loading samtools 1.8  ... 
 # This is co-installed with bcftools
 
-ref=${sample}_t1
+#ref=${sample}_t1
+ref=asm
 fasta=refdata-$ref/fasta/genome.fa
 bam=aligned.bam
 
@@ -43,8 +45,8 @@ do
     end=`sed -n ${j}p $fasta.fai | awk '{print $2}'`
     if ! [ -e bcf/$contig_no_pipe.bcf ]; then
         echo "\
-        freebayes --bam $bam --region $contig:1-$end -f $fasta | bcftools view --no-version -Ob > bcf/$contig_no_pipe.bcf"
-        freebayes --bam $bam --region $contig:1-$end -f $fasta | bcftools view --no-version -Ob > bcf/$contig_no_pipe.bcf
+        freebayes --bam $bam --region $contig:1-$end -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf"
+        freebayes --bam $bam --region $contig:1-$end -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf
     fi
     echo "bcf/$contig_no_pipe.bcf" >> bcf.$i.list
 done
@@ -52,18 +54,25 @@ done
 out=bcf/$i.bcf
 
 echo "\
-bcftools concat -f bcf.$i.list -Ob -o $out"
-bcftools concat -f bcf.$i.list -Ob -o $out &&
+bcftools concat -f bcf.$i.list -Ou -o $out"
+bcftools concat -f bcf.$i.list -Ou -o $out &&
 
 echo "## Clean up the intermediate .bcf files" ||
 echo exit -1
 
 for bcf_file in $(cat bcf.$i.list)
 do
-    echo "\
-    rm $bcf_file"
-    rm $bcf_file	# Disable this too
+    if [ -z $bcf_file ]; then
+	echo "Skip rm.."
+    else
+	echo "\
+	rm $bcf_file"
+	rm $bcf_file	# Disable this too
+    fi
 done
+echo "\
+rm bcf.$i.list"
+rm bcf.$i.list
 
 echo "\
 touch bcf/$i.done"

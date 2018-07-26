@@ -20,5 +20,5 @@ mkdir -p logs
 log=$PWD/logs/$name.%A_%a.log
 
 echo "\
-sbatch --partition=quick --job-name=$name --time=240 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args"
-sbatch --partition=quick --job-name=$name --time=240 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args
+sbatch --partition=quick --job-name=$name --time=4:00:00 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args"
+sbatch --partition=quick --job-name=$name --time=4:00:00 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args

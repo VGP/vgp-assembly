@@ -1,8 +1,14 @@
 #! /bin/bash
 
-if [ -z $1 ]; then
-	echo "Usage: ./_submit_longranger.sh <genome>"
+if [[ -z $1 ]] ; then
+	echo "Usage: ./_submit_longranger.sh <genome> <ref.fasta>"
+	echo "<ref.fasta> will be linked to asm.fasta."
+	echo "Assumes we have 10x reads located under /data/rhiea/<genome>/genomic_data/10x/."
 	exit -1
+fi
+
+if ! [ -e asm.fasta ]; then
+	ln -s $2 asm.fasta
 fi
 
 cpus=2
