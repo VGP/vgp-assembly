@@ -125,7 +125,7 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
 
     # filter AWS objects to data that should match DNAnexus data
     aws_project_files = [object.key for object in all_objects] #if object.key.split('/')[2] == species_id]
-    print len(aws_project_files)
+    print "Found {0} matching files.".format(len(aws_project_files))
 
     # in case project properties doesn't have species_name, update it
     dxpy.api.project_set_properties(project.id, input_params={'properties': {'species_name': species_name}})
