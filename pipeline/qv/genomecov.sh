@@ -14,8 +14,8 @@ samtools view -F 0x100 -hb $bam | bedtools genomecov -ibam - -split > aligned.ge
 echo
 
 echo "\
-awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' > $genome.numbp"
-awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' > $genome.numbp
+awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp"
+awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp
 
 NUM_BP=`cat $genome.numbp`
 NUM_VAR=`cat $genome.numvar`

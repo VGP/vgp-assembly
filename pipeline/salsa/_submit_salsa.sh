@@ -9,7 +9,7 @@ if [[ -z $1 ]] || [[ ! -e re_bases.txt ]]  ; then
 fi
 
 threads=48
-mem=20g
+mem=40g
 name=$1
 fastq_map=fastq.map
 ref=$name.fasta

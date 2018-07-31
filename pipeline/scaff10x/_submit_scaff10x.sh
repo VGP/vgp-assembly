@@ -7,10 +7,13 @@ fi
 
 mkdir -p logs
 
-cpus=48
-mem=48g
+
+pipeline=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline
+
+cpus=54
+mem=64g
 name=scaff10x_$1
-script=pipeline/scaff10x/scaff10x.sh
+script=$pipeline/scaff10x/scaff10x.sh
 args=$1
 walltime=3-0
 dependency=""
