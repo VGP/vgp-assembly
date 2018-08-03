@@ -19,7 +19,7 @@ By default, data will be printed in tab-delimited format.
 java -cp .:third-party/lib/* UpdateGenomeArkStatus -md
 ```
 
-### Status as of 2018-07-10
+### Status as of 2018-08-03
 
 X: Not Available
 
