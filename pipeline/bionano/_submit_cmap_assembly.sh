@@ -14,7 +14,7 @@ cpus=52
 mem=120g
 partition=norm
 name=$1
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/cmap_assembly_ref.sh
+script=$VGP_PIPELINE/bionano/cmap_assembly_ref.sh
 args="$2 $3 $4"
 walltime=10-0
 

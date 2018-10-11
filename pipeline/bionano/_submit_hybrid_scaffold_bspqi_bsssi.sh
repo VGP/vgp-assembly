@@ -7,14 +7,12 @@ if [ -z $1 ]; then
 	exit -1
 fi
 
-pipeline=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline
-
 cpus=64
 mem=560g
 partition=largemem
 name=$1
-script=$pipeline/bionano/hybrid_scaffold_two.sh
-args="$1 BSPQI BSSSI $pipeline/bionano/hybridScaffold_two_enzymes_largemem.xml"
+script=$VGP_PIPELINE/bionano/hybrid_scaffold_two.sh
+args="$1 BSPQI BSSSI $VGP_PIPELINE/bionano/hybridScaffold_two_enzymes_largemem.xml"
 walltime=4-0
 
 mkdir -p logs
