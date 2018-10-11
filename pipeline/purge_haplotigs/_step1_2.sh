@@ -2,8 +2,6 @@
 
 module load purge_haplotigs
 
-pipeline=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/purge_haplotigs
-
 if ! [ -e aligned.bam.genecov ]; then
 	echo "STEP 1. Generate coverage histogram"
 	echo ""
@@ -17,8 +15,8 @@ fi
 if ! [ -e peaks ]; then
 echo "STEP 1.5 Get l, m, h cut-offs"
 	echo "\
-	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $pipeline/depthPeaks.jar - > peaks"
-	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $pipeline/depthPeaks.jar - > peaks
+	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/depthPeaks.jar - > peaks"
+	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/depthPeaks.jar - > peaks
 fi
 
 num_lines=`wc -l peaks | awk '{print $1}'`
