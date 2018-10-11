@@ -1,17 +1,13 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-    echo "Usage: ./_submit_qv.sh <sample_id> [jobid_to_set_dependency]"
+    echo "Usage: ./_submit_genomecov.sh <pos_sorted.bam> [jobid_to_set_dependency]"
     exit -1
 fi
 
 
-sample=$1
-
-if ! [ -e aligned.bam ]; then
-        ln -s $sample/outs/possorted_bam.bam aligned.bam
-        ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai
-fi
+bam=$1
+sample=${bam/.bam/}
 
 mkdir -p logs
 
@@ -20,7 +16,7 @@ cpus=4
 mem=4g
 name=$sample.genomecov
 script=$VGP_PIPELINE/qv/genomecov.sh
-args=$sample
+args="$sample $sample.bam"
 walltime=2-0
 log=logs/$name.%A_%a.log
 
