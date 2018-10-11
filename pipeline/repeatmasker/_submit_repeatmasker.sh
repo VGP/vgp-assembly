@@ -14,13 +14,11 @@ asm=${asm/.fasta/}
 
 echo "Run repeatmasker on $asm using species=vertebrates"
 
-pipeline=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline
-
 cpus=54
 mem=140g
 partition=unlimited
 name=$asm.rm
-script=$pipeline/repeatmasker/repeatmasker.sh
+script=$VGP_PIPELINE/repeatmasker/repeatmasker.sh
 args=""
 walltime=10-0
 path=`pwd`
