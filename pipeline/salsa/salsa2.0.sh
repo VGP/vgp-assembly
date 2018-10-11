@@ -7,12 +7,12 @@ bam=$name.bam
 bed=$name.bed
 
 if [ -z $name ]; then
-	echo "Usage: ./salsa2.sh <name> <out>"
+	echo "Usage: ./salsa2.sh <name>"
 	echo -e "\tSymlink re_sites.txt"
 	exit -1
 fi
 
-if ! [ -s $bed ]; then
+if ! [ -e $bed ]; then
 	module load bedtools
 	echo "bedtools bamtobed -i $bam > $bed"
 	bedtools bamtobed -i $bam > $bed
@@ -28,7 +28,7 @@ enz=`cat re_bases.txt`
 mkdir -p $out
 
 echo "\
-python $tools/salsa2/SALSA-2.1/run_pipeline.py -a $fasta -l $fasta.fai -e $enz -b $bed -o $out -m yes -p yes"
-python $tools/salsa2/SALSA-2.1/run_pipeline.py -a $fasta -l $fasta.fai -e $enz -b $bed -o $out -m yes -p yes
+python $tools/salsa2/SALSA/run_pipeline.py -a $fasta -l $fasta.fai -e $enz -b $bed -o $out -m yes -i 5 -p yes"
+python $tools/salsa2/SALSA/run_pipeline.py -a $fasta -l $fasta.fai -e $enz -b $bed -o $out -m yes -i 5 -p yes
 
 ln -s $out/scaffolds_FINAL.fasta ${fasta/_s2/_s3}
