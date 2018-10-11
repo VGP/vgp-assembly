@@ -11,13 +11,15 @@ ref=asm.fasta
 ref=${ref/.fasta/}      ## if contains .fasta, remove it
 
 if ! [ -e "refdata-$ref/genome" ] ; then
-	echo "No reference found"
-	echo "=== start indexing reference ==="
-	echo "\
-	$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta"
-	$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta
-	echo ""
+echo "No reference found"
+echo "=== start indexing reference ==="
+echo "\
+$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta"
+$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta
+echo ""
 fi
+
+pipeline=$tools/vgp-assembly/git/vgp-assembly/pipeline
 
 echo "=== start running longranger wgs ==="
 $tools/longranger/longranger-2.2.2/longranger align \
@@ -29,7 +31,8 @@ $tools/longranger/longranger-2.2.2/longranger align \
 --localcores=32 \
 --localmem=60 \
 --maxjobs=500 \
---jobinterval=5000 \
+--jobinterval=1000 \
+--override=$pipeline/longranger/override_4G.json \
 --disable-ui \
 --nopreflight
 
