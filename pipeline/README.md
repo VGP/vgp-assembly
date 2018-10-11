@@ -6,6 +6,7 @@ Each script is written and tested to run on a slurm scheduler.
 To begin, add the path to the pipeline in ~/.bash_profile :
 ```
 export VGP_PIPELINE=/path/to/git/vgp-assembly/pipeline
+export tools=/path/to/tools/installed
 ```
 
 Try `./_submit_` in your desired step to see required input files.
