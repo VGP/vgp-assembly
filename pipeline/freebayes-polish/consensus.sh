@@ -40,3 +40,8 @@ echo "Failed..."
 echo
 bcftools view -H -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ov $sample.bcf | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $sample.numvar
 echo "Num. bases affected: `cat $sample.numvar`"
+echo
+
+echo "\
+bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz"
+bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz

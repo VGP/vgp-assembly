@@ -16,9 +16,9 @@ sample=$1
 mkdir -p logs
 
 cpus=2
-mem=12g
+mem=18g
 name=$sample.longrgr
-script=$VGP_PIPELINE/longranger/longranger.sh
+script=$VGP_PIPELINE/longranger/longranger_4G.sh
 args=$sample
 walltime=4-0
 log=$PWD/logs/$name.%A_%a.log
@@ -38,10 +38,10 @@ fi
 
 cpus=2
 mem=12g
-name=$1.freebayes
+name=$sample.freebayes
 script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
 args=$sample
-walltime=2-0
+walltime=4-0
 log=logs/$name.%A_%a.log
 
 mkdir -p bcf
@@ -57,10 +57,10 @@ fi
 
 cpus=2
 mem=4g
-name=$sample.consensus
+name=$1.consensus
 script=$VGP_PIPELINE/freebayes-polish/consensus.sh
 args=$sample
-walltime=1-0
+walltime=2-0
 log=logs/$name.%A_%a.log
 
 echo "\
@@ -73,7 +73,7 @@ mem=4g
 name=$sample.genomecov
 script=$VGP_PIPELINE/qv/genomecov.sh
 args=$sample
-walltime=1-0
+walltime=3-0
 log=logs/$name.%A_%a.log
 
 if ! [ -z $3 ]; then

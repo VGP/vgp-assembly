@@ -17,7 +17,7 @@ mkdir -p logs
 cpus=2
 mem=12g
 name=$1.freebayes
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/freebayes-polish/freebayes.sh
+script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
 args=$sample
 walltime=2-0
 log=logs/$name.%A_%a.log
@@ -35,7 +35,7 @@ wait_for="--dependency=afterok:`cat freebayes_jid`"
 cpus=2
 mem=4g
 name=$1.consensus
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/freebayes-polish/consensus.sh
+script=$VGP_PIPELINE/freebayes-polish/consensus.sh
 args=$sample
 walltime=2-0
 log=logs/$name.%A_%a.log
