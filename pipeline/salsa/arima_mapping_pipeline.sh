@@ -92,7 +92,6 @@ echo ""
 :<<'END'
 echo "### Start to dedup"
 
-module load picard/2.9.2
 echo "\
 dedup.sh $COMB_DIR/$PREFIX.bam $THREADS"
 dedup.sh $COMB_DIR/$PREFIX.bam $THREADS
