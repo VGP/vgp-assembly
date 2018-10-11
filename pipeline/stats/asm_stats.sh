@@ -1,14 +1,15 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-    echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p]"
+    echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p/c]"
     echo "[p]: set for getting primary / alt haplotig stats, assuming the alts have |arrow|arrow in its name"
+    echo "[c]: set for getting scaffolds (direct sttas) only."
     exit -1
 fi
 
 fasta=$1
 gsize=$2
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/stats/
+script=$VGP_PIPELINE/stats/
 
 asm=${fasta/.fasta/}
 
@@ -18,6 +19,11 @@ fi
 echo "Scaffolds"
 java -jar -Xmx1g $script/lenCalcNGStats.jar $fasta.len $gsize > $asm.stats
 cat $asm.stats
+
+c=$3
+if [[ "$c" == "c" ]]; then
+        exit 0
+fi
 
 N_BASES=`awk '{sum+=$2; sumN+=$3} END {print (sum-sumN)}' $fasta.len`
 echo "N bases: $N_BASES"
@@ -33,19 +39,19 @@ if [ ! -e $asm.contigs.len ]; then
 fi
 
 echo "Contigs"
-if [ ! -e $asm.contigs.stats ]; then
+#if [ ! -e $asm.contigs.stats ]; then
 	java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.contigs.len $gsize 1 > $asm.contigs.stats
-fi
+#fi
 cat $asm.contigs.stats
 
 echo "Gaps"
-if [ ! -e $asm.gaps.stats ]; then
+#if [ ! -e $asm.gaps.stats ]; then
 	java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.gaps $gsize 3 > $asm.gaps.stats
-fi
+#fi
 cat $asm.gaps.stats
 
-rm $fasta.len.bed
-rm $asm.gaps.bed
+#rm $fasta.len.bed
+#rm $asm.gaps.bed
 
 p=$3
 if [[ "$p" != "p" ]]; then
@@ -71,7 +77,25 @@ grep -v "|arrow|arrow" $asm.gaps > $asm.gaps.p
 java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.gaps.p $gsize 3 > $asm.gaps.p.stats
 echo "Gaps"
 cat $asm.gaps.p.stats
+echo
 
-echo "Extract primary set"
-cut -f1 $asm.p.len > $asm.p.list
-java -jar -Xmx1g /home/rhiea/codes/fastaExtractFromList.jar $asm.fasta $asm.p.list $asm.p.fasta
+if [ ! -e $asm.p.fasta ]; then
+    echo "Extract primary set"
+    cut -f1 $asm.p.len > $asm.p.list
+    java -jar -Xmx1g $script/fastaExtractFromList.jar $asm.fasta $asm.p.list $asm.p.fasta
+fi
+echo
+
+echo "=== Alt Stats ==="
+grep "|arrow|arrow" $fasta.len > $asm.h.len
+java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.h.len $gsize > $asm.h.stats
+cat $asm.h.stats
+echo
+
+#:<<'END'
+if [ ! -e $asm.h.fasta ]; then
+    echo "Extract alt set"
+    cut -f1 $asm.h.len > $asm.h.list
+    java -jar -Xmx1g $script/fastaExtractFromList.jar $asm.fasta $asm.h.list $asm.h.fasta
+fi
+#END
