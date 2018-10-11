@@ -4,4 +4,4 @@ javac *.java
 jar cf telomere.jar *.class
 rm *.class
 
-g++ find.c -o find
+g++ find_telomere.c -o find_telomere
