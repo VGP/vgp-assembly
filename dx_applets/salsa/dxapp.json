@@ -3,7 +3,7 @@
   "title": "Salsa",
   "summary": "salsa",
   "dxapi": "1.0.0",
-  "version": "1.0.2",
+  "version": "2.1.0",
   "inputSpec": [
     {
       "name": "input_assembly",
@@ -47,6 +47,13 @@
   ],
   "outputSpec": [
     {
+      "name": "final_scaffold_fasta",
+      "label": "Final Scaffold Fasta",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.gz"]
+    },
+    {
       "name": "scaffold",
       "label": "Scaffold",
       "help": "",
@@ -55,20 +62,6 @@
     }
   ],
   "runSpec": {
-    "execDepends": [
-        {"name": "samtools"},
-        {"name": "bedtools"},
-        {"name": "libboost-dev"},
-        {"name": "networkx",
-         "package_manager": "pip",
-         "version": "1.2"},
-        {"name": "salsa",
-         "package_manager": "git",
-         "url": "https://github.com/machinegun/SALSA.git",
-         "tag": "master",
-         "destdir": "/opt/",
-         "build_commands": "make"}
-         ],
     "timeoutPolicy": {
       "*": {
         "hours": 24
@@ -81,8 +74,9 @@
         "instanceType": "mem1_ssd1_x8"
       }
     },
+    "assetDepends": [{"id": "record-FP2QpJQ0JpGbv47K9b7QY8bK"}],
     "distribution": "Ubuntu",
-    "release": "14.04"
+    "release": "16.04"
   },
   "access": {
     "network": [

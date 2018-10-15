@@ -19,7 +19,7 @@ import dxpy
 @dxpy.entry_point('main')
 def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignments, input_assembly_graph=None):
     # make sure we can run salsa
-    dx_utils.run_cmd("/opt/SALSA/break_contigs")
+    dx_utils.run_cmd("python /opt/SALSA/run_pipeline.py -h")
 
     input_assembly = dx_utils.download_and_gunzip_file(input_assembly)
     alignment_prefix=input_assembly.split(".fasta")[0]
