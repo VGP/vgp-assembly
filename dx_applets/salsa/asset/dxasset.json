@@ -1,0 +1,24 @@
+{
+  "name": "salsa2_asset",
+  "title": "Salsa2 asset",
+  "description": "Resources for Salsa2 app on DNAnexus",
+  "version": "2.1.0",
+  "distribution": "Ubuntu",
+  "release": "16.04",
+  "execDepends": [
+        {"name": "samtools"},
+        {"name": "bedtools"},
+        {"name": "libboost-dev"},
+        {"name": "networkx",
+         "package_manager": "pip",
+         "version": "1.2"},
+        {"name": "salsa",
+         "package_manager": "git",
+         "url": "https://github.com/machinegun/SALSA.git",
+         "tag": "v2.1",
+         "destdir": "/opt/",
+         "build_commands": "make"}
+         ],
+  "excludeResource": ["/var/lib/lxcfs*", "/proc*", "/sys*"]
+}
+
