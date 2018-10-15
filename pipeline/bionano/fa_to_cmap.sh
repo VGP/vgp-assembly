@@ -12,7 +12,7 @@ module load R
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-scripts=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/scripts
+scripts=$tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/scripts
 
 ENZYME1=$1
 ENZYME2=$2

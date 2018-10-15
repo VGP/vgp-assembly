@@ -19,9 +19,9 @@ mkdir -p logs
 cpus=4
 mem=4g
 name=$sample.genomecov
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/qv/genomecov.sh
+script=$VGP_PIPELINE/qv/genomecov.sh
 args=$sample
-walltime=1-0
+walltime=2-0
 log=logs/$name.%A_%a.log
 
 if ! [ -z $2 ]; then

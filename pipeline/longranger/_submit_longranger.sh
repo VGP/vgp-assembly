@@ -14,7 +14,7 @@ fi
 cpus=2
 mem=12g
 name=$1.longrgr
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/longranger/longranger.sh
+script=$VGP_PIPELINE/longranger/longranger.sh
 args=$1
 walltime=4-0
 

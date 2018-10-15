@@ -7,7 +7,7 @@ ENZYME1=$2	# BSPQI
 ENZYME2=$3	# BSSSI
 ASM=asm.fasta	# ln -s to the asm.fasta
 CONFIG=$4
-RefAligner=/data/Phillippy/tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner
+RefAligner=$tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner
 
 module load python
 #### Python 2.7.15 :: Anaconda custom (64-bit)
@@ -22,7 +22,7 @@ module load R
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 echo "\
-Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
+Rscript $tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
         $CONFIG \
         --BNGPath1 $BMAP1 --BNGPath2 $BMAP2 \
         --NGSPath $ASM \
@@ -32,7 +32,7 @@ Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/0412201
         --Enzyme2 $ENZYME2
 "
 
-Rscript /data/Phillippy/tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
+Rscript $tools/bionano/Solve3.2.1_04122018/HybridScaffold/04122018/runTGH.R \
         $CONFIG \
         --BNGPath1 $BMAP1 --BNGPath2 $BMAP2 \
         --NGSPath $ASM \

@@ -32,4 +32,4 @@ python /data/Phillippy/tools/salsa2/SALSA/run_pipeline.py -a $fasta -l $fasta.fa
 python /data/Phillippy/tools/salsa2/SALSA/run_pipeline.py -a $fasta -l $fasta.fai -e $enz -b $bed -o $out -m yes -i 5 -p yes
 
 ln -s $out/scaffolds_FINAL.fasta ${fasta/_s2/_s3}
-java -jar -Xmx1g $codes/fastaContigSize.jar ${fasta/_s2/_s3}
+java -jar -Xmx1g /data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/stats/fastaContigSize.jar ${fasta/_s2/_s3}

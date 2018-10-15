@@ -94,12 +94,14 @@ Once we visit a VGP project, the top level folders are expected to have:
 
 | intermediate.fasta	| full_verbal | description |
 |:------------- | :---------- | :-----------|
-|c1.fasta	| pac_fcnz_hap1	| pac_fcnz_hap#: Pacbio FALCONunzip assembly hap# |
-|c2.fasta	|pac_fcnz_hap2	||
-|s1.fasta	|pac_fcnz_hap1_10x_scaff10x	|scaff10x: 2-rounds of scaff10x joining pac_fcnz_hap1 and 10x_spnv_hap1
-|s2.fasta	|pac_fcnz_hap1_10x_scaff10x_bio_tgh	|tgh: bionano TGH; hybrid scaffold of 2 enzymes. *Make sure to include the NOT_SCAFFOLDED leftovers.*|
-|s3.fasta	|pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa | arim_salsa: 1-round of Salsa scaffolding from Arima hiC libraries |
-|t1.fasta	|pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_bio_tgh_all	|bio_tgh: bio_tgh with a space of manual curation (cutting off severe scaffolding mistakes), and concatinating the pac_fcnz_hap2.|
-|t2.fasta|	pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_bio_tgh_all_pbjl|	pbjelly |
-|t3.fasta|	pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_bio_tgh_all_pbjl_arrow|	arrow |
-|t4.fasta	|pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_bio_tgh_all_pbjl_arrow_pilon2	|2 rounds of pilon with 10X illumina reads |
+|c1.fasta	| pac_fcnz_hap1	| pac_fcnz_hap1: Pacbio FALCON-Unzip assembly primary contigs |
+|c2.fasta	| pac_fcnz_hap2	| pac_fcnz_hap2: Pacbio FALCON-Unzip assembly alternate haplotigs |
+|p1.fasta	| pac_fcnz_hap1_prim	| prim: purge_haplotigs curated primary |
+|p2.fasta	| pac_fcnz_hap1_purg	| purg: purged haplotigs |
+|s1.fasta	| pac_fcnz_hap1_10x_scaff10x	|scaff10x: 2-rounds of scaff10x |
+|s2.fasta	| pac_fcnz_hap1_10x_scaff10x_bio_tgh	|tgh: bionano TGH; hybrid scaffold of 2 enzymes. *Make sure to include the NOT_SCAFFOLDED leftovers.*|
+|s3.fasta	| pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa | arim_salsa: maximum 5-round of Salsa scaffolding from Arima hiC libraries |
+|t1.fasta	| pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_arrow	| arrow: arrow polishing with gap filling |
+|t2.fasta |	pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_arrow_frb1 |	longranger + freebayes polishing round 1 |
+|t3.fasta |	pac_fcnz_hap1_10x_scaff10x_bio_tgh_arim_salsa_arrow_frb2 |	longranger + freebayes polishing round 2 |
+

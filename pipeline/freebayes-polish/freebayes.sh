@@ -57,8 +57,7 @@ echo "\
 bcftools concat -f bcf.$i.list -Ou -o $out"
 bcftools concat -f bcf.$i.list -Ou -o $out &&
 
-echo "## Clean up the intermediate .bcf files" ||
-echo exit -1
+echo "## Clean up the intermediate bcf files" || exit -1
 
 for bcf_file in $(cat bcf.$i.list)
 do

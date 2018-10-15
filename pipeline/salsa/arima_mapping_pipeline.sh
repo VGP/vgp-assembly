@@ -19,19 +19,19 @@
 fastq_map=$1	# fastq path file: /path/to/R1.fastq /path/to/R2.fastq
 PREFIX=$2	# prefix for out files
 REF=$3	# ref fasta file with indexes
-THREADS=$4	# num. threads to run
+THREADS=$SLURM_CPUS_PER_TASK	# num. threads to run
 
 FASTQ1=`awk '{print $1}' $fastq_map`
 FASTQ2=`awk '{print $2}' $fastq_map`
 
 module load bwa/0.7.17
-module load samtools/1.8
+module load samtools/1.9
 module load picard/2.9.2
 
 BWA='bwa'
 SAMTOOLS='samtools'
-FILTER='/data/Phillippy/tools/arima_pipeline/filter_five_end.pl'
-COMBINER='/data/Phillippy/tools/arima_pipeline/two_read_bam_combiner.pl'
+FILTER='$tools/arima_pipeline/filter_five_end.pl'
+COMBINER='$tools/arima_pipeline/two_read_bam_combiner.pl'
 
 RAW_DIR="/lscratch/$SLURM_JOBID/raw"
 FILT_DIR="/lscratch/$SLURM_JOBID/filtered"
@@ -92,8 +92,9 @@ echo ""
 :<<'END'
 echo "### Start to dedup"
 
-echo "/data/Phillippy/tools/arima_pipeline/dedup.sh $COMB_DIR/$PREFIX.bam $THREADS"
-/data/Phillippy/tools/arima_pipeline/dedup.sh $COMB_DIR/$PREFIX.bam $THREADS
+echo "\
+dedup.sh $COMB_DIR/$PREFIX.bam $THREADS"
+dedup.sh $COMB_DIR/$PREFIX.bam $THREADS
 END
 
 

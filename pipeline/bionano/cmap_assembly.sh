@@ -14,7 +14,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 BNX=$1
 OUT=$2
-bionano_path=/data/Phillippy/tools/bionano/Solve3.2.1_04122018
+bionano_path=$tools/bionano/Solve3.2.1_04122018
 RUN=$bionano_path/Pipeline/04122018/pipelineCL.py
 REFALIGNER=$bionano_path/RefAligner/7437.7523rel/avx/
 # Choose the right xml setting

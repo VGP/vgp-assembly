@@ -11,16 +11,16 @@ ref=asm.fasta
 ref=${ref/.fasta/}      ## if contains .fasta, remove it
 
 if ! [ -e "refdata-$ref/genome" ] ; then
-echo "No reference found"
-echo "=== start indexing reference ==="
-echo "\
-/data/Phillippy/tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta"
-/data/Phillippy/tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta
-echo ""
+	echo "No reference found"
+	echo "=== start indexing reference ==="
+	echo "\
+	$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta"
+	$tools/longranger/longranger-2.2.2/longranger mkref $ref.fasta
+	echo ""
 fi
 
 echo "=== start running longranger wgs ==="
-/data/Phillippy/tools/longranger/longranger-2.2.2/longranger align \
+$tools/longranger/longranger-2.2.2/longranger align \
 --id=$genome \
 --fastq=/data/rhiea/genome10k/$genome/genomic_data/10x/ \
 --sample=$genome \
@@ -29,7 +29,7 @@ echo "=== start running longranger wgs ==="
 --localcores=32 \
 --localmem=60 \
 --maxjobs=500 \
---jobinterval=100 \
+--jobinterval=5000 \
 --disable-ui \
 --nopreflight
 

@@ -16,8 +16,8 @@ cpus=32
 mem=180g
 partition=largemem
 name=$1
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/hybrid_scaffold.sh
-args="$1 BSPQI /data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/bionano/hybridScaffold_config_BSPQI.xml"
+script=$VGP_PIPELINE/bionano/hybrid_scaffold.sh
+args="$1 BSPQI $VGP_PIPELINE/bionano/hybridScaffold_config_BSPQI.xml"
 walltime=3-0
 
 mkdir -p logs

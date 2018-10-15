@@ -3,9 +3,9 @@
     <flag attr="version" val0="$Id: hybridScaffold_DLE1_config.xml 7402 2018-02-20 23:01:14Z jwang $"/>
   </version>
   <global>
-    <flag attr="maxmem" val0="120" display="Maximum memory (GB)" group="Global options" description="Define the maximum amount of RAM in gigabytes to be used by each process."/>
+    <flag attr="maxmem" val0="240" display="Maximum memory (GB)" group="Global options" description="Define the maximum amount of RAM in gigabytes to be used by each process."/>
     <flag attr="maxthreads" val0="54" display="Max threads" group="Global options" description="Define maximum number of threads to be used by each process."/>
-    <flag attr="maxvirtmem" val0="120"/>
+    <flag attr="maxvirtmem" val0="240"/>
     <flag attr="RAmem" val0="3" val1="1"/>
   </global>
   <fasta2cmap>
@@ -73,7 +73,7 @@
     <flag attr="RepeatMask" val0="4" val1="0.01" display=""/>
     <flag attr="RepeatRec" val0="0.7" val1="0.6" val2="1.4" display=""/>
     <flag attr="pairmerge" val0="80" val1="0.2" display="Min alignment length and Max endoutlier" group="Merging" description="Minimum alignment length required for pair merge, and the maximum endoutlier allowed."/>
-    <flag attr="maxmem" val0="120" display=""/>
+    <flag attr="maxmem" val0="240" display=""/>
     <flag attr="pairmergeRepeat"/>
     <flag attr="NoBpp"/>
     <flag attr="first" val0="-1" display=""/>

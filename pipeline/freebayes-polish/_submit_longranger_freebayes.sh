@@ -18,7 +18,7 @@ mkdir -p logs
 cpus=2
 mem=12g
 name=$sample.longrgr
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/longranger/longranger.sh
+script=$VGP_PIPELINE/longranger/longranger.sh
 args=$sample
 walltime=4-0
 log=$PWD/logs/$name.%A_%a.log
@@ -39,9 +39,9 @@ fi
 cpus=2
 mem=12g
 name=$1.freebayes
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/freebayes-polish/freebayes.sh
+script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
 args=$sample
-walltime=1-0
+walltime=2-0
 log=logs/$name.%A_%a.log
 
 mkdir -p bcf
@@ -57,13 +57,28 @@ fi
 
 cpus=2
 mem=4g
-name=$1.consensus
-script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/freebayes-polish/consensus.sh
+name=$sample.consensus
+script=$VGP_PIPELINE/freebayes-polish/consensus.sh
 args=$sample
 walltime=1-0
 log=logs/$name.%A_%a.log
 
 echo "\
 sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
-sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args
+sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > consensus_jid
+wait_for="--dependency=afterok:`cat consensus_jid`"
 
+cpus=4
+mem=4g
+name=$sample.genomecov
+script=$VGP_PIPELINE/qv/genomecov.sh
+args=$sample
+walltime=1-0
+log=logs/$name.%A_%a.log
+
+if ! [ -z $3 ]; then
+        wait_for="--dependency=afterok:$3"
+fi
+echo "\
+sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
+sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > genomecov_jid

@@ -97,6 +97,10 @@ def parse_args():
                     help='Specify the species-name to sync.',
                     required=True)
 
+    ap.add_argument('-g', '--prefix',
+		    help='Prefix to sync. s3://genomeark/SPECIES_NAME/SPECIES_ID/PREFIX* will be synced. DEFAULT=genomic_data',
+		    required=False)
+
     ap.add_argument('-t', '--target-project',
                     help='Specify the DNAnexus project to sync to. Species ID will be used by default.',
                     required=False)
@@ -104,7 +108,7 @@ def parse_args():
     return ap.parse_args()
 
 def main(profile, delete_links=False, bill_to =None, skip_share=False, 
-         species_id=None, species_name=None, target_project=None):
+         species_id=None, species_name=None, target_project=None, prefix="genomic_data"):
     # connect to S3 using Boto3 client
     s3client = boto3.session.Session(profile_name=profile).resource('s3')
     
@@ -112,7 +116,7 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
     dx_drive = locate_or_create_dx_drive(profile)
 
     # list objects in the bucket under 'species' directory
-    all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id )
+    all_objects = s3client.Bucket(VGP_BUCKET).objects.filter(Prefix='species/' + species_name + '/' + species_id + '/' + prefix )
 
     # grab the DNAnexus project
     if target_project:
@@ -180,4 +184,4 @@ def main(profile, delete_links=False, bill_to =None, skip_share=False,
 if __name__ == '__main__':
     ap = parse_args()
     main(ap.profile, ap.delete_links, ap.bill_to, ap.skip_share, ap.species_id,
-         ap.species_name, ap.target_project)
+         ap.species_name, ap.target_project, ap.prefix)

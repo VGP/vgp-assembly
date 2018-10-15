@@ -18,11 +18,11 @@ if ! [ -e coverage_stats.csv ]; then
 	cpus=4
 	mem=8g
 	name=${1}_step1_2
-	script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/purge_haplotigs/_step1_2.sh
+	script=$VGP_PIPELINE/purge_haplotigs/_step1_2.sh
 	args=$1
 	walltime=2-0
 
-	log=$PWD/logs/$name.%A_%a.log
+	log=logs/$name.%A_%a.log
 
 	echo "\
 	sbatch --partition=norm --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
@@ -33,14 +33,14 @@ fi
 
 if ! [ -e ${1}_curated.fasta ]; then
         cpus=32
-        mem=60g
+        mem=80g
         name=${1}_step3
 	partition=norm
-        script=/data/Phillippy/tools/vgp-assembly/git/vgp-assembly/pipeline/purge_haplotigs/_step3.sh
+        script=$VGP_PIPELINE/purge_haplotigs/_step3.sh
         args=$1
         walltime=5-0
 
-        log=$PWD/logs/$name.%A_%a.log
+        log=logs/$name.%A_%a.log
 
         echo "\
         sbatch --partition=$partition $waitfor --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
