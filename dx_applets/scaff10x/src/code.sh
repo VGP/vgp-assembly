@@ -130,11 +130,11 @@ main() {
 	read_bc1=$(dx upload read-BC_1.fastq.gz --brief)
 	read_bc2=$(dx upload read-BC_2.fastq.gz --brief)
 	if [[ $output_prefix != "" ]]; then
-	    read_bc1_name = "${output_prefix}".read-BC_1.fastq.gz
-	    read_bc2_name = "${output_prefix}".read-BC_2.fastq.gz
+	    read_bc1_name="${output_prefix}".read-BC_1.fastq.gz
+	    read_bc2_name="${output_prefix}".read-BC_2.fastq.gz
     else
-        read_bc1_name = read-BC_1.fastq.gz
-        read_bc2_name = read-BC_2.fastq.gz
+        read_bc1_name=read-BC_1.fastq.gz
+        read_bc2_name=read-BC_2.fastq.gz
     fi
 	dx-jobutil-add-output read_bc1 "$read_bc1" --class=file --name="$read_bc1_name"
 	dx-jobutil-add-output read_bc2 "$read_bc2" --class=file --name="$read_bc2_name"
@@ -142,9 +142,9 @@ main() {
     gzip scaffolds.fasta
     scaffold=$(dx upload scaffolds.fasta.gz --brief)
     if [[ $output_prefix != "" ]]; then
-        scaffold_name = "${output_prefix}".scaffolds.fasta.gz
+        scaffold_name="${output_prefix}".scaffolds.fasta.gz
     else
-        scaffold_name = scaffolds.fasta.gz
+        scaffold_name=scaffolds.fasta.gz
     fi
     dx-jobutil-add-output scaffold "$scaffold" --class=file --name="$scaffold_name"
 
