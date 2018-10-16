@@ -1,0 +1,113 @@
+{
+   "name": "10x_longranger_mkref",
+   "title": "10X Longranger Reference Builder",
+   "outputSpec": [
+      {
+         "name": "ref_targz",
+         "class": "file"
+      }
+   ],
+   "runSpec": {
+      "execDepends": [
+         {
+            "name": "tree"
+         },
+                  {"name": "openjdk-7-jre-headless"}
+      ],
+      "file": "src/code.py",
+      "release": "14.04",
+      "interpreter": "python2.7",
+      "distribution": "Ubuntu"
+   },
+        "regionalOptions": {
+      "aws:us-east-1": {
+        "systemRequirements": {"*": {"instanceType": "mem3_hdd2_x8"}},
+        "bundledDepends": [
+        {
+        "name": "longranger-2.1.6.tar.gz",
+        "id": {
+          "$dnanexus_link": "file-F8Kp1Fj0xvZF7p3x0J38F11q"
+        }
+      }
+    ]
+      },
+    "azure:westus": {
+        "systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+        "bundledDepends": [
+        {
+        "name": "longranger-2.1.6.tar.gz",
+        "id": {
+          "$dnanexus_link": "file-F8Kp1f09pfZYKXZb0gBX8vfg"
+        }
+      }
+    ]
+      }
+    },
+   "summary": "10x_longranger_mkref",
+   "version": "2.1.6",
+   "inputSpec": [
+      {
+         "patterns": [
+            "*.fasta.gz",
+            "*.fasta",
+            "*.fa",
+            "*.fa.gz"
+         ],
+         "class": "file",
+         "optional": false,
+         "name": "ref_fasta",
+         "label": "Fasta files"
+      },
+      {
+         "patterns": [
+            "*.bed.gz",
+            "*.bed"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "sv_blacklist_file",
+         "label": "SV Blacklist File"
+      },
+      {
+         "patterns": [
+            "*.bedpe",
+            "*.bedpe.gz"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "segdup_file",
+         "label": "Segmental duplications"
+      },
+      {
+         "patterns": [
+            "*.gtf.gz",
+            "*.gtf"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "gene_annotation",
+         "label": "Genes/Exons File for Loupe"
+      },
+      {
+         "patterns": [
+            "*.txt.gz",
+            "*.txt"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "primary_contigs",
+         "label": "Primary Contigs File"
+      },
+      {
+         "patterns": [
+            "*.tsv.gz",
+            "*.tsv"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "sex_chrom_file",
+         "label": "Sex Chromosomes File"
+      }
+   ],
+   "dxapi": "1.0.0"
+}
