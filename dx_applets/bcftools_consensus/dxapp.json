@@ -70,10 +70,10 @@
       }
     },
     "interpreter": "python2.7",
-    "file": "src/bcftools_merge.py",
+    "file": "src/bcftools_consensus.py",
     "systemRequirements": {
       "*": {
-        "instanceType": "mem1_ssd1_x4"
+        "instanceType": "mem1_ssd1_x32"
       }
     },
     "distribution": "Ubuntu",
