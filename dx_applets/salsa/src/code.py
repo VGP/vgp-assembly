@@ -77,11 +77,11 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
     
     # final scaffold
     final_fasta = 'scaffold*FINAL.fasta'
-    output['scaffold_fasta'] = dx_utils.gzip_and_upload(final_fasta)
+    output['final_scaffold_fasta'] = dx_utils.gzip_and_upload(final_fasta)
 
     # final agp
     final_agp = 'scaffold*FINAL.agp'
-    output['scaffold_agp'] = dx_utils.gzip_and_upload(final_agp)
+    output['final_scaffold_agp'] = dx_utils.gzip_and_upload(final_agp)
 
     # all others
     files = glob.glob('scaffold*fasta')
