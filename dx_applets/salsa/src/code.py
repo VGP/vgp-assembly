@@ -86,8 +86,10 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
     # all others
     files = glob.glob('scaffold*fasta')
     files.extend( glob.glob('scaffold*agp'))
-    files.pop(final_fasta)
-    files.pop(final_agp)
+    if final_fasta in files:
+        files.remove(final_fasta)
+    if final_agp in files:
+        files.remove(final_agp)
     print files
     
     output['scaffold'] = dx_utils.tar_files_and_upload(files, alignment_prefix)
