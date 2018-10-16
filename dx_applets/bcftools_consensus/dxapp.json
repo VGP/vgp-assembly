@@ -1,0 +1,82 @@
+{
+  "name": "bcftools_consensus",
+  "title": "Call consensus using BCFTools",
+  "summary": "bcftools_consensus",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "input_vcfs",
+      "label": "Input VCFs",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.vcf.gz", "*.vcf", "*.bcf"
+      ],
+      "help": ""
+    },
+    {
+      "name": "ref_fasta",
+      "label": "Reference FASTA",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.fasta.gz", "*.fa.gz", "*.fasta", "*.fa"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_prefix",
+      "label": "Output prefix",
+      "class": "string",
+      "default": "output",
+      "optional": true,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "consensus_vcf",
+      "label": "Conensus VCF",
+      "class": "file",
+      "patterns": [
+        "*.vcf.gz"
+      ],
+      "help": "VCF file containining changed bases during consensus."
+    },
+    {
+      "name": "consensus_fasta",
+      "label": "Consensus FASTA",
+      "class": "file",
+      "patterns": [
+        "*.fasta.gz"
+      ],
+      "help": "Consensus FASTA output"
+    },
+    {
+      "name": "output_numvar",
+      "label": "Number of Bases",
+      "class": "file",
+      "patterns": [
+        "*.numvar"
+      ],
+      "help": "Number of bases changed"
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 12
+      }
+    },
+    "interpreter": "python2.7",
+    "file": "src/bcftools_merge.py",
+    "systemRequirements": {
+      "*": {
+        "instanceType": "mem1_ssd1_x4"
+      }
+    },
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  }
+}
