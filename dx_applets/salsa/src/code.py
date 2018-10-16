@@ -74,10 +74,22 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
     dx_utils.run_cmd(cmd)
 
     output = {}
+    
+    # final scaffold
+    final_fasta = 'scaffold*FINAL.fasta'
+    output['scaffold_fasta'] = dx_utils.gzip_and_upload(final_fasta)
+
+    # final agp
+    final_agp = 'scaffold*FINAL.agp'
+    output['scaffold_agp'] = dx_utils.gzip_and_upload(final_agp)
+
+    # all others
     files = glob.glob('scaffold*fasta')
     files.extend( glob.glob('scaffold*agp'))
-
+    files.pop(final_fasta)
+    files.pop(final_agp)
     print files
+    
     output['scaffold'] = dx_utils.tar_files_and_upload(files, alignment_prefix)
 
     return output

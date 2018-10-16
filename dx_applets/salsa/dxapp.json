@@ -54,6 +54,13 @@
       "patterns": ["*.fasta.gz"]
     },
     {
+      "name": "final_scaffold_agp",
+      "label": "Final Scaffold AGP",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.agp.gz"]
+    },
+    {
       "name": "scaffold",
       "label": "Scaffold",
       "help": "",
