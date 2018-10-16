@@ -1,0 +1,5 @@
+production:
+ aws:us-east-1:
+  reads_fastqgz: file-FBKkP2008vqjQXY8713GvBbG
+  reads2_fastqgz: file-FBKkP500Y4VBPkXG70zyPGy0
+  genome_fastagz: file-B6ZY7VG2J35Vfvpkj8y0KZ01

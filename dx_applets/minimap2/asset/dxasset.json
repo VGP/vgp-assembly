@@ -1,0 +1,9 @@
+{
+  "name": "minimap2_asset",
+  "title": "Minimap2 asset",
+  "description": "Minimap2 asset",
+  "version": "0.0.1",
+  "distribution": "Ubuntu",
+  "release": "14.04",
+  "instanceType": "mem1_ssd1_x4"
+}
