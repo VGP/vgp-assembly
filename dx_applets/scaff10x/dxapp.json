@@ -34,6 +34,13 @@
       "default": true
     },
     {
+      "name": "output_prefix",
+      "label": "Output Prefix",
+      "help": "If provided, this output name is used for output files",
+      "class": "string",
+      "optional": true
+    },
+    {
       "name": "mapper_choice",
       "help": "",
       "class": "string",
