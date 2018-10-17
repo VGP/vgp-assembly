@@ -1,4 +1,4 @@
-# minimap2 Developer Readme
+# blasr Developer Readme
 
 <!--
 TODO: Please edit this Readme.developer.md file to include information
