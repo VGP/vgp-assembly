@@ -17,7 +17,7 @@ import subprocess
 import dxpy
 
 
-os.environ['PATH'] = '/longranger-2.1.2' + os.pathsep + os.environ['PATH']
+os.environ['PATH'] = '/longranger-2.2.2' + os.pathsep + os.environ['PATH']
 
 
 def run_cmd(cmd, returnOutput=False):

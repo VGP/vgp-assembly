@@ -18,7 +18,7 @@ import subprocess
 import dxpy
 
 
-os.environ['PATH'] = '/longranger-2.1.2' + os.pathsep + os.environ['PATH']
+os.environ['PATH'] = '/longranger-2.2.2' + os.pathsep + os.environ['PATH']
 
 
 def run_cmd(cmd, returnOutput=False):
@@ -104,7 +104,7 @@ def main(**job_inputs):
 
     run_cmd('longranger align --help')
 
-    longranger_cmd = 'longranger align --id {id} --fastqs {fastq_dir} --reference {ref_dir} '.format(
+    longranger_cmd = 'longranger align --disable-ui --id {id} --fastqs {fastq_dir} --reference {ref_dir} '.format(
         id=job_inputs['output_prefix'], fastq_dir=fastq_dir, ref_dir=ref_dir)
 
     if 'sample_name' in job_inputs:
