@@ -20,10 +20,15 @@ import dx_utils
 
 
 @dxpy.entry_point('map_reads')
-def map_reads(reads, reads_index, ref_genome, ref_genome_mmi):
+def map_reads(reads, ref_genome, ref_genome_mmi, reads_index=None):
     # Download inputs
     reads = dx_utils.download_and_gunzip_file(reads)
-    dx_utils.download_and_gunzip_file(reads_index)
+    if reads_index is None:
+        # generate index
+        cmd = ['/opt/smrtlink/smrtcmds/bin/pbindex', reads]
+        dx_utils.run_cmd(cmd)
+    else:
+        dx_utils.download_and_gunzip_file(reads_index)
     ref_genome = dx_utils.download_and_gunzip_file(ref_genome)
     ref_genome_mmi = dx_utils.download_and_gunzip_file(ref_genome_mmi)
     prefix = os.path.splitext(reads)[0]
@@ -79,6 +84,10 @@ def main(**job_inputs):
         minimap_index_job = dxpy.new_dxjob({'ref_genome': job_inputs['ref_genome']}, 'run_minimap_index')
         job_inputs['ref_genome_mmi'] = minimap_index_job.get_output_ref('ref_genome_mmi')
     output = {'ref_genome_mmi': job_inputs['ref_genome_mmi']}
+
+    # Check if BAM indices were provided
+    if 'read_indices' not in job_inputs:
+        job_inputs['read_indices'] = [None] * len(job_inputs['reads'])
 
     jobs = []
     for input_bam, input_bai in izip(job_inputs['reads'], job_inputs['reads_indices']):

@@ -14,7 +14,7 @@
         "label": "Reads PacBio indices",
         "patterns": ["*.pbi"],
         "class": "array:file",
-        "optional": false
+        "optional": true
      },
     {
         "name": "ref_genome",
