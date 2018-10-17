@@ -31,7 +31,7 @@ def _list2cmdlines_pipe(*cmds):
 @dxpy.entry_point('main')
 def main(**job_inputs):
     input_vcfs = [dx_utils.download_and_gunzip_file(f, skip_decompress=True) for f in job_inputs['input_vcfs']]
-    input_ref = dx_utils.download_and_gunzip_file(job_inputs['ref_fasta'], skip_decompress=True)
+    input_ref = dx_utils.download_and_gunzip_file(job_inputs['ref_fasta'])
     map(dx_utils.run_cmd, ['tabix {0}'.format(vcf) for vcf in input_vcfs])
     with open(VCF_FOFN, 'w') as fh:
         fh.write('\n'.join(input_vcfs))
