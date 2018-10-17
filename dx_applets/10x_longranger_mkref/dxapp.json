@@ -26,7 +26,7 @@
    },
     "regionalOptions": {
     "aws:us-east-1": {
-        "systemRequirements": {"*": {"instanceType": "mem3_hdd2_x8"}},
+        "systemRequirements": {"*": {"instanceType": "mem1_ssd2_x16"}},
         "bundledDepends": [
         {
         "name": "longranger-2.2.2.tar.gz",
