@@ -18,7 +18,7 @@
     {
       "name": "ref_fasta",
       "label": "Reference FASTA",
-      "class": "array:file",
+      "class": "file",
       "optional": false,
       "patterns": [
         "*.fasta.gz", "*.fa.gz", "*.fasta", "*.fa"

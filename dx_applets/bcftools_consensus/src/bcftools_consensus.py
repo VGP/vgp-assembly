@@ -17,6 +17,16 @@ import multiprocessing
 
 import dx_utils
 
+VCF_FOFN = 'input_vcfs.fofn'
+
+
+def _list2cmdlines_pipe(*cmds):
+    cmdline = ''
+    for cmd in cmds:
+        cmdline += subprocess.list2cmdline(cmd) + ' | '
+
+    return cmdline.rstrip(' | ')
+
 @dxpy.entry_point('main')
 def main(**job_inputs):
     input_vcfs = [dx_utils.download_and_gunzip_file(f, skip_decompress=True) for f in job_inputs['input_vcfs']]
@@ -25,21 +35,29 @@ def main(**job_inputs):
     with open(VCF_FOFN, 'w') as fh:
         fh.write('\n'.join(input_vcfs))
 
-    # get the bcftools version
-    cmd = ['bcftools', '-v']
+    # get the bcftools version and help doc
+    cmd = ['bcftools', '--help']
     dx_utils.run_cmd(cmd)
 
     output_prefix = job_inputs.get('output_prefix', '')
     output_bcf = output_prefix + 'concat' + '.bcf'
     # concatenate the bcf/vcf files
-    cmd = ['bcftools', 'concat', '-f', VCF_FOFN]
-    cmd.extend(['|', 'bcftools', 'view', '-Ou', '-e', '\'type=\"ref\"\''])
-    cmd.extend(['|', 'bcftools', 'norm', '-Ob', '-f', input_ref, '-o', output_bcf, '--threads', multiprocessing.cpu_count()])
-    dx_utils.run_cmd(cmd)
+    concat_cmd = ['bcftools', 'concat', '-f', VCF_FOFN]
+    view_cmd = ['bcftools', 'view', '-Ou', '-e', '\'type="ref"\'']
+    norm_cmd = ['bcftools', 'norm', '-Ob', '-f', input_ref, '-o', 
+                output_bcf, '--threads={0}'.format(multiprocessing.cpu_count())]
+    # print the commands
+    print(_list2cmdlines_pipe(concat_cmd, view_cmd, norm_cmd))
+    
+    # now run the commands
+    concat_process = subprocess.Popen(concat_cmd, stdout=subprocess.PIPE)
+    view_process = subprocess.Popen(view_cmd, stdin=concat_process.stdout,
+                                    stdout=subprocess.PIPE)
+    subprocess.check_call(norm_cmd, stdin=view_process.stdout)
 
     # call consensus
     output_fasta = output_prefix + 'consensus.fasta'
-    consensus_filter = "\'QUAL>1 && (GT=\"AA\" || GT=\"Aa\")\'"
+    consensus_filter = '\'QUAL>1 && (GT="AA" || GT="Aa")\''
     cmd = ['bcftools', 'consensus', '-i', consensus_filter, '-Hla', '-f', 
            input_ref, output_bcf, '>', output_fasta]
     dx_utils.run_cmd(cmd)
@@ -48,7 +66,9 @@ def main(**job_inputs):
     output_count = output_prefix + 'count.numvar'
     cmd = ['bcftools', 'view', '-H', '-i', consensus_filter, '-Ov', output_bcf,
            '|', 'awk', '-F', '\"\\t\" \'{print $4\"\\t\"$5}\'', '|', 'awk', 
-           "\'\{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}\'",
+           ("\'\{lenA=length($1); lenB=length($2); if (lenA < lenB )" 
+           "{sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else "
+           "{sum+=lenA}} END {print sum}\'"),
             '>', output_count]
     dx_utils.run_cmd(cmd)
 

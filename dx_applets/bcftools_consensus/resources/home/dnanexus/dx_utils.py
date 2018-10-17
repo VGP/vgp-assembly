@@ -18,14 +18,28 @@ def normalize_timedelta(timedelta):
     try:
         return int(timedelta)
     except ValueError as e:
-        t, suffix = timedelta[:-1], timedelta[-1:]
         suffix_multipliers = {'s': 1, 'm': 60, 'h': 60*60, 'd': 60*60*24, 'w': 60*60*24*7,
                               'M': 60*60*24*30, 'y': 60*60*24*365}
-        if suffix not in suffix_multipliers:
-            msg = 'Valid suffixes for time duration are shdwMy'
+
+        re_match = re.match('([0-9]+)([\s]*)([a-zA-Z]*)', timedelta)
+        if re_match is None:
+            msg = 'Could not parse time delta {0}'.format(timedelta)
+            raise dxpy.AppInternalError(msg)
+        
+        t, space, suffix = re_match.groups()
+
+        if suffix in suffix_multipliers:
+            normalized_time = int(t) * suffix_multipliers[suffix]
+        elif suffix not in suffix_multipliers and len(suffix) > 1 and suffix[0] in suffix_multipliers:
+            old_suffix = suffix
+            suffix = suffix[0]
+            print('Not familiar with suffix {0}.  Assuming you meant {1}.'.format(old_suffix, suffix), file=sys.stderr)
+            normalized_time = int(t) * suffix_multipliers[suffix]
+        else:
+            msg = 'Valid suffixes for time duration are {0}.'.format(str(suffix_multipliers.keys()))
             raise dxpy.AppInternalError(msg)
 
-        return int(t) * suffix_multipliers[suffix]
+    return normalized_time
 
 
 def _eap_wrapper(func, q, *args, **kwargs):
@@ -96,13 +110,21 @@ def get_memory(suffix='M'):
 
 
 def run_cmd(cmd, returnOutput=False):
-    print(cmd)
+    if type(cmd) is list:
+        shell=False
+        executable = None
+        print(subprocess.list2cmdline(cmd), file=sys.stderr)
+    else:
+        shell=True
+        executable = '/bin/bash'
+        print(cmd, file=sys.stderr)
+
     if returnOutput:
-        output = subprocess.check_output(cmd, shell=True, executable='/bin/bash').strip()
+        output = subprocess.check_output(cmd, shell=shell, executable=executable).strip()
         print(output)
         return output
     else:
-        subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+        subprocess.check_call(cmd, shell=shell, executable=executable)
 
 
 class cd:
@@ -168,24 +190,37 @@ def tar_files_and_upload(filenames, prefix):
         fh.write('\n'.join(filenames))
 
     ofn = '{0}.tar.gz'.format(prefix)
-    cmd = 'tar cvf - --files-from {0} | gzip --fast | dx upload --brief --destination {1} - '.format(fh.name, ofn)
+    cmd = 'tar cvf - --files-from {0} | gzip --fast | dx upload --brief --destination "{1}" - '.format(fh.name, ofn)
     fid = run_cmd(cmd, returnOutput=True)
-    cmd = 'rm {0} '.format(fh.name)
+    cmd = ['rm', fh.name]
     run_cmd(cmd)
 
     return dxpy.dxlink(fid)
 
+def remove_special_chars(string):
+    '''function that replaces any characters in a string that are not
+    alphanumeric or _ or . so that they do not cause issues in commands'''
+    string = "".join(
+        char for char in string if char.isalnum() or char in ['_', '.'])
+
+    return string
 
 def download_and_gunzip_file(input_file, skip_decompress=False, additional_pipe=None, create_named_pipe=False, input_filename=None):
     input_file = dxpy.DXFile(input_file)
     if input_filename is None:
         input_filename = input_file.describe()['name']
-    ofn = input_filename
+    ofn = remove_special_chars(input_filename)
 
     cmd = 'dx download ' + input_file.get_id() + ' -o - '
     if input_filename.endswith('.tar.gz'):
         ofn = 'tar_output_{0}'.format(ofn.replace('.tar.gz', ''))
         cmd += '| tar -zxvf - '
+    elif input_filename.endswith('.tar.bz2'):
+        ofn = 'tar_output_{0}'.format(ofn.replace('.tar.bz2', ''))
+        cmd += '| tar -jxvf - '
+    elif input_filename.endswith('.tar'):
+        ofn = 'tar_output_{0}'.format(ofn.replace('.tar', ''))
+        cmd += '| tar -xvf - '
     elif (os.path.splitext(input_filename)[-1] == '.gz') and not skip_decompress:
         cmd += '| gunzip '
         ofn = os.path.splitext(ofn)[0]
