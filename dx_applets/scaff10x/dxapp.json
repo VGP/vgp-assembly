@@ -2,7 +2,7 @@
   "name": "scaff10x",
   "title": "Scaff10x: The genome assembly pipeline based on read clustering",
   "summary": "The genome assembly pipeline based on read clustering",
-  "dxapi": "1.0.1",
+  "dxapi": "1.0.0",
   "version": "1.0.0",
   "inputSpec": [
     {
@@ -138,10 +138,10 @@
     "upstreamUrl": "https://sourceforge.net/projects/phusion2/files/scaff10x/",
     "upstreamVersion": "2.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": ""
+    "whatsNew": "* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
-    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}}},
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x16"}}},
     "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}}}
   }
 }
