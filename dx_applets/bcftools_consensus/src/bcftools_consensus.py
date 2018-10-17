@@ -11,6 +11,7 @@
 # DNAnexus Python Bindings (dxpy) documentation:
 #   http://autodoc.dnanexus.com/bindings/python/current/
 
+from __future__ import print_function
 import os
 import dxpy
 import multiprocessing
@@ -59,32 +60,30 @@ def main(**job_inputs):
                                     stdout=subprocess.PIPE)
     subprocess.check_call(norm_cmd, stdin=view_process.stdout)
 
+    # index the concatenated bcf file
+    dx_utils.run_cmd(['bcftools', 'index', output_bcf])
+
     # call consensus
     output_fasta = output_prefix + 'consensus.fasta'
-    consensus_filter = '\'QUAL>1 && (GT="AA" || GT="Aa")\''
-    cmd = ['bcftools', 'consensus', '-i' + consensus_filter, '-Hla', '-f', 
-           input_ref, output_bcf, '>', output_fasta]
-    dx_utils.run_cmd(cmd)
+    consensus_filter = 'QUAL>1 && (GT="AA" || GT="Aa")'
+    consensus_cmd = ['bcftools', 'consensus', '-i', consensus_filter,
+                     '-Hla', '-f', input_ref, output_bcf, '>', output_fasta]
+    # print the command
+    print(subprocess.list2cmdline(cmd))
+    # run the command and redirect to file
+    with open(output_fasta, "w") as fopen:
+        subprocess.check_call(consensus_cmd, stdout=fopen)
 
-    # get statistics
-    output_count = output_prefix + 'count.numvar'
-    cmd = ['bcftools', 'view', '-H', '-i' + consensus_filter, '-Ov', output_bcf,
-           '|', 'awk', '-F', '\"\\t\" \'{print $4\"\\t\"$5}\'', '|', 'awk', 
-           ("\'\{lenA=length($1); lenB=length($2); if (lenA < lenB )" 
-           "{sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else "
-           "{sum+=lenA}} END {print sum}\'"),
-            '>', output_count]
-    dx_utils.run_cmd(cmd)
-
+    # save the changes to vcf
     output_vcf = output_prefix + 'changes.vcf.gz'
-    cmd = ['bcftools', 'view', '-i' + consensus_filter, '-Oz',
-           '--threads={0}'.format(multiprocessing.cpu_count()), output_bcf, '>',
-           output_vcf]
-    dx_utils.run_cmd(cmd)
+    vcf_cmd = ['bcftools', 'view', '-i', consensus_filter, '-Oz',
+           '--threads={0}'.format(multiprocessing.cpu_count()), output_bcf] 
+    print(subprocess.list2cmdline(vcf_cmd))
+    with open(output_vcf, "w") as fopen:
+        subprocess.check_call(vcf_cmd, stdout=fopen)
 
     output = {}
     output['consensus_fasta'] = dx_utils.gzip_and_upload(output_fasta)
-    output['output_numvar'] = dx_utils.gzip_and_upload(output_count)
     output['consensus_vcf'] = dxpy.dxlink(dxpy.upload_local_file(output_vcf))
 
     return output

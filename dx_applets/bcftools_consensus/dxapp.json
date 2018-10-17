@@ -52,15 +52,6 @@
         "*.fasta.gz"
       ],
       "help": "Consensus FASTA output"
-    },
-    {
-      "name": "output_numvar",
-      "label": "Number of Bases",
-      "class": "file",
-      "patterns": [
-        "*.numvar"
-      ],
-      "help": "Number of bases changed"
     }
   ],
   "runSpec": {
