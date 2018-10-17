@@ -14,6 +14,7 @@
 import os
 import dxpy
 import multiprocessing
+import subprocess
 
 import dx_utils
 
