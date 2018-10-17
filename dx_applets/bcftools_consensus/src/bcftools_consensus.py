@@ -32,6 +32,9 @@ def _list2cmdlines_pipe(*cmds):
 def main(**job_inputs):
     input_vcfs = [dx_utils.download_and_gunzip_file(f, skip_decompress=True) for f in job_inputs['input_vcfs']]
     input_ref = dx_utils.download_and_gunzip_file(job_inputs['ref_fasta'])
+    
+    # create index files for inputs
+    dx_utils.run_cmd(['samtools', 'faidx', input_ref])
     map(dx_utils.run_cmd, ['tabix {0}'.format(vcf) for vcf in input_vcfs])
     with open(VCF_FOFN, 'w') as fh:
         fh.write('\n'.join(input_vcfs))
@@ -44,7 +47,7 @@ def main(**job_inputs):
     output_bcf = output_prefix + 'concat' + '.bcf'
     # concatenate the bcf/vcf files
     concat_cmd = ['bcftools', 'concat', '-f', VCF_FOFN]
-    view_cmd = ['bcftools', 'view', '-Ou', '-e', '\'type="ref"\'']
+    view_cmd = ['bcftools', 'view', '-Ou', '-e\'type="ref"\'']
     norm_cmd = ['bcftools', 'norm', '-Ob', '-f', input_ref, '-o', 
                 output_bcf, '--threads={0}'.format(multiprocessing.cpu_count())]
     # print the commands
@@ -59,13 +62,13 @@ def main(**job_inputs):
     # call consensus
     output_fasta = output_prefix + 'consensus.fasta'
     consensus_filter = '\'QUAL>1 && (GT="AA" || GT="Aa")\''
-    cmd = ['bcftools', 'consensus', '-i', consensus_filter, '-Hla', '-f', 
+    cmd = ['bcftools', 'consensus', '-i' + consensus_filter, '-Hla', '-f', 
            input_ref, output_bcf, '>', output_fasta]
     dx_utils.run_cmd(cmd)
 
     # get statistics
     output_count = output_prefix + 'count.numvar'
-    cmd = ['bcftools', 'view', '-H', '-i', consensus_filter, '-Ov', output_bcf,
+    cmd = ['bcftools', 'view', '-H', '-i' + consensus_filter, '-Ov', output_bcf,
            '|', 'awk', '-F', '\"\\t\" \'{print $4\"\\t\"$5}\'', '|', 'awk', 
            ("\'\{lenA=length($1); lenB=length($2); if (lenA < lenB )" 
            "{sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else "
@@ -74,7 +77,7 @@ def main(**job_inputs):
     dx_utils.run_cmd(cmd)
 
     output_vcf = output_prefix + 'changes.vcf.gz'
-    cmd = ['bcftools', 'view', '-i', consensus_filter, '-Oz',
+    cmd = ['bcftools', 'view', '-i' + consensus_filter, '-Oz',
            '--threads={0}'.format(multiprocessing.cpu_count()), output_bcf, '>',
            output_vcf]
     dx_utils.run_cmd(cmd)

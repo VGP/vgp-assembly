@@ -76,6 +76,7 @@
         "instanceType": "mem1_ssd1_x32"
       }
     },
+    "assetDepends": [{"id": "record-FP3YpkQ0gk0j1pyF0PJ13xYX"}],
     "distribution": "Ubuntu",
     "release": "14.04"
   }
