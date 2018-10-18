@@ -78,7 +78,7 @@
     "file": "src/code.py",
     "systemRequirements": {
       "*": {
-        "instanceType": "mem1_ssd1_x8"
+        "instanceType": "mem3_ssd1_x32"
       }
     },
     "assetDepends": [{"id": "record-FP2QpJQ0JpGbv47K9b7QY8bK"}],
