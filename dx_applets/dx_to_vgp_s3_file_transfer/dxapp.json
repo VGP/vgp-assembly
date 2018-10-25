@@ -1,0 +1,83 @@
+{
+  "name": "dx_to_vgp_s3_file_transfer",
+  "title": "DNAnexus to VGP S3 Exporter",
+  "summary": "Transfers files from the DNAnexus platform to VGP's external S3 bucket",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "developers": ["user-bhannigan", "user-msimbirsky", "user-bhannigan_b10k"],
+  "categories": [
+      "Export"
+    ],
+  "inputSpec": [
+    {
+      "name": "worker_max",
+      "label": "Maximum number of workers to distribute upload",
+      "class": "int",
+      "optional": false,
+      "default": 50,
+      "help": "This app will distribute work across workers. This parameter limits the number of subjobs created",
+      "group": "Transfer Options"
+    },
+    {
+      "name": "bandwidth",
+      "label": "Bandwith",
+      "class": "string",
+      "optional": true,
+      "default": "NORMAL",
+      "help": "This parameter will determine whether the worker performing the data transfer will have a NORMAL or HIGH bandwidth connection.",
+      "group": "Transfer Options",
+      "choices": [
+        "NORMAL",
+        "HIGH"
+      ]
+    },
+    {
+      "name": "species_name",
+      "label": "Species name",
+      "class": "string",
+      "optional": true,
+      "help": "This parameter provides the species name for the given data.  If not provided, we will look for a project property called species_name.  If neither is provided, the app will throw an error.",
+      "group": "Transfer Options"
+    },
+    {
+      "name": "f_ids",
+      "label": "Files",
+      "help": "Files to upload to external S3 bucket.",
+      "class": "array:file",
+      "optional": false
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "upload_report",
+      "label": "Results of export",
+      "help": "Text file containing an overview of export success/failures.  Ideally an all \"copy\" with no \"FAIL\" will always show",
+      "class": "file",
+      "patterns": ["*.txt"]
+    }
+  ],
+  "details": {
+    "whatsNew": "* 1.0.0 Easy export of files to VGP's S3 bucket."
+  },
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "python2.7",
+    "file": "src/dx_to_vgp_s3_file_transfer.py",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {"aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x2"}},
+                                        "assetDepends": [{"id": "record-F2q0BG80xG8yfVBYFJjFJXJP"}]}
+  },
+  "openSource": false,
+  "access": {
+    "network": [
+      "*"
+    ],
+    "project": "CONTRIBUTE"
+  }
+}

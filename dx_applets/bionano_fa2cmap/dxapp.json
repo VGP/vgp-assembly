@@ -1,0 +1,58 @@
+{
+    "name": "bionano_fa2cmap",
+    "title": "Bionano FASTA to CMAP",
+    "version": "0.0.1",
+    "inputSpec": [
+        {
+            "name": "ngs_fasta",
+            "class": "file",
+            "patterns": ["*.fasta", "*.fasta.gz", "*.fa", "*.fa.gz"],
+            "optional": false,
+            "label": "FASTA file from NGS",
+            "help": "An assembly produced from sequencing technologies such as PacBio or Illumina"
+        },
+        {
+      "name": "enzyme_name",
+      "label": "Bionano Enzyme Name",
+      "class": "string",
+      "optional": false,
+      "choices": [
+        "BSSSI",
+        "BSPQI",
+        "BBVCI",
+        "BSMI",
+        "BSRDI",
+        "BSECI",
+        "DLE1"
+      ]
+    },
+            {
+      "name": "channel_num",
+      "label": "Bionano Channel Number",
+      "class": "int",
+      "optional": false,
+      "default": 1
+    }
+    ],
+    "outputSpec": [
+        {
+            "name": "reference_cmap",
+            "class": "file",
+            "patterns": ["*.cmap"],
+            "label": "Reference CMAP"
+        }
+    ],
+    "runSpec":
+    {
+        "file": "src/bionano_fa2cmap.py",
+        "interpreter": "python2.7",
+        "distribution": "Ubuntu",
+        "release": "14.04"
+    },
+      "regionalOptions": {
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGVz00Q0Q1zB3fPk3JqVfKzZ"} ]},
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                      "assetDepends": [{"id": "record-FGXxb8Q9Z8XYPXBv9b3q56kF"} ]}
+  }
+}

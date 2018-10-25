@@ -1,0 +1,9 @@
+{
+  "name": "bcftools_consensus_asset",
+  "title": "BCFtools asset",
+  "description": "Asset contains Samtools, BCFtools and HTSlib",
+  "version": "1.9.0",
+  "distribution": "Ubuntu",
+  "instanceType": "mem1_ssd1_x4",
+  "release": "14.04"
+}

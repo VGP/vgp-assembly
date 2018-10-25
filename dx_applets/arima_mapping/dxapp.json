@@ -1,0 +1,104 @@
+{
+  "name": "arima_mapping",
+  "title": "Arima mapping",
+  "summary": "arima_mapping",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "fwd_reads",
+      "label": "Forward reads",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq", "*.fastq.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "rev_reads",
+      "label": "Reverse reads",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fastq", "*.fastq.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "ref_genome",
+      "label": "Reference genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bwa-index.tar.gz"
+      ],
+      "suggestions": [
+        {
+          "name": "DNAnexus Reference Genomes: AWS US-east",
+          "project": "project-BQpp3Y804Y0xbyG4GJPQ01xv",
+          "path": "/"
+        },
+        {
+          "name": "DNAnexus Reference Genomes: AWS: China-north",
+          "project": "project-Bxv84pQ27z999kj0jbQz0FK9",
+          "path": "/"
+        },
+        {
+          "name": "DNAnexus Reference Genomes: AWS Germany",
+          "project": "project-F3zxk7Q4F30Xp8fG69K1Vppj",
+          "path": "/"
+        },
+        {
+          "name": "DNAnexus Reference Genomes: Azure West US",
+          "project": "project-F0yyz6j9Jz8YpxQV8B8Kk7Zy",
+          "path": "/"
+        },
+        {
+          "name": "DNAnexus Reference Genomes: AWS Sydney",
+          "project": "project-F4gXb605fKQyBq5vJBG31KGG",
+          "path": "/"
+        }
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output_bam",
+      "label": "Output bam",
+      "class": "file",
+      "patterns": [
+        "*.bam"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_bai",
+      "label": "Output bam index file",
+      "class": "file",
+      "patterns": [
+        "*.bai"
+      ],
+      "help": ""
+    }
+  ],
+  "regionalOptions": {
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem2_ssd1_x16"}}},
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
+    "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
+    "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
+    "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}}
+  },
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "python2.7",
+    "file": "src/arima_mapping.py",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  }
+}
