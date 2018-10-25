@@ -29,6 +29,9 @@ import os
 import subprocess
 import sys
 
+import hashlib
+from functools import partial
+
 VGP_BUCKET = "genomeark-test"
 
 def parse_args():
@@ -69,6 +72,13 @@ def run_cmd(cmd, returnOutput=False):
         return output
     else:
         subprocess.check_call(cmd, shell=True, executable='/bin/bash')
+
+def md5sum(filename):
+    with open(filename, mode='rb') as f:
+        d = hashlib.md5()
+        for buf in iter(partial(f.read, 128), b''):
+            d.update(buf)
+    return d.hexdigest()
 
 def locate_or_create_dx_drive(drive_name='genomeark'):
     # findDrives is an API method that has not been explicitly added to dxpy yet, so call the API method explicitly.
@@ -129,6 +139,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
 
     # determine whether file or folder
     if os.path.isfile(path):
+        # check size
         # connect to S3 using Boto3 client
         s3client = boto3.session.Session(profile_name=profile).resource('s3')
 
@@ -136,14 +147,22 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
         object_key = os.path.join(upload_path, os.path.basename(path))
         s3client.Bucket(VGP_BUCKET).upload_file(path, object_key)
         updated_files = [object_key]
+        os_paths = [path]
     elif os.path.isdir(path):
         # here we need to shell out to aws cli to use folder sync
         upload_path = "s3://{0}/{1}".format(VGP_BUCKET, upload_path)
         cmd = 'aws s3 sync {0} {1} --no-progress --profile {2}'.format(path, upload_path, profile)
         output = run_cmd(cmd, returnOutput=True)
+
+        # expected output: 
+        # upload: test/test.txt to s3://genomeark-test/species/Calypte_anna/bCalAnn1/...
         updated_files = [msg.split(' ')[-1] for msg in output.split('\n')]
         # get rid of empty strings and remove the 's3://bucket-name/' prefix
         updated_files = [f.replace('s3://{0}/'.format(VGP_BUCKET), '') for f in updated_files if f]
+
+        if len(updated_files) > 0:
+            os_paths =  [msg.split(' ')[1] for msg in output.split('\n') if len(msg) > 1]
+            os_paths = [f for f in os_paths if f]
     else:
         print("Invalid filepath specified")
         sys.exit(1)
@@ -159,7 +178,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
     # in case project properties doesn't have species_name, update it
     dxpy.api.project_set_properties(dx_project.id, input_params={'properties': {'species_name': species_name}})
 
-    for object in updated_files:
+    for object, os_path in zip(updated_files, os_paths):
         folder_path, filename = os.path.split('/' + object)
         # remove species_name and species_id from folder path
         folder_path = folder_path.replace('/species/{0}/{1}'.format(species_name, species_id), '')
@@ -171,6 +190,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
                                 'name': filename,
                                 'drive': dx_drive["id"],
                                 'tags': [species_name, species_id, datatype],
+                                'md5sum': md5sum(os_path),
                                 'symlinkPath': {
                                     "container": "{region}:{bucket}".format(region='us-east-1', bucket=VGP_BUCKET),
                                     "object": object
