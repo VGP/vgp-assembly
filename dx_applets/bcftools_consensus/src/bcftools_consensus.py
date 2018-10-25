@@ -21,14 +21,6 @@ import dx_utils
 
 VCF_FOFN = 'input_vcfs.fofn'
 
-
-def _list2cmdlines_pipe(*cmds):
-    cmdline = ''
-    for cmd in cmds:
-        cmdline += subprocess.list2cmdline(cmd) + ' | '
-
-    return cmdline.rstrip(' | ')
-
 @dxpy.entry_point('main')
 def main(**job_inputs):
     input_vcfs = [dx_utils.download_and_gunzip_file(f, skip_decompress=True) for f in job_inputs['input_vcfs']]
@@ -51,14 +43,8 @@ def main(**job_inputs):
     view_cmd = ['bcftools', 'view', '-Ou', '-e\'type="ref"\'']
     norm_cmd = ['bcftools', 'norm', '-Ob', '-f', input_ref, '-o', 
                 output_bcf, '--threads={0}'.format(multiprocessing.cpu_count())]
-    # print the commands
-    print(_list2cmdlines_pipe(concat_cmd, view_cmd, norm_cmd))
-    
-    # now run the commands
-    concat_process = subprocess.Popen(concat_cmd, stdout=subprocess.PIPE)
-    view_process = subprocess.Popen(view_cmd, stdin=concat_process.stdout,
-                                    stdout=subprocess.PIPE)
-    subprocess.check_call(norm_cmd, stdin=view_process.stdout)
+    # run the commands
+    dx_utils.run_pipe(concat_cmd, view_cmd, norm_cmd)
 
     # index the concatenated bcf file
     dx_utils.run_cmd(['bcftools', 'index', output_bcf])
@@ -67,23 +53,20 @@ def main(**job_inputs):
     output_fasta = output_prefix + 'consensus.fasta'
     consensus_filter = 'QUAL>1 && (GT="AA" || GT="Aa")'
     consensus_cmd = ['bcftools', 'consensus', '-i', consensus_filter,
-                     '-Hla', '-f', input_ref, output_bcf, '>', output_fasta]
-    # print the command
-    print(subprocess.list2cmdline(cmd))
-    # run the command and redirect to file
-    with open(output_fasta, "w") as fopen:
-        subprocess.check_call(consensus_cmd, stdout=fopen)
+                     '-Hla', '-f', input_ref, output_bcf]
+    dx_utils.run_pipe(consensus_cmd, outputFile=output_fasta) 
+
 
     # save the changes to vcf
     output_vcf = output_prefix + 'changes.vcf.gz'
     vcf_cmd = ['bcftools', 'view', '-i', consensus_filter, '-Oz',
-           '--threads={0}'.format(multiprocessing.cpu_count()), output_bcf] 
-    print(subprocess.list2cmdline(vcf_cmd))
-    with open(output_vcf, "w") as fopen:
-        subprocess.check_call(vcf_cmd, stdout=fopen)
+           '--threads={0}'.format(multiprocessing.cpu_count()), output_bcf]
+    dx_utils.run_pipe(vcf_cmd, outputFile=output_vcf) 
 
+    consensus_link = dx_utils.gzip_and_upload(output_fasta)
+    print(consensus_link)
     output = {}
-    output['consensus_fasta'] = dx_utils.gzip_and_upload(output_fasta)
+    output['consensus_fasta'] = consensus_link
     output['consensus_vcf'] = dxpy.dxlink(dxpy.upload_local_file(output_vcf))
 
     return output

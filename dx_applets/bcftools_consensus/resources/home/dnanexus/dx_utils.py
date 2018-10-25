@@ -4,10 +4,35 @@ import os
 import sys
 import tempfile
 import subprocess
-import multiprocessing
+import contextlib
 import multiprocessing.pool
 
 import dxpy
+
+
+@contextlib.contextmanager
+def set_env(**environ):
+    """
+    Temporarily set the process environment variables.
+
+    >>> with set_env(PLUGINS_DIR=u'test/plugins'):
+    ...   "PLUGINS_DIR" in os.environ
+    True
+
+    >>> "PLUGINS_DIR" in os.environ
+    False
+
+    :type environ: dict[str, unicode]
+    :param environ: Environment variables to set
+    """
+    old_environ = dict(os.environ)
+    os.environ.update(environ)
+    try:
+        yield
+    finally:
+        os.environ.clear()
+        os.environ.update(old_environ)
+
 
 def normalize_timedelta(timedelta):
     """
@@ -127,9 +152,132 @@ def run_cmd(cmd, returnOutput=False):
         subprocess.check_call(cmd, shell=shell, executable=executable)
 
 
+def run_pipe(*cmds, **kwargs):
+    """
+    Function to run several commands that pipe to each other in a python 
+    aware way.
+
+    Valid cmd arguments are lists containing shell commands to execute.
+    Valid kwargs are 'outputFile' and 'returnOutput'.
+
+    Usage 1: Pipe multiple commands together and print output to file
+        example_cmd1 = ['dx', 'download', 'file-xxxx']
+        example_cmd2 = ['gunzip']
+        out_f = "somefilename.fasta"
+        run_pipe(example_cmd1, example_cmd2, outputFile=out_f)
+
+        This function will print and execute the following command:
+        'dx download file-xxxx | gunzip > somefilename.fasta'
+
+    Usage 2: Pipe multiple commands together and return output
+        example_cmd1 = ['gzip', 'file.txt']
+        example_cmd2 = ['dx', 'upload', '-', '--brief']
+        file_id = run_pipe(example_cmd1, example_cmd2, returnOutput=True)
+
+        This function will print and execute the following command:
+        'gzip file.txt | dx upload - --brief '
+        and return the output.
+
+    Usage 3: Pipe a single command with output to file
+        example_cmd = ['ls', '.']
+        out_f = 'ls.txt'
+        run_pipe(example_cmd, outputFile=out_f)
+
+        This function will print and execute the following command:
+        'ls . > ls.txt'
+    """
+    # parse kwargs
+    outputFile = kwargs.get('outputFile')
+    returnOutput = kwargs.get('returnOutput', False)
+
+    # copy provided commands into a list instead of a generator
+    cmds = [c for c in cmds]
+
+    # check that cmds are lists and not strings
+    if type(cmds[0]) is not list:
+        raise SyntaxError('Commands in pipe must be of type list')
+
+    # pretty print the provided command
+    cmd_str = _list2cmdlines_pipe(*cmds)
+    if outputFile is not None:
+        cmd_str += ' > {0}'.format(outputFile)
+    print(cmd_str, file=sys.stderr)
+
+    # there could be the case where there is only one command provided and we
+    # want to stdout to file
+    num_cmd = len(cmds)
+    if num_cmd == 1 and outputFile is None:
+        cmd = cmds[-1]
+        if returnOutput is True:
+            output = subprocess.check_output(cmd)
+            return output.strip()
+        else:
+            subprocess.check_call(cmd)
+            return
+    elif num_cmd == 1 and outputFile:
+        cmd = cmds[-1]
+        with open(outputFile, "w") as fopen:
+            subprocess.check_call(cmd, stdout=fopen)
+        return
+
+    # if multiple commands are provided, we need to pipe them together
+    # intialize the first command
+    cmd_process = []
+    init_process = subprocess.Popen(cmds[0], stdout=subprocess.PIPE)
+    cmd_process.append(init_process)
+    # run all commands except the last one by piping
+    for i in range(1, num_cmd - 1):
+        # start the next command
+        prev_process = cmd_process[i-1]
+        process = subprocess.Popen(cmds[i],
+                                   stdin=prev_process.stdout,
+                                   stdout=subprocess.PIPE)
+        # close the previous command -- this will take care of the case when
+        # cmd_process[i] closes before cmd_process[-1] is done
+        cmd_process.append(process)
+        prev_process.stdout.close()
+
+    # run the last command
+    prev_process = cmd_process[-1]
+    if outputFile is not None:
+        with open(outputFile, "w") as fopen:
+            subprocess.check_call(cmds[-1], stdin=prev_process.stdout, stdout=fopen)
+            prev_process.stdout.close()
+        return
+    elif returnOutput is True:
+        output = subprocess.check_output(cmds[-1], stdin=prev_process.stdout)
+        prev_process.stdout.close()
+        return output.strip()
+    else:
+        subprocess.check_call(cmds[-1], stdin=prev_process.stdout)
+        prev_process.stdout.close()
+
+
+def _list2cmdlines_pipe(*cmds):
+    cmdline = ' | '.join([subprocess.list2cmdline(cmd) for cmd in cmds])
+
+    return cmdline
+
+
 class cd:
     '''From: http://stackoverflow.com/questions/431684/how-do-i-cd-in-python
-       Context manager for changing the current working directory'''
+       Context manager for changing the current working directory
+
+       Usage:
+       with cd():
+           do_the_thing
+           # this will create a temp directory with a randomly
+           # generated name, doe the thing, then delete the temp dir
+
+       with cd(my_file_dir):
+           do_the_thing
+           # this will do the thing in my_file_dir and not delete the directory
+
+       with cd(tempDir=my_temp_dir):
+           do_the_thing
+           # this will create a temp dir with path my_temp_dir, do the thing,
+           # then delete the temp dir
+       '''
     def __init__(self, newPath=None, tempDir=None):
         if newPath is not None:
             self.newPath = newPath
@@ -145,7 +293,7 @@ class cd:
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
         if self.removeFolder:
-            subprocess.check_call('rm -rf {0}'.format(self.newPath), shell=True)
+            subprocess.check_call(['rm', '-rf', self.newPath], shell=False)
 
 
 def schedule_lpt(jobs, num_bins):
@@ -178,9 +326,9 @@ def schedule_lpt(jobs, num_bins):
 def gzip_and_upload(fn, rfn=None):
     if rfn is None:
         rfn = os.path.split(fn)[-1]
-    cmd = 'gzip --fast -c {0} | dx upload --brief --path {1}.gz -'.format(fn, rfn)
-    print(cmd)
-    fid = subprocess.check_output(cmd, shell=True).strip()
+    gzip_cmd = ['gzip', '--fast', '-c', fn]
+    upload_cmd = ['dx', 'upload', '-', '--brief', '--path', rfn + '.gz']
+    fid = run_pipe(gzip_cmd, upload_cmd, returnOutput=True)
 
     return dxpy.dxlink(fid)
 
@@ -190,12 +338,15 @@ def tar_files_and_upload(filenames, prefix):
         fh.write('\n'.join(filenames))
 
     ofn = '{0}.tar.gz'.format(prefix)
-    cmd = 'tar cvf - --files-from {0} | gzip --fast | dx upload --brief --destination "{1}" - '.format(fh.name, ofn)
-    fid = run_cmd(cmd, returnOutput=True)
+    tar_cmd = ['tar', 'cvf', '-', '--files-from', fh.name]
+    gzip_cmd = ['gzip', '--fast']
+    upload_cmd = ['dx', 'upload', '--brief', '--destination', ofn, '-']
+    fid = run_pipe(tar_cmd, gzip_cmd, upload_cmd, returnOutput=True)
     cmd = ['rm', fh.name]
     run_cmd(cmd)
 
     return dxpy.dxlink(fid)
+
 
 def remove_special_chars(string):
     '''function that replaces any characters in a string that are not
@@ -205,34 +356,47 @@ def remove_special_chars(string):
 
     return string
 
+
 def download_and_gunzip_file(input_file, skip_decompress=False, additional_pipe=None, create_named_pipe=False, input_filename=None):
     input_file = dxpy.DXFile(input_file)
     if input_filename is None:
         input_filename = input_file.describe()['name']
     ofn = remove_special_chars(input_filename)
 
-    cmd = 'dx download ' + input_file.get_id() + ' -o - '
+    cmds = []
+    cmds.append(['dx', 'download', input_file.get_id(), '-o', '-'])
     if input_filename.endswith('.tar.gz'):
         ofn = 'tar_output_{0}'.format(ofn.replace('.tar.gz', ''))
-        cmd += '| tar -zxvf - '
+        cmds.append(['tar', '--no-same-owner', '-zxvf', '-'])
     elif input_filename.endswith('.tar.bz2'):
         ofn = 'tar_output_{0}'.format(ofn.replace('.tar.bz2', ''))
-        cmd += '| tar -jxvf - '
+        cmds.append(['tar', '--no-same-owner', '-jxvf', '-'])
     elif input_filename.endswith('.tar'):
         ofn = 'tar_output_{0}'.format(ofn.replace('.tar', ''))
-        cmd += '| tar -xvf - '
+        cmds.append(['tar', '--no-same-owner', '-xvf', '-'])
     elif (os.path.splitext(input_filename)[-1] == '.gz') and not skip_decompress:
-        cmd += '| gunzip '
+        cmds.append(['gunzip'])
         ofn = os.path.splitext(ofn)[0]
     if additional_pipe is not None:
-        cmd += '| ' + additional_pipe
-    cmd += ' > "{0}"'.format(ofn)
+        # check that additional pipe is not a string and does not have multiple
+        # pipes in it
+        if type(additional_pipe) is list:
+            cmds.append(additional_pipe)
+        else:
+            # TODO: there could be an edge case where the additional pipe
+            # contains the | character within quotation marks and it does not
+            # signify pipe
+            if additional_pipe.contains('|'):
+                pipes = additional_pipe.split('|')
+                pipe_cmds = [p.split() for p in pipes]
+                cmds.extend(pipe_cmds)
+            else:
+                pipe = additional_pipe.split()
+                cmds.append(pipe)
 
     if create_named_pipe:
-        named_pipe_cmd = 'mkfifo {0}'.format(ofn)
+        named_pipe_cmd = ['mkfifo', ofn]
         run_cmd(named_pipe_cmd)
-        cmd += '&'
 
-    run_cmd(cmd)
-
+    run_pipe(*cmds, outputFile=ofn)
     return ofn
