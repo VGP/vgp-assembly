@@ -1,12 +1,12 @@
 # Salsa2
 
-Download [Salsa2.1](https://github.com/machinegun/SALSA/releases/tag/v2.1) in your $tools/salsa path
+Download [Salsa2.2](https://github.com/machinegun/SALSA/releases/tag/v2.2) in your $tools/salsa path
 
 ```
 cd $tools
 mkdir salsa2
-wget https://github.com/machinegun/SALSA/archive/v2.1.tar.gz
-tar -zxf v2.1.tar.gz
+wget https://github.com/machinegun/SALSA/archive/v2.2.tar.gz
+tar -zxf v2.2.tar.gz
 ```
 
 Build python environment: This needs to be done only once

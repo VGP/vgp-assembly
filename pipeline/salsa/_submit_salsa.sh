@@ -33,7 +33,7 @@ elif [ ! -e $ref.fai ]; then
 	wait_until="--dependency=afterok:$jobid"
 fi
 
-if ! [ -e $name.bam ]; then
+if ! [ -e $name.bed ]; then
 	echo "\
 	sbatch --partition=norm --time=2-0 --cpus-per-task=$threads --mem=$mem --gres=lscratch:500 --error=$log --output=$log $wait_until --job-name=$name $script $fastq_map $name $ref $threads"
 	sbatch --partition=norm --time=2-0 --cpus-per-task=$threads --mem=$mem --gres=lscratch:500 --error=$log --output=$log $wait_until --job-name=$name $script $fastq_map $name $ref $threads > mapping_jid

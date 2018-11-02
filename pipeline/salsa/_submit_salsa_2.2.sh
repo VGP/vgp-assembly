@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ -z $1 ]] || [[ ! -e re_bases.txt ]]  ; then
-    echo "Usage: ./_submit_salsa_2.1.sh <fasta> [jobid]"
+    echo "Usage: ./_submit_salsa_2.2.sh <fasta> [jobid]"
     echo -e "\tSymlink fastq.map : <R1.fastq.gz path> <R2.fastq.gz path>"
     echo -e "\tSymlink <fasta> : reference .fasta file to align"
     echo -e "\tSymlink re_bases.txt : Restriction enzyme site bases. ex. GATC,GANTC"
@@ -69,7 +69,7 @@ cpus=4
 mem=32g
 name=$ref_name.salsa2.1
 log=logs/${name}.%A.log
-script=$VGP_PIPELINE/salsa/salsa2.1.sh
+script=$VGP_PIPELINE/salsa/salsa2.2.sh
 args="$ref_name ${ref_name}_salsa"
 walltime=2-0
 
