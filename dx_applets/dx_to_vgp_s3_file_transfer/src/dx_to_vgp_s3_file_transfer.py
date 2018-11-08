@@ -191,7 +191,7 @@ def s3_upload(target_s3, assigned_files, up_dir):
         cmd = 'set -o pipefail; dx cat {f_id} | tee {fifo_fn} | aws s3 cp - \'s3://{s3_bucket}/{dest_path}\' --expected-size {file_size} {adv_opts}'.format(
             f_id=f_info['id'], fifo_fn = temp_filename, s3_bucket=target_s3, dest_path=upload_dest, file_size=f_info['size'], adv_opts=options)
         print(cmd)
-        stream_proc = subprocess.Popen(cmd, shell=True)
+        stream_proc = subprocess.Popen(cmd, shell=True, executable='/bin/bash')
         md5sum = _run_cmd('md5sum {0}'.format(temp_filename), True)
         stream_stdout, stream_stderr = stream_proc.communicate()
         if stream_proc.returncode != 0:
