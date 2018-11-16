@@ -4,6 +4,7 @@
   "summary": "The genome assembly pipeline based on read clustering",
   "dxapi": "1.0.0",
   "version": "1.0.0",
+  "billTo": "org-dnanexus",
   "inputSpec": [
     {
       "name": "assemble_genome_fastagz",
