@@ -99,7 +99,19 @@
       "name": "scaffold_targz",
       "label": "Hybrid scaffold tar",
       "class": "file"
-    }
+    },
+    {
+            "name": "ncbi_scaffold_final",
+            "class": "file",
+            "label": "NCBI Scaffolded FASTA",
+            "patterns": ["*.fasta.gz"]
+        },
+        {
+            "name": "unscaffolded_final",
+            "class": "file",
+            "label": "Unscaffolded FASTA",
+            "patterns": ["*.fasta.gz"]
+        }
   ],
   "runSpec": {
     "file": "src/code.py",

@@ -1,7 +1,8 @@
 {
     "name": "bionano_hybrid_1enzyme",
     "title": "Bionano Hybrid Scaffolding - One Enzyme Workflow",
-    "version": "0.0.1",
+    "billTo": "org-dnanexus_science",
+    "version": "1.0.0",
     "inputSpec": [
         {
             "name": "refinefinal_merged_cmap",
@@ -110,6 +111,18 @@
             "name": "scaffold_final",
             "class": "array:file",
             "label": "Hybrid scaffold Final files"
+        },
+        {
+            "name": "ncbi_scaffold_final",
+            "class": "file",
+            "label": "NCBI Scaffolded FASTA",
+            "patterns": ["*.fasta.gz"]
+        },
+        {
+            "name": "unscaffolded_final",
+            "class": "file",
+            "label": "Unscaffolded FASTA",
+            "patterns": ["*.fasta.gz"]
         }
     ],
     "runSpec":

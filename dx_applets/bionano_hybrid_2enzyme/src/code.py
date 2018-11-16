@@ -3,6 +3,8 @@ import subprocess
 import glob
 import dxpy
 
+import dx_utils
+
 BIONANO_ROOT = '/Solve3.2.1_04122018/'
 SCRIPTS_DIR = os.path.join(BIONANO_ROOT, 'PIPELINE', 'Pipeline')
 
@@ -114,7 +116,17 @@ def main(**job_inputs):
         print("ERROR: No hybrid scaffolds produced.")
         hybrid_scaffold_log = os.path.join(output_dir, 'TGH.log')
         run_cmd('tail -n 50 {0}'.format(hybrid_scaffold_log))
-    return {
+    
+    scaffold_final_ncbi = glob.glob(
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+    unscaffolded_final = glob.glob(
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
+    output = {
         "scaffold_fasta": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final if f.endswith(".fasta")],
         "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final],
-        "scaffold_targz": dxpy.dxlink(output_id)}
+        "scaffold_targz": dxpy.dxlink(output_id),
+        "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
+        "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])
+        }
+
+    return output
