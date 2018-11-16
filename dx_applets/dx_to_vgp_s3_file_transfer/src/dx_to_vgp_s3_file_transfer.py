@@ -202,6 +202,7 @@ def s3_upload(target_s3, assigned_files, up_dir):
             create_sym_link(f_info['id'], fn, f_folder, target_s3, upload_dest, md5sum)
             with open('response.txt', 'a') as f:
                 f.write('copy: {0} to {1}'.format(fn, full_s3_path) + '\n')
+        os.remove(temp_filename)
 
     rspDXFile = dxpy.upload_local_file('response.txt')
     rspDXLink = dxpy.dxlink(rspDXFile.get_id())
