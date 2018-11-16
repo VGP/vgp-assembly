@@ -133,14 +133,15 @@ def locate_or_create_dx_drive():
         raise dxpy.AppInternalError(msg)
 
 
-def create_sym_link(f_id, f_name, f_folder, target_s3, upload_dest):
+def create_sym_link(f_id, f_name, f_folder, target_s3, upload_dest, md5sum):
     dx_drive = locate_or_create_dx_drive()
     # create new dx file
     sym_link_details = {'project': dxpy.PROJECT_CONTEXT_ID,
-                        'folder': f_folder,
+                        'folder': '/{0}'.format(f_folder),
                         'parents': True,
                         'name': f_name,
                         'drive': dx_drive['id'],
+                        'md5sum': md5sum,
                         'symlinkPath': {
                             'container': '{region}:{bucket}'.format(region='us-east-1', bucket=target_s3),
                             'object': str(upload_dest)
@@ -177,26 +178,30 @@ def s3_upload(target_s3, assigned_files, up_dir):
     for i, f_info in enumerate(assigned_files):
         # Set upload dir
         fn = f_info['name']
-        f_folder = f_info['folder']
-        upload_dest = up_dir + f_folder
-        if upload_dest[-1] != '/':  # Files in project root have folder='/'
-            upload_dest += '/'
-        upload_dest += fn
+        f_folder = f_info['folder'].strip('/')
+        upload_dest = os.path.join(up_dir, f_folder, fn)
+        full_s3_path = 's3://{0}'.format(os.path.join(target_s3, upload_dest))
+
         # Create cp command
         print('Uploading File name: ' + fn)
-        cmd = 'set -o pipefail; dx cat {f_id} | aws s3 cp - \'s3://{s3_bucket}/{dest_path}\' --expected-size {file_size} {adv_opts}'.format(
-            f_id=f_info['id'], s3_bucket=target_s3, dest_path=upload_dest, file_size=f_info['size'], adv_opts=options)
-        try:
-            _run_cmd(cmd, True)
-        except subprocess.CalledProcessError:
+        temp_filename = 'temp_file'
+        _run_cmd('mkfifo {0}'.format(temp_filename))
+        cmd = 'set -o pipefail; dx cat {f_id} | tee {fifo_fn} | aws s3 cp - \'{full_s3_path}\' --expected-size {file_size} {adv_opts}'.format(
+            f_id=f_info['id'], fifo_fn = temp_filename, full_s3_path=full_s3_path, file_size=f_info['size'], adv_opts=options)
+        print(cmd)
+        stream_proc = subprocess.Popen(cmd, shell=True, executable='/bin/bash')
+        md5sum = _run_cmd('md5sum {0}'.format(temp_filename), True).split()[0]
+        print('{0}'.format(md5sum))
+        stream_stdout, stream_stderr = stream_proc.communicate()
+        if stream_proc.returncode != 0:
             print(str(fn) + ' failed upload')
             with open('response.txt', 'a') as f:
-                f.write('FAILED copy: {0} to s3://{1}/{2}'.format(fn, target_s3, upload_dest) + '\n')
+                f.write('FAILED copy: {0} to {1}'.format(fn, full_s3_path) + '\n')
         else:
             print(str(fn) + ' successful upload')
-            create_sym_link(f_info['id'], fn, f_folder, target_s3, upload_dest)
+            create_sym_link(f_info['id'], fn, f_folder, target_s3, upload_dest, md5sum)
             with open('response.txt', 'a') as f:
-                f.write('copy: {0} to s3://{1}/{2}'.format(fn, target_s3, upload_dest) + '\n')
+                f.write('copy: {0} to {1}'.format(fn, full_s3_path) + '\n')
 
     rspDXFile = dxpy.upload_local_file('response.txt')
     rspDXLink = dxpy.dxlink(rspDXFile.get_id())
@@ -244,7 +249,7 @@ def main(worker_max, f_ids, bandwidth, species_name=None):
     dir_file = os.path.join(S3_ROOT_FOLDER, species_name, projdx.name)
 
     # Trim trailing / in upload dir
-    dir_file = dir_file.rstrip('/')
+    dir_file = dir_file.strip('/')
     print('Upload directory: ' + dir_file)
 
     # Programatically split files into equal list based on size and max workers
