@@ -1,0 +1,570 @@
+{
+  "name": "falcon_and_unzip_assembly",
+  "stages": [
+    {
+      "id": "bam_to_fasta",
+      "name": "BAM to FASTA",
+      "executable": "app-bam_to_fasta/5.0.4",
+      "folder": "bam_to_fasta"
+    },
+    {
+      "id": "falcon_0_create_dazzler_db",
+      "name": "Create Raw Reads Dazzler DB",
+      "executable": "app-create_dazzler_db/1.9.2",
+      "folder": "stage_1",
+      "input": {
+        "include_secondary_reads": true,
+        "input_reads": {
+          "$dnanexus_link": {
+            "outputField": "output_fastas",
+            "stage": "bam_to_fasta"
+          }
+        },
+        "file_prefix": "raw_reads",
+        "min_read_length": 500,
+        "target_coverage": 50
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x8"
+        }
+      }
+    },
+    {
+      "id": "falcon_0_calc_distribution",
+      "name": "Pre-Assembly Calculate Read Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "stage_0",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "inputField": "input_reads",
+              "stage": "falcon_0_create_dazzler_db"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "falcon_0_hpc_tanmask",
+      "executable": "app-hpc_tanmask/1.9.1",
+      "folder": "stage_1",
+      "input": {
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "dazzler_db",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x8"
+        }
+      }
+    },
+    {
+      "id": "falcon_0_hpc_repmask",
+      "executable": "app-hpc_repmask/1.9.2",
+      "folder": "stage_1",
+      "input": {
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_0_hpc_tanmask"
+          }
+        },
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "use_mask": true,
+        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x16"
+        }
+      }
+    },
+    {
+      "id": "falcon_0_hpc_daligner",
+      "executable": "app-fc_hpc_daligner/1.9.0",
+      "folder": "stage_1",
+      "input": {
+        "trim": false,
+        "daligner_arguments": "-k16 -e0.70 -s1000 -t16 -l1000 -h64 -w7 ",
+        "sync_time": 1,
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_0_hpc_repmask"
+          }
+        },
+        "rerun_consensus": false,
+        "generate_consensus_fastas": "Falcon sense",
+        "file_prefix": "raw_reads",
+        "min_idt": 0.7,
+        "min_cov": 4,
+        "max_n_read": 200,
+        "length_cutoff": {
+          "$dnanexus_link": {
+            "outputField": "cutoff",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x16"
+        }
+      }
+    },
+    {
+      "id": "falcon_1_calc_distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "stage_1",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "consensus_fastas",
+              "stage": "falcon_0_hpc_daligner"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "falcon_1_create_dazzler_db",
+      "executable": "app-create_dazzler_db/1.9.2",
+      "folder": "stage_2",
+      "input": {
+        "include_secondary_reads": true,
+        "input_reads": [
+          {
+            "$dnanexus_link": {
+              "outputField": "consensus_fastas",
+              "stage": "falcon_0_hpc_daligner"
+            }
+          }
+        ],
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "file_prefix": "preads",
+        "min_read_length": 500,
+        "target_coverage": 20
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x8"
+        }
+      }
+    },
+    {
+      "id": "falcon_1_hpc_tanmask",
+      "executable": "app-hpc_tanmask/1.9.1",
+      "folder": "stage_1",
+      "input": {
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "dazzler_db",
+            "stage": "falcon_1_create_dazzler_db"
+          }
+        },
+        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x8"
+        }
+      }
+    },
+    {
+      "id": "falcon_1_hpc_repmask",
+      "executable": "app-hpc_repmask/1.9.2",
+      "folder": "stage_1",
+      "input": {
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_1_hpc_tanmask"
+          }
+        },
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "use_mask": true,
+        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x16"
+        }
+      }
+    },
+    {
+      "id": "falcon_1_hpc_daligner",
+      "executable": "app-fc_hpc_daligner/1.9.0",
+      "folder": "stage_2",
+      "input": {
+        "generate_consensus_fastas": "None",
+        "dazzler_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_1_hpc_repmask"
+          }
+        },
+        "sync_time": 1,
+        "rerun_consensus": false,
+        "length_cutoff": {
+          "$dnanexus_link": {
+            "outputField": "cutoff",
+            "stage": "falcon_1_create_dazzler_db"
+          }
+        },
+        "file_prefix": "preads",
+        "num_threads_per_daligner_job": 4,
+        "daligner_arguments": "-k20 -e.96 -s1000 -t32 -l2500 -h256 "
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x16"
+        }
+      }
+    },
+    {
+      "id": "falcon_2_asm",
+      "executable": "app-falcon_asm/1.9.1",
+      "folder": "stage_3",
+      "input": {
+        "input_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_1_hpc_repmask"
+          }
+        },
+        "lfc": false,
+        "min_len": 500,
+        "min_cov": 2,
+        "max_diff": 40,
+        "max_cov": 80,
+        "return_preads_for_falcon": true,
+        "las_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "output_files",
+              "stage": "falcon_1_hpc_daligner"
+            }
+          }
+        ],
+        "bestn": 10
+      }
+    },
+    {
+      "id": "falcon_2_calc_distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "stage_3",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "primary_contig_fasta",
+              "stage": "falcon_2_asm"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "unzip_0_track_reads",
+      "name": "track_reads",
+      "executable": "app-unzip_0_track_reads/1.0.0",
+      "folder": "unzip_stage_1",
+      "input": {
+        "sg_edges_list": {
+          "$dnanexus_link": {
+            "outputField": "sg_edges_list",
+            "stage": "falcon_2_asm"
+          }
+        },
+        "ctg_paths": {
+          "$dnanexus_link": {
+            "outputField": "ctg_paths",
+            "stage": "falcon_2_asm"
+          }
+        },
+        "preads_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_1_hpc_repmask"
+          }
+        },
+        "preads_las_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "output_files",
+              "stage": "falcon_1_hpc_daligner"
+            }
+          }
+        ],
+        "raw_reads_fasta_files": {
+          "$dnanexus_link": {
+            "outputField": "output_fastas",
+            "stage": "bam_to_fasta"
+          }
+        },
+        "utg_data": {
+          "$dnanexus_link": {
+            "outputField": "utg_data",
+            "stage": "falcon_2_asm"
+          }
+        },
+        "raw_reads_db": {
+          "$dnanexus_link": {
+            "outputField": "output_db",
+            "stage": "falcon_0_hpc_repmask"
+          }
+        },
+        "raw_reads_las_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "output_files",
+              "stage": "falcon_0_hpc_daligner"
+            }
+          }
+        ],
+        "primary_contigs_fasta": {
+          "$dnanexus_link": {
+            "outputField": "primary_contig_fasta",
+            "stage": "falcon_2_asm"
+          }
+        }
+      }
+    },
+    {
+      "id": "unzip_1_align_and_phase",
+      "name": "align_and_phase",
+      "executable": "app-unzip_1_align_and_phase/1.0.0",
+      "folder": "unzip_stage_2",
+      "input": {
+        "raw_read_ids": {
+          "$dnanexus_link": {
+            "outputField": "raw_read_ids",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "pread_to_contigs": {
+          "$dnanexus_link": {
+            "outputField": "pread_to_contigs",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "pread_ids": {
+          "$dnanexus_link": {
+            "outputField": "pread_ids",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "contig_list": {
+          "$dnanexus_link": {
+            "outputField": "contig_list",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "contig_reads_fasta_files": {
+          "$dnanexus_link": {
+            "outputField": "contig_reads_fasta_files",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "contig_ref_fasta_files": {
+          "$dnanexus_link": {
+            "outputField": "contig_ref_fasta_files",
+            "stage": "unzip_0_track_reads"
+          }
+        }
+      }
+    },
+    {
+      "id": "unzip_2_haplotype_assembly",
+      "name": "haplotype_assembly",
+      "executable": "app-unzip_2_haplotype_assembly/1.0.2",
+      "folder": "unzip_stage_3",
+      "input": {
+        "sg_edges_list": {
+          "$dnanexus_link": {
+            "inputField": "sg_edges_list",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "ctg_paths": {
+          "$dnanexus_link": {
+            "inputField": "ctg_paths",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "preads_db": {
+          "$dnanexus_link": {
+            "inputField": "preads_db",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "preads_for_falcon": {
+          "$dnanexus_link": {
+            "outputField": "preads_for_falcon",
+            "stage": "falcon_2_asm"
+          }
+        },
+        "preads_las_files": {
+          "$dnanexus_link": {
+            "inputField": "preads_las_files",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "rid_to_phase": {
+          "$dnanexus_link": {
+            "outputField": "rid_to_phase",
+            "stage": "unzip_1_align_and_phase"
+          }
+        },
+        "utg_data": {
+          "$dnanexus_link": {
+            "inputField": "utg_data",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "contig_list": {
+          "$dnanexus_link": {
+            "outputField": "contig_list",
+            "stage": "unzip_0_track_reads"
+          }
+        }
+      }
+    },
+    {
+      "id": "unzip_3_haplotype_track_reads",
+      "name": "haplotype_track_reads",
+      "executable": "app-unzip_3_haplotype_track_reads/1.0.3",
+      "folder": "unzip_stage_4",
+      "input": {
+        "raw_read_ids": {
+          "$dnanexus_link": {
+            "outputField": "raw_read_ids",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "all_h_ctg_edges": {
+          "$dnanexus_link": {
+            "outputField": "all_h_ctg_edges",
+            "stage": "unzip_2_haplotype_assembly"
+          }
+        },
+        "raw_reads_bams": {
+          "$dnanexus_link": {
+            "inputField": "input_bams",
+            "stage": "bam_to_fasta"
+          }
+        },
+        "pread_ids": {
+          "$dnanexus_link": {
+            "outputField": "pread_ids",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "all_p_ctg_edges": {
+          "$dnanexus_link": {
+            "outputField": "all_p_ctg_edges",
+            "stage": "unzip_2_haplotype_assembly"
+          }
+        },
+        "raw_reads_db": {
+          "$dnanexus_link": {
+            "inputField": "raw_reads_db",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "raw_reads_las_files": {
+          "$dnanexus_link": {
+            "inputField": "raw_reads_las_files",
+            "stage": "unzip_0_track_reads"
+          }
+        },
+        "all_h_ctg_ids": {
+          "$dnanexus_link": {
+            "outputField": "all_h_ctg_ids",
+            "stage": "unzip_2_haplotype_assembly"
+          }
+        },
+        "all_phased_reads": {
+          "$dnanexus_link": {
+            "outputField": "all_phased_reads",
+            "stage": "unzip_1_align_and_phase"
+          }
+        },
+        "max_num_jobs": 50
+      }
+    },
+    {
+      "id": "unzip_4_haplotype_polish",
+      "name": "haplotype_polish",
+      "executable": "app-unzip_4_haplotype_polish/1.0.6",
+      "folder": "unzip_stage_5",
+      "input": {
+        "all_p_ctg": {
+          "$dnanexus_link": {
+            "outputField": "all_p_ctg",
+            "stage": "unzip_2_haplotype_assembly"
+          }
+        },
+        "all_h_ctg": {
+          "$dnanexus_link": {
+            "outputField": "all_h_ctg",
+            "stage": "unzip_2_haplotype_assembly"
+          }
+        },
+        "contigs_file": {
+          "$dnanexus_link": {
+            "outputField": "contigs_file",
+            "stage": "unzip_3_haplotype_track_reads"
+          }
+        },
+        "mapped_reads": {
+          "$dnanexus_link": {
+            "outputField": "mapped_reads",
+            "stage": "unzip_3_haplotype_track_reads"
+          }
+        }
+      }
+    }
+  ]
+}
