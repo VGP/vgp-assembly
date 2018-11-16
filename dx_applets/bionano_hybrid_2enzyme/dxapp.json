@@ -2,6 +2,7 @@
   "name": "bionano_hybrid_2enzyme",
   "title": "Bionano Hybrid Scaffolding - Two Enzyme Workflow",
   "dxapi": "1.0.0",
+  "version": "1.0.0",
   "inputSpec": [
     {
       "name": "bng_enzyme1",
