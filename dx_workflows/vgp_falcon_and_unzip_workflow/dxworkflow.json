@@ -10,7 +10,7 @@
     {
       "id": "falcon_0_create_dazzler_db",
       "name": "Create Raw Reads Dazzler DB",
-      "executable": "app-create_dazzler_db/1.9.2",
+      "executable": "app-create_dazzler_db/1.9.3",
       "folder": "stage_1",
       "input": {
         "include_secondary_reads": true,
@@ -153,7 +153,7 @@
     },
     {
       "id": "falcon_1_create_dazzler_db",
-      "executable": "app-create_dazzler_db/1.9.2",
+      "executable": "app-create_dazzler_db/1.9.3",
       "folder": "stage_2",
       "input": {
         "include_secondary_reads": true,
@@ -374,7 +374,7 @@
     {
       "id": "unzip_1_align_and_phase",
       "name": "align_and_phase",
-      "executable": "app-unzip_1_align_and_phase/1.0.0",
+      "executable": "app-unzip_1_align_and_phase/1.0.1",
       "folder": "unzip_stage_2",
       "input": {
         "raw_read_ids": {
