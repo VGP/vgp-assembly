@@ -102,13 +102,6 @@ def main(**job_inputs):
     scaffold_cmd += ' {args_xml}'.format(args_xml=args_xml_filename)
     run_cmd(scaffold_cmd)
 
-    tar_name = "hybrid_scaffold_output.tar.gz"
-    tar_cmd = "tar czvf {tar_name} {outdir}".format(
-        tar_name=tar_name,
-        outdir=output_dir)
-    run_cmd(tar_cmd)
-    output_id = dxpy.upload_local_file(tar_name)
-
     scaffold_final = glob.glob(
         os.path.join(output_dir, 'TGH_M1', 'AGPExport', '*HYBRID*'))
 
@@ -124,9 +117,17 @@ def main(**job_inputs):
     output = {
         "scaffold_fasta": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final if f.endswith(".fasta")],
         "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final],
-        "scaffold_targz": dxpy.dxlink(output_id),
         "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
         "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])
         }
+    
+    tar_name = "hybrid_scaffold_output.tar.gz"
+    tar_cmd = "tar czvf {tar_name} {outdir}".format(
+        tar_name=tar_name,
+        outdir=output_dir)
+    run_cmd(tar_cmd)
+    output_id = dxpy.upload_local_file(tar_name)
+
+    output["scaffold_targz"] = dxpy.dxlink(output_id)
 
     return output
