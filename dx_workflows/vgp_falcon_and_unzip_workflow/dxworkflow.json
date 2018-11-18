@@ -1,5 +1,6 @@
 {
-  "name": "falcon_and_unzip_assembly",
+  "name": "vgp_falcon_and_unzip_assembly",
+  "title": "Falcon and Falcon Unzip Assembly Workflow",
   "stages": [
     {
       "id": "bam_to_fasta",
