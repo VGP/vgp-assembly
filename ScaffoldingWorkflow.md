@@ -137,6 +137,17 @@ The INTERMEDIATES go under s3://genomeark/species/species_name/species_id/assemb
 DNAnexus Apps:
 * DNAnexus to VGP S3 Exporter [https://platform.dnanexus.com/app/dx_to_vgp_s3_file_transfer]
 
+### Future Work
+
+Proposed streamlined workflow:
+1. Single workflow runs Falcon + Falcon Unzip + Purge Haplotigs Step 1
+2. Second Workflow runs Purge Haplotigs through Freebayes Polish
+
+Some choices would be removed from the workflow:
+* Bionano hybrid scaffolding will always be 1 enzyme (DLE)
+* Minimap2 will be used for Arrow polishing for all asssemblies
+
+
 ### Notes
 
 Apps are available to `org-vgp` members on DNAnexus. Please contact VGP administrators to be added.
