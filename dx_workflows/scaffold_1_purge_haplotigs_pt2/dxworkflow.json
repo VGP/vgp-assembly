@@ -1,0 +1,11 @@
+{
+  "name": "scaffold_1_purge_haplotigs_pt2",
+  "title": "Scaffold1 Purge Haplotigs Part 2",
+  "version": "1.5.0",
+  "stages": [
+    {
+      "id": "purge_haplotigs",
+      "executable": "app-purge_haplotigs_contigcov_and_purge/0.0.1"
+    }
+  ]
+}

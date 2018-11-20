@@ -1,0 +1,53 @@
+{
+  "name": "vgp_rename_contigs",
+  "title": "Rename contigs",
+  "summary": "rename_contigs",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "input_fasta",
+      "label": "Input fasta",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "prefix",
+      "label": "Prefix",
+      "class": "string",
+      "optional": true,
+      "default": "contig",
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output_fasta",
+      "label": "Output fasta",
+      "class": "file",
+      "patterns": [
+        "*.fasta.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "python2.7",
+    "file": "src/rename_contigs.py",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem1_ssd1_x4"}}},
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}}}
+                   }
+}

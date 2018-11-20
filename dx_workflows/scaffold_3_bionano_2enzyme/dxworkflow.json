@@ -1,0 +1,11 @@
+{
+  "name": "scaffold_3_bionano_2enzyme",
+  "title": "Scaffold3 Bionano 2 Enzyme Scaffold",
+  "version": "1.5.0",
+  "stages": [
+    {
+      "id": "bionano_hybrid",
+      "executable": "app-bionano_hybrid_2enzyme/0.0.1"
+    }
+  ]
+}

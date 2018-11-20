@@ -3,7 +3,7 @@ import subprocess
 import glob
 import dxpy
 
-
+import dx_utils
 BIONANO_ROOT = '/Solve3.2.1_04122018/'
 SCRIPTS_DIR = os.path.join(BIONANO_ROOT, 'PIPELINE', 'Pipeline')
 
@@ -125,13 +125,10 @@ def main(**job_inputs):
 
     run_cmd('tree {0}'.format(output_dir))
 
-    tar_name = "hybrid_scaffold_output.tar.gz"
-    tar_cmd = "tar czvf {tar_name} {outdir}".format(
-        tar_name=tar_name,
-        outdir=output_dir)
-    run_cmd(tar_cmd)
-    output_id = dxpy.upload_local_file(tar_name)
-
+    scaffold_final_ncbi = glob.glob(
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+    unscaffolded_final = glob.glob(
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
     scaffold_final = glob.glob(
         os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.fasta'))
     scaffold_final.extend(glob.glob(
@@ -142,7 +139,19 @@ def main(**job_inputs):
         os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD*'))
     cut_and_conflict = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', 'conflicts*.txt'))
     cut_and_conflict.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', '*_annotations.bed')))
-    return {"scaffold_final": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final],
-            "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_output if f not in scaffold_final],
-            "scaffold_targz": dxpy.dxlink(output_id),
-            "cut_and_conflict": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in cut_and_conflict]}
+    output = {"scaffold_final": [dx_utils.gzip_and_upload(f) for f in scaffold_final],
+            "scaffold_output": [dx_utils.gzip_and_upload(f) for f in scaffold_output if f not in scaffold_final],
+            "cut_and_conflict": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in cut_and_conflict],
+            "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
+            "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])}
+    
+    tar_name = "hybrid_scaffold_output.tar.gz"
+    tar_cmd = "tar czvf {tar_name} {outdir}".format(
+        tar_name=tar_name,
+        outdir=output_dir)
+    dx_utils.run_cmd(tar_cmd)
+    output_id = dxpy.upload_local_file(tar_name)
+    
+    output["scaffold_targz"] = dxpy.dxlink(output_id)
+    return output
+
