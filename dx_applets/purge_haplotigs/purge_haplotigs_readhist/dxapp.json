@@ -1,7 +1,7 @@
 {
   "name": "purge_haplotigs_readhist",
-  "title": "readhist",
-  "summary": "Stage 1 of Purge Haplotigs pipeline to help with curating heterozygous diploid genome assemblies",
+  "title": "Purge Haplotigs Readhist",
+  "summary": "Create a read coverage histogram to determine cutoff for Purge Haplotigs",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
