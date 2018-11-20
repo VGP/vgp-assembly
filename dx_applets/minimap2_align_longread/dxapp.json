@@ -1,6 +1,7 @@
 {
    "name": "minimap2_align_longread",
    "title": "Minimap2 Align for Long Reads",
+   "billTo": "org-dnanexus",
    "inputSpec": [
     {
        "name": "reads",
@@ -163,7 +164,7 @@
                         }
    },
    "summary": "minimap2_align",
-   "version": "1.0.0",
+   "version": "0.0.1",
    "dxapi": "1.0.0",
    "categories": ["Read Mapping"]
 }
