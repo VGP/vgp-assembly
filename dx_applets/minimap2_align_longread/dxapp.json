@@ -1,0 +1,169 @@
+{
+   "name": "minimap2_align_longread",
+   "title": "Minimap2 Align for Long Reads",
+   "inputSpec": [
+    {
+       "name": "reads",
+       "label": "Reads",
+       "patterns": ["*.fastq", "*.fasta", "*.fastq.gz", 
+                    "*.fasta.gz", "*.fa.gz", "*.fq.gz", "*.fq", "*.fa"],
+       "class": "array:file",
+       "optional": false
+    },
+    {
+        "name": "chunk_size",
+        "label": "Subjob chunk size in GB",
+        "class": "int",
+        "optional": false,
+        "default": 5
+     },
+    {
+        "name": "datatype",
+        "label": "Input data format",
+        "class": "string",
+        "optional": false,
+        "choices": ["PacBio", "ONT"],
+        "default": "PacBio"
+     },
+    {
+        "name": "reads_indices",
+        "label": "(Optional) PacBio reads PBI indices",
+        "patterns": ["*.pbi"],
+        "class": "array:file",
+        "optional": true
+     },
+    {
+        "name": "genome_fastagz",
+        "label": "Reference genome",
+        "patterns": [
+          "*.fasta",
+          "*.fasta.gz",
+          "*.fa",
+          "*.fa.gz"
+       ],
+       "class": "file",
+       "optional": false
+    },
+    {
+        "name": "genome_mmi",
+        "label": "Reference genome index",
+        "patterns": [
+          "*.mmi"
+       ],
+       "class": "file",
+       "optional": true
+    },
+    {
+       "name": "output_prefix",
+       "label": "Output prefix",
+       "default": "mapped_reads",
+       "class": "string",
+       "optional": false
+    }
+ ],
+   "outputSpec": [
+      {
+         "patterns": [
+            "*.bam"
+         ],
+         "class": "array:file",
+         "name": "bam_files",
+         "label": "Mapped reads"
+      },
+      {
+         "patterns": [
+            "*.bai"
+         ],
+         "class": "array:file",
+         "name": "bai_files",
+         "label": "Mapped reads indices"
+      },
+      {
+         "patterns": [
+            "*.mmi"
+         ],
+         "class": "file",
+         "optional": true,
+         "name": "genome_mmi",
+         "label": "Reference genome index"
+      }
+   ],
+   "runSpec": {
+      "file": "src/minimap2_align.py",
+      "release": "14.04",
+      "interpreter": "python2.7",
+      "distribution": "Ubuntu",
+      "restartableEntryPoints": "all",
+      "timeoutPolicy": {
+      "*": {
+        "hours": 12
+      }
+    }
+   },
+    "regionalOptions": {
+        "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                          "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "id": "record-FPkYqgj0b1QY8ZkY3GVQkqXb",
+                                "stages": ["map_reads_pbmm2"]},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBx3xvj0PZf8qy5yG6qv1ygQ",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },
+        "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "id": "record-FPJ8ZX84PxPF2xzk1k7yVYg1",
+                                "stages": ["map_reads_pbmm2"]},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJXk842G7PQq5yJ9f667jF",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },
+        "azure:westeurope": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ9K68B5Zq66Z8k1kyVV32p"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FPXpy20BzJQX99Jf6qvZq2J3",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },
+        "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ269Q57k55p7XF1kjB8j7B"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJYJ85qbPpxY6YFpjb374k",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },      
+        "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ8qq02yvv5p7XF1kjBj9vJ"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJY6Q2p24k1B8Q115zZg97",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },          
+        "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                         "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ2Q9j9GjBX0j7p1jK2BBvf"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJg009715fYBB50F25PQYV",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        }
+   },
+   "summary": "minimap2_align",
+   "version": "1.0.0",
+   "dxapi": "1.0.0",
+   "categories": ["Read Mapping"]
+}
