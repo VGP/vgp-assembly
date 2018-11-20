@@ -5,7 +5,7 @@ def rename_contigs():
         if l.find('.fasta.gz')>0:
             continue
         if l.startswith('>'):
-            if l != l.strip().split('|')[0]:
+            if l != l.split('|')[0]:
                 raise Exception("Input FASTA header contains invalid character '|'")
             l = l.strip().split('|')[0]
         if len(l.strip())>0:
