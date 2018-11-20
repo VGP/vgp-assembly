@@ -1,5 +1,5 @@
 {
-  "name": "rename_contigs",
+  "name": "vgp_rename_contigs",
   "title": "Rename contigs",
   "summary": "rename_contigs",
   "dxapi": "1.0.0",
