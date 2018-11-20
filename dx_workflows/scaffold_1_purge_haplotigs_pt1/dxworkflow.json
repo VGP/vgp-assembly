@@ -1,6 +1,7 @@
 {
   "name": "scaffold_1_purge_haplotigs_pt1",
   "title": "Scaffold1 Purge Haplotigs Part 1",
+  "version": "1.5.0",
   "stages": [
     {
       "id": "rename_contigs",
