@@ -1,0 +1,46 @@
+{
+  "name": "scaffold_4_salsa",
+  "title": "Scaffold 4 Salsa Scaffolding",
+  "stages": [
+    {
+      "id": "bwa_fasta_index",
+      "executable": "app-bwa_fasta_indexer/2.0.1"
+    },
+    {
+      "id": "arima_mapping",
+      "executable": "app-arima_mapping/0.0.1",
+      "input": {
+        "ref_genome": {
+          "$dnanexus_link": {
+            "outputField": "genomeindex_targz",
+            "stage": "bwa_fasta_index"
+          }
+        }
+      }
+    },
+    {
+      "id": "salsa2",
+      "executable": "app-salsa/2.1.0",
+      "input": {
+        "hic_alignments": [
+          {
+            "$dnanexus_link": {
+              "outputField": "output_bam",
+              "stage": "arima_mapping"
+            }
+          }
+        ],
+        "input_assembly": {
+          "$dnanexus_link": {
+            "inputField": "genome_fastagz",
+            "stage": "bwa_fasta_index"
+          }
+        }
+      }
+    },
+    {
+      "id": "concat",
+      "executable": "app-file_concatenator/1.3.0"
+    }
+  ]
+}

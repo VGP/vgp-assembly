@@ -1,0 +1,138 @@
+{
+  "name": "Scaffold 6 Freebayes Polish",
+  "title": "Scaffold 6 Freebayes Polish",
+  "stages": [
+    {
+      "id": "stage-FPkpPG80j3b97J1X1496BBPb",
+      "executable": "app-10x_longranger_mkref/2.2.2"
+    },
+    {
+      "id": "stage-FPkpPGj0j3bPzBz0F6QKZy0Y",
+      "executable": "app-10x_longranger_align/2.2.2",
+      "folder": "/",
+      "input": {
+        "output_prefix": "longranger_round1",
+        "ref": {
+          "$dnanexus_link": {
+            "outputField": "ref_targz",
+            "stage": "stage-FPkpPG80j3b97J1X1496BBPb"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FPkpQF80j3bBgYFJK9b58P31",
+      "executable": "app-freebayes/1.3.1",
+      "input": {
+        "genome_fastagz": {
+          "$dnanexus_link": {
+            "inputField": "ref_fasta",
+            "stage": "stage-FPkpPG80j3b97J1X1496BBPb"
+          }
+        },
+        "sorted_bams": [
+          {
+            "$dnanexus_link": {
+              "outputField": "sorted_bam",
+              "stage": "stage-FPkpPGj0j3bPzBz0F6QKZy0Y"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage-FPkpQjQ0j3b53y8V14jF4P2V",
+      "executable": "app-bcftools_consensus/0.0.1",
+      "input": {
+        "ref_fasta": {
+          "$dnanexus_link": {
+            "inputField": "ref_fasta",
+            "stage": "stage-FPkpPG80j3b97J1X1496BBPb"
+          }
+        },
+        "input_vcfs": [
+          {
+            "$dnanexus_link": {
+              "outputField": "variants_vcfgz",
+              "stage": "stage-FPkpQF80j3bBgYFJK9b58P31"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage-FPkpQKj0j3b488Yz8v3Jj322",
+      "executable": "app-10x_longranger_mkref/2.2.2",
+      "input": {
+        "ref_fasta": {
+          "$dnanexus_link": {
+            "outputField": "consensus_fasta",
+            "stage": "stage-FPkpQjQ0j3b53y8V14jF4P2V"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FPkpQKj0j3b4z3x113k160Jb",
+      "executable": "app-10x_longranger_align/2.2.2",
+      "folder": "/",
+      "input": {
+        "ref": {
+          "$dnanexus_link": {
+            "outputField": "ref_targz",
+            "stage": "stage-FPkpQKj0j3b488Yz8v3Jj322"
+          }
+        },
+        "output_prefix": "longranger_round2",
+        "fastq_tars": [
+          {
+            "$dnanexus_link": {
+              "inputField": "fastq_tars",
+              "stage": "stage-FPkpPGj0j3bPzBz0F6QKZy0Y"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage-FPkpQfj0j3bPzBz0F6QKZy18",
+      "executable": "app-freebayes/1.3.1",
+      "input": {
+        "genome_fastagz": {
+          "$dnanexus_link": {
+            "outputField": "consensus_fasta",
+            "stage": "stage-FPkpQjQ0j3b53y8V14jF4P2V"
+          }
+        },
+        "sorted_bams": [
+          {
+            "$dnanexus_link": {
+              "outputField": "sorted_bam",
+              "stage": "stage-FPkpQKj0j3b4z3x113k160Jb"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage-FPkpQk80j3b288FKJ5Y12yjV",
+      "executable": "app-bcftools_consensus/0.0.1",
+      "input": {
+        "ref_fasta": {
+          "$dnanexus_link": {
+            "outputField": "consensus_fasta",
+            "stage": "stage-FPkpQjQ0j3b53y8V14jF4P2V"
+          }
+        },
+        "input_vcfs": [
+          {
+            "$dnanexus_link": {
+              "outputField": "variants_vcfgz",
+              "stage": "stage-FPkpQfj0j3bPzBz0F6QKZy18"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
