@@ -1,0 +1,64 @@
+{
+  "name": "purge_haplotigs_readhist",
+  "title": "readhist",
+  "summary": "Stage 1 of Purge Haplotigs pipeline to help with curating heterozygous diploid genome assemblies",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "bam",
+      "label": "BAM",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bam"
+      ],
+      "help": "BAM file produces from mapping subreads to the priamry contigs."
+    },
+	{
+	  "name": "genome",
+      "label": "Reference Genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [ "*.fa.gz", "*.fasta.gz" ],
+      "help": "The reference genome for this species, may be primary contigs from FALCON-unzip"	
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "genome_coverage",
+      "label": "Genome Coverage",
+      "class": "file",
+      "patterns": [ "*.gencov" ],
+      "help": "A file containing genome coverage for the raw reads aligned to the reference genome."
+    },
+    {
+      "name": "histogram",
+      "label": "Histogram Image",
+      "class": "file",
+      "patterns": [
+        "*.pdf"
+      ],
+      "help": "A histogram to use to identify haploid peaks corresponding incorrect assignment of haplotypes in primary contigs."
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 128
+      }
+    },
+    "interpreter": "bash",
+    "release": "14.04",
+    "distribution": "Ubuntu",
+    "file": "src/code.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": { "instanceType": "mem1_ssd1_x16"}
+      },
+      "assetDepends": [ {"id": "record-FPJfkZQ0j07v25JXGpGyfpy4", "name": "purge_haplotigs_ubuntu14.04"} ]	
+    }
+  }
+}
