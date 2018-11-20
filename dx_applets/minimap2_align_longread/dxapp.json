@@ -111,6 +111,56 @@
                                 "id": "record-FBx3xvj0PZf8qy5yG6qv1ygQ",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
+                        },
+        "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "id": "record-FPJ8ZX84PxPF2xzk1k7yVYg1",
+                                "stages": ["map_reads_pbmm2"]},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJXk842G7PQq5yJ9f667jF",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },
+        "azure:westeurope": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ9K68B5Zq66Z8k1kyVV32p"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FPXpy20BzJQX99Jf6qvZq2J3",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },
+        "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ269Q57k55p7XF1kjB8j7B"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJYJ85qbPpxY6YFpjb374k",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },      
+        "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+                             "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ8qq02yvv5p7XF1kjBj9vJ"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJY6Q2p24k1B8Q115zZg97",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
+                        },          
+        "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+                         "assetDepends": [
+                                {"name": "minimap2_pb_asset",
+                                "stages": ["map_reads_pbmm2"],
+                                "id": "record-FPJ2Q9j9GjBX0j7p1jK2BBvf"},
+                                {"name": "minimap2_asset",
+                                "id": "record-FBxJg009715fYBB50F25PQYV",
+                                "stages": ["run_minimap_index", "map_reads_minimap2"]}
+                            ]
                         }
    },
    "summary": "minimap2_align",
