@@ -37,6 +37,7 @@ main() {
     echo "Done!"
 
     mv subreads.sorted.bam.gencov "${genome_prefix}".gencov
+    mv coverage_histo.pdf "${genome_prefix}".coverage_histo.pdf
 
     gencov_file_id=$(dx upload "${genome_prefix}".gencov --brief)
     dx-jobutil-add-output genome_coverage "${gencov_file_id}" --class=file
