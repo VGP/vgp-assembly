@@ -13,17 +13,21 @@ Purge Haplotigs [https://bitbucket.org/mroachawri/purge_haplotigs] identifies he
 
 *INPUT*: Primary contig assembly (p1.fasta.gz), raw PacBio reads.
 *Steps*:
+0. Remove '|' characters from Unzip contigs (these are added by Arrow and break Purge Haplotigs)
 1. Align PacBio reads to Primary Contig using *Minimap2*
-2. Create histogram of read coverage using *readhist*
-3. Manually determine threshold by looking at histogram and finding where the second peak begins (If there's no second peak, you can continue to next scaffolding step.)
+2. Merge output BAM files into a single Merged BAM
+3. Create histogram of read coverage using *purge_haplotigs readhist*
+3. Manually determine threshold by looking at histogram and finding where the second peak cutoffs are (If there's no second peak, you can continue to next scaffolding step.)
 4. Purge haplotigs by running *contigcov_and_purge*
 
 *OUTPUT*: Purged p1.fasta.gz
 
 DNAnexus Apps:
-* Minimap2 Long Read aligner []
-* Readhist []
-* Contigcov and Purge []
+* Rename Contigs [https://platform.dnanexus.com/app/vgp_rename_contigs]
+* Minimap2 Long Read aligner [https://platform.dnanexus.com/app/minimap2_align_longread]
+* Bamtools Mappings Merge [https://platform.dnanexus.com/app/bamtools_merge]
+* Purge Haplotigs Readhist [https://platform.dnanexus.com/app/purge_haplotigs_readhist]
+* Purge Haplotigs Contigcov and Purge [https://platform.dnanexus.com/app/purge_haplotigs_contigcov_and_purge]
 
 ### 2. scaff10x:
 
@@ -39,7 +43,7 @@ Use the scaff10x workflow under [VGP Tools] project to do 2-rounds of scaffoldin
 *Note:* Break10X is not used.
 
 DNAnexus Apps:
-* Scaff10x []
+* Scaff10x [https://platform.dnanexus.com/app/scaff10x]
 
 ### 3. Bionano hybrid scaffolding:
 
@@ -56,8 +60,8 @@ To run Bionano hybrid scaffolding, select the 1 or 2 enzyme app. Use 1 enzyme fo
 OUTPUT: s2.fasta.gz
 
 DNAnexus Apps:
-* Bionano 1 Enzyme Hybrid Scaffolding []
-* Bionano 2 Enzyme Hybrid Scaffolding []
+* Bionano 1 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_1enzyme]
+* Bionano 2 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_2enzyme]
 
 ### 3. Salsa scaffolding:
 
@@ -77,7 +81,7 @@ OUTPUT: Salsa scaffold + haplotigs (s4.fasta.gz)
 
 DNAnexus Apps:
 * Arima Mapping [https://platform.dnanexus.com/app/arima_mapping]
-* Salsa 2 []
+* Salsa 2 [https://platform.dnanexus.com/app/salsa]
 * File Concatenator [https://platform.dnanexus.com/app/file_concatenator]
 
 ### 5. Arrow polishing:
@@ -95,13 +99,13 @@ INPUT: Salsa scaffold with Haplotigs (s4.fasta.gz) and PacBio raw reads (`*.subr
 OUTPUT: Arrow consensus FASTA (t1.fasta.gz)
 
 DNAnexus Apps:
-* Minimap2 long read aligner []
-* BLASR aligner []
-* Arrow Polsih []
+* Minimap2 long read aligner [https://platform.dnanexus.com/app/minimap2_align_longread]
+* BLASR aligner [https://platform.dnanexus.com/app/pbalign]
+* Arrow Polish [https://platform.dnanexus.com/app/run_polish]
 
 ### 6. Freebayes polishing:
 
-Use 10X Genomics raw reads to polish the assembly. 
+Use 10X Genomics raw reads to polish the assembly.
 10X Longranger [https://support.10xgenomics.com/genome-exome/software/overview/welcome] is used for alignment, Freebayes variant caller [https://github.com/ekg/freebayes] is used for variant detection and BCFtools [https://samtools.github.io/bcftools/bcftools.html] is used for calling consensus.
 
 *Note:* Run this workflow two times
@@ -119,16 +123,19 @@ OUTPUT2: t3.fasta.gz (2nd round)
 and QVs for each previous steps
 
 DNAnexus Apps:
-* Longranger mkref []
-* Longranger align []
-* Freebayes Variant Caller []
-* BCFtools Consensus []
+* Longranger mkref [https://platform.dnanexus.com/app/10x_longranger_mkref]
+* Longranger align [https://platform.dnanexus.com/app/10x_longranger_align]
+* Freebayes Variant Caller [https://platform.dnanexus.com/app/freebayes]
+* BCFtools Consensus [https://platform.dnanexus.com/app/bcftools_consensus]
 
 ### Data Transfer
 All OUTPUT and INTERMEDIATE files needs to be transferred back to AWS.
 
 The OUTPUT goes under s3://genomeark/species/species_name/species_id/assembly_v1.5/ .
 The INTERMEDIATES go under s3://genomeark/species/species_name/species_id/assembly_v1.5/intermediates/
+
+DNAnexus Apps:
+* DNAnexus to VGP S3 Exporter [https://platform.dnanexus.com/app/dx_to_vgp_s3_file_transfer]
 
 ### Notes
 
