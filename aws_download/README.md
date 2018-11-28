@@ -19,21 +19,10 @@ export PATH=$path_to_install/bin:$PATH
 
 See [installation guide](https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-bundle.html#install-bundle-user) for more details.
 
-### Create aws credentials
-See [Managing Access Keys (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey) for creating an IAM and access credentials.
-Configure aws cli with the credentials.
-```
-aws configure
-AWS Access Key ID [None]: AKIAIHFNY2FSRM4IZDOA
-AWS Secret Access Key [None]: **************************
-Default region name [us-east-1]: us-east-1
-Default output format [None]:
-```
-
 ### List and download
 ```
-aws s3 ls s3://genomeark/
-aws s3 cp s3://genomeark/data_use_policies.txt .
+aws s3 --no-sign-request ls s3://genomeark/species/Calypte_annals s3://genomeark/
+aws s3 --no-sign-request cp s3://genomeark/data_use_policies.txt .
 ```
 
 Read through the data_use_policies.txt.
