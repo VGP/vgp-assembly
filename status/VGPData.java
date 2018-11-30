@@ -150,8 +150,8 @@ public class VGPData {
 	}
 	public static void printHeader(boolean isMDstyle) {
 		if (isMDstyle) {
-			System.out.println("| genome_name\t"
-					+ "| species_id\t"
+			System.out.println("| species_name\t"
+					+ "| genome_id\t"
 					+ "| tech_count\t"
 					+ "| pacbio_subreads\t"
 					+ "| pacbio_scrubs\t"
@@ -162,7 +162,7 @@ public class VGPData {
 					+ "| assembly |");
 			System.out.println("| :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- |");
 		} else {
-			System.out.println("genome_name\tspecies_id\t"
+			System.out.println("species_name\tgenome_id\t"
 					+ "tech_count\t"
 					+ "pacbio_subreads\tpacbio_scrubs\t10x\t"
 					+ "bionano_bnx\tbionano_cmap\t"

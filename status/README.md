@@ -25,7 +25,7 @@ X: Not Available
 
 Total num. objects under s3://genomeark/species: 49,759
 
-| genome_name	| species_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_bnx	| bionano_cmap	| hic 	| assembly |
+| species_name	| genome_id	| tech_count	| pacbio_subreads	| pacbio_scrubs	| 10x	| bionano_bnx	| bionano_cmap	| hic 	| assembly |
 | :---------- | :---------- | :---------- | :---------- | :---------- | :----- | :----- | :----- | :----- | :----- |
 | Calypte_anna	| bCalAnn1	| 5	| 189	| 0	| 1	| BspQI,BssSI,DLE1	| BspQI,BssSI,DLE1	| arima,dovetail,phase	| bCalAnn1.alt.cur.20181019,bCalAnn1.pri.cur.20180926,p1,q2,c1,c2,p1,q2,s1,s2,s3,s4,t1,t2,t3,t3.h,t3.p,v1.h,v1.p,bCalAnn1.alt.asm.20180817,bCalAnn1.pri.asm.20180817 |
 | Rhinatrema_bivittatum	| aRhiBiv1	| 5	| 54	| 54	| 12	| BspQI,BssSI	| BspQI,BssSI	| arima	| aRhiBiv1.alt.cur.20180909,aRhiBiv1.pri.cur.20180909,c1,c2,p1,q2,s1,s2,s3,s4,t1,t2,t3,t3.h,t3.p,t4.h,t4.p |
