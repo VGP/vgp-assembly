@@ -80,7 +80,7 @@ public class UpdateGenomeArkStatus {
             			} else {
             				data.addHiC(seqPlatform);
             			}
-            		} else if (tokens[DATA_TYPE].equals("assembly_v1") && tokens.length == 5) {
+            		} else if (tokens[DATA_TYPE].equals("assembly_") && tokens.length == 5) {
             			genomeId = tokens[GENOME_ID];
             			if (dataMap.containsKey(genomeId)) {
             				data = dataMap.get(genomeId);

@@ -95,6 +95,8 @@ public class VGPData {
 	
 	private void updateTechCount() {
 		if (updateCount) {
+			tech_count=0;
+			internal_score++;
 			if (numSubreadBams + numScrapsBams > 0) {
 				tech_count++;
 				internal_score++;
@@ -116,10 +118,21 @@ public class VGPData {
 				tech_count++;
 				internal_score += hicVenders.size();
 			}
-			
+
+			// Give priorities to genomes with at least 1 assembly done
+			if (assemblies.size() > 0) {
+				tech_count ++;
+				internal_score += 10;
+			}
+	
 			// Earn extra +4 if all 4 platforms are collected
 			if (tech_count >= 4) {
 				internal_score += 4;
+			}
+
+			// Earn extra +6 if all 4 platforms + 1 assembly is collected
+				if (tech_count >= 5) {
+				internal_score += 6;
 			}
 		}
 		
