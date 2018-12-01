@@ -58,7 +58,13 @@ def parse_args():
     ap.add_argument('-d', '--datatype',
                     choices=['pacbio', '10x', 'bionano', 'arima', 'illumina', 'phase', 'hic'],
                     help='Sequencing technology or datatype',
-                    required=True)
+                    required=True),
+    ap.add_argument('-e', '--local-path',
+                    help='file containing local file path, assuming we have the matching aws path. Skip aws s3 sync.',
+                    required=False),
+    ap.add_argument('-b', '--bill-to',
+                    help='Bill to',
+                    required=False)
 
     return ap.parse_args()
 
@@ -130,7 +136,10 @@ def locate_or_create_dx_project(project_name):
 
     return project
 
-def main(path, profile, species_name, species_id, datatype, tissue=None):
+def main(path, profile, species_name, species_id, datatype, tissue=None, local_path=None, bill_to=None):
+
+    print local_path
+
     # determine directory to upload to
     if tissue:
         upload_path = os.path.join('species', species_name, species_id, 'transcriptomic_data', tissue, datatype)
@@ -145,24 +154,40 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
 
         # upload file to bucket directly
         object_key = os.path.join(upload_path, os.path.basename(path))
-        s3client.Bucket(VGP_BUCKET).upload_file(path, object_key)
+
+        if local_path:
+            # do nothing
+	    print 'aws path exists. skip uploading to aws.'
+	else:
+            s3client.Bucket(VGP_BUCKET).upload_file(path, object_key)
+
         updated_files = [object_key]
         os_paths = [path]
     elif os.path.isdir(path):
         # here we need to shell out to aws cli to use folder sync
         upload_path = "s3://{0}/{1}".format(VGP_BUCKET, upload_path)
-        cmd = 'aws s3 sync {0} {1} --no-progress --profile {2}'.format(path, upload_path, profile)
-        output = run_cmd(cmd, returnOutput=True)
 
-        # expected output: 
-        # upload: test/test.txt to s3://genomeark-test/species/Calypte_anna/bCalAnn1/...
-        updated_files = [msg.split(' ')[-1] for msg in output.split('\n')]
-        # get rid of empty strings and remove the 's3://bucket-name/' prefix
-        updated_files = [f.replace('s3://{0}/'.format(VGP_BUCKET), '') for f in updated_files if f]
+        if local_path:
+            # list files in path
+            os_paths = open(local_path, 'r').read().splitlines()
+	    # Here we don't need to check which files are uploaded. Upload all listed.
+            updated_files = os_paths
+	    if len(os_paths) > 0:
+                os_paths = [f for f in os_paths if f]
+                
+        else:
+            cmd = 'aws s3 sync {0} {1} --no-progress --profile {2}'.format(path, upload_path, profile)
+            output = run_cmd(cmd, returnOutput=True)
 
-        if len(updated_files) > 0:
-            os_paths =  [msg.split(' ')[1] for msg in output.split('\n') if len(msg) > 1]
-            os_paths = [f for f in os_paths if f]
+            # expected output: 
+            # upload: test/test.txt to s3://genomeark-test/species/Calypte_anna/bCalAnn1/...
+            updated_files = [msg.split(' ')[-1] for msg in output.split('\n')]
+            # get rid of empty strings and remove the 's3://bucket-name/' prefix
+            updated_files = [f.replace('s3://{0}/'.format(VGP_BUCKET), '') for f in updated_files if f]
+
+            if len(updated_files) > 0:
+                os_paths =  [msg.split(' ')[1] for msg in output.split('\n') if len(msg) > 1]
+                os_paths = [f for f in os_paths if f]
     else:
         print("Invalid filepath specified")
         sys.exit(1)
@@ -183,6 +208,7 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
         # remove species_name and species_id from folder path
         folder_path = folder_path.replace('/species/{0}/{1}'.format(species_name, species_id), '')
         
+        print folder_path, filename
         # create new dx file
         file = dxpy.api.file_new({'project': dx_project.id,
                                 'folder': folder_path,
@@ -202,4 +228,4 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
 
 if __name__ == '__main__':
     ap = parse_args()
-    main(ap.path, ap.profile, ap.species_name, ap.species_id, ap.datatype, ap.tissue)
+    main(ap.path, ap.profile, ap.species_name, ap.species_id, ap.datatype, ap.tissue, ap.local_path, ap.bill_to)
