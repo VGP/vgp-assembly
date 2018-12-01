@@ -51,7 +51,7 @@ fastq_map=fastq.map
 log=logs/${name}.%A.log
 script=$VGP_PIPELINE/salsa/arima_mapping_pipeline.sh
 args="$fastq_map $ref_name $ref"
-if ! [ -e $name.bed ]; then
+if ! [ -e $ref_name.bed ]; then
 	echo "\
 	sbatch -J $name --mem=$mem --partition=$partition --cpus-per-task=$cpus -D $path $extra --gres=lscratch:600 --time=$walltime --error=$log --output=$log $script $args"
 	sbatch -J $name --mem=$mem --partition=$partition --cpus-per-task=$cpus -D $path $extra --gres=lscratch:600 --time=$walltime --error=$log --output=$log $script $args > mapping_jid
@@ -67,7 +67,7 @@ fi
 
 cpus=4
 mem=32g
-name=$ref_name.salsa2.1
+name=$ref_name.salsa2.2
 log=logs/${name}.%A.log
 script=$VGP_PIPELINE/salsa/salsa2.2.sh
 args="$ref_name ${ref_name}_salsa"
