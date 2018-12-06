@@ -6,6 +6,11 @@ if [ -z $1 ]; then
 	exit -1
 fi
 
+if [ ! -e input.fofn]; then
+	echo "Requires: input.fofn"
+	exit -1
+fi
+
 LEN=`wc -l input.fofn | awk '{print $1}'`
 
 genome=$1
