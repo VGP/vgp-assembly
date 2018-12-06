@@ -32,7 +32,7 @@ import sys
 import hashlib
 from functools import partial
 
-VGP_BUCKET = "genomeark-test"
+VGP_BUCKET = "genomeark"
 
 def parse_args():
     '''Parse the input arguments.'''
@@ -58,7 +58,10 @@ def parse_args():
     ap.add_argument('-d', '--datatype',
                     choices=['pacbio', '10x', 'bionano', 'arima', 'illumina', 'phase', 'hic'],
                     help='Sequencing technology or datatype',
-                    required=True)
+                    required=True),
+    ap.add_argument('-f', '--files',
+                    help='File containing file-names to sync under path, assuming we have the matching aws path. Skip aws s3 sync.',
+                    required=False)
 
     return ap.parse_args()
 
@@ -130,7 +133,7 @@ def locate_or_create_dx_project(project_name):
 
     return project
 
-def main(path, profile, species_name, species_id, datatype, tissue=None):
+def main(path, profile, species_name, species_id, datatype, tissue=None, files=None):
     # determine directory to upload to
     if tissue:
         upload_path = os.path.join('species', species_name, species_id, 'transcriptomic_data', tissue, datatype)
@@ -145,24 +148,42 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
 
         # upload file to bucket directly
         object_key = os.path.join(upload_path, os.path.basename(path))
-        s3client.Bucket(VGP_BUCKET).upload_file(path, object_key)
+	if files:
+            # do nothing
+	    print 'aws path exists. skip uploading to aws.'
+	else:
+            s3client.Bucket(VGP_BUCKET).upload_file(path, object_key)
+
         updated_files = [object_key]
         os_paths = [path]
     elif os.path.isdir(path):
         # here we need to shell out to aws cli to use folder sync
         upload_path = "s3://{0}/{1}".format(VGP_BUCKET, upload_path)
-        cmd = 'aws s3 sync {0} {1} --no-progress --profile {2}'.format(path, upload_path, profile)
-        output = run_cmd(cmd, returnOutput=True)
 
-        # expected output: 
-        # upload: test/test.txt to s3://genomeark-test/species/Calypte_anna/bCalAnn1/...
-        updated_files = [msg.split(' ')[-1] for msg in output.split('\n')]
+	if files:
+            # list files in path
+            os_paths = open(files, 'r').read().splitlines()
+
+	    if len(os_paths) > 0:
+                os_paths = [f for f in os_paths if f]
+
+            # Here we don't need to check which files are uploaded. Upload all listed.
+            updated_files = [ upload_path + '/' + f for f in os_paths ]
+            
+
+	else:
+            cmd = 'aws s3 sync {0} {1} --no-progress --profile {2}'.format(path, upload_path, profile)
+            output = run_cmd(cmd, returnOutput=True)
+            # expected output: 
+            # upload: test/test.txt to s3://genomeark-test/species/Calypte_anna/bCalAnn1/...
+            updated_files = [msg.split(' ')[-1] for msg in output.split('\n')]
+            if len(updated_files) > 0:
+                os_paths = [msg.split(' ')[1] for msg in output.split('\n') if len(msg) > 1]
+                os_paths = [f for f in os_paths if f]
+
         # get rid of empty strings and remove the 's3://bucket-name/' prefix
         updated_files = [f.replace('s3://{0}/'.format(VGP_BUCKET), '') for f in updated_files if f]
 
-        if len(updated_files) > 0:
-            os_paths =  [msg.split(' ')[1] for msg in output.split('\n') if len(msg) > 1]
-            os_paths = [f for f in os_paths if f]
     else:
         print("Invalid filepath specified")
         sys.exit(1)
@@ -182,7 +203,10 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
         folder_path, filename = os.path.split('/' + object)
         # remove species_name and species_id from folder path
         folder_path = folder_path.replace('/species/{0}/{1}'.format(species_name, species_id), '')
-        
+	
+	# Debugging #        
+	print folder_path, filename, object
+
         # create new dx file
         file = dxpy.api.file_new({'project': dx_project.id,
                                 'folder': folder_path,
@@ -196,10 +220,10 @@ def main(path, profile, species_name, species_id, datatype, tissue=None):
                                     "object": object
                                     },
                                 'details': {'container': VGP_BUCKET,
-                                            'object': object}
+                                            'object':  object}
                                   })
         print('Associated object {obj} with DNAnexus file {file}'.format(obj=object, file=file['id']))
 
 if __name__ == '__main__':
     ap = parse_args()
-    main(ap.path, ap.profile, ap.species_name, ap.species_id, ap.datatype, ap.tissue)
+    main(ap.path, ap.profile, ap.species_name, ap.species_id, ap.datatype, ap.tissue, ap.files)
