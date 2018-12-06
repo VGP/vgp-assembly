@@ -1,4 +1,4 @@
-# Mash screen and dist
+# Mash Distance and Screen
 
 ## Get distances in your sequence sets
 
