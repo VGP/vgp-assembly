@@ -25,8 +25,8 @@ fi
 
 if ! [ -e $mrg.hist.ploidy ] ; then
 	echo "\
-	java -jar -Xmx512m $tools/codes/kmerHistToPloidyDepth.jar $mrg.hist > $mrg.hist.ploidy"
-	java -jar -Xmx512m $tools/codes/kmerHistToPloidyDepth.jar $mrg.hist > $mrg.hist.ploidy
+	java -jar -Xmx512m $VGP_PIPELINE/meryl/kmerHistToPloidyDepth.jar $mrg.hist > $mrg.hist.ploidy"
+	java -jar -Xmx512m $VGP_PIPELINE/meryl/kmerHistToPloidyDepth.jar $mrg.hist > $mrg.hist.ploidy
 fi
 
 x=`sed -n 2p $mrg.hist.ploidy | awk '{print $NF}'`
