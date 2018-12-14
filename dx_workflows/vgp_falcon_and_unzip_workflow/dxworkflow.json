@@ -157,23 +157,6 @@
       }
     },
     {
-      "id": "falcon_1_jellyfish",
-      "name": "Raw Reads Jellyfish and GenomeScope",
-      "executable": "app-jellyfish_and_genomescope/1.0.0",
-      "folder": "stage_1/genome_scope",
-      "input": {
-        "mer_length": 21,
-        "sequences_fastx": [
-          {
-            "$dnanexus_link": {
-              "outputField": "consensus_fastas",
-              "stage": "falcon_0_hpc_daligner"
-            }
-          }
-        ]
-      }
-    },
-    {
       "id": "falcon_1_create_dazzler_db",
       "name": "Falcon Preads Dazzler DB",
       "executable": "app-create_dazzler_db/1.9.3",
@@ -280,6 +263,23 @@
         "*": {
           "instanceType": "mem3_ssd1_x16"
         }
+      }
+    },
+  {
+      "id": "falcon_2_jellyfish",
+      "name": "Preads Jellyfish and GenomeScope",
+      "executable": "app-jellyfish_and_genomescope/1.0.0",
+      "folder": "stage_2/genome_scope",
+      "input": {
+        "mer_length": 21,
+        "sequences_fastx": [
+          {
+            "$dnanexus_link": {
+              "outputField": "consensus_fastas",
+              "stage": "falcon_1_hpc_daligner"
+            }
+          }
+        ]
       }
     },
     {
