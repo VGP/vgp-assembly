@@ -56,7 +56,7 @@ def parse_args():
                     help='Tissue Type',
                     required=False)
     ap.add_argument('-d', '--datatype',
-                    choices=['pacbio', '10x', 'bionano', 'arima', 'illumina', 'phase', 'hic'],
+                    choices=['pacbio', '10x', 'bionano', 'arima', 'illumina', 'phase', 'dovetail', 'hic'],
                     help='Sequencing technology or datatype',
                     required=True),
     ap.add_argument('-f', '--files',
