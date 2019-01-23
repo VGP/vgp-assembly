@@ -66,7 +66,7 @@
             "stage": "falcon_0_create_dazzler_db"
           }
         },
-        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+        "advanced_options": "-k14 -e0.75 -s100 -l2500 -h240 -w8 "
       },
       "systemRequirements": {
         "*": {
@@ -93,7 +93,7 @@
           }
         },
         "use_mask": true,
-        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+        "advanced_options": "-k14 -e0.75 -s100 -l2500 -h240 -w8 "
       },
       "systemRequirements": {
         "*": {
@@ -108,7 +108,7 @@
       "folder": "stage_1",
       "input": {
         "trim": false,
-        "daligner_arguments": "-k16 -e0.70 -s1000 -t16 -l1000 -h64 -w7 ",
+        "daligner_arguments": "-k14 -e0.75 -s100 -l2500 -h240 -w8 ",
         "sync_time": 1,
         "dazzler_db": {
           "$dnanexus_link": {
@@ -217,7 +217,7 @@
             "stage": "falcon_1_create_dazzler_db"
           }
         },
-        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+        "advanced_options": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
@@ -244,7 +244,7 @@
           }
         },
         "use_mask": true,
-        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+        "advanced_options": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
@@ -275,7 +275,7 @@
         },
         "file_prefix": "preads",
         "num_threads_per_daligner_job": 4,
-        "daligner_arguments": "-k20 -e.96 -s1000 -t32 -l2500 -h256 "
+        "daligner_arguments": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
