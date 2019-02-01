@@ -16,6 +16,8 @@
 # to modify this file.
 
 set -x -e -o pipefail 
+MAX_NUM_SUBJOBS=50
+
 main() {
 
     echo "Value of assemble_genome_fastagz: '$assemble_genome_fastagz'"
@@ -26,65 +28,187 @@ main() {
     echo "Value of alignment_option: '$alignment_option'"
     echo "Value of break10x_option: '$break10x_option'"
 
-    # download & unpacked
-
-    dx download "$assemble_genome_fastagz" -o "$assemble_genome_fastagz_name"
-    if [[ "$assemble_genome_fastagz_name" =~ \.gz$ ]]; then
-      gunzip "$assemble_genome_fastagz_name"
-      assemble_genome_fastagz_name="${assemble_genome_fastagz_name%.gz}"
+    # sanity check inputs
+    if [ "${#scaff_R1_fastqgz[@]}" != "${#scaff_R2_fastqgz[@]}" ]; then
+        dx-jobutil-report-error "number of forward and reverse reads are not equal" AppError
     fi
-    mv $assemble_genome_fastagz_name assemble_genome.fasta
-    ls
 
+    # if raw, break input reads into chunks and run remove_bcs() subjobs
+    # if not raw, just run run_scaff10x()
+    scaff10x_inputs=""
+    if [[ "$is_raw" == 'true' ]]; then
+        # compute total size of inputs
+        total_input_size=0
+        for i in ${!scaff_R1_fastqgz[@]}; do
+            input1_size=$(dx describe "${scaff_R1_fastqgz[$i]}" --json | jq -r .size)
+            input2_size=$(dx describe "${scaff_R2_fastqgz[$i]}" --json | jq -r .size)
+            total_input_size=$((total_input_size + input1_size + input2_size))
+        done
+
+        # convert total size to GiB
+        total_input_size=$(echo "${total_input_size}/1024/1024/1024"|bc )
+     
+        # create chunks
+        # Here we attempt to split into roughly 10GiB chunk size per subjob.
+        num_chunks=$(echo "(${total_input_size}/10 + 0.5)/1"|bc )
+        if [ "$num_chunks" -gt "$MAX_NUM_SUBJOBS" ]; then
+            num_chunks=$MAX_NUM_SUBJOBS
+        fi
+        
+        if [ "$num_chunks" -lt "2" ]; then
+            slices=( 0 ${#scaff_R1_fastqgz[@]} )
+        else
+            num_files_per_chunk=$(echo "(${#scaff_R1_fastqgz[@]}/${num_chunks} + 0.5)/1" | bc )
+            slices=( $(seq 0 ${num_files_per_chunk} ${#scaff_R1_fastqgz[@]}) ${#scaff_R1_fastqgz[@]} )
+        fi
+
+        # now submit a subjob for each slice
+        for n in ${!slices[@]}; do
+           subjob_inputs=""
+           for (( i=$n; i<$n+1; i++ )); do 
+               r1_input=$(dx-jobutil-parse-link "${scaff_R1_fastqgz[$i]}")
+               r2_input=$(dx-jobutil-parse-link "${scaff_R2_fastqgz[$i]}")
+               subjob_inputs="$subjob_inputs -iscaff_R1_fastqgz=$r1_input -iscaff_R2_fastqgz=$r2_input"
+           done
+           remove_bcs_job=$(dx-jobutil-new-job remove_bcs $subjob_inputs )
+           scaff10x_inputs="$scaff10x_inputs -iscaff_R1_fastqgz=$remove_bcs_job:read_bc1 -iscaff_R2_fastqgz=$remove_bcs_job:read_bc2"
+        done
+    else
+        for i in ${!scaff_R1_fastqgz[@]}; do
+            r1_input=$(dx-jobutil-parse-link "${scaff_R1_fastqgz[$i]}")
+            r2_input=$(dx-jobutil-parse-link "${scaff_R2_fastqgz[$i]}")
+            scaff10x_inputs="$scaff10x_inputs -iscaff_R1_fastqgz=$r1_input -iscaff_R2_fastqgz=$r2_input"
+        done
+    fi
+ 
+    # now run the scaff10x job
+    assemble_genome_fastagz=$(dx-jobutil-parse-link "$assemble_genome_fastagz")
+    if [[ -n "$mapping_file" ]]; then
+        mapping_file=$(dx-jobutil-parse-link "$mapping_file")
+        scaff10x_inputs="$scaff10x_inputs -imapping_file=$mapping_file"
+    fi
+
+    if [[ $output_prefix != "" ]]; then
+        scaff10x_inputs="$scaff10x_inputs -ioutput_prefix=$output_prefix"
+    fi
+    
+    scaff10x_job=$( dx-jobutil-new-job run_scaff10x $scaff10x_inputs \
+        -iassemble_genome_fastagz=$assemble_genome_fastagz \
+        -imapper_choice=$mapper_choice -ialignment_option="${alignment_option}" \
+        -ibreak10x_option="${break10x_option}" )
+   
+    # link outputs
+    dx-jobutil-add-output read_bc1 "$scaff10x_job":read_bc1 --class=jobref
+    dx-jobutil-add-output read_bc2 "$scaff10x_job":read_bc2 --class=jobref
+    dx-jobutil-add-output scaffold "$scaff10x_job":scaffold --class=jobref
+    dx-jobutil-add-output other_outputs "$scaff10x_job":other_outputs --class=jobref
+    
+    if [[ "$disable_break10x" == 'false' ]]; then
+        dx-jobutil-add-output breakpoint "$scaff10x_job":breakpoint --class=jobref
+        dx-jobutil-add-output breakpoint_name "$scaff10x_job":breakpoint_name --class=jobref
+    fi
+}
+
+remove_bcs() {
+    echo "Value of scaff_R1_fastqgz: '${scaff_R1_fastqgz[@]}'"
+    echo "Value of scaff_R2_fastqgz: '${scaff_R2_fastqgz[@]}'"
+
+    # download reads
+    for i in ${!scaff_R1_fastqgz[@]}
+    do
+        # download read 1
+        if [[ "${scaff_R1_fastqgz_name[$i]}" =~ \.gz$ ]]; then
+            dx download "${scaff_R1_fastqgz[$i]}" -o - | gunzip > read1_$i.fastq
+        else
+            dx download "${scaff_R1_fastqgz[$i]}" -o read1_$i.fastq
+        fi
+       
+       # process 
+       /usr/bin/scaff-bin/scaff_BC-reads-1 read1_${i}.fastq read_${i}-BC_1.fastq read_${i}-BC.name
+       # remove extra files
+       rm read1_${i}.fastq
+       
+       # download read 2
+       if [[ "${scaff_R2_fastqgz_name[$i]}" =~ \.gz$ ]]; then
+            dx download "${scaff_R2_fastqgz[$i]}" -o - | gunzip > read2_$i.fastq
+       else
+            dx download "${scaff_R2_fastqgz[$i]}" -o read2_$i.fastq
+       fi
+       
+       # process
+       /usr/bin/scaff-bin/scaff_BC-reads-2 read_${i}-BC.name read2_${i}.fastq read_${i}-BC_2.fastq
+       # remove extra files
+       rm read2_${i}.fastq
+       rm read_${i}-BC.name
+    done
+
+    # concatenate parts together
+    r1_output_name="read-BC_1.fastq"
+    r2_output_name="read-BC_2.fastq"
+    cat read_*BC_1.fastq  > $r1_output_name
+    rm read_*BC_1.fastq
+    cat read_*BC_2.fastq > $r2_output_name
+    rm read_*BC_2.fastq
+
+    # sanity check: check that files aren't empty
+    if [[ ! -s $r1_output_name || ! -s $r2_output_name ]]; then
+        dx-jobutil-report-error "Output files are empty" AppInternalError
+    fi
+    
+    ls -la $r1_output_name $r2_output_name
+    # upload outputs
+    read_bc1=$(gzip --fast $r1_output_name --stdout | dx upload - --brief --wait --destination $r1_output_name.gz)
+    read_bc2=$(gzip --fast $r2_output_name --stdout | dx upload - --brief --wait --destination $r2_output_name.gz)
+
+    dx ls $DX_WORKSPACE_ID -la
+    dx-jobutil-add-output read_bc1 "$read_bc1" --class=file 
+    dx-jobutil-add-output read_bc2 "$read_bc2" --class=file 
+}
+
+run_scaff10x() {
+    echo "Value of assemble_genome_fastagz: '$assemble_genome_fastagz'"
+    echo "Value of scaff_R1_fastqgz: '${scaff_R1_fastqgz[@]}'"
+    echo "Value of scaff_R2_fastqgz: '${scaff_R2_fastqgz[@]}'"
+    echo "Value of mapper_choice: '$mapper_choice'"
+    echo "Value of mapper_file: '$mapping_file'"
+    echo "Value of alignment_option: '$alignment_option'"
+    echo "Value of break10x_option: '$break10x_option'"
+
+    dx ls $DX_WORKSPACE_ID -la
+
+  # sanity check inputs
     if [ "${#scaff_R1_fastqgz[@]}" != "${#scaff_R2_fastqgz[@]}" ]; then
         exit "number of forward and reverse reads are not equal"
     fi
 
+    # download reads and concatenate together
     for i in ${!scaff_R1_fastqgz[@]}
     do
-        dx download "${scaff_R1_fastqgz[$i]}" -o "${scaff_R1_fastqgz_name[$i]}"
         if [[ "${scaff_R1_fastqgz_name[$i]}" =~ \.gz$ ]]; then
-            gzip -dc "${scaff_R1_fastqgz_name[$i]}" > read1_$i.fastq
+            dx download "${scaff_R1_fastqgz[$i]}" -o - | gunzip >> read-BC_1.fastq
         else
-            mv "${scaff_R1_fastqgz_name[$i]}" read1_$i.fastq
+            dx download "${scaff_R1_fastqgz[$i]}" -o - >> read-BC_1.fastq
         fi
-        rm "${scaff_R1_fastqgz_name[$i]}"
-        if [[ "$is_raw" == 'true' ]]; then
-		/usr/bin/scaff-bin/scaff_BC-reads-1 read1_${i}.fastq read_${i}-BC_1.fastq read_${i}-BC.name
-		rm read1_${i}.fastq
-	fi
     done
 
     for i in ${!scaff_R2_fastqgz[@]}
-    do
-        dx download "${scaff_R2_fastqgz[$i]}" -o "${scaff_R2_fastqgz_name[$i]}"
+      do
         if [[ "${scaff_R2_fastqgz_name[$i]}" =~ \.gz$ ]]; then
-            gzip -dc "${scaff_R2_fastqgz_name[$i]}" > read2_$i.fastq
+            dx download "${scaff_R2_fastqgz[$i]}" -o - | gunzip >> read-BC_2.fastq
         else
-            mv "${scaff_R2_fastqgz_name[$i]}" read2_$i.fastq
+            dx download "${scaff_R2_fastqgz[$i]}" -o - >> read-BC_2.fastq
         fi
-        rm "${scaff_R2_fastqgz_name[$i]}"
-	if [[ "$is_raw" == 'true' ]]; then
-		/usr/bin/scaff-bin/scaff_BC-reads-2 read_${i}-BC.name read2_${i}.fastq read_${i}-BC_2.fastq
-		rm read2_${i}.fastq
-	fi
     done
 
-    if [[ "$is_raw" == 'true' ]]; then
-	cat read_*BC_1.fastq  > read-BC_1.fastq
-	rm read_*BC_1.fastq
-	cat read_*BC_2.fastq > read-BC_2.fastq
-	rm read_*BC_2.fastq
+    # download & unpack genome
+
+    if [[ "$assemble_genome_fastagz_name" =~ \.gz$ ]]; then
+      assemble_genome_fastagz_name="${assemble_genome_fastagz_name%.gz}"
+      dx download "$assemble_genome_fastagz" -o - | gunzip > "$assemble_genome_fastagz_name"
     else
-        # reads are already processed.
-	ls -a
-	cat read1_*.fastq > read-BC_1.fastq
-	rm read1_*.fastq
-	ls -a
-        cat read2_*.fastq > read-BC_2.fastq
-	rm read2_*.fastq
-	ls -a
+       dx download "$assemble_genome_fastagz" -o "$assemble_genome_fastagz_name" 
     fi
+    mv $assemble_genome_fastagz_name assemble_genome.fasta
 
     if [[ "$mapper_choice" == 'BWA' ]]; then
         mapper_choice='bwa'
@@ -94,14 +218,12 @@ main() {
 
     if [[ -n "$mapping_file" ]]; then
         mkdir temp_mapping_file
-        mapping_file_name=$(dx describe "$mapping_file" --name)
         if [ ${mapping_file_name: -4} == ".bam" ]; then
-            dx download "$mapping_file" -o temp_mapping_file/mapping.bam
-            samtools view temp_mapping_file/mapping.bam > temp_mapping_file/mapping.sam
+            dx download "$mapping_file" -o - | samtools view - > temp_mapping_file/mapping.sam
         elif [ ${mapping_file_name: -4} == ".sam" ]; then
             dx download "$mapping_file" -o temp_mapping_file/mapping.sam
         else
-            exit "The extension of mapping file is neither sam or bam"
+            exit "The extension of mapping file is neither sam nor bam"
         fi
     fi
 
@@ -124,29 +246,28 @@ main() {
 
     ls -ltr
 
-    if [[ $is_raw == 'true' ]]; then
-	gzip read-BC_1.fastq
-	gzip read-BC_2.fastq
-	if [[ $output_prefix != "" ]]; then
-	    read_bc1_name="${output_prefix}".read-BC_1.fastq.gz
-	    read_bc2_name="${output_prefix}".read-BC_2.fastq.gz
+    # add the processed and merged reads as output
+    if [[ $output_prefix != "" ]]; then
+          read_bc1_name="${output_prefix}".read-BC_1.fastq.gz
+          read_bc2_name="${output_prefix}".read-BC_2.fastq.gz
     else
-        read_bc1_name=read-BC_1.fastq.gz
-        read_bc2_name=read-BC_2.fastq.gz
+          read_bc1_name=read-BC_1.fastq.gz
+          read_bc2_name=read-BC_2.fastq.gz
     fi
-    read_bc1=$(dx upload read-BC_1.fastq.gz --brief --destination="$read_bc1_name")
-    read_bc2=$(dx upload read-BC_2.fastq.gz --brief --destination="$read_bc2_name")
+    
+    read_bc1=$(gzip --fast read-BC_1.fastq --stdout | dx upload - --wait --brief --destination="$read_bc1_name")
+    read_bc2=$(gzip --fast read-BC_2.fastq --stdout | dx upload - --wait --brief --destination="$read_bc2_name")
 
-	dx-jobutil-add-output read_bc1 "$read_bc1" --class=file 
-	dx-jobutil-add-output read_bc2 "$read_bc2" --class=file 
-    fi
-    gzip scaffolds.fasta
+    dx-jobutil-add-output read_bc1 "$read_bc1" --class=file 
+    dx-jobutil-add-output read_bc2 "$read_bc2" --class=file
+   
+    # now upload the scaffolds
     if [[ $output_prefix != "" ]]; then
         scaffold_name="${output_prefix}".scaffolds.fasta.gz
     else
         scaffold_name=scaffolds.fasta.gz
     fi
-    scaffold=$(dx upload scaffolds.fasta.gz --brief --destination="$scaffold_name")
+    scaffold=$(gzip --fast scaffolds.fasta --stdout | dx upload - --wait --brief --destination="$scaffold_name")
     dx-jobutil-add-output scaffold "$scaffold" --class=file 
 
     for i in "${!other_outputs[@]}"; do
