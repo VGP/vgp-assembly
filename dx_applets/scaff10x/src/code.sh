@@ -160,7 +160,6 @@ remove_bcs() {
     read_bc1=$(gzip --fast $r1_output_name --stdout | dx upload - --brief --wait --destination $r1_output_name.gz)
     read_bc2=$(gzip --fast $r2_output_name --stdout | dx upload - --brief --wait --destination $r2_output_name.gz)
 
-    dx ls $DX_WORKSPACE_ID -la
     dx-jobutil-add-output read_bc1 "$read_bc1" --class=file 
     dx-jobutil-add-output read_bc2 "$read_bc2" --class=file 
 }
@@ -173,8 +172,6 @@ run_scaff10x() {
     echo "Value of mapper_file: '$mapping_file'"
     echo "Value of alignment_option: '$alignment_option'"
     echo "Value of break10x_option: '$break10x_option'"
-
-    dx ls $DX_WORKSPACE_ID -la
 
   # sanity check inputs
     if [ "${#scaff_R1_fastqgz[@]}" != "${#scaff_R2_fastqgz[@]}" ]; then
