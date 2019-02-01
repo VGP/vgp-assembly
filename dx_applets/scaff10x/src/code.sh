@@ -53,19 +53,30 @@ main() {
         num_chunks=$(echo "(${total_input_size}/10 + 0.5)/1"|bc )
         if [ "$num_chunks" -gt "$MAX_NUM_SUBJOBS" ]; then
             num_chunks=$MAX_NUM_SUBJOBS
+        elif [ "$num_chunks" -lt "1" ]; then
+            num_chunks=1
+        fi
+
+        num_files_per_chunk=$(echo "(${#scaff_R1_fastqgz[@]}/${num_chunks} + 0.5)/1" | bc )
+        if [ "$num_files_per_chunk" -lt "1" ]; then
+            num_files_per_chunk=1
         fi
         
         if [ "$num_chunks" -lt "2" ]; then
             slices=( 0 ${#scaff_R1_fastqgz[@]} )
+        elif [ $(( ${#scaff_R1_fastqgz[@]} % ${num_files_per_chunk} )) -eq "0" ]; then
+            slices=( $(seq 0 ${num_files_per_chunk} ${#scaff_R1_fastqgz[@]}) )
         else
-            num_files_per_chunk=$(echo "(${#scaff_R1_fastqgz[@]}/${num_chunks} + 0.5)/1" | bc )
             slices=( $(seq 0 ${num_files_per_chunk} ${#scaff_R1_fastqgz[@]}) ${#scaff_R1_fastqgz[@]} )
         fi
 
         # now submit a subjob for each slice
         for n in ${!slices[@]}; do
+           # make sure we don't only use the last slice as an endpoint
+           if [[ ${slices[$n+1]} == "" ]]; then continue; fi
+           
            subjob_inputs=""
-           for (( i=$n; i<$n+1; i++ )); do 
+           for (( i=$n; i<${slices[$n+1]}; i++ )); do 
                r1_input=$(dx-jobutil-parse-link "${scaff_R1_fastqgz[$i]}")
                r2_input=$(dx-jobutil-parse-link "${scaff_R2_fastqgz[$i]}")
                subjob_inputs="$subjob_inputs -iscaff_R1_fastqgz=$r1_input -iscaff_R2_fastqgz=$r2_input"
