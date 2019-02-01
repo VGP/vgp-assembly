@@ -3,7 +3,7 @@
   "title": "Purge Haplotigs Readhist",
   "summary": "Create a read coverage histogram to determine cutoff for Purge Haplotigs",
   "dxapi": "1.0.0",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "inputSpec": [
     {
       "name": "bam",
