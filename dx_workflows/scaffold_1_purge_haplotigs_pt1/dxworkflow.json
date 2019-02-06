@@ -36,7 +36,7 @@
     },
     {
       "id": "readhist",
-      "executable": "app-purge_haplotigs_readhist/0.0.1",
+      "executable": "app-purge_haplotigs_readhist/0.0.3",
       "input": {
         "bam": {
           "$dnanexus_link": {
