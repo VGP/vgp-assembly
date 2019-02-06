@@ -21,18 +21,18 @@
         "assemble_genome_fastagz": {
           "$dnanexus_link": {
             "outputField": "scaffold",
-            "stage": "round1"
-          },
+            "stage": "round1"}
+        },
         "scaff_R1_fastqgz": {
           "$dnanexus_link": {
             "outputField": "read_bc1",
             "stage": "round1"
-          },
-        "scaff_R2_fastqgz": {
-          "$dnanexus_link": {
-            "outputField": "read_bc2",
-            "stage": "round1"
           }
+        },
+        "scaff_R2_fastqgz": {
+              "$dnanexus_link": {
+                "outputField": "read_bc2",
+                "stage": "round1"}
         }
       }
     }
