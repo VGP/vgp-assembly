@@ -38,7 +38,7 @@
     },
     {
       "id": "readhist",
-      "folder": "purge_haplotigs"
+      "folder": "purge_haplotigs",
       "executable": "app-purge_haplotigs_readhist/0.0.3",
       "input": {
         "bam": {
