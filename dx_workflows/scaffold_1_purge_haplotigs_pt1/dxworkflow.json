@@ -24,7 +24,7 @@
     {
       "id": "bam_merge",
       "executable": "app-bamtools_merge/1.1.0",
-      "folder": "purge_haplotigs"
+      "folder": "purge_haplotigs",
       "input": {
         "sorted_bams": [
           {
