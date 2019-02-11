@@ -57,7 +57,7 @@
     {
       "id": "falcon_0_hpc_tanmask",
       "name": "Raw Reads HPC TANmask",
-      "executable": "app-hpc_tanmask/1.9.3",
+      "executable": "app-hpc_tanmask/2.0.0",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -77,7 +77,7 @@
     {
       "id": "falcon_0_hpc_repmask",
       "name": "Raw Reads HPC REPmask",
-      "executable": "app-hpc_repmask/1.9.3",
+      "executable": "app-hpc_repmask/2.0.1",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -337,7 +337,7 @@
     {
       "id": "unzip_0_track_reads",
       "name": "Unzip Track Reads",
-      "executable": "app-unzip_0_track_reads/1.0.0",
+      "executable": "app-unzip_0_track_reads/1.1.0",
       "folder": "unzip_stage_1",
       "input": {
         "sg_edges_list": {
