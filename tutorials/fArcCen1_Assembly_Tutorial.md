@@ -275,7 +275,7 @@ If the histogram is bimodal, select the cutoffs as follows:
 * _Mid_: Threshold between two two peaks
 * _High_: Threshold above the second peak
 
-![Coverage histogram with indicated cutoffs]()
+![Coverage histogram with indicated cutoffs](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/PurgeHaplotigsReadhist.png)
 
 Once you've determined the appropriate cutoffs, select the `Purge Haplotigs Part 2` workflow. Specify the file inputs as
 follows:
@@ -286,7 +286,7 @@ follows:
 In addition, click the gear icon to the right of the app to open the parameters panel and specify the cutoffs. For 
 `fArcCen1`, we've chosen the following cutoffs: Low = 10, Mid = 48, High = 185.
 
-![Cutoffs specified in Part 2 app]()
+![Cutoffs specified in Part 2 app](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/PurgeHaplotigsCutoffs.png)
 
 Once the inputs and parameters are specified, specify the Output Folder as before to the "Scaffolding" folder. Now run 
 the analysis.
@@ -333,3 +333,51 @@ Under the first round parameters, make sure the `is_raw` parameter is specified 
 2 parameters you may also specify the output prefix for the output files if desired.
 
 In addition, specify the `Output Folder` for the workflow to `scaffolding` as before. Launch the analysis.
+
+![Configured Scaff10x workflow](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/Scaff10XRunnable.png)
+
+The final output of scaff10x should look like this:
+```
+scaffolding/scaff10x/
+├── round1
+│   ├── read-BC_1.fastq.gz
+│   ├── read-BC_2.fastq.gz
+│   └── scaffolds.fasta.gz
+└── round2
+    ├── read-BC_1.fastq.gz
+    ├── read-BC_2.fastq.gz
+    └── scaffolds.fasta.gz
+```
+
+The output under `round2/scaffolds.fasta.gz` corresponds to `fArcCen1_s1.fasta.gz` using the VGP naming convention.
+
+## 3. Bionano Hybrid Scaffolding
+
+In this step we will be using the Bionano assembled CMAP data together with the scaffold `fArcCen1_s1.fasta.gz` from 
+step 2 to perform hybrid scaffolding on the primary haplotig.
+
+Before copying the workflow, we need to first take a look at the Bionano input data:
+```
+genomic_data/bionano/
+├── fArcCen1_Saphyr_DLE-1.cmap.gz
+├── fArcCen1_Saphyr_DLE-1_1265239.bnx.gz
+└── fArcCen1_Saphyr_DLE-1_1265240.bnx.gz
+```
+
+From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore,
+copy the `Step 3 Bionano Hybrid Scaffolding 1 Enzyme` workflow from VGP tools. In some cases you may see two `*.cmap.gz`
+files in your input data corresponding to two enzymes used for the Bionano data, and therefore will need to use the 2 enzyme workflow.
+
+For the inputs select as follows:
+* CMAP input: `fArcCen1_Saphyr_DLE-1.cmap.gz` under `genomic_data/bionano/`
+* FASTA input: `scaffolds.fasta.gz` under `scaffolding/scaff10x/round2`
+
+As before, specify the workflow output folder to `scaffolding`. A `bionano` folder will be automatically created under that.
+
+The Bionano tool is prone to hanging if the memory requirements are not met. Therefore, make sure it is running on a 
+large memory instance, such as the `mem3_ssd1_x32` instance. The app is configured to aggressively time out if it does 
+not complete in under 6 hours. If this happens, rerun the analysis on a larger memory instance.
+
+Once the app completes, the output should look as follows:
+
+## Step 4.
