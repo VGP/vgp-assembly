@@ -57,7 +57,7 @@
     {
       "id": "falcon_0_hpc_tanmask",
       "name": "Raw Reads HPC TANmask",
-      "executable": "app-hpc_tanmask/1.9.3",
+      "executable": "app-hpc_tanmask/2.0.0",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -77,7 +77,7 @@
     {
       "id": "falcon_0_hpc_repmask",
       "name": "Raw Reads HPC REPmask",
-      "executable": "app-hpc_repmask/1.9.3",
+      "executable": "app-hpc_repmask/2.0.1",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -337,7 +337,7 @@
     {
       "id": "unzip_0_track_reads",
       "name": "Unzip Track Reads",
-      "executable": "app-unzip_0_track_reads/1.0.0",
+      "executable": "app-unzip_0_track_reads/1.1.0",
       "folder": "unzip_stage_1",
       "input": {
         "sg_edges_list": {
@@ -593,6 +593,50 @@
             "stage": "unzip_3_haplotype_track_reads"
           }
         }
+      }
+    },
+    {
+      "id": "unzip_4_primary_calc_distribution",
+      "name": "Post-Falcon-Unzip Primary Contig Calculate Read Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "unzip_stage_5/primary_contig_statistics",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "p_ctg_fasta",
+              "stage": "unzip_4_haplotype_polish"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "unzip_4_haplotype_calc_distribution",
+      "name": "Post-Falcon-Unzip Haplotype Contig Calculate Read Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "unzip_stage_5/haplotype_contig_statistics",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "h_ctg_fasta",
+              "stage": "unzip_4_haplotype_polish"
+            }
+          }
+        ]
       }
     }
   ]
