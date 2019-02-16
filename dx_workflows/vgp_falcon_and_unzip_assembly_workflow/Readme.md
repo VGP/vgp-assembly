@@ -1,15 +1,15 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
-**2018-Feb-15 update**
+**2019-Feb-15 update**
 - start using TANmask2.0.0 and REPmask2.0.1 after testing on 3 large genomes
 - fix discrepancy of unzip_stage_0 app and github. The old version miss logic to handle missing ref/read. New version is unzip_stage_0 track_read 1.1.0
 - add calculate read length distribution for primary and haplotig
 
-**2018-Jan-23patch1 update**
+**2019-Jan-23patch1 update**
 - new TANmask and REPmask is very buggy, so I roll back TAN and REPmask from 2.0.0 to 1.9.3. That version has difference name for standard, tanmask, and repmask, but use old Falcon code.
 
-**2018-Jan-23 update**
+**2019-Jan-23 update**
 - update to Falcon falcon-2018.31.08-03.06
 - change default instance type Unzip stage 3 to mem4_ssd1_x128
 - fix jellyfish/genomescope incorrect link from Daligner stage2 to stage1
