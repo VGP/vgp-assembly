@@ -1,7 +1,7 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
-**2018-Jan-23patch1 update**
+**2018-Feb-15 update**
 - start using TANmask2.0.0 and REPmask2.0.1 after testing on 3 large genomes
 - fix discrepancy of unzip_stage_0 app and github. The old version miss logic to handle missing ref/read. New version is unzip_stage_0 track_read 1.1.0
 - add calculate read length distribution for primary and haplotig
