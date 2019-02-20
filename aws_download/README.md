@@ -21,7 +21,7 @@ See [installation guide](https://docs.aws.amazon.com/cli/latest/userguide/awscli
 
 ### List and download
 ```
-aws s3 --no-sign-request ls s3://genomeark/species/Calypte_annals s3://genomeark/
+aws s3 --no-sign-request ls s3://genomeark/species/Calypte_anna
 aws s3 --no-sign-request cp s3://genomeark/data_use_policies.txt .
 ```
 
