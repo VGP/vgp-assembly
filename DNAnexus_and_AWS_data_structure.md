@@ -11,7 +11,9 @@ File names with extensions are provided in this block.
 
 Once we visit a VGP project, the top level folders are expected to have:
 * genomic_data
-* assembly_\[ver\]
+* assembly_\[pipeline\]_\[ver\]
+* assembly_curated
+* assembly_MT
 * transcriptomic_data
 
 ## Full sub-folders and files
