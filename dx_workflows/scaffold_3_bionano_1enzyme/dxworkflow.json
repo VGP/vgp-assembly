@@ -38,7 +38,7 @@
             }
           }
         ],
-        "cmd": "sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' $in > trimmed_s2.fasta"
+        "cmd": "sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' $in_name > trimmed_s2.fasta"
       }
     }
   ]

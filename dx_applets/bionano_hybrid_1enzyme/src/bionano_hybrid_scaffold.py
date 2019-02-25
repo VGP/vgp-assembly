@@ -126,17 +126,17 @@ def main(**job_inputs):
     run_cmd('tree {0}'.format(output_dir))
 
     scaffold_final_ncbi = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
     unscaffolded_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
     scaffold_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.fasta'))
     scaffold_final.extend(glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.cmap')))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.cmap')))
     scaffold_final.extend(glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.agp')))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.agp')))
     scaffold_output = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD*'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD*.*map'))
     cut_and_conflict = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', 'conflicts*.txt'))
     cut_and_conflict.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', '*_annotations.bed')))
     output = {"scaffold_final": [dx_utils.gzip_and_upload(f) for f in scaffold_final],

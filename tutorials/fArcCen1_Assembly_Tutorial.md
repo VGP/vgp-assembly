@@ -380,4 +380,12 @@ not complete in under 6 hours. If this happens, rerun the analysis on a larger m
 
 Once the app completes, the output should look as follows:
 
+As part of the Bionano hybrid scaffolding, you should also perform the following post-processing steps:
+1. Concatenate `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` outputs
+2. Remove leading and trailing N's from scaffolded output.
+
+To concatenate the two outputs, select the "Run Analysis" button in your project and select the "File Concatenator" app.
+
+Supply the inputs `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` to the app as well as the output name `fArcCen1_s2.fasta.gz`.
+
 ## Step 4.
