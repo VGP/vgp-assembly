@@ -403,7 +403,7 @@
     {
       "id": "unzip_1_align_and_phase",
       "name": "Unzip Align and Phase",
-      "executable": "app-unzip_1_align_and_phase/1.0.1",
+      "executable": "app-unzip_1_align_and_phase/1.0.2",
       "folder": "unzip_stage_2",
       "input": {
         "raw_read_ids": {
