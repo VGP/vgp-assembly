@@ -3,7 +3,7 @@
   "title": "Salsa",
   "summary": "salsa",
   "dxapi": "1.0.0",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "inputSpec": [
     {
       "name": "input_assembly",
@@ -71,7 +71,7 @@
   "runSpec": {
     "timeoutPolicy": {
       "*": {
-        "hours": 24
+        "hours": 48
       }
     },
     "interpreter": "python2.7",
@@ -81,7 +81,7 @@
         "instanceType": "mem3_ssd1_x32"
       }
     },
-    "assetDepends": [{"id": "record-FP2QpJQ0JpGbv47K9b7QY8bK"}],
+    "assetDepends": [{"id": "record-FVp4p980z7zB25Xk2bQGBxfG"}],
     "distribution": "Ubuntu",
     "release": "16.04"
   },

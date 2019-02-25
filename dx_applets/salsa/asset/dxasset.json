@@ -2,7 +2,7 @@
   "name": "salsa2_asset",
   "title": "Salsa2 asset",
   "description": "Resources for Salsa2 app on DNAnexus",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "distribution": "Ubuntu",
   "release": "16.04",
   "execDepends": [
@@ -15,7 +15,7 @@
         {"name": "salsa",
          "package_manager": "git",
          "url": "https://github.com/machinegun/SALSA.git",
-         "tag": "v2.1",
+         "tag": "v2.2",
          "destdir": "/opt/",
          "build_commands": "make"}
          ],
