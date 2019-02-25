@@ -5,7 +5,8 @@
   "stages": [
     {
       "id": "purge_haplotigs",
-      "executable": "app-purge_haplotigs_contigcov_and_purge/0.0.1"
+      "executable": "app-purge_haplotigs_contigcov_and_purge/0.0.1",
+      "folder": "purge_haplotigs"
     }
   ]
 }

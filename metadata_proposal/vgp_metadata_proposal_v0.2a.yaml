@@ -1,0 +1,265 @@
+# This is a second draft of a metadata proposal.
+#
+# It is not currently written as a schema, but as an example document with comments and questions scattered throughout.
+# See FAANG (https://github.com/FAANG/faang-metadata) and HumanCellAtlas (https://github.com/HumanCellAtlas/metadata-schema) for more formalised schemas along similar lines that we could possibly aim for but would require time and dedicated resource.
+
+# My proposal would be to have/manage these YAML files in a github repo vgp-metadata with a species/<species>/metadata.yaml file structure mirroring the AWS bucket.
+# If we organise a well defined schema and validator the data could be validated via continuous integration with travis or the like.
+# It also give a point where internal and external users can point out mistakes and suggest changes.
+# Give an automatic history of changes.
+# Adding the files to AWS could probably be set up to happen via a git-hook?
+# Or we could just leave the AWS bucket for the data and the github repo for the metadata.
+# Do we want these files to be the source of populating the website/DB-backend??
+# I think this strategy would be OK for the ~260 ordinal species, but would it scale beyond that?
+
+# The first draft included a design goal of easily combining the YAML files across species.  It did this by inluding the species short name as an element in the key, for example, 'species.bCalAnn.name'.  However, when using this format, one is then required to either know the short name already, or to be able to list and parse the key names directly.  This second draft removes the species short name as a key element, resulting in the same keys for all species.  Individual species YAML files can be combined by making a array.
+
+# The first draft included a separate 'individuals' section using the same method, for example: 'individuals.fAstCal1.species: fAstCal'.  This second draft includes individuals as part of the species, in an array.
+
+# When reviewing, think about whether this would work for a wider use case beyond VGP and into EBP. It is not essential that we make something for EBP, but if it is easy...
+# e.g. Is "individuals" a good enough term when we include plants and maybe pooled individuals of very small organisms.
+#      Similary is "materials" a good term here.
+
+# Question: Are other top level sections desired? Maybe:
+  # "projects" to group certain samples like "ordinal", "birds", "icefish". Samples would belong to multiple projects and projects.yml would be a separate top-level file
+  # "assemblies" to track submitted assemblies...
+
+# Question: Do we want some general structure to group stats/info for a group of data? All the stats at the moment are per-run (e.g. stats per-SMRTcell). Is there a good place to group amount of sequence per-sample or other per-sample or per-group stats derived (e.g. Jellyfish/Genomescope results)
+
+species:
+  short_name: fAstCal
+  name: Astatotilapia calliptera
+  taxon_id: 8154
+  common_name: eastern happy (Malawi cichlid)
+  order:
+    name: Cichliformes
+    taxon_id: 1489911
+    common_name:
+  family:
+    name: Cichlidae
+    taxon_id: 8113
+    common_name: cichlids
+  description: >
+    A short or long description of the species
+    and maybe the dataset.
+    Can be spread over multiple lines;
+  individuals:
+    - short_name: fAstCal1
+      biosample_id: SAMEA104026430
+      provider: George Turner
+      description: >
+        A short or detailed description of the sample
+        and maybe the dataset.
+    - short_name: fAstCal2
+      biosample_id: SAMEA104026431
+    - short_name: fAstCal3
+      biosample_id: SAMEA104026432
+      sex: female
+      mother: fAstCal1
+      father: fAstCal2
+  image:
+  image_license:
+  genome_size:
+  genome_size_method:
+  iucn: LC
+
+# Where:
+#   species.name           (required) the latin name of the species; unique across the project
+#   species.taxon_id       (required) NCBI taxon ID
+#   species.common_name    (optional)
+#   individuals            a list of the individuals used in this project.  Only 'short_name' and 'biosample_id' are required.
+#   image                  a URL to an image to display on the web; this is here for convenence, so we don't have to maintain multiple metadata for each species
+#   image_license          the license of the image, e.g., "CC BY-SA 4.0"
+#   genome_size            estimated size, in bases, of the genome
+#   genome_size_method     label that describes method used to estimate genome size
+#                            enum: (to be decided)
+#   iucn                   IUCN status; Could store this here, if we care - it is on Erich's ordinal tracking sheet, which is why I added it here; depends on if we use this as the source to populate the VGP database.
+#                            enum: LC=least concern, NT=near threatened, VU=vulnerable, EN=endangered, CR=critically endangered, EW=exctinct in the wild, EX=extinct, UN=unknown/not evaluated
+#
+# Family relationsips should be encoded in BioSamples with "Child of" relationship
+# There are a bunch of other things that could be included here, like
+#     provider: name_or_person_or_lab_who_supplied_the_sample
+#     providerID: name_given_by_the_provider
+#     source_location: XXX
+#     country_of_origin: country_or_ocean_or_xxx_where_the_sample_is_from
+#     latitude: XXX
+#     longitude: XXX
+#     karyotype: 46 # unsure whether karyotype and ploidy should be under species or individual; there are expected gametic numbers
+#     ploidy: 2
+
+#  This second draft DOES NOT update the following 'materials', 'genomic_data' or 'transcriptomic_data' sections. 
+
+# "materials" to store information about tissues, DNA, RNA etc derived from an individual
+# developmental_stage and organism_part following the FAAANG consortium strategy linking to ontologies to describe the tissue; would need to discuss how much to standardise this; have called material as in some instances this could be DNA or RNA
+# Other things that could be included here:
+#   preservation_method: ethanol
+#   extraction_method: XXX
+
+materials:
+  # material identifier is individual ID followed by the name of the tissue type plus an incremental identifier to identify different samples from the same tissue
+  fAstCal2.analfin1:
+    individual: fAstCal2 # could leave this as implied by the material identifier, but better to be explicit?
+    biosample_id: SAMEA104242976 # this is a new biosample id generated for this sample
+    derived_from: SAMEA104236291 # link the material biosample to the individual biosample with "Derived from" relationship; we could leave this as implied by the material_id
+    same_as: SAMEA43642168 # BioSamples has a facility to identify two BioSamples as the same; useful if samples have already been accessioned under a different project
+    developmental_stage:
+      name: adult
+      ontology: EFO
+      ontology_id: EFO_0001272
+    organism_part:
+      name: anal fin
+      ontology: UBERON
+      ontology_id: UBERON_4000163
+
+  fAstCal2.brain1:
+    biosample_id: SAMEA104242972
+    derived_from: SAMEA104236291
+    developmental_stage:
+      name: adult
+      ontology: EFO
+      ontology_id: EFO_0001272
+    organism_part:
+      name: brain
+      ontology: UBERON
+      ontology_id: UBERON_0000955
+
+- tissue_id: fAstCal2.brain2
+  biosample_id: SAMEA104243009
+  derived_from: SAMEA104236291
+  developmental_stage:
+    name: adult
+    ontology: EFO
+    ontology_id: EFO_0001272
+    organism_part:
+      name: brain
+      ontology: UBERON
+      ontology_id: UBERON_0000955
+
+# list of the genomic data for an individual; one entry per-run; so one entry per-SMRTcell for PacBio; one per-flowcell for BioNano, etc
+genomic_data:
+  - run_id: <movie> # pacbio movie id or run ID from the LIMS where sequencing was run
+    individual: fAstCal1
+    type: pacbio # pacbio|10x|arima|bionano|dovetail|phase|hic|ont|illumina
+    withdrawn: false # flag to exlude a particular data run
+    # withdrawn_reason: text stating reason for exlucing run # e.g. contamination
+    library:
+      library_id: <library_id>
+      date: YYYYMMDD
+      centre: WSI # WSI|MPI|VGL|Arima # centre where library made
+      # enzyme: BssQI # this field used for BioNano and for Hi-C
+      # These below are generally used for INSDC submissions - could perhaps drop since mostly implied by placement in this doc
+      library_strategy: wgs # WGS|RNA-Seq|Hi-C
+      library_source: genomic # GENOMIC|TRANSCRIPTOMIC
+      library_selection: random
+      library_layout: single # SINGLE|PAIRED
+      # library_insert: 400
+      # library_protocol: XXX # Chromium genome, RNA-seq dUTP eukaryotic
+    sequencing:
+      intrument_make : PacBio # PacBio|BioNano|Illumina|ONT
+      instrument_model: Sequel # RSII|Sequel|Irys|Saphyr|HiSeqX|Novaseq|HiSeq2500|MinION|GridION|PromethION
+      chemistry: S/P2-C2/5.0 # sequencing chemistry (required for pacbio)
+      date: YYYYMMDD # date sequencing began
+      center: WSI # WSI|MPI|VGL|BGI # sequencing center (US spelling)
+    submission:
+      run_accession: XXX # An INSDC (International Nucleotide Sequence Database Collaboration) run accession. Accession must start with DRR, ERR, or SRR.
+      experiment_accession: XXX # An INSDC (International Nucleotide Sequence Database Collaboration) experiment accession. Accession must start with DRX, ERX, or SRX.
+    # list of files
+    # pacbio valid types = subreads, subreads_index, scraps, scraps_index (BAM files and indexes - Sanger not currently submitting scraps to INSDC)
+    # bionano valid types = bnx, cmap (current INSDC submission has BioNano data submitted as Analysis objects as part of an assembly submission not an up-front Experiment/Run submission)
+    # 10x valid types = readR1, readR2, indexI1 (fastq files - Sanger are submitting unmapped CRAM to the INSDC, but will upload these files to AWS)
+    # arima, dovetail, phase, hic, illumina valid types = readR1, readR2 (fastq files - Sanger are submitting unmapped CRAM to the INSDC, but will upload these files to AWS)
+    # ont valid types = ??
+    files:
+      - type: subreads
+        format: bam # old RSII submitted data might be h5
+        name: <movie>.subreads.bam
+        # allow checksums to be s3etag, md5, crc32, sha-256...
+        checksum:
+          s3etag: XXX
+          md5: XXX
+      - type: subreads_index
+        format: pbi
+        name: <movie>.subreads.bam.pbi
+        checksum:
+          s3etag: XXX
+          md5: XXX
+      - type: scraps
+        format: bam
+        name: <movie>.scraps.bam
+        checksum:
+          s3etag: XXX
+          md5: XXX
+      - type: scraps_index
+        format: pbi
+        name: <movie>.scraps.bam.pbi
+        checksum:
+          s3etag: XXX
+          md5: XXX
+    stats:
+      # stats appropriate for a pacbio run; could add output from SEQUELstats
+      subreads: NNN # number of subreads
+      subreads_bases: NNN # number of bases in subreads
+      subreads_n50: NNN # N50 of subreads
+      subreads_longest: NNN # length of the longest subread 
+      # stats appropriate for a bionano run
+      molecule_count: NNN 
+      molecule_length: NNN
+      molecule_average_length: NNN
+      molecule_n50: NNN
+      label_density: NNN
+      # stats appropriate for an illumina run, including illumina,arima,dovetail,phase,hic,10x
+      reads: NNN
+      bases: NNN
+
+
+  - run_id: XXX
+    individual_id: <individual_id>
+    type: 10x
+    library: {}
+    sequencing: {}
+    submission: {}
+    files:
+      - type: readR1
+        format: fastq
+        name: <movie>.R1.fastq.gz
+        # checksums could be S3 ETAG, MD5SUM, CRC32...
+        checksum:
+          s3etag: XXX
+          md5: XXX
+      - type: readR2
+        name: <movie>.R2.fastq.gz
+        checksum:
+          s3etag: XXX
+          md5: XXX
+      - type: indexI1
+        name: <movie>.I1.fastq.gz
+        checksum:
+          s3etag: XXX
+          md5: XXX
+    stats:
+      # stats appropriate for an illumina run, including illumina,arima,dovetail,phase,hic,10x
+      # something 10x specific like estimated average molecule length would be good, but
+      # how to get upfront without running supernova (or longranger on the final assembly) and only on this run?
+      reads: NNN
+      bases: NNN
+
+
+# I haven't gone through this section yet. Should be mostly similar to genomic_data, but linked to material_id rather than individual_id
+# list of the transcriptomic data for from a material
+transcriptomic_data:
+- run_id: <run_id>
+  material_id: <material_id>
+  type: illumina # pacbio|illumina|ont
+  library:
+    library_id: <library_id>
+    date: YYYYMMDD
+    centre: # WTSI|MPI|VGL
+  sequencing:
+    instrument_model: RSII|Sequel
+    date: YYYYMMDD
+    center: WTSI|MPI|VGL
+  submission:
+    run_accession: XXX
+    experiment_accession: XXX
+  data_files:
+  stats:

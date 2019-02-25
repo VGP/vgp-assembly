@@ -1,6 +1,7 @@
 {
-  "name": "vgp_falcon_and_unzip_assembly",
+  "name": "vgp_falcon_and_unzip_assembly_workflow",
   "title": "Falcon and Falcon Unzip Assembly Workflow",
+  "summary": "VGP1.5 Falcon and Falcon-Unzip workflow",
   "stages": [
     {
       "id": "bam_to_fasta",
@@ -11,7 +12,7 @@
     {
       "id": "falcon_0_create_dazzler_db",
       "name": "Create Raw Reads Dazzler DB",
-      "executable": "app-create_dazzler_db/1.9.3",
+      "executable": "app-create_dazzler_db/2.0.0",
       "folder": "stage_1",
       "input": {
         "include_secondary_reads": true,
@@ -55,7 +56,8 @@
     },
     {
       "id": "falcon_0_hpc_tanmask",
-      "executable": "app-hpc_tanmask/1.9.1",
+      "name": "Raw Reads HPC TANmask",
+      "executable": "app-hpc_tanmask/2.0.0",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -64,7 +66,7 @@
             "stage": "falcon_0_create_dazzler_db"
           }
         },
-        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+        "advanced_options": "-k14 -e0.75 -s100 -l2500 -h240 -w8 "
       },
       "systemRequirements": {
         "*": {
@@ -74,7 +76,8 @@
     },
     {
       "id": "falcon_0_hpc_repmask",
-      "executable": "app-hpc_repmask/1.9.2",
+      "name": "Raw Reads HPC REPmask",
+      "executable": "app-hpc_repmask/2.0.1",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -90,7 +93,7 @@
           }
         },
         "use_mask": true,
-        "advanced_options": "-k16 -e0.70 -s1000 -l1000 -h64 -w7 "
+        "advanced_options": "-k14 -e0.75 -s100 -l2500 -h240 -w8 "
       },
       "systemRequirements": {
         "*": {
@@ -100,11 +103,12 @@
     },
     {
       "id": "falcon_0_hpc_daligner",
-      "executable": "app-fc_hpc_daligner/1.9.0",
+      "name": "Falcon Raw Reads Daligner",
+      "executable": "app-fc_hpc_daligner/2.0.0",
       "folder": "stage_1",
       "input": {
         "trim": false,
-        "daligner_arguments": "-k16 -e0.70 -s1000 -t16 -l1000 -h64 -w7 ",
+        "daligner_arguments": "-k14 -e0.75 -s100 -l2500 -h240 -w8 ",
         "sync_time": 1,
         "dazzler_db": {
           "$dnanexus_link": {
@@ -132,7 +136,25 @@
       }
     },
     {
+      "id": "falcon_1_jellyfish",
+      "name": "Preads Jellyfish and GenomeScope",
+      "executable": "app-jellyfish_and_genomescope/1.0.0",
+      "folder": "stage_1/genome_scope",
+      "input": {
+        "mer_length": 21,
+        "sequences_fastx": [
+          {
+            "$dnanexus_link": {
+              "outputField": "consensus_fastas",
+              "stage": "falcon_0_hpc_daligner"
+            }
+          }
+        ]
+      }
+    },
+    {
       "id": "falcon_1_calc_distribution",
+      "name": "Raw Reads Calculate Read Length Distribution",
       "executable": "app-calculate_read_length_distribution/1.9.2",
       "folder": "stage_1",
       "input": {
@@ -154,7 +176,8 @@
     },
     {
       "id": "falcon_1_create_dazzler_db",
-      "executable": "app-create_dazzler_db/1.9.3",
+      "name": "Falcon Preads Dazzler DB",
+      "executable": "app-create_dazzler_db/2.0.0",
       "folder": "stage_2",
       "input": {
         "include_secondary_reads": true,
@@ -184,7 +207,8 @@
     },
     {
       "id": "falcon_1_hpc_tanmask",
-      "executable": "app-hpc_tanmask/1.9.1",
+      "executable": "app-hpc_tanmask/1.9.3",
+      "name": "Falcon Preads HPC TANmask",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -193,7 +217,7 @@
             "stage": "falcon_1_create_dazzler_db"
           }
         },
-        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+        "advanced_options": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
@@ -203,7 +227,8 @@
     },
     {
       "id": "falcon_1_hpc_repmask",
-      "executable": "app-hpc_repmask/1.9.2",
+      "executable": "app-hpc_repmask/1.9.3",
+      "name": "Falcon Preads HPC REPmask",
       "folder": "stage_1",
       "input": {
         "dazzler_db": {
@@ -219,7 +244,7 @@
           }
         },
         "use_mask": true,
-        "advanced_options": "-k20 -e.96 -s1000 -l2500 -h256 "
+        "advanced_options": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
@@ -229,7 +254,8 @@
     },
     {
       "id": "falcon_1_hpc_daligner",
-      "executable": "app-fc_hpc_daligner/1.9.0",
+      "name": "Falcon Preads Daligner",
+      "executable": "app-fc_hpc_daligner/2.0.0",
       "folder": "stage_2",
       "input": {
         "generate_consensus_fastas": "None",
@@ -249,7 +275,7 @@
         },
         "file_prefix": "preads",
         "num_threads_per_daligner_job": 4,
-        "daligner_arguments": "-k20 -e.96 -s1000 -t32 -l2500 -h256 "
+        "daligner_arguments": "-k24 -e.90 -s100 -l1000 -h600 "
       },
       "systemRequirements": {
         "*": {
@@ -259,7 +285,8 @@
     },
     {
       "id": "falcon_2_asm",
-      "executable": "app-falcon_asm/1.9.1",
+      "executable": "app-falcon_asm/2.0.0",
+      "name": "Falcon Assembly",
       "folder": "stage_3",
       "input": {
         "input_db": {
@@ -288,6 +315,7 @@
     {
       "id": "falcon_2_calc_distribution",
       "executable": "app-calculate_read_length_distribution/1.9.2",
+      "name": "Post-Assembly Calculate Read Length Distribution",
       "folder": "stage_3",
       "input": {
         "genome_size": {
@@ -308,8 +336,8 @@
     },
     {
       "id": "unzip_0_track_reads",
-      "name": "track_reads",
-      "executable": "app-unzip_0_track_reads/1.0.0",
+      "name": "Unzip Track Reads",
+      "executable": "app-unzip_0_track_reads/1.1.0",
       "folder": "unzip_stage_1",
       "input": {
         "sg_edges_list": {
@@ -374,7 +402,7 @@
     },
     {
       "id": "unzip_1_align_and_phase",
-      "name": "align_and_phase",
+      "name": "Unzip Align and Phase",
       "executable": "app-unzip_1_align_and_phase/1.0.1",
       "folder": "unzip_stage_2",
       "input": {
@@ -418,8 +446,8 @@
     },
     {
       "id": "unzip_2_haplotype_assembly",
-      "name": "haplotype_assembly",
-      "executable": "app-unzip_2_haplotype_assembly/1.0.2",
+      "name": "Unzip Haplotype Assembly",
+      "executable": "app-unzip_2_haplotype_assembly/1.0.3",
       "folder": "unzip_stage_3",
       "input": {
         "sg_edges_list": {
@@ -474,7 +502,7 @@
     },
     {
       "id": "unzip_3_haplotype_track_reads",
-      "name": "haplotype_track_reads",
+      "name": "Unzip Haplotype Track Reads",
       "executable": "app-unzip_3_haplotype_track_reads/1.0.3",
       "folder": "unzip_stage_4",
       "input": {
@@ -537,8 +565,8 @@
     },
     {
       "id": "unzip_4_haplotype_polish",
-      "name": "haplotype_polish",
-      "executable": "app-unzip_4_haplotype_polish/1.0.6",
+      "name": "Unzip Haplotype Polish",
+      "executable": "app-unzip_4_haplotype_polish/1.1.0",
       "folder": "unzip_stage_5",
       "input": {
         "all_p_ctg": {
@@ -565,6 +593,50 @@
             "stage": "unzip_3_haplotype_track_reads"
           }
         }
+      }
+    },
+    {
+      "id": "unzip_4_primary_calc_distribution",
+      "name": "Post-Falcon-Unzip Primary Contig Calculate Read Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "unzip_stage_5/primary_contig_statistics",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "p_ctg_fasta",
+              "stage": "unzip_4_haplotype_polish"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "unzip_4_haplotype_calc_distribution",
+      "name": "Post-Falcon-Unzip Haplotype Contig Calculate Read Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "folder": "unzip_stage_5/haplotype_contig_statistics",
+      "input": {
+        "genome_size": {
+          "$dnanexus_link": {
+            "inputField": "genome_size",
+            "stage": "falcon_0_create_dazzler_db"
+          }
+        },
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "h_ctg_fasta",
+              "stage": "unzip_4_haplotype_polish"
+            }
+          }
+        ]
       }
     }
   ]

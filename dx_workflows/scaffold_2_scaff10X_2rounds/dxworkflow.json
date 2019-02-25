@@ -5,35 +5,35 @@
   "stages": [
     {
       "id": "round1",
-      "executable": "app-scaff10x/1.0.0",
-      "folder": "round1",
+      "executable": "app-scaff10x/1.1.0",
+      "folder": "scaff10x/round1",
       "input": {
         "is_raw": true
       }
     },
     {
       "id": "round2",
-      "executable": "app-scaff10x/1.0.0",
-      "folder": "round2",
+      "executable": "app-scaff10x/1.1.0",
+      "folder": "scaff10x/round2",
       "input": {
         "alignment_option": "-longread 1 -gap 100 -matrix 2000 -reads 8 -link 10 -block 50000",
         "is_raw": false,
         "assemble_genome_fastagz": {
           "$dnanexus_link": {
             "outputField": "scaffold",
-            "stage": "round1"
-          },
-        "scaff_R1_fastqgz": {
+            "stage": "round1"}
+        },
+        "scaff_R1_fastqgz": [{
           "$dnanexus_link": {
             "outputField": "read_bc1",
             "stage": "round1"
-          },
-        "scaff_R2_fastqgz": {
-          "$dnanexus_link": {
-            "outputField": "read_bc2",
-            "stage": "round1"
           }
-        }
+        }],
+        "scaff_R2_fastqgz": [{
+              "$dnanexus_link": {
+                "outputField": "read_bc2",
+                "stage": "round1"}
+        }]
       }
     }
   ]

@@ -5,12 +5,13 @@
   "stages": [
     {
       "id": "rename_contigs",
-      "executable": "app-vgp_rename_contigs/0.0.1"
+      "executable": "app-vgp_rename_contigs/0.0.1",
+      "folder": "purge_haplotigs/rename_contigs"
     },
     {
       "id": "minimap2",
       "executable": "app-minimap2_align_longread/0.0.1",
-      "folder": "/",
+      "folder": "purge_haplotigs/mapped_reads",
       "input": {
         "genome_fastagz": {
           "$dnanexus_link": {
@@ -23,6 +24,7 @@
     {
       "id": "bam_merge",
       "executable": "app-bamtools_merge/1.1.0",
+      "folder": "purge_haplotigs",
       "input": {
         "sorted_bams": [
           {
@@ -36,7 +38,8 @@
     },
     {
       "id": "readhist",
-      "executable": "app-purge_haplotigs_readhist/0.0.1",
+      "folder": "purge_haplotigs",
+      "executable": "app-purge_haplotigs_readhist/0.0.3",
       "input": {
         "bam": {
           "$dnanexus_link": {
