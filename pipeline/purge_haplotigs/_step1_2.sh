@@ -1,6 +1,13 @@
 #!/bin/bash
 
-module load purge_haplotigs
+if [ -e $1 ]; then
+	echo "$1 detected. Use values in this file for l m h."
+        l_cutoff=`sed -n 1p $1 | awk '{print $1}'`
+        m_cutoff=`sed -n 2p $1 | awk '{print $1}'`
+        h_cutoff=`sed -n 3p $1 | awk '{print $1}'`
+fi
+
+module load purge_haplotigs/0~20180710.f4fd019
 
 if ! [ -e aligned.bam.genecov ]; then
 	echo "STEP 1. Generate coverage histogram"
@@ -15,13 +22,16 @@ fi
 if ! [ -e peaks ]; then
 echo "STEP 1.5 Get l, m, h cut-offs"
 	echo "\
-	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/depthPeaks.jar - > peaks"
-	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/depthPeaks.jar - > peaks
+	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/purge_haplotigs/depthPeaks.jar - > peaks"
+	awk '$1=="genome" {print $2"\t"$3}' aligned.bam.genecov | java -jar -Xmx1g $VGP_PIPELINE/purge_haplotigs/depthPeaks.jar - > peaks
 fi
 
 num_lines=`wc -l peaks | awk '{print $1}'`
 
-if [[ $num_lines -ge 5 ]]; then
+if [[ -e $1 ]]; then
+	# Skip auto detection and proceed
+	echo "Skip auto detecting"
+elif [[ $num_lines -ge 5 ]]; then
 	l_cutoff=`cat peaks | head -n1 | awk '{print $1}'`
 	m_cutoff=`cat peaks | tail -n3 | head -n1 | awk '{print $1}'`
 	h_cutoff=`cat peaks | tail -n1 | awk '{print $1}'`
