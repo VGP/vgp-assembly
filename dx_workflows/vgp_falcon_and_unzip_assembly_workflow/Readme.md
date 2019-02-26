@@ -1,7 +1,7 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
-**2019-Feb-25 update**
+**2019-Feb-26 update**
 - change default instance type for Align and Phase
 
 **2019-Feb-15 update**
