@@ -89,5 +89,13 @@
     "network": [
       "*"
     ]
-  }
+  },
+  "openSource": true,
+  "billTo": "org-dnanexus",
+  "details": {
+        "upstreamVersion": "2.2.0",
+        "whatsNew": "* 2.2.0 Updated Salsa version to v2.2 branch",
+        "upstreamURL": "https://github.com/machinegun/SALSA.git",
+        "upstreamLicenses": ["MIT"]
+        }
 }

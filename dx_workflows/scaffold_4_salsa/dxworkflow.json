@@ -20,7 +20,7 @@
     },
     {
       "id": "salsa2",
-      "executable": "app-salsa/2.1.0",
+      "executable": "app-salsa/2.2.0",
       "input": {
         "hic_alignments": [
           {
