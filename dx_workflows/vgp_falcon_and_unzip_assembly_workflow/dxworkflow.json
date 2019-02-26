@@ -442,6 +442,11 @@
             "stage": "unzip_0_track_reads"
           }
         }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x32"
+        }
       }
     },
     {
