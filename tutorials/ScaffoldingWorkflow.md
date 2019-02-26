@@ -63,7 +63,7 @@ DNAnexus Apps:
 * Bionano 1 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_1enzyme]
 * Bionano 2 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_2enzyme]
 
-### 3. Salsa scaffolding:
+### 4. Salsa scaffolding:
 
 Salsa scaffolding uses Hi-C data to scaffold the assembly.
 Use the Arima mapping pipeline [https://github.com/ArimaGenomics/mapping_pipeline] and Salsa2.1 [https://github.com/machinegun/SALSA/releases/tag/v2.1]

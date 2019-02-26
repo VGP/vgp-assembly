@@ -379,6 +379,29 @@ large memory instance, such as the `mem3_ssd1_x32` instance. The app is configur
 not complete in under 6 hours. If this happens, rerun the analysis on a larger memory instance.
 
 Once the app completes, the output should look as follows:
+```
+scaffolding/bionano/
+├── bn_pre_cut_projected_ngs_coord_annotations.bed
+├── conflicts.txt
+├── conflicts_cut_status.txt
+├── conflicts_cut_status_CTTAAG.txt
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD.xmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD_q.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD_r.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_HYBRID_SCAFFOLD.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_HYBRID_SCAFFOLD_log.txt
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.agp
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.gap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.xmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_NCBI.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_q.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_r.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_trimHeadTailGap.coord
+├── hybrid_scaffold_output.tar.gz
+└── ngs_pre_cut_annotations.bed
+```
 
 As part of the Bionano hybrid scaffolding, you should also perform the following post-processing steps:
 1. Concatenate `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` outputs
@@ -388,4 +411,48 @@ To concatenate the two outputs, select the "Run Analysis" button in your project
 
 Supply the inputs `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` to the app as well as the output name `fArcCen1_s2.fasta.gz`.
 
-## Step 4.
+## Step 4. Salsa Scaffolding
+
+Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano. Take a look at the HiC input data:
+It will be located under the "genomic_data" directory with the name of the HiC provider who generated it, such as `phase`, `arima` or `dovetail`.
+```
+genomic_data/phase
+├── fArcCen1_DDHiC_R1.fastq.gz
+├── fArcCen1_DDHiC_R2.fastq.gz
+├── fArcCen1_S3HiC_R1.fastq.gz
+└── fArcCen1_S3HiC_R2.fastq.gz
+```
+
+In addition to the input files, you will need to know the restriction enzymes used to generate the data. For `fArcCen1`,
+the sequences are `GATC`.
+
+Copy the `Step 4 Salsa Scaffolding` workflow into your project. The workflow performs the following steps:
+
+1. Align the HiC reads using the Arima mapping pipeline
+2. Run Salsa2 on aligned reads and the s2.fasta.gz scaffold
+3. Concatenate the output with the Haplotigs from FALCON Unzip
+
+For configuring the inputs, select as follows:
+* Under "Generate BWA Index Genome" stage, specify the scaffolded `fArcCen1_s2.fasta.gz` file for the `Genome` input.
+* Under "Arima Mapping" stage, specify the paired end HiC for the `Forward Reads` (R1) and `Reverse Reads` (R2) inputs. 
+* Under the "Salsa" stage, select the gear icon, and specify the HiC restriction enzyme (`GATC`) as the `Restriction enzyme bases` input.
+* Under the "File Concatenator" stage, select the **Haplotig** output from FALCON Unzip Stage 5 
+(`assembly_v1.5/unzip_stage_5/cns_h_ctg.fasta.gz`). 
+* **Click and drag** the `Final Scaffold FASTA` output 
+from Salsa to the File Concatenator `Files` input. You should see `1 File + 1 Link` listed as the input to the File Concatenator app.
+* Click the gear icon next to the File Concatenator app to specify the output name: `fArcCen1_s4.fasta.gz`
+* Configure `Scaffolding` as the output folder.
+
+Here is what your configured workflow will look like:
+
+![Configured Salsa workflow](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/SalsaRunnable.png)
+
+The final output should look like this:
+```
+
+
+```
+
+## Step 5. Arrow Polishing
+
+## Step 6. Freebayes Polishing
