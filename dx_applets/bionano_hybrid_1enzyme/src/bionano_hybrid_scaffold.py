@@ -126,24 +126,32 @@ def main(**job_inputs):
     run_cmd('tree {0}'.format(output_dir))
 
     scaffold_final_ncbi = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NCBI.fasta'))[0]
     unscaffolded_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))[0]
     scaffold_final = glob.glob(
         os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.fasta'))
     scaffold_final.extend(glob.glob(
         os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.cmap')))
     scaffold_final.extend(glob.glob(
         os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.agp')))
-    scaffold_output = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD*.*map'))
+    scaffold_output = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.xmap'))
+    scaffold_output.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_q.cmap')))
+    scaffold_output.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_r.cmap')))
+
     cut_and_conflict = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', 'conflicts*.txt'))
     cut_and_conflict.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', '*_annotations.bed')))
+
+    # make sure output files don't have colons
+    dx_utils.run_cmd(["sed", "-i.bak", "'s/:/_/g'", scaffold_final_ncbi])
+    dx_utils.run_cmd(["sed", "-i.bak", "'s/:/_/g'", unscaffolded_final])
+
+    # upload outputs
     output = {"scaffold_final": [dx_utils.gzip_and_upload(f) for f in scaffold_final],
             "scaffold_output": [dx_utils.gzip_and_upload(f) for f in scaffold_output if f not in scaffold_final],
             "cut_and_conflict": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in cut_and_conflict],
-            "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
-            "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])}
+            "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi),
+            "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final)}
     
     tar_name = "hybrid_scaffold_output.tar.gz"
     tar_cmd = "tar czvf {tar_name} {outdir}".format(

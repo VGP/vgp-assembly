@@ -111,14 +111,19 @@ def main(**job_inputs):
         run_cmd('tail -n 50 {0}'.format(hybrid_scaffold_log))
     
     scaffold_final_ncbi = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))[0]
     unscaffolded_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))[0]
+
+    # make sure output files don't have colons
+    dx_utils.run_cmd(["sed", "-i.bak", "'s/:/_/g'", scaffold_final_ncbi])
+    dx_utils.run_cmd(["sed", "-i.bak", "'s/:/_/g'", unscaffolded_final])
+
     output = {
         "scaffold_fasta": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final if f.endswith(".fasta")],
         "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final],
-        "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
-        "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])
+        "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi),
+        "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final)
         }
     
     tar_name = "hybrid_scaffold_output.tar.gz"
