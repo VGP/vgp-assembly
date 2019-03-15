@@ -207,7 +207,7 @@
     },
     {
       "id": "falcon_1_hpc_tanmask",
-      "executable": "app-hpc_tanmask/1.9.3",
+      "executable": "app-hpc_tanmask/2.0.0",
       "name": "Falcon Preads HPC TANmask",
       "folder": "stage_1",
       "input": {
@@ -227,7 +227,7 @@
     },
     {
       "id": "falcon_1_hpc_repmask",
-      "executable": "app-hpc_repmask/1.9.3",
+      "executable": "app-hpc_repmask/2.0.1",
       "name": "Falcon Preads HPC REPmask",
       "folder": "stage_1",
       "input": {
