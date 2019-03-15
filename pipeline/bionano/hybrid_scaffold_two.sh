@@ -9,8 +9,8 @@ ASM=asm.fasta	# ln -s to the asm.fasta
 CONFIG=$4
 RefAligner=$tools/bionano/Solve3.2.1_04122018/RefAligner/7437.7523rel/avx/RefAligner
 
-module load python
-#### Python 2.7.15 :: Anaconda custom (64-bit)
+module load python/2.7
+#### Loading python 2.7
 module load perl/5.18.2
 #### Loading Perl 5.18.4  ... 
 module load R

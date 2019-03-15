@@ -19,7 +19,8 @@ partition=largemem
 name=$1
 #script=$VGP_PIPELINE/bionano/hybrid_scaffold.sh
 script=$VGP_PIPELINE/bionano/hybrid_scaffold_3.3.sh
-args="$1 DLE1 $VGP_PIPELINE/bionano/hybridScaffold_DLE1_config.xml"
+#args="$1 DLE1 $VGP_PIPELINE/bionano/hybridScaffold_DLE1_HiC_config_3.3.xml"
+args="$1 DLE1 $VGP_PIPELINE/bionano/hybridScaffold_DLE1_config_3.3.xml"
 walltime=4-0
 
 mkdir -p logs
