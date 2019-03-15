@@ -38,7 +38,7 @@ def main(**job_inputs):
         conflict_resolution_file = dx_utils.download_and_gunzip_file(job_inputs["conflict_resolution_file"])
         scaffold_cmd += ["-M", conflict_resolution_file]
     else:
-        scaffold_cmd += ["-B", job_inputs["b_conflict_filter"], "-N", job_inputs["n_conflict_filter"]]
+        scaffold_cmd += ["-B", str(job_inputs["b_conflict_filter"]), "-N", str(job_inputs["n_conflict_filter"])]
 
     molecules_bnx_file = None
     if job_inputs["generate_molecules"] is True:
