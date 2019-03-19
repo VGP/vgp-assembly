@@ -36,12 +36,12 @@ if ! [ -e aligned.bam ]; then	# symlink regardless the actual file exists or not
 	ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai
 fi
 
-cpus=2
+cpus=4
 mem=12g
 name=$1.freebayes
 script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
 args=$sample
-walltime=2-0
+walltime=3-0
 log=logs/$name.%A_%a.log
 
 mkdir -p bcf
