@@ -32,8 +32,8 @@ script=$VGP_PIPELINE/meryl/trim_bc.sh
 args="$genome_id"
 
 echo "\
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime --error=$log --output=$log -D $path --array=1-$LEN $script $args"
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime --error=$log --output=$log -D $path --array=1-$LEN $script $args > trim_bc.jid
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime --error=$log --output=$log -D $path --array=1-$LEN $script $args"
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime --error=$log --output=$log -D $path --array=1-$LEN $script $args > trim_bc.jid
 
 jid=`cat trim_bc.jid`
 if [ -z $jid ]; then
@@ -62,8 +62,8 @@ log=logs/$name.%A_%a.log
 args="$genome_id"
 
 echo "\
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=$array $script $args"
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=$array $script $args
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=$array $script $args"
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=$array $script $args
 
 LEN=`wc -l fastq.list | awk '{print $1}'`
 partition=largemem
@@ -76,8 +76,8 @@ script=$VGP_PIPELINE/meryl/meryl_build.sh
 args="$k fastq.list"
 
 echo "\
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=1-$LEN $script $args"
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=1-$LEN $script $args > meryl_build.jid
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=1-$LEN $script $args"
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path --array=1-$LEN $script $args > meryl_build.jid
 jid=`cat meryl_build.jid`
 if [ -z $jid ]; then
         dependency=""
@@ -95,5 +95,5 @@ script=$VGP_PIPELINE/meryl/meryl_mrg.sh
 args="$k $genome_id fastq.list"
 
 echo "\
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path $script $args"
-sbatch -J $name -c $cpus --mem=$mem --time=$walltime -P $partition -t $walltime $dependency --error=$log --output=$log -D $path $script $args > meryl_mrg.jid
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path $script $args"
+sbatch -J $name -c $cpus --mem=$mem --time=$walltime -p $partition -t $walltime $dependency --error=$log --output=$log -D $path $script $args > meryl_mrg.jid

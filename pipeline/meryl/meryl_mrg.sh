@@ -4,10 +4,12 @@ k=$1
 prefix=$2
 filelist=$3
 
-for file in $(grep --color=never $prefix $filelist);
+for file in $(cat $filelist);	# if file must be merged by $prefix: $(grep --color=never $prefix $filelist)
 do
 	name=${file/.fastq.gz/}
 	name=${name/.fq.gz/}
+	name=${name/.fastq/}
+	name=${name/.fq/}
 	indb=$indb" -s $name.$k"
 done
 
