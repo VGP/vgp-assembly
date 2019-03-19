@@ -18,8 +18,8 @@ genome=$1
 mkdir -p logs
 
 partition=quick
-cpus=2
-mem=2g
+cpus=16
+mem=24g
 name=$genome.screen
 script=$VGP_PIPELINE/mash/screen.sh
 args=""
