@@ -6,7 +6,7 @@ if [ -z $1 ]; then
 	exit -1
 fi
 
-if [ ! -e input.fofn]; then
+if [ ! -e input.fofn ]; then
 	echo "Requires: input.fofn"
 	exit -1
 fi
