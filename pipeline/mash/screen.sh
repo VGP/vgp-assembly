@@ -33,6 +33,16 @@ fi
 
 jobid=`echo $jobid |awk '{print $1}'`
 input_file=`head -n $jobid input.fofn |tail -n 1`
+
+if [[ "$input_file" =~ \.bam$ ]] ; then
+    if [[ ! -e "${input_file/.bam/.fasta}" ]] ; then
+        module load samtools
+       echo "convert bam to fasta"
+        samtools view $input_file | awk '{print ">"$1"\n"$10}' > ${input_file/.bam/.fasta}
+    fi
+    input_file=${input_file/.bam/.fasta}
+fi
+
 output_file=`echo $input_file |awk -F "/" '{print $(NF)}' |sed s/.fasta.gz/.out/g |sed s/.fastq.gz/.out/g |sed s/.fasta/.out/g |sed s/.fastq/.out/g`
 
 echo $input_file
