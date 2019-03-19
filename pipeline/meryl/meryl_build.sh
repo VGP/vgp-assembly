@@ -12,7 +12,7 @@ fi
 
 k=$1
 fastq=`sed -n ${num_line}p $2 | awk '{print $1}'`
-name=`echo $fastq | sed 's/.fasta.gz$//g' | sed 's/.fq.gz$//g' | sed 's/.fasta$//g' | sed 's/.fa$//g'`
+name=`echo $fastq | sed 's/.fasta.gz$//g' | sed 's/.fq.gz$//g' | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fastq$//g' | sed 's/.fastq.gz$//g'`
 
 if [ -e "$name.$k.mcdat" ]; then
 	echo "$name.$k.mcdat already exists. skip building."
@@ -20,7 +20,7 @@ if [ -e "$name.$k.mcdat" ]; then
 fi
 
 echo "PWD : $PWD"
-if ! [[ -e $name.fa ]] || ! [[ -e $name.fasta ]]; then
+if ! [[ -e $name.fa ]] && ! [[ -e $name.fasta ]]; then
 	echo "convert $fastq to FASTA"
 	if [[ ${fastq} =~ \.gz$ ]]; then
 		zcat $fastq | awk -v name=$name 'BEGIN {print ">"name".0"; num=1} {if (NR%4==2) print $1"N"; if (NR%4000000==0) {print "\n>"name"."num; num++}}' > $name.fa
