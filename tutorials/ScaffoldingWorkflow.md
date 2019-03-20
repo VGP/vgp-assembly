@@ -54,6 +54,7 @@ You will also need to know which enzymes the optical maps were generated with.
 To run Bionano hybrid scaffolding, select the 1 or 2 enzyme app. Use 1 enzyme for DLE1 optical maps or for either BspQI or BssSI optical maps. For the 2 enzyme optical map protocol, use the 2 enzyme hybrid scaffolding app.
 
 1. Run the appropriate hybrid scaffolding app
+2. Remove ":" characters from output contig names which were added by the Bionano scaffolding step (this is handled automatically by the app)
 2. Concatenate [https://platform.dnanexus.com/app/file_concatenator] the NCBI_SCAFFOLDED.fasta output with the UNSCAFFOLDED.fasta output to create s2.fasta.gz
 3. Trim off the leading / trailing N's in s2.fasta.gz
 
@@ -63,7 +64,7 @@ DNAnexus Apps:
 * Bionano 1 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_1enzyme]
 * Bionano 2 Enzyme Hybrid Scaffolding [https://platform.dnanexus.com/app/bionano_hybrid_2enzyme]
 
-### 3. Salsa scaffolding:
+### 4. Salsa scaffolding:
 
 Salsa scaffolding uses Hi-C data to scaffold the assembly.
 Use the Arima mapping pipeline [https://github.com/ArimaGenomics/mapping_pipeline] and Salsa2.1 [https://github.com/machinegun/SALSA/releases/tag/v2.1]
