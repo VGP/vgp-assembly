@@ -273,16 +273,23 @@ def run_cmd(cmd, return_output=False, output_file=None):
             print_cmd = cmd
         print(print_cmd, file=sys.stderr)
 
+    # run the command in an error aware way
+    process = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
+    output, err = process.communicate()
+    retcode = process.poll()
+    
+    # this prints full traceback to logs if an error occurs
+    if retcode:
+        sys.stdout.write(output)
+        sys.stderr.write(err)
+        raise subprocess.CalledProcessError(retcode, cmd, output=output)
+    
     if return_output:
-        output = subprocess.check_output(cmd, shell=shell, executable=executable).strip()
         print(output)
         return output.strip()
     elif output_file:
         with open(output_file, 'w') as fopen:
-            subprocess.Popen(cmd, shell=shell, executable=executable, stdout=fopen)
-    else:
-        subprocess.check_call(cmd, shell=shell, executable=executable)
-
+            fopen.write(output)
 
 def run_pipe(*cmds, **kwargs):
     """
@@ -365,7 +372,8 @@ def run_pipe(*cmds, **kwargs):
     # if multiple commands are provided, we need to pipe them together
     # initialize the first command
     cmd_process = []
-    init_process = subprocess.Popen(cmds[0], stdout=subprocess.PIPE)
+    init_process = subprocess.Popen(cmds[0], stdout=subprocess.PIPE,
+                                    stderr=sys.stderr)
     cmd_process.append(init_process)
     # run all commands except the last one by piping
     for i in range(1, num_cmd - 1):
@@ -373,7 +381,8 @@ def run_pipe(*cmds, **kwargs):
         prev_process = cmd_process[i-1]
         process = subprocess.Popen(cmds[i],
                                    stdin=prev_process.stdout,
-                                   stdout=subprocess.PIPE)
+                                   stdout=subprocess.PIPE,
+                                   stderr=sys.stderr)
         # close the previous command -- this will take care of the case when
         # cmd_process[i] closes before cmd_process[-1] is done
         cmd_process.append(process)
@@ -384,14 +393,17 @@ def run_pipe(*cmds, **kwargs):
     prev_process = cmd_process[-1]
     if output_file is not None:
         with open(output_file, "w") as fopen:
-            subprocess.check_call(cmds[-1], stdin=prev_process.stdout, stdout=fopen)
+            subprocess.check_call(cmds[-1], stdin=prev_process.stdout, 
+                                  stdout=fopen, stderr=sys.stderr)
             prev_process.stdout.close()
     elif return_output is True:
-        output = subprocess.check_output(cmds[-1], stdin=prev_process.stdout)
+        output = subprocess.check_output(cmds[-1], stdin=prev_process.stdout,
+                                         stderr=sys.stderr)
         prev_process.stdout.close()
         output = output.strip()
     else:
-        subprocess.check_call(cmds[-1], stdin=prev_process.stdout)
+        subprocess.check_call(cmds[-1], stdin=prev_process.stdout,
+                              stderr=sys.stderr)
         prev_process.stdout.close()
 
     # check that all intermediate commands finished successfully
@@ -399,6 +411,7 @@ def run_pipe(*cmds, **kwargs):
         cmd = cmds[i]
         curr_proc = cmd_process[i]
         # Polling is needed first in order to set the returncode attr
+        # run the command in an error aware way
         curr_proc.poll()
         returncode = curr_proc.returncode
         if returncode != 0 and returncode is not None:
@@ -575,7 +588,7 @@ def gzip_and_upload(fn, rfn=None, compression_level=1):
 
     gzip_cmd = ['gzip', '-{0}'.format(compression_level), '-c', fn]
     upload_cmd = ['dx', 'upload', '-', '--brief', '--path', rfn]
-    fid = run_pipe(gzip_cmd, upload_cmd, returnOutput=True)
+    fid = run_pipe(gzip_cmd, upload_cmd, return_output=True)
 
     return dxpy.dxlink(fid)
 
@@ -627,7 +640,7 @@ def tar_files_and_upload(filenames, prefix, compression_level=1):
     upload_cmd = ['dx', 'upload', '--brief', '--destination', ofn, '-']
 
     # run pipe
-    fid = run_pipe(tar_cmd, gzip_cmd, upload_cmd, returnOutput=True)
+    fid = run_pipe(tar_cmd, gzip_cmd, upload_cmd, return_output=True)
 
     # remove temporary filelist file
     cmd = ['rm', fh.name]

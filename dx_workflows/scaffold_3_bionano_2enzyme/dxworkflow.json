@@ -5,7 +5,41 @@
   "stages": [
     {
       "id": "bionano_hybrid",
-      "executable": "app-bionano_hybrid_2enzyme/0.0.1"
+      "executable": "app-bionano_hybrid_2enzyme/1.0.0"
+    },
+    {
+      "id": "concatenate_unscaffolded",
+      "executable": "app-file_concatenator/1.3.0",
+      "input": {
+        "files": [
+          {"$dnanexus_link": {
+            "outputField": "ncbi_scaffold_final",
+            "stage": "bionano_hybrid"
+          }
+          },
+          {"$dnanexus_link": {
+            "outputField": "unscaffolded_final",
+            "stage": "bionano_hybrid"
+          }
+          }
+        ],
+        "output_filename": "scaffold_s2.fasta"
+      }
+    },
+    {
+      "id": "trim_fasta",
+      "executable": "app-swiss-army-knife/2.1.4",
+      "input": {
+        "in": [
+          {
+            "$dnanexus_link": {
+            "outputField": "file",
+            "stage": "concatenate_unscaffolded"
+            }
+          }
+        ],
+        "cmd": "sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' $in_name > trimmed_s2.fasta"
+      }
     }
   ]
 }

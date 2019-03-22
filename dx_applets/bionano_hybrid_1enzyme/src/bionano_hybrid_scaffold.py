@@ -1,5 +1,4 @@
 import os
-import subprocess
 import glob
 import dxpy
 
@@ -15,46 +14,6 @@ os.environ['PATH'] = HYBRID_DIR + \
     os.pathsep + os.environ['PATH']
 
 
-def run_cmd(cmd, returnOutput=False):
-    print cmd
-    if returnOutput:
-        output = subprocess.check_output(
-            cmd, shell=True, executable='/bin/bash').strip()
-        print output
-        return output
-    else:
-        subprocess.check_call(cmd, shell=True, executable='/bin/bash')
-
-
-def remove_special_chars(string):
-    '''function that replaces any characters in a string that are not alphanumeric or _ or .'''
-    string = "".join(
-        char for char in string if char.isalnum() or char in ['_', '.'])
-
-    return string
-
-
-def download_and_gunzip_file(input_file, skip_decompress=False, additional_pipe=None):
-    input_file = dxpy.DXFile(input_file)
-    input_filename = input_file.describe()['name']
-    ofn = remove_special_chars(input_filename)
-
-    cmd = 'dx download ' + input_file.get_id() + ' -o - '
-    if input_filename.endswith('.tar.gz'):
-        ofn = 'tar_output_{0}'.format(ofn.replace('.tar.gz', ''))
-        cmd += '| tar -zxvf - '
-    elif (os.path.splitext(input_filename)[-1] == '.gz') and not skip_decompress:
-        cmd += '| gunzip '
-        ofn = os.path.splitext(ofn)[0]
-    if additional_pipe is not None:
-        cmd += '| ' + additional_pipe
-    cmd += ' > ' + ofn
-    print cmd
-    subprocess.check_call(cmd, shell=True)
-
-    return ofn
-
-
 @dxpy.entry_point("main")
 def main(**job_inputs):
     bionano_cmap_link = job_inputs['refinefinal_merged_cmap']
@@ -62,89 +21,95 @@ def main(**job_inputs):
     args_xml_link = job_inputs.get('args_xml')
 
     # Download all the inputs
-    bionano_cmap_filename = download_and_gunzip_file(bionano_cmap_link)
-    ngs_fasta_filename = download_and_gunzip_file(ngs_fasta_link)
+    bionano_cmap_filename = dx_utils.download_and_gunzip_file(bionano_cmap_link)
+    ngs_fasta_filename = dx_utils.download_and_gunzip_file(ngs_fasta_link)
     if args_xml_link:
-        args_xml_filename = download_and_gunzip_file(args_xml_link)
+        args_xml_filename = dx_utils.download_and_gunzip_file(args_xml_link)
     else:
         args_xml_filename = os.path.join(HYBRID_DIR, 'hybridScaffold_config.xml')
 
     output_dir = "hybrid_scaffold_output"
 
-    scaffold_cmd = (
-        "perl {dir}/hybridScaffold.pl -n {ngs_fasta} -b {cmap} "
-        "-o {outdir} -c {args_xml} "
-        .format(dir=HYBRID_DIR, ngs_fasta=ngs_fasta_filename, cmap=bionano_cmap_filename,
-                args_xml=args_xml_filename, outdir=output_dir))
-    scaffold_cmd += '-r {refaligner} '.format(refaligner=os.path.join(TOOLS_DIR, 'RefAligner'))
+    scaffold_cmd = ["perl", os.path.join(HYBRID_DIR, "hybridScaffold.pl"), "-n", ngs_fasta_filename,
+                    "-b", bionano_cmap_filename, "-o", output_dir, "-c", args_xml_filename,
+                    "-r", os.path.join(TOOLS_DIR, 'RefAligner')]
 
     if "conflict_resolution_file" in job_inputs:
-        conflict_resolution_file = download_and_gunzip_file(job_inputs["conflict_resolution_file"])
-        scaffold_cmd += '-M {cr_file} '.format(conflict_resolution_file)
+        conflict_resolution_file = dx_utils.download_and_gunzip_file(job_inputs["conflict_resolution_file"])
+        scaffold_cmd += ["-M", conflict_resolution_file]
     else:
-        scaffold_cmd += '-B {b_level} -N {n_level} '.format(
-            b_level=job_inputs["b_conflict_filter"], n_level=job_inputs["n_conflict_filter"])
+        scaffold_cmd += ["-B", str(job_inputs["b_conflict_filter"]), "-N", str(job_inputs["n_conflict_filter"])]
 
+    molecules_bnx_file = None
     if job_inputs["generate_molecules"] is True:
-        scaffold_cmd += '-x '
-        scaffold_cmd += '-p {0}'.format(SCRIPTS_DIR)
+        scaffold_cmd += ["-x", "-p", SCRIPTS_DIR]
 
         try:
-            molecules_bnx_file = download_and_gunzip_file(job_inputs["molecules_bnx_file"])
-            scaffold_cmd += '-m {0} '.format(molecules_bnx_file)
+            molecules_bnx_file = dx_utils.download_and_gunzip_file(job_inputs["molecules_bnx_file"])
+            scaffold_cmd += ["-m", molecules_bnx_file]
 
         except KeyError:
             raise dxpy.AppError("Molecules BNX file required for Align Molecules flag (-x)")
 
         try:
-            optargs_xml = download_and_gunzip_file(job_inputs["optargs_xml"])
-            scaffold_cmd += '-q {0} '.format(optargs_xml)
+            optargs_xml = dx_utils.download_and_gunzip_file(job_inputs["optargs_xml"])
+            scaffold_cmd += ["-q", optargs_xml]
 
         except KeyError:
             raise dxpy.AppError("OptArgs XML file required for Align Molecules flag (-x)")
 
     if job_inputs["generate_chimeric"] is True:
-        scaffold_cmd += '-y '
+        scaffold_cmd += ["-y"]
 
         if molecules_bnx_file:
-            scaffold_cmd += '-m {0} '.format(molecules_bnx_file)
+            scaffold_cmd += ["-m", molecules_bnx_file]
 
         else:
             try:
-                molecules_bnx_file = download_and_gunzip_file(job_inputs["molecules_bnx_file"])
-                scaffold_cmd += '-m {0} '.format(molecules_bnx_file)
+                molecules_bnx_file = dx_utils.download_and_gunzip_file(job_inputs["molecules_bnx_file"])
+                scaffold_cmd += ["-m", molecules_bnx_file]
 
             except KeyError:
                 raise dxpy.AppError("Molecules BNX file required for Generate Molecules flag")
 
         if "err_files" in job_inputs:
-            err_files = [download_and_gunzip_file(err_file) for err_file in job_inputs["err_files"]]
-            err_cmd = ' '.join(['-e {0}'.format(err) for err in err_files])
-            scaffold_cmd += err_cmd
-    run_cmd(scaffold_cmd)
+            err_files = [dx_utils.download_and_gunzip_file(err_file) for err_file in job_inputs["err_files"]]
+            for err in err_files:
+                scaffold_cmd += ["-e", err]
+    dx_utils.run_cmd(scaffold_cmd)
 
-    run_cmd('tree {0}'.format(output_dir))
+    dx_utils.run_cmd(["tree", output_dir])
 
     scaffold_final_ncbi = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NCBI.fasta'))[0]
     unscaffolded_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))[0]
     scaffold_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.fasta'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.fasta'))
     scaffold_final.extend(glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.cmap')))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.cmap')))
     scaffold_final.extend(glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD.agp')))
-    scaffold_output = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD*'))
+        os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.agp')))
+
+    scaffold_output = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD.xmap'))
+    scaffold_output.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_q.cmap')))
+    scaffold_output.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds', '*_HYBRID_SCAFFOLD_r.cmap')))
+    scaffold_output = [f for f in scaffold_output if f not in scaffold_final]
+
     cut_and_conflict = glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', 'conflicts*.txt'))
     cut_and_conflict.extend(glob.glob(os.path.join(output_dir, 'hybrid_scaffolds*', '*_annotations.bed')))
+
+    # make sure output files don't have colons
+    dx_utils.run_cmd(["sed", "-i.bak", "s/:/_/g", scaffold_final_ncbi])
+    dx_utils.run_cmd(["sed", "-i.bak", "s/:/_/g", unscaffolded_final])
+
+    # upload outputs
     output = {"scaffold_final": [dx_utils.gzip_and_upload(f) for f in scaffold_final],
-            "scaffold_output": [dx_utils.gzip_and_upload(f) for f in scaffold_output if f not in scaffold_final],
+            "scaffold_output": [dx_utils.gzip_and_upload(f) for f in scaffold_output],
             "cut_and_conflict": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in cut_and_conflict],
-            "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi[0]),
-            "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final[0])}
-    
+            "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi),
+            "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final)}
+
     tar_name = "hybrid_scaffold_output.tar.gz"
     tar_cmd = "tar czvf {tar_name} {outdir}".format(
         tar_name=tar_name,

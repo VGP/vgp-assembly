@@ -275,7 +275,7 @@ If the histogram is bimodal, select the cutoffs as follows:
 * _Mid_: Threshold between two two peaks
 * _High_: Threshold above the second peak
 
-![Coverage histogram with indicated cutoffs]()
+![Coverage histogram with indicated cutoffs](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/PurgeHaplotigsReadhist.png)
 
 Once you've determined the appropriate cutoffs, select the `Purge Haplotigs Part 2` workflow. Specify the file inputs as
 follows:
@@ -286,7 +286,7 @@ follows:
 In addition, click the gear icon to the right of the app to open the parameters panel and specify the cutoffs. For 
 `fArcCen1`, we've chosen the following cutoffs: Low = 10, Mid = 48, High = 185.
 
-![Cutoffs specified in Part 2 app]()
+![Cutoffs specified in Part 2 app](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/PurgeHaplotigsCutoffs.png)
 
 Once the inputs and parameters are specified, specify the Output Folder as before to the "Scaffolding" folder. Now run 
 the analysis.
@@ -333,3 +333,126 @@ Under the first round parameters, make sure the `is_raw` parameter is specified 
 2 parameters you may also specify the output prefix for the output files if desired.
 
 In addition, specify the `Output Folder` for the workflow to `scaffolding` as before. Launch the analysis.
+
+![Configured Scaff10x workflow](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/Scaff10XRunnable.png)
+
+The final output of scaff10x should look like this:
+```
+scaffolding/scaff10x/
+├── round1
+│   ├── read-BC_1.fastq.gz
+│   ├── read-BC_2.fastq.gz
+│   └── scaffolds.fasta.gz
+└── round2
+    ├── read-BC_1.fastq.gz
+    ├── read-BC_2.fastq.gz
+    └── scaffolds.fasta.gz
+```
+
+The output under `round2/scaffolds.fasta.gz` corresponds to `fArcCen1_s1.fasta.gz` using the VGP naming convention.
+
+## 3. Bionano Hybrid Scaffolding
+
+In this step we will be using the Bionano assembled CMAP data together with the scaffold `fArcCen1_s1.fasta.gz` from 
+step 2 to perform hybrid scaffolding on the primary haplotig.
+
+Before copying the workflow, we need to first take a look at the Bionano input data:
+```
+genomic_data/bionano/
+├── fArcCen1_Saphyr_DLE-1.cmap.gz
+├── fArcCen1_Saphyr_DLE-1_1265239.bnx.gz
+└── fArcCen1_Saphyr_DLE-1_1265240.bnx.gz
+```
+
+From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore,
+copy the `Step 3 Bionano Hybrid Scaffolding 1 Enzyme` workflow from VGP tools. In some cases you may see two `*.cmap.gz`
+files in your input data corresponding to two enzymes used for the Bionano data, and therefore will need to use the 2 enzyme workflow.
+
+For the inputs select as follows:
+* CMAP input: `fArcCen1_Saphyr_DLE-1.cmap.gz` under `genomic_data/bionano/`
+* FASTA input: `scaffolds.fasta.gz` under `scaffolding/scaff10x/round2`
+
+As before, specify the workflow output folder to `scaffolding`. A `bionano` folder will be automatically created under that.
+
+The Bionano tool is prone to hanging if the memory requirements are not met. Therefore, make sure it is running on a 
+large memory instance, such as the `mem3_ssd1_x32` instance. The app is configured to aggressively time out if it does 
+not complete in under 6 hours. If this happens, rerun the analysis on a larger memory instance.
+
+Once the app completes, the output should look as follows:
+```
+scaffolding/bionano/
+├── bn_pre_cut_projected_ngs_coord_annotations.bed
+├── conflicts.txt
+├── conflicts_cut_status.txt
+├── conflicts_cut_status_CTTAAG.txt
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD.xmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD_q.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_BNGcontigs_HYBRID_SCAFFOLD_r.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_HYBRID_SCAFFOLD.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_HYBRID_SCAFFOLD_log.txt
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.agp
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.gap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD.xmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_NCBI.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_q.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_r.cmap
+├── fArcCen1_Saphyr_DLE1_bppAdjust_cmap_scaffolds_fasta_NGScontigs_HYBRID_SCAFFOLD_trimHeadTailGap.coord
+├── hybrid_scaffold_output.tar.gz
+└── ngs_pre_cut_annotations.bed
+```
+
+As part of the Bionano hybrid scaffolding, you should also perform the following post-processing steps:
+1. Concatenate `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` outputs
+2. Remove leading and trailing N's from scaffolded output.
+
+To concatenate the two outputs, select the "Run Analysis" button in your project and select the "File Concatenator" app.
+
+Supply the inputs `UNSCAFFOLDED` and `SCAFFOLD_FINAL_NCBI` to the app as well as the output name `fArcCen1_s2.fasta.gz`.
+
+## Step 4. Salsa Scaffolding
+
+Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano. Take a look at the HiC input data:
+It will be located under the "genomic_data" directory with the name of the HiC provider who generated it, such as `phase`, `arima` or `dovetail`.
+```
+genomic_data/phase
+├── fArcCen1_DDHiC_R1.fastq.gz
+├── fArcCen1_DDHiC_R2.fastq.gz
+├── fArcCen1_S3HiC_R1.fastq.gz
+└── fArcCen1_S3HiC_R2.fastq.gz
+```
+
+In addition to the input files, you will need to know the restriction enzymes used to generate the data. For `fArcCen1`,
+the sequences are `GATC`.
+
+Copy the `Step 4 Salsa Scaffolding` workflow into your project. The workflow performs the following steps:
+
+1. Align the HiC reads using the Arima mapping pipeline
+2. Run Salsa2 on aligned reads and the s2.fasta.gz scaffold
+3. Concatenate the output with the Haplotigs from FALCON Unzip
+
+For configuring the inputs, select as follows:
+* Under "Generate BWA Index Genome" stage, specify the scaffolded `fArcCen1_s2.fasta.gz` file for the `Genome` input.
+* Under "Arima Mapping" stage, specify the paired end HiC for the `Forward Reads` (R1) and `Reverse Reads` (R2) inputs. 
+* Under the "Salsa" stage, select the gear icon, and specify the HiC restriction enzyme (`GATC`) as the `Restriction enzyme bases` input.
+* Under the "File Concatenator" stage, select the **Haplotig** output from FALCON Unzip Stage 5 
+(`assembly_v1.5/unzip_stage_5/cns_h_ctg.fasta.gz`). 
+* **Click and drag** the `Final Scaffold FASTA` output 
+from Salsa to the File Concatenator `Files` input. You should see `1 File + 1 Link` listed as the input to the File Concatenator app.
+* Click the gear icon next to the File Concatenator app to specify the output name: `fArcCen1_s4.fasta.gz`
+* Configure `Scaffolding` as the output folder.
+
+Here is what your configured workflow will look like:
+
+![Configured Salsa workflow](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/SalsaRunnable.png)
+
+The final output should look like this:
+```
+
+
+```
+
+## Step 5. Arrow Polishing
+
+## Step 6. Freebayes Polishing

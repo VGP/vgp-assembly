@@ -91,6 +91,7 @@ Once we visit a VGP project, the top level folders are expected to have:
   * \[tissue\]{#}
     * pacbio
       ```
+      <genome_id>_hq_isoforms_#.#.bam (processed iso-seq file)
       <movie>.subreads.bam
       <movie>.subreads.bam.pbi
       <movie>.subreadset.xml
