@@ -36,11 +36,11 @@ if [ ! -z $dependency ]; then
 fi
 
 cpus=32
-mem=48g
+mem=24g
 name=scaff10x_$1
 script=$VGP_PIPELINE/scaff10x/scaff10x_v4.1.sh
 args=$1
-walltime=2-0
+walltime=3-0
 dependency=$dependency
 log=logs/$name.%A_%a.log
 echo "\
