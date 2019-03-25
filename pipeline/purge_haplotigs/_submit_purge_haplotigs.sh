@@ -1,8 +1,9 @@
 #! /bin/bash
 
 if [ -z $1 ]; then
-	echo "Usage: ./_submit_purge_haplotigs.sh <name>"
+	echo "Usage: ./_submit_purge_haplotigs.sh <name> [lmh]"
 	echo -e "\tRequires aligned.bam"
+	echo -e "\t[lmh]: file with l m h values on the beginning of each line."
 	exit -1
 fi
 
@@ -19,7 +20,7 @@ if ! [ -e coverage_stats.csv ]; then
 	mem=8g
 	name=${1}_step1_2
 	script=$VGP_PIPELINE/purge_haplotigs/_step1_2.sh
-	args=$1
+	args=$2
 	walltime=2-0
 
 	log=logs/$name.%A_%a.log

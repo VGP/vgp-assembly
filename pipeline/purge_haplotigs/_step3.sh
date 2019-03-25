@@ -1,6 +1,6 @@
 #!/bin/bash
 
-module load purge_haplotigs
+module load purge_haplotigs/0~20180710.f4fd019
 
 genome=$1
 
