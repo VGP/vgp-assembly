@@ -1,0 +1,9 @@
+{
+  "name": "scaff10x",
+  "title": "Scaff10x Asset",
+  "description": "Scaffold a genomic assembly with 10x linked reads",
+  "version": "4.1.0",
+  "distribution": "Ubuntu",
+  "instanceType": "azure:mem1_ssd1_x16",
+  "release": "16.04"
+}
