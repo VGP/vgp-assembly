@@ -142,7 +142,7 @@
     },
     "azure:westus": {
       "systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
-      "assetDepends": [{"id": "record-FX5zF7Q0Qf7pQF7y27Qq7BY8"}]
+      "assetDepends": [{"id": "record-FXGZ3989Y19Z0zzb8qp29j9F"}]
     }
   }
 }
