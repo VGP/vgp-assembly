@@ -28,13 +28,6 @@
       "optional": false
     },
     {
-      "name": "is_raw",
-      "help": "Input scaff_R1 and scaff_R2 reads are raw reads or has been processed",
-      "class": "boolean",
-      "optional": false,
-      "default": true
-    },
-    {
       "name": "output_prefix",
       "label": "Output Prefix",
       "help": "If provided, this output name is used for output files",

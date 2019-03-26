@@ -5,19 +5,16 @@
   "stages": [
     {
       "id": "round1",
-      "executable": "app-scaff10x/1.1.0",
+      "executable": "app-scaff10x/2.0.0",
       "folder": "scaff10x/round1",
-      "input": {
-        "is_raw": true
-      }
+      "input": {}
     },
     {
       "id": "round2",
-      "executable": "app-scaff10x/1.1.0",
+      "executable": "app-scaff10x/2.0.0",
       "folder": "scaff10x/round2",
       "input": {
         "alignment_option": "-longread 1 -gap 100 -matrix 2000 -reads 8 -link 10 -block 50000",
-        "is_raw": false,
         "assemble_genome_fastagz": {
           "$dnanexus_link": {
             "outputField": "scaffold",
