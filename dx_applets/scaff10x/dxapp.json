@@ -140,12 +140,12 @@
     "upstreamUrl": "https://github.com/wtsi-hpag/Scaff10X",
     "upstreamVersion": "4.1.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": "* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
+    "whatsNew": "* 2.0.0 Binary upgrade to version 4.0.0, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
     "aws:us-east-1": {
       "systemRequirements": {"*": {"instanceType": "mem3_ssd1_x16"}},
-      "assetDepends": [{"id": "record-FXGY86Q0K9y813PFG8BGpyXJ"}]
+      "assetDepends": [{"id": "record-FX60V0Q0qZkQ6YKJKqK8qkB4"}]
     },
     "azure:westus": {
       "systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},

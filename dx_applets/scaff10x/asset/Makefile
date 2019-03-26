@@ -2,7 +2,6 @@ SHELL=/bin/bash -e
 
 all:
 	git clone https://github.com/wtsi-hpag/Scaff10X
-	cd Scaff10X; git fetch && git fetch --tags; git checkout v4.1
 	cd Scaff10X; bash ./install.sh
 	sudo mv Scaff10X/src/scaff-bin /usr/bin/
 	sudo mv Scaff10X/src/break10x /usr/bin/
