@@ -190,32 +190,13 @@ main() {
         exit "number of forward and reverse reads are not equal"
     fi
 
-    # download reads and concatenate together
-        # add the processed and merged reads as output
-    if [[ $output_prefix != "" ]]; then
-          read_bc1_name="${output_prefix}".read-BC_1.fastq.gz
-          read_bc2_name="${output_prefix}".read-BC_2.fastq.gz
-    else
-          read_bc1_name=read-BC_1.fastq.gz
-          read_bc2_name=read-BC_2.fastq.gz
-    fi
+    # download reads in parallel
+    dx-download-all-inputs --except mapper_file --except assemble_genome_fastagz --parallel
 
-    for i in ${!scaff_R1_fastqgz[@]}
-    do
-        if [[ "${scaff_R1_fastqgz_name[$i]}" =~ \.gz$ ]]; then
-            dx download "${scaff_R1_fastqgz[$i]}" -o - >> "$read_bc1_name"
-        else
-            dx download "${scaff_R1_fastqgz[$i]}" -o - | gzip >> "$read_bc1_name"
-        fi
-    done
-
-    for i in ${!scaff_R2_fastqgz[@]}
-      do
-        if [[ "${scaff_R2_fastqgz_name[$i]}" =~ \.gz$ ]]; then
-            dx download "${scaff_R2_fastqgz[$i]}" -o - >> "$read_bc2_name"
-        else
-            dx download "${scaff_R2_fastqgz[$i]}" -o - | gzip >> "$read_bc2_name"
-        fi
+    # save inputs to input.dat
+    for i in ${!scaff_R1_fastqgz[@]}; do
+        echo "q1=${scaff_R1_fastqgz_path[$i]}" >> input.dat
+        echo "q2=${scaff_R2_fastqgz_path[$i]}" >> input.dat
     done
 
     # download & unpack genome
@@ -246,14 +227,14 @@ main() {
 
     echo "scaffolding"
     if [[ -n "$mapping_file" ]]; then
-        /usr/bin/scaff10x -nodes `nproc` $alignment_option -sam temp_mapping_file/mapping.sam -align "$mapper_choice" assemble_genome.fasta "$read_bc1_name" "$read_bc2_name" scaffolds.fasta
+        /usr/bin/scaff10x -nodes `nproc` $alignment_option -sam temp_mapping_file/mapping.sam -align "$mapper_choice" -data input.dat assemble_genome.fasta scaffolds.fasta
     else
-        /usr/bin/scaff10x -nodes `nproc` $alignment_option -align "$mapper_choice" -file 0 assemble_genome.fasta "$read_bc1_name" "$read_bc2_name" scaffolds.fasta
+        /usr/bin/scaff10x -nodes `nproc` $alignment_option -align "$mapper_choice" -file 0 -data input.dat assemble_genome.fasta scaffolds.fasta
     fi
 
     if [[ "$disable_break10x" == 'false' ]]; then
         echo "break point"
-        /usr/bin/break10x -nodes `nproc` $break10x_option scaffolds.fasta read-BC_1.fastq.gz read-BC_2.fastq.gz scaffolds-break.fasta scaffolds-break.name
+        /usr/bin/break10x -nodes `nproc` $break10x_option scaffolds.fasta -data input.dat scaffolds-break.fasta scaffolds-break.name
         gzip scaffolds-break.fasta
         breakpoint=$(dx upload scaffolds-break.fasta.gz --brief)
         breakpoint_name=$(dx upload scaffolds-break.name --brief)

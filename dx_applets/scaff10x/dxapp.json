@@ -3,7 +3,7 @@
   "title": "Scaff10x: The genome assembly pipeline based on read clustering",
   "summary": "The genome assembly pipeline based on read clustering",
   "dxapi": "1.0.0",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "billTo": "org-dnanexus",
   "inputSpec": [
     {
@@ -133,7 +133,7 @@
     "upstreamUrl": "https://github.com/wtsi-hpag/Scaff10X",
     "upstreamVersion": "4.1.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": "* 2.0.0 Binary upgrade to version 4.0.0, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
+    "whatsNew": "* 2.0.1 Update input file format\n* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
     "aws:us-east-1": {

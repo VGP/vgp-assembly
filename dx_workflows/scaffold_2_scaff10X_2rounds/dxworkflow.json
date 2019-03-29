@@ -1,36 +1,14 @@
 {
-  "name": "scaffold_2_scaff10X_2rounds",
-  "title": "Scaffold2 Scaff10X 2 Rounds",
-  "version": "1.5.0",
+  "name": "scaffold_2_scaff10X",
+  "title": "Scaffold2 Scaff10X",
+  "version": "1.5.1",
   "stages": [
     {
-      "id": "round1",
-      "executable": "app-scaff10x/2.0.0",
-      "folder": "scaff10x/round1",
-      "input": {}
-    },
-    {
-      "id": "round2",
-      "executable": "app-scaff10x/2.0.0",
+      "id": "scaff10x",
+      "executable": "app-scaff10x/2.0.1",
       "folder": "scaff10x/round2",
       "input": {
-        "alignment_option": "-longread 1 -gap 100 -matrix 2000 -reads 8 -link 10 -block 50000",
-        "assemble_genome_fastagz": {
-          "$dnanexus_link": {
-            "outputField": "scaffold",
-            "stage": "round1"}
-        },
-        "scaff_R1_fastqgz": [{
-          "$dnanexus_link": {
-            "outputField": "read_bc1",
-            "stage": "round1"
-          }
-        }],
-        "scaff_R2_fastqgz": [{
-              "$dnanexus_link": {
-                "outputField": "read_bc2",
-                "stage": "round1"}
-        }]
+        "alignment_option": "-longread 1 -gap 100 -matrix 2000 -read-s1 12 -read-s2 8 -link 10 -score 20 -edge 50000 -block 50000"
       }
     }
   ]
