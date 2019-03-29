@@ -123,7 +123,7 @@
     "interpreter": "bash",
     "timeoutPolicy": {
       "*": {
-        "hours": 48
+        "hours": 72
       }
     },
     "execDepends": [{"name": "bc"}],
@@ -137,11 +137,11 @@
   },
   "regionalOptions": {
     "aws:us-east-1": {
-      "systemRequirements": {"*": {"instanceType": "mem3_ssd1_x16"}},
+      "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
       "assetDepends": [{"id": "record-FX60V0Q0qZkQ6YKJKqK8qkB4"}]
     },
     "azure:westus": {
-      "systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+      "systemRequirements": {"*": {"instanceType": "azure:mem1_ssd1_x16"}},
       "assetDepends": [{"id": "record-FXGZ3989Y19Z0zzb8qp29j9F"}]
     }
   }
