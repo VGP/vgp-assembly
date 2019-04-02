@@ -3,7 +3,7 @@
   "title": "Scaff10x: The genome assembly pipeline based on read clustering",
   "summary": "The genome assembly pipeline based on read clustering",
   "dxapi": "1.0.0",
-  "version": "1.1.0",
+  "version": "2.0.1",
   "billTo": "org-dnanexus",
   "inputSpec": [
     {
@@ -26,13 +26,6 @@
       "class": "array:file",
       "patterns": ["*R2_001.fastq.gz", "*R2_001.fq.gz", "*R2_001.fastq", "*R2_001.fq", "*BC_2.fastq.gz"],
       "optional": false
-    },
-    {
-      "name": "is_raw",
-      "help": "Input scaff_R1 and scaff_R2 reads are raw reads or has been processed",
-      "class": "boolean",
-      "optional": false,
-      "default": true
     },
     {
       "name": "output_prefix",
@@ -126,23 +119,30 @@
   ],
   "runSpec": {
     "file": "src/code.sh",
-    "release": "14.04",
+    "release": "16.04",
     "interpreter": "bash",
     "timeoutPolicy": {
       "*": {
-        "hours": 48
+        "hours": 72
       }
     },
+    "execDepends": [{"name": "bc"}],
     "distribution": "Ubuntu"
   },
   "details": {
-    "upstreamUrl": "https://sourceforge.net/projects/phusion2/files/scaff10x/",
-    "upstreamVersion": "2.0",
+    "upstreamUrl": "https://github.com/wtsi-hpag/Scaff10X",
+    "upstreamVersion": "4.1.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": "* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
+    "whatsNew": "* 2.0.1 Update input file format\n* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
-    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x16"}}},
-    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}}}
+    "aws:us-east-1": {
+      "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
+      "assetDepends": [{"id": "record-FX60V0Q0qZkQ6YKJKqK8qkB4"}]
+    },
+    "azure:westus": {
+      "systemRequirements": {"*": {"instanceType": "azure:mem1_ssd1_x16"}},
+      "assetDepends": [{"id": "record-FXGZ3989Y19Z0zzb8qp29j9F"}]
+    }
   }
 }
