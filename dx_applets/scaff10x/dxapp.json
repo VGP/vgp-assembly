@@ -3,7 +3,7 @@
   "title": "Scaff10x: The genome assembly pipeline based on read clustering",
   "summary": "The genome assembly pipeline based on read clustering",
   "dxapi": "1.0.0",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "billTo": "org-dnanexus",
   "inputSpec": [
     {
@@ -96,20 +96,6 @@
       "optional": true
     },
     {
-      "name": "read_bc1",
-      "help": "",
-      "class": "file",
-      "patterns": ["*.fastq.gz"],
-      "optional": true
-    },
-    {
-      "name": "read_bc2",
-      "help": "",
-      "class": "file",
-      "patterns": ["*.fastq.gz"],
-      "optional": true
-    },
-    {
       "name": "other_outputs",
       "help": "",
       "class": "array:file",
@@ -133,16 +119,16 @@
     "upstreamUrl": "https://github.com/wtsi-hpag/Scaff10X",
     "upstreamVersion": "4.1.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": "* 2.0.1 Update input file format\n* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
+    "whatsNew": "* 2.0.2 Asset bugfix, remove read_bc1/2 output\n* 2.0.1 Update input file format\n* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
     "aws:us-east-1": {
       "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
-      "assetDepends": [{"id": "record-FX60V0Q0qZkQ6YKJKqK8qkB4"}]
+      "assetDepends": [{"id": "record-FXbffb00ZjQP2J6z1XypFkJp"}]
     },
     "azure:westus": {
       "systemRequirements": {"*": {"instanceType": "azure:mem1_ssd1_x16"}},
-      "assetDepends": [{"id": "record-FXGZ3989Y19Z0zzb8qp29j9F"}]
+      "assetDepends": [{"id": "record-FXbj14j9BP0P2J6z1XypFv2Y"}]
     }
   }
 }

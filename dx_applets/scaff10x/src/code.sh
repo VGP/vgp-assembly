@@ -243,13 +243,7 @@ main() {
     fi
 
     ls -ltr
-    
-    read_bc1=$(dx upload "$read_bc1_name" --wait --brief)
-    read_bc2=$(dx upload "$read_bc2_name" --wait --brief)
 
-    dx-jobutil-add-output read_bc1 "$read_bc1" --class=file 
-    dx-jobutil-add-output read_bc2 "$read_bc2" --class=file
-   
     # now upload the scaffolds
     if [[ $output_prefix != "" ]]; then
         scaffold_name="${output_prefix}".scaffolds.fasta.gz
