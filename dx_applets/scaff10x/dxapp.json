@@ -79,7 +79,13 @@
       "name": "scaffold",
       "help": "",
       "class": "file",
-      "patterns": ["*.fasta.gz,*.fa.gz"]
+      "patterns": ["*.fasta.gz","*.fa.gz"]
+    },
+    {
+      "name": "scaffold_agp",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.agp","*.fa.agp"]
     },
     {
       "name": "breakpoint",

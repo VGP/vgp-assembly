@@ -247,11 +247,16 @@ main() {
     # now upload the scaffolds
     if [[ $output_prefix != "" ]]; then
         scaffold_name="${output_prefix}".scaffolds.fasta.gz
+        scaffold_agp_name="${output_prefix}".scaffolds.fasta.agp
     else
         scaffold_name=scaffolds.fasta.gz
+        scaffold_agp_name=scaffolds.fasta.agp
     fi
     scaffold=$(gzip --fast scaffolds.fasta --stdout | dx upload - --wait --brief --destination="$scaffold_name")
-    dx-jobutil-add-output scaffold "$scaffold" --class=file 
+    dx-jobutil-add-output scaffold "$scaffold" --class=file
+
+    scaffold_agp=$(gzip --fast scaffolds.fasta.agp --stdout | dx upload - --wait --brief --destination="$scaffold_agp_name")
+    dx-jobutil-add-output scaffold_agp "$scaffold_agp" --class=file
 
     for i in "${!other_outputs[@]}"; do
         dx-jobutil-add-output other_outputs "${other_outputs[$i]}" --class=array:file
