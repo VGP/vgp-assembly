@@ -1,0 +1,54 @@
+{
+  "name": "trimmed_bionano_errorneous_N",
+  "title": "trimmed_bionano_errorneous_N",
+  "summary": "trimmed_bionano_errorneous_N",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "input_fastagz",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output_fastagz",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_list",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/trimmed_bionano_errorneous_N.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}},
+      "assetDepends": [{"id": "record-FXg5x4j0q4G0qxzxP2p098zq"}]
+      
+    }
+  }
+}
