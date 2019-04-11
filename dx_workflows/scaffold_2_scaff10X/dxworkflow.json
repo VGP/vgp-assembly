@@ -5,8 +5,8 @@
   "stages": [
     {
       "id": "scaff10x",
-      "executable": "app-scaff10x/2.0.1",
-      "folder": "scaff10x/round2",
+      "executable": "app-scaff10x/2.0.2",
+      "folder": "scaff10x",
       "input": {
         "alignment_option": "-longread 1 -gap 100 -matrix 2000 -read-s1 12 -read-s2 8 -link 10 -score 20 -edge 50000 -block 50000"
       }
