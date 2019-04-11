@@ -1,0 +1,15 @@
+{
+  "name": "scaffold_2_scaff10X",
+  "title": "Scaffold2 Scaff10X",
+  "version": "1.5.1",
+  "stages": [
+    {
+      "id": "scaff10x",
+      "executable": "app-scaff10x/2.0.2",
+      "folder": "scaff10x",
+      "input": {
+        "alignment_option": "-longread 1 -gap 100 -matrix 2000 -read-s1 12 -read-s2 8 -link 10 -score 20 -edge 50000 -block 50000"
+      }
+    }
+  ]
+}

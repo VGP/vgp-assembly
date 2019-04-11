@@ -3,7 +3,7 @@
   "title": "Scaff10x: The genome assembly pipeline based on read clustering",
   "summary": "The genome assembly pipeline based on read clustering",
   "dxapi": "1.0.0",
-  "version": "1.1.0",
+  "version": "2.0.2",
   "billTo": "org-dnanexus",
   "inputSpec": [
     {
@@ -26,13 +26,6 @@
       "class": "array:file",
       "patterns": ["*R2_001.fastq.gz", "*R2_001.fq.gz", "*R2_001.fastq", "*R2_001.fq", "*BC_2.fastq.gz"],
       "optional": false
-    },
-    {
-      "name": "is_raw",
-      "help": "Input scaff_R1 and scaff_R2 reads are raw reads or has been processed",
-      "class": "boolean",
-      "optional": false,
-      "default": true
     },
     {
       "name": "output_prefix",
@@ -86,7 +79,13 @@
       "name": "scaffold",
       "help": "",
       "class": "file",
-      "patterns": ["*.fasta.gz,*.fa.gz"]
+      "patterns": ["*.fasta.gz","*.fa.gz"]
+    },
+    {
+      "name": "scaffold_agp",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.agp","*.fa.agp"]
     },
     {
       "name": "breakpoint",
@@ -103,20 +102,6 @@
       "optional": true
     },
     {
-      "name": "read_bc1",
-      "help": "",
-      "class": "file",
-      "patterns": ["*.fastq.gz"],
-      "optional": true
-    },
-    {
-      "name": "read_bc2",
-      "help": "",
-      "class": "file",
-      "patterns": ["*.fastq.gz"],
-      "optional": true
-    },
-    {
       "name": "other_outputs",
       "help": "",
       "class": "array:file",
@@ -126,23 +111,30 @@
   ],
   "runSpec": {
     "file": "src/code.sh",
-    "release": "14.04",
+    "release": "16.04",
     "interpreter": "bash",
     "timeoutPolicy": {
       "*": {
-        "hours": 48
+        "hours": 72
       }
     },
+    "execDepends": [{"name": "bc"}],
     "distribution": "Ubuntu"
   },
   "details": {
-    "upstreamUrl": "https://sourceforge.net/projects/phusion2/files/scaff10x/",
-    "upstreamVersion": "2.0",
+    "upstreamUrl": "https://github.com/wtsi-hpag/Scaff10X",
+    "upstreamVersion": "4.1.0",
     "upstreamAuthor": "Zemin Ning",
-    "whatsNew": "* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
+    "whatsNew": "* 2.0.2 Asset bugfix, remove read_bc1/2 output\n* 2.0.1 Update input file format\n* 2.0.0 Binary upgrade to version 4.1, updated streaming of downloads.\n* 1.1.0 App now uses subjobs for pre-processing steps\n* 1.0.0 App release, added option to specify output prefix."
   },
   "regionalOptions": {
-    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x16"}}},
-    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}}}
+    "aws:us-east-1": {
+      "systemRequirements": {"*": {"instanceType": "mem1_ssd1_x32"}},
+      "assetDepends": [{"id": "record-FXbffb00ZjQP2J6z1XypFkJp"}]
+    },
+    "azure:westus": {
+      "systemRequirements": {"*": {"instanceType": "azure:mem1_ssd1_x16"}},
+      "assetDepends": [{"id": "record-FXbj14j9BP0P2J6z1XypFv2Y"}]
+    }
   }
 }
