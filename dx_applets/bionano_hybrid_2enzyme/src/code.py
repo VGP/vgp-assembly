@@ -57,18 +57,28 @@ def main(**job_inputs):
     scaffold_cmd += [args_xml_filename]
     dx_utils.run_cmd(scaffold_cmd)
 
-    scaffold_final = glob.glob(
-        os.path.join(output_dir, 'TGH_M1', 'AGPExport', '*HYBRID*'))
+    # try locating the outputs
+    final_dirs = ["TGH_M2", "TGH_M1",  "two_enzyme_hybrid_scaffold_M2", "two_enzyme_hybrid_scaffold_M1"]
+    for possible_loc in final_dirs:
+        scaffold_final = glob.glob(os.path.join(output_dir, possible_loc, 'AGPExport', '*HYBRID_Export.fasta'))
 
+        if scaffold_final:
+            scaffold_final_ncbi = glob.glob(
+                os.path.join(output_dir, possible_loc, 'AGPExport', '*HYBRID_Export_NCBI.fasta'))[0]
+            unscaffolded_final = glob.glob(
+                os.path.join(output_dir, possible_loc, 'AGPExport', '*HYBRID_Export_NOT_SCAFFOLDED.fasta'))[0]
+
+            scaffold_output = glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export.xmap'))
+            scaffold_output.extend(glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export_q.cmap')))
+            scaffold_output.extend(glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export_r.cmap')))
+            scaffold_output = [f for f in scaffold_output if f not in scaffold_final]
+            break
+
+    # if still not found, something went wrong
     if not scaffold_final:
-        print("ERROR: No hybrid scaffolds produced.")
         hybrid_scaffold_log = os.path.join(output_dir, 'TGH.log')
         dx_utils.run_cmd(["tail", "-n", "50", hybrid_scaffold_log])
-    
-    scaffold_final_ncbi = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NCBI.fasta'))[0]
-    unscaffolded_final = glob.glob(
-        os.path.join(output_dir, 'hybrid_scaffolds*', '*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta'))[0]
+        raise dxpy.AppError("ERROR: No hybrid scaffolds produced.")
 
     # make sure output files don't have colons
     dx_utils.run_cmd(["sed", "-i.bak", "s/:/_/g", scaffold_final_ncbi])
@@ -76,7 +86,7 @@ def main(**job_inputs):
 
     output = {
         "scaffold_fasta": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final if f.endswith(".fasta")],
-        "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_final],
+        "scaffold_output": [dxpy.dxlink(dxpy.upload_local_file(f)) for f in scaffold_output],
         "ncbi_scaffold_final": dx_utils.gzip_and_upload(scaffold_final_ncbi),
         "unscaffolded_final": dx_utils.gzip_and_upload(unscaffolded_final)
         }
