@@ -68,7 +68,8 @@ def main(**job_inputs):
             unscaffolded_final = glob.glob(
                 os.path.join(output_dir, possible_loc, 'AGPExport', '*HYBRID_Export_NOT_SCAFFOLDED.fasta'))[0]
 
-            scaffold_output = glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export.xmap'))
+            scaffold_output = glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export.agp'))
+            scaffold_output.extend(glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export.xmap')))
             scaffold_output.extend(glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export_q.cmap')))
             scaffold_output.extend(glob.glob(os.path.join(output_dir, possible_loc, '*_HYBRID_Export_r.cmap')))
             scaffold_output = [f for f in scaffold_output if f not in scaffold_final]
