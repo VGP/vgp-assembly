@@ -30,8 +30,8 @@ module load picard/2.9.2
 
 BWA='bwa'
 SAMTOOLS='samtools'
-FILTER='$VGP_PIPELINE/salsa/filter_five_end.pl'
-COMBINER='$VGP_PIPELINE/salsa/two_read_bam_combiner.pl'
+FILTER="$VGP_PIPELINE/salsa/filter_five_end.pl"
+COMBINER="$VGP_PIPELINE/salsa/two_read_bam_combiner.pl"
 
 RAW_DIR="/lscratch/$SLURM_JOBID/raw"
 FILT_DIR="/lscratch/$SLURM_JOBID/filtered"
