@@ -5,7 +5,7 @@
   "stages": [
     {
       "id": "bionano_hybrid",
-      "executable": "app-bionano_hybrid_2enzyme/1.0.0"
+      "executable": "app-bionano_hybrid_2enzyme/1.0.1"
     },
     {
       "id": "concatenate_unscaffolded",
