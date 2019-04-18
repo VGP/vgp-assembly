@@ -9,7 +9,7 @@
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/5.3.0",
+      "executable": "app-run_polish/6.0.0",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
