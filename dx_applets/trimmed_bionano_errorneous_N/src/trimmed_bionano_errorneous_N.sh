@@ -7,9 +7,9 @@ main() {
     echo "Value of input_fastagz: '$input_fastagz'"
 
     echo "${input_fastagz_name: -3}"
-    if [[ "${input_fastagz_name: -3}" == "*.gz" ]]; then    
+    if [[ "${input_fastagz_name: -3}" == ".gz" ]]; then    
         dx download "$input_fastagz" -o input.fasta.gz
-        gunzip input_fasta.gz
+        gunzip input.fasta.gz
     else
         dx download "$input_fastagz" -o input.fasta
     fi
@@ -20,9 +20,10 @@ main() {
     python3 remove_fake_cut_sites_DNAnexus.py input.fasta input_trimmedN.fasta output.log
     python3 trim_Ns_DNAnexus.py input_trimmedN.fasta output_list.txt
     python3 clip_regions_DNAnexus.py input_trimmedN.fasta output_list.txt "${trimmed_name}.trimmed.fasta"
+    gzip "${trimmed_name}.trimmed.fasta"
 
 
-    output_fastagz=$(dx upload "${trimmed_name}.trimmed.fasta" --brief)
+    output_fastagz=$(dx upload "${trimmed_name}.trimmed.fasta.gz" --brief)
     dx-jobutil-add-output output_fastagz "$output_fastagz" --class=file
 
     output_list=$(dx upload output_list.txt --brief)
