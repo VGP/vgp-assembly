@@ -4,18 +4,12 @@
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "app-pbalign/5.1.0",
-      "folder": "mapped_reads",
-      "input": {
-        "consolidate_alignment": false,
-        "concordant": true,
-        "hit_policy": "randombest",
-        "algorithm_options": "--minMatch 12 --bestn 10 --minPctSimilarity 70.0 --refineConcordantAlignments"
-      }
+      "executable": "app-minimap2_align_longread/1.0.2",
+      "folder": "mapped_reads"
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/5.1.0",
+      "executable": "app-run_polish/5.3.0",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
@@ -34,7 +28,7 @@
         },
         "input_fasta": {
           "$dnanexus_link": {
-            "inputField": "ref_genome",
+            "inputField": "genome_fastagz",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
@@ -62,7 +56,7 @@
         "reference_files": [
           {
             "$dnanexus_link": {
-              "inputField": "ref_genome",
+              "inputField": "genome_fastagz",
               "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
             }
           }
@@ -83,7 +77,7 @@
         "reference_files": [
           {
             "$dnanexus_link": {
-              "inputField": "ref_genome",
+              "inputField": "genome_fastagz",
               "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
             }
           }
