@@ -62,33 +62,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "stage-FJqP1Xj0j3bKfJG02bQzPvkF",
-      "executable": "applet-FJqP1Vj0j3bJfKP0BjbKFvZj",
-      "folder": "resequencing reports",
-      "input": {
-        "alignment_summary_gff": {
-          "$dnanexus_link": {
-            "outputField": "alignment_summary_gff",
-            "stage": "stage-FJqP1XQ0j3b5Z8bjGQVk0gbF"
-          }
-        },
-        "reference_files": [
-          {
-            "$dnanexus_link": {
-              "inputField": "genome_fastagz",
-              "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-            }
-          }
-        ],
-        "polished_gff": {
-          "$dnanexus_link": {
-            "outputField": "polished_gff",
-            "stage": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy"
-          }
-        }
-      }
     }
   ]
 }
