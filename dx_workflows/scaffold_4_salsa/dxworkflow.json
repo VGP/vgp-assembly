@@ -40,7 +40,8 @@
     },
     {
       "id": "concat",
-      "executable": "app-file_concatenator/1.3.0"
+      "executable": "app-file_concatenator/1.3.0",
+      "name": "concat s3+q2(c2+p2)"
     }
   ]
 }
