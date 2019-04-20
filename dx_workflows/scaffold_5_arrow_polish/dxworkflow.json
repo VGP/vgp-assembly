@@ -4,18 +4,12 @@
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "app-pbalign/5.1.0",
-      "folder": "mapped_reads",
-      "input": {
-        "consolidate_alignment": false,
-        "concordant": true,
-        "hit_policy": "randombest",
-        "algorithm_options": "--minMatch 12 --bestn 10 --minPctSimilarity 70.0 --refineConcordantAlignments"
-      }
+      "executable": "app-minimap2_align_longread/1.0.2",
+      "folder": "mapped_reads"
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/5.1.0",
+      "executable": "app-run_polish/6.0.0",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
@@ -34,7 +28,7 @@
         },
         "input_fasta": {
           "$dnanexus_link": {
-            "inputField": "ref_genome",
+            "inputField": "genome_fastagz",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
@@ -62,38 +56,11 @@
         "reference_files": [
           {
             "$dnanexus_link": {
-              "inputField": "ref_genome",
+              "inputField": "genome_fastagz",
               "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
             }
           }
         ]
-      }
-    },
-    {
-      "id": "stage-FJqP1Xj0j3bKfJG02bQzPvkF",
-      "executable": "applet-FJqP1Vj0j3bJfKP0BjbKFvZj",
-      "folder": "resequencing reports",
-      "input": {
-        "alignment_summary_gff": {
-          "$dnanexus_link": {
-            "outputField": "alignment_summary_gff",
-            "stage": "stage-FJqP1XQ0j3b5Z8bjGQVk0gbF"
-          }
-        },
-        "reference_files": [
-          {
-            "$dnanexus_link": {
-              "inputField": "ref_genome",
-              "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-            }
-          }
-        ],
-        "polished_gff": {
-          "$dnanexus_link": {
-            "outputField": "polished_gff",
-            "stage": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy"
-          }
-        }
       }
     }
   ]
