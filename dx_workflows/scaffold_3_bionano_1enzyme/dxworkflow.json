@@ -38,7 +38,7 @@
             }
           }
         ],
-        "cmd": "sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' $in_name > trimmed_s2.fasta.gz"
+        "cmd": "zcat < $in_name | sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' | gzip > trimmed_s2.fasta.gz"
       }
     }
   ]
