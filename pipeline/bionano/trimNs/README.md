@@ -97,7 +97,9 @@ relevant here.
 
 Usage:
 
-python3 clip_regions_DNA.py <input.fa> <input.list> <output.fa>
+```
+python3 clip_regions_DNAnexus.py <input.fa> <input.list> <output.fa>
+```
 
 Where:
 
