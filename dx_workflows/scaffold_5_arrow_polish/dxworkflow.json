@@ -5,6 +5,7 @@
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
       "executable": "app-minimap2_align_longread/1.0.2",
+      "name": "subreads.bam Minimap2",
       "folder": "mapped_reads"
     },
     {
@@ -38,29 +39,9 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
+        "polish_instance_tpye": "mem3_ssd1_x32",
         "polishing_algorithm": "arrow",
         "skip_slicer": true
-      }
-    },
-    {
-      "id": "stage-FJqP1XQ0j3b5Z8bjGQVk0gbF",
-      "executable": "applet-FJqP1V80j3bJYf7KBzKvKgXv",
-      "folder": "alignment reports",
-      "input": {
-        "alignment_files": {
-          "$dnanexus_link": {
-            "outputField": "bam_files",
-            "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-          }
-        },
-        "reference_files": [
-          {
-            "$dnanexus_link": {
-              "inputField": "genome_fastagz",
-              "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-            }
-          }
-        ]
       }
     }
   ]
