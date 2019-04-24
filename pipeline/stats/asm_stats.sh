@@ -2,7 +2,7 @@
 
 if [ -z $1 ]; then
     echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p/c]"
-    echo "[p]: set for getting primary / alt haplotig stats, assuming the alts have |arrow|arrow in its name"
+    echo "[p]: set for getting primary / alt haplotig stats, assuming the primary begins with scaffold_ in its name"
     echo "[c]: set for getting scaffolds (direct sttas) only."
     exit -1
 fi
@@ -60,20 +60,20 @@ fi
 echo
 
 echo "=== Primary Stats ==="
-grep -v "|arrow|arrow" $fasta.len > $asm.p.len
+grep "scaffold_" $fasta.len > $asm.p.len
 java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.p.len $gsize > $asm.p.stats
 
 echo "Scaffolds"
 cat $asm.p.stats
 echo
 
-grep -v "|arrow|arrow" $asm.contigs.len > $asm.contigs.p.len
+grep "scaffold_" $asm.contigs.len > $asm.contigs.p.len
 java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.contigs.p.len $gsize 1 > $asm.contigs.p.stats
 echo "Contigs"
 cat $asm.contigs.p.stats
 echo
 
-grep -v "|arrow|arrow" $asm.gaps > $asm.gaps.p
+grep "scaffold_" $asm.gaps > $asm.gaps.p
 java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.gaps.p $gsize 3 > $asm.gaps.p.stats
 echo "Gaps"
 cat $asm.gaps.p.stats
@@ -87,7 +87,7 @@ fi
 echo
 
 echo "=== Alt Stats ==="
-grep "|arrow|arrow" $fasta.len > $asm.h.len
+grep -v "scaffold_" $fasta.len > $asm.h.len
 java -jar -Xmx1g $script/lenCalcNGStats.jar $asm.h.len $gsize > $asm.h.stats
 cat $asm.h.stats
 echo
