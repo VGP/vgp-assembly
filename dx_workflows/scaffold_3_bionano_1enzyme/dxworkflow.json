@@ -28,17 +28,15 @@
     },
     {
       "id": "trim_fasta",
-      "executable": "app-swiss-army-knife/2.1.4",
+      "name": "trim N and enz from bionano",
+      "executable": "applet-FXzyKqj0j3b17kPk90KKgV9Y",
       "input": {
-        "in": [
-          {
+        "input_fastagz": {
             "$dnanexus_link": {
             "outputField": "file",
             "stage": "concatenate_unscaffolded"
             }
-          }
-        ],
-        "cmd": "zcat < $in_name | sed -e '/^>/! s/^[Nn]\\+//g;s/[Nn]\\+$//g' | gzip > trimmed_s2.fasta.gz"
+          }       
       }
     }
   ]
