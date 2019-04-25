@@ -40,8 +40,9 @@
           }
         },
         "polish_instance_tpye": "mem3_ssd1_x32",
+        "slicer_instance_type": "mem1_hdd2_x32",
         "polishing_algorithm": "arrow",
-        "skip_slicer": true
+        "skip_slicer": false
       }
     }
   ]
