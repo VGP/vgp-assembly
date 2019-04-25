@@ -9,6 +9,7 @@
     {
       "id": "stage-FPkpPGj0j3bPzBz0F6QKZy0Y",
       "executable": "app-10x_longranger_align/2.2.2",
+      "instance_type": "mem1_ssd2_x36",
       "folder": "/",
       "input": {
         "output_prefix": "longranger_round1",
@@ -44,6 +45,7 @@
       "id": "stage-FPkpQjQ0j3b53y8V14jF4P2V",
       "executable": "app-bcftools_consensus/0.0.1",
       "input": {
+        "output_prefix": "output1",
         "ref_fasta": {
           "$dnanexus_link": {
             "inputField": "ref_fasta",
@@ -118,6 +120,7 @@
       "id": "stage-FPkpQk80j3b288FKJ5Y12yjV",
       "executable": "app-bcftools_consensus/0.0.1",
       "input": {
+        "output_prefix": "output2",
         "ref_fasta": {
           "$dnanexus_link": {
             "outputField": "consensus_fasta",
