@@ -9,7 +9,11 @@
     {
       "id": "stage-FPkpPGj0j3bPzBz0F6QKZy0Y",
       "executable": "app-10x_longranger_align/2.2.2",
-      "instance_type": "mem1_ssd2_x36",
+      "systemRequirements": {    
+        "*": {   
+          "instanceType": "mem1_ssd2_x36"
+        }
+      },
       "folder": "/",
       "input": {
         "output_prefix": "longranger_round1",
@@ -77,6 +81,11 @@
     {
       "id": "stage-FPkpQKj0j3b4z3x113k160Jb",
       "executable": "app-10x_longranger_align/2.2.2",
+      "systemRequirements": {    
+        "*": {   
+          "instanceType": "mem1_ssd2_x36"
+        }
+      },
       "folder": "/",
       "input": {
         "ref": {
