@@ -8,20 +8,22 @@
     {
       "name": "fwd_reads",
       "label": "Forward reads",
-      "class": "file",
+      "class": "array:file",
       "optional": false,
       "patterns": [
-        "*.fastq", "*.fastq.gz"
+        "*_R1.fastq", "*_R1.fastq.gz", "*_R1.fq.gz", "*_R1.fq",
+        "*_1.fastq", "*_1.fastq.gz", "*_1.fq.gz", "*_1.fq"
       ],
       "help": ""
     },
     {
       "name": "rev_reads",
       "label": "Reverse reads",
-      "class": "file",
+      "class": "array:file",
       "optional": false,
       "patterns": [
-        "*.fastq", "*.fastq.gz"
+        "*_R2.fastq", "*_R2.fastq.gz", "*_R2.fq.gz", "*_R2.fq",
+        "*_2.fastq", "*_2.fastq.gz", "*_2.fq.gz", "*_2.fq"
       ],
       "help": ""
     },

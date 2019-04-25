@@ -24,8 +24,9 @@ def run_bwa(reads, ref_genome):
     bwt_filename = dx_utils.run_cmd('ls *.bwt', returnOutput=True).strip()
     genome_prefix = os.path.splitext(bwt_filename)[0]
 
+    # download reads
     reads = dx_utils.download_and_gunzip_file(reads, skip_decompress=True, create_named_pipe=True)
-    ofn = re.sub('.fastq[.gz]*$', '.bam', reads)   
+    ofn = re.sub('.f(ast)?q[.gz]*$', '.bam', reads)
 
     cmd = 'bwa mem -t {0} -B 8 {1} {2} '.format(multiprocessing.cpu_count(), genome_prefix, reads)
     cmd += '| perl ./filter_five_end.pl | samtools view -@{0} -Sb - > {1} '.format(multiprocessing.cpu_count(), ofn)
@@ -35,12 +36,27 @@ def run_bwa(reads, ref_genome):
 
 @dxpy.entry_point('combine_bams')
 def combine_bams(fwd_bam, rev_bam):
-    fwd_bam = dx_utils.download_and_gunzip_file(fwd_bam, create_named_pipe=True)
-    rev_bam = dx_utils.download_and_gunzip_file(rev_bam, create_named_pipe=True)
+    fwd_bam = [dx_utils.download_and_gunzip_file(fwd, create_named_pipe=True) for fwd in fwd_bam]
+    rev_bam = [dx_utils.download_and_gunzip_file(rev, create_named_pipe=True) for rev in rev_bam]
 
-    ofn = re.sub('.bam$', '.combined.bam', fwd_bam)
+    cmd_fwd = ["bamtools", "merge"]
+    cmd_rev = cmd_fwd.copy()
+    for fwd, rev in zip(fwd_bam, rev_bam):
+        cmd_fwd.extend(["-in", fwd])
+        cmd_rev.extend(["-in", rev])
 
-    #cmd = 'perl two_read_bam_combiner.pl {0} {1} | samtools view -@{2} -Sb - | samtools sort -o {3} - '
+    fwd_ofn = re.sub("(_1)?(_R1)?.bam$", "_R1.bam", os.path.commonprefix(fwd_bam))
+    rev_ofn = re.sub("(_2)?(_R2)?.bam$", "_R2.bam", os.path.commonprefix(rev_bam))
+    cmd_fwd.extend(["-out", fwd_ofn])
+    cmd_rev.extend(["-out", rev_ofn])
+
+    # run merge commands
+    dx_utils.run_cmd(cmd_fwd)
+    dx_utils.run_cmd(cmd_rev)
+
+    # combine the forward and reverse bams
+    ofn = re.sub('_R1.bam$', '.combined.bam', fwd_ofn)
+
     cmd = 'perl two_read_bam_combiner.pl {0} {1} | /opt/biobambam2/bin/bamsormadup inputformat=sam indexfilename={2}.bai > {2} '
     cmd = cmd.format(fwd_bam, rev_bam, ofn)
     dx_utils.run_cmd(cmd)
@@ -51,10 +67,16 @@ def combine_bams(fwd_bam, rev_bam):
 
 @dxpy.entry_point('main')
 def main(fwd_reads, rev_reads, ref_genome):
-    fwd_bam = dxpy.new_dxjob({'reads': fwd_reads, 'ref_genome': ref_genome}, 'run_bwa', name='Map forward reads').get_output_ref('output_bam')
-    rev_bam = dxpy.new_dxjob({'reads': rev_reads, 'ref_genome': ref_genome}, 'run_bwa', name='Map reverse reads').get_output_ref('output_bam')
+    if len(fwd_reads) != len(rev_reads):
+        raise dxpy.AppError("Number of forward and reverse read inputs must match")
 
-    merge_job = dxpy.new_dxjob({'fwd_bam': fwd_bam, 'rev_bam': rev_bam}, 'combine_bams', name='Combine bams')
+    fwd_bams = []
+    rev_bams = []
+    for fwd, rev in zip(fwd_reads, rev_reads):
+        fwd_bams.append(dxpy.new_dxjob({'reads': fwd, 'ref_genome': ref_genome}, 'run_bwa', name='Map forward reads').get_output_ref('output_bam'))
+        rev_bams.append(dxpy.new_dxjob({'reads': rev, 'ref_genome': ref_genome}, 'run_bwa', name='Map reverse reads').get_output_ref('output_bam'))
+
+    merge_job = dxpy.new_dxjob({'fwd_bam': fwd_bams, 'rev_bam': rev_bams}, 'combine_bams', name='Combine bams')
 
     output = {'output_bam': merge_job.get_output_ref('output_bam'),
               'output_bai': merge_job.get_output_ref('output_bai')}
