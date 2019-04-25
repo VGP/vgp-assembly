@@ -1,0 +1,64 @@
+{
+  "name": "concat_s3_q2",
+  "title": "concat_s3_q2",
+  "summary": "concat_s3_q2",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "input1",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta.gz","*_s3.fasta.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "input2",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*_q2.fasta.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_name",
+      "class": "string",
+      "optional": false,
+      "default": "output_s4.fasta.gz",
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/concat_s3_q2.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}
