@@ -3,7 +3,7 @@
   "title": "Purge Haplotigs contigcov then purge",
   "summary": "Pipeline to help with curating heterozygous diploid genome assemblies",
   "dxapi": "1.0.0",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "inputSpec": [
     {   
       "name": "genome",
@@ -80,7 +80,7 @@
       "label": "Junk Threshold",
       "class": "int",
       "optional": false,
-      "default": 80,
+      "default": 200,
       "help": "Assigns contig as junk if this percentage or greater of the contig is low/high coverage"
     },
     {
@@ -88,7 +88,7 @@
       "label": "Suspect Threshold",
       "class": "int",
       "optional": false,
-      "default": 80,
+      "default": 0,
       "help": "Assigns contig as suspected haplotig if this percentage or less of the contig is diploid level of coverage"
     }
   ],
@@ -187,5 +187,8 @@
       },
       "assetDepends": [ {"id": "record-FPJfkZQ0j07v25JXGpGyfpy4", "name": "purge_haplotigs_ubuntu14.04"} ]	
     }
-  }
+  },
+  "details": {
+    "whatsNew": "* 0.0.2 change default value for junk and suspect"
+    } 
 }
