@@ -1,7 +1,7 @@
 # Salsa scaffolding Workflow
 ## Update note
 
-**2019-May-5 update**
+**2019-May-4 update**
 - change concat step to take 3 inputs
 - add calculate read length
 
