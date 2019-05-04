@@ -40,16 +40,31 @@
     },
     {
       "id": "concat",
-      "executable": "applet-FY0Xfb00j3b06Vb54J6Y061Q",
-      "name": "concat s3+q2(c2+p2)",
+      "executable": "applet-FY6YVV00j3b63z067J8kqj6P",
+      "name": "concat s3+c2+p2",
       "input": {
-        "input1": {
+        "s3_fastagz": {
             "$dnanexus_link": {
             "outputField": "final_scaffold_fasta",
             "stage": "salsa2"
           
             }
           }
+      }
+    },
+    {
+      "id": "calculate_contig_scaffold_length",
+      "name": "Calculate scaffold Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "input": {
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "s4_fastagz",
+              "stage": "concat"
+            }
+          }
+        ]
       }
     }
   ]
