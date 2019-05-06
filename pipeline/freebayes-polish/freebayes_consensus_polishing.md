@@ -29,7 +29,7 @@ These steps describe how to call with freebayes and then use `bcftools consensus
 		bcftools concat -nf concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f $fasta -o $sample.bcf
 		bcftools index $sample.bcf
 
-5. Create the polished fasta with `bcftools consensus`. This will do very basic filtering of the callset (`QUAL>1`) and select only homozygous REF and heterozygous non-REF sites. At heterozygous non-REF sites (both alleles do not match the reference fasta), the longest allele will be chosen.
+5. Create the polished fasta with `bcftools consensus`. This will do very basic filtering of the callset (`QUAL>1`) and select only homozygous ALT and heterozygous non-REF sites. At heterozygous non-REF sites (both alleles do not match the reference fasta), the longest allele will be chosen.
 
 		bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f $fasta $sample.bcf > $sample.fasta
 
