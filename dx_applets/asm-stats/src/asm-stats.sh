@@ -25,16 +25,10 @@ main() {
     # recover the original filenames, you can use the output of "dx describe
     # "$variable" --name".
 
-    dx download "$asm" -o asm
-
-	fasta=$asm
-	gsize=$gsize
-
-	asm=${fasta/.fasta/}
+    dx download "$asm" -o asm.fasta.gz
+    gunzip asm.fasta.gz
 	
-	infile=$fasta
-	
-	java -jar -Xmx1g /opt/java/fastaContigSize.jar infile
+	java -jar -Xmx1g /opt/java/fastaContigSize.jar asm.fasta
 	
 	#outfile=$(dx upload outfile --brief)
 	#dx-jobutil-add-output outfile "$outfile" --class=file
