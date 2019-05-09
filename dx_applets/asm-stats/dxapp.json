@@ -23,21 +23,14 @@
       "help": ""
     },
     {
-      "name": "c",
-      "label": "[p/c] if prim / alt are defined or not, respectively. Default is c",
+      "name": "mode",
+      "label": "[p/c] If unset shows stats for both scaffolds and contigs. 'p' splits prim/alt. 'c' shows only scaffolds",
       "class": "string",
-      "default": "c",
       "optional": true,
       "help": ""
     }
   ],
   "outputSpec": [
-    {
-      "name": "fasta_len",
-      "label": "Length of contigs in fasta",
-      "class": "file",
-      "help": ""
-    },
     {
       "name": "asm_stats",
       "label": "Assembly stats",
@@ -47,7 +40,7 @@
   ],
    "runSpec": {
       "execDepends": [
-         {"name": "tree"},
+         {"name": "bedtools"},
          {"name": "openjdk-7-jre-headless"}
       ],
       "file": "src/asm-stats.sh",
