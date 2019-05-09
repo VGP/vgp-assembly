@@ -1,0 +1,62 @@
+{
+  "name": "asm-stats",
+  "title": "Assembly statistics generator",
+  "summary": "This apps generates a summary statistics for an assembly. Also accepts primary and alternate scaffolds.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "asm",
+      "label": "Assembly (fasta)",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "gsize",
+      "label": "Genome size (bp)",
+      "class": "int",
+      "optional": false,
+      "help": ""
+    },
+    {
+      "name": "c",
+      "label": "[p/c] if prim / alt are defined or not, respectively. Default is c",
+      "class": "string",
+      "optional": true,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "asm_stats",
+      "label": "Assembly_stats",
+      "class": "string",
+      "help": ""
+    }
+  ],
+   "runSpec": {
+      "execDepends": [
+         {
+            "name": "tree"
+         },
+                  {"name": "openjdk-7-jre-headless"}
+      ],
+      "file": "src/asm-stats.sh",
+      "release": "14.04",
+      "interpreter": "bash",
+      "distribution": "Ubuntu"      
+   },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}
