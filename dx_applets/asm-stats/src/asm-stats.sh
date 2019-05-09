@@ -46,12 +46,11 @@ main() {
 	fi
 	
 	N_BASES=`awk '{sum+=$2; sumN+=$3} END {print (sum-sumN)}' asm.fasta.len`
-	echo "N bases: $N_BASES"
+	printf "\nN bases: $N_BASES\n" >> asm_stats.txt
 	
 	java -jar -Xmx2g /opt/java/fastaGetGaps.jar asm.fasta asm.gaps.txt
 	
-	awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' asm.gaps.txt > asm.gaps.bed
-	
+	awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' asm.gaps.txt > asm.gaps.bed	
 	awk '{print $1"\t0\t"$(NF-1)}' asm.fasta.len > fasta.len.bed
 	
 	bedtools subtract -a fasta.len.bed -b asm.gaps.bed | awk '{print $1"\t"$NF-$(NF-1)}' > asm.contigs.len
@@ -75,31 +74,35 @@ main() {
 		exit 0
 	fi
 
-	printf "\n=== Primary Stats ===\n" >> asm_stats.txt
-	grep "scaffold_" fasta.len > asm.p.len
-	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.p.len $gsize > asm.p.stats
+ 	printf "\n=== Primary Stats ===\n" >> asm_stats.txt
+ 	grep "scaffold_" asm.fasta.len > asm.p.len
+# 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.p.len $gsize > asm.p.stats
+# 
+# 	printf "\nScaffolds\n" >> asm_stats.txt
+# 	cat $asm.p.stats >> asm_stats.txt	
+# 
+# 	grep "scaffold_" asm.contigs.len > asm.contigs.p.len
+# 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.contigs.p.len $gsize 1 > asm.contigs.p.stats
+# 	printf "\nContigs\n" >> asm_stats.txt
+# 	cat $asm.contigs.p.stats >> asm_stats.txt
+# 
+# 	grep "scaffold_" asm.gaps > asm.gaps.p
+# 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.gaps.p $gsize 3 > asm.gaps.p.stats
+# 	printf "\nGaps\n" >> asm_stats.txt
+# 	cat $asm.gaps.p.stats >> asm_stats.txt	
+# 
+# 	printf "\nExtract primary set\n" >> asm_stats.txt 
+# 	cut -f1 asm.p.len > asm.p.list
+# 	java -jar -Xmx1g /opt/java/fastaExtractFromList.jar asm.fasta asm.p.list asm.p.fasta
+# 
+# 	printf "\n=== Alt Stats ===\n" >> asm_stats.txt 
+# 	grep -v "scaffold_" asm.fasta.len > asm.h.len
+# 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.h.len $gsize > asm.h.stats
+# 	cat $asm.h.stats >> asm_stats.txt	
 
-	printf "\nScaffolds\n" >> asm_stats.txt
-	cat $asm.p.stats >> asm_stats.txt	
 
-	grep "scaffold_" asm.contigs.len > asm.contigs.p.len
-	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.contigs.p.len $gsize 1 > asm.contigs.p.stats
-	printf "\nContigs\n" >> asm_stats.txt
-	cat $asm.contigs.p.stats >> asm_stats.txt
-
-	grep "scaffold_" asm.gaps > asm.gaps.p
-	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.gaps.p $gsize 3 > asm.gaps.p.stats
-	printf "\nGaps\n" >> asm_stats.txt
-	cat $asm.gaps.p.stats >> asm_stats.txt	
-
-	printf "\nExtract primary set\n" >> asm_stats.txt 
-	cut -f1 asm.p.len > asm.p.list
-	java -jar -Xmx1g /opt/java/fastaExtractFromList.jar asm.fasta asm.p.list asm.p.fasta
-
-	printf "\n=== Alt Stats ===\n" >> asm_stats.txt 
-	grep -v "scaffold_" fasta.len > asm.h.len
-	java -jar -Xmx1g $script/lenCalcNGStats.jar asm.h.len $gsize > asm.h.stats
-	cat $asm.h.stats >> asm_stats.txt	
-
+    asm_stats=$(dx upload asm_stats.txt --brief)
+    
+    dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 
 }

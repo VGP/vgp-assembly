@@ -1,7 +1,7 @@
 {
   "name": "asm-stats",
-  "title": "Assembly statistics generator",
-  "summary": "This apps generates a summary statistics for an assembly. Also accepts primary and alternate scaffolds.",
+  "title": "Assembly statistics",
+  "summary": "This apps generates a summary statistics for the scaffolds and/or contigs of an assembly. It can also produce stats for primary and alternate haplotigs.",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
