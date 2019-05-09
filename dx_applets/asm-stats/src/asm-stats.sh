@@ -14,11 +14,13 @@
 #
 # See https://wiki.dnanexus.com/Developer-Portal for tutorials on how
 # to modify this file.
+set -x -e -o pipefail
 
 main() {
 
     echo "Value of asm: '$asm'"
     echo "Value of gsize: '$gsize'"
+    echo "Value of c: '$c'"
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
@@ -30,10 +32,9 @@ main() {
 	
 	java -jar -Xmx1g /opt/java/fastaContigSize.jar asm.fasta
 
-	c=$c
-	if [[ "$c" == "c" ]]; then
-			exit 0
-	fi
-
-    dx-jobutil-add-output asm_stats "$asm_stats" --class=string
+#	if [[ "$c" == "c" ]]; then
+#			exit 0
+#	fi
+    asm_stats=$(dx upload asm.fasta.len --brief)
+    dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 }

@@ -26,6 +26,7 @@
       "name": "c",
       "label": "[p/c] if prim / alt are defined or not, respectively. Default is c",
       "class": "string",
+      "default": "c",
       "optional": true,
       "help": ""
     }
@@ -34,7 +35,7 @@
     {
       "name": "asm_stats",
       "label": "Assembly_stats",
-      "class": "string",
+      "class": "file",
       "help": ""
     }
   ],
@@ -44,7 +45,7 @@
          {"name": "openjdk-7-jre-headless"}
       ],
       "file": "src/asm-stats.sh",
-      "release": "16.04",
+      "release": "14.04",
       "interpreter": "bash",
       "distribution": "Ubuntu"      
    },
