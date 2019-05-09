@@ -33,8 +33,14 @@
   ],
   "outputSpec": [
     {
+      "name": "fasta_len",
+      "label": "Length of contigs in fasta",
+      "class": "file",
+      "help": ""
+    },
+    {
       "name": "asm_stats",
-      "label": "Assembly_stats",
+      "label": "Assembly stats",
       "class": "file",
       "help": ""
     }

@@ -32,9 +32,21 @@ main() {
 	
 	java -jar -Xmx1g /opt/java/fastaContigSize.jar asm.fasta
 
-#	if [[ "$c" == "c" ]]; then
-#			exit 0
-#	fi
-    asm_stats=$(dx upload asm.fasta.len --brief)
+    fasta_len=$(dx upload asm.fasta.len --brief)
+    
+    dx-jobutil-add-output fasta_len "$fasta_len" --class=file
+    
+    java -jar -Xmx1g /opt/java/lenCalcNGStats.jar $fasta_len $gsize
+    
+    
+    
     dx-jobutil-add-output asm_stats "$asm_stats" --class=file
+    
+    if [[ "$c" == "c" ]]; then
+		exit 0
+	fi
+	
+	N_BASES=`awk '{sum+=$2; sumN+=$3} END {print (sum-sumN)}' $fasta.len`
+	echo "N bases: $N_BASES"
+
 }
