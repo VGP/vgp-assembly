@@ -29,10 +29,6 @@ main() {
     gunzip asm.fasta.gz
 	
 	java -jar -Xmx1g /opt/java/fastaContigSize.jar asm.fasta
-	
-	#outfile=$(dx upload outfile --brief)
-	#dx-jobutil-add-output outfile "$outfile" --class=file
-	#dx download "test.fasta.len" -o -
 
 	c=$c
 	if [[ "$c" == "c" ]]; then
