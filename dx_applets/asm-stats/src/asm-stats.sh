@@ -75,7 +75,7 @@ main() {
 	fi
 
  	printf "\n=== Primary Stats ===\n" >> asm_stats.txt
- 	grep "scaffold_" asm.fasta.len > asm.p.len
+ 	grep "scaffold_" asm.fasta.len > asm.p.len || echo ""
 # 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.p.len $gsize > asm.p.stats
 # 
 # 	printf "\nScaffolds\n" >> asm_stats.txt
