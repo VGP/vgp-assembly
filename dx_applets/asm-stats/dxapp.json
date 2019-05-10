@@ -28,6 +28,13 @@
       "class": "string",
       "optional": true,
       "help": ""
+    },
+    {
+      "name": "ext",
+      "label": "Extract also primary and alternate scaffolds?",
+      "class": "boolean",
+      "default": false,
+      "help": ""
     }
   ],
   "outputSpec": [
@@ -35,6 +42,20 @@
       "name": "asm_stats",
       "label": "Assembly stats",
       "class": "file",
+      "help": ""
+    },
+    {
+      "name": "asm_p_fasta",
+      "label": "primary",
+      "class": "file",
+      "optional": true,
+      "help": ""
+    },
+    {
+      "name": "asm_h_fasta",
+      "label": "alternate",
+      "class": "file",
+      "optional": true,
       "help": ""
     }
   ],
