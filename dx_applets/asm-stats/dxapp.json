@@ -1,7 +1,7 @@
 {
   "name": "asm-stats",
   "title": "Assembly statistics",
-  "summary": "This apps generates a summary statistics for the scaffolds and/or contigs of an assembly. It can also produce stats for primary and alternate haplotigs.",
+  "summary": "This apps generates summary statistics for the scaffolds and/or contigs of an assembly. It can also produce stats for primary and alternate haplotigs.",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
@@ -26,6 +26,8 @@
       "name": "mode",
       "label": "[p/c] If unset shows stats for both scaffolds and contigs. 'p' splits prim/alt. 'c' shows only scaffolds",
       "class": "string",
+      "default": "null",
+      "choices": ["null", "p", "c"],
       "optional": true,
       "help": ""
     },
