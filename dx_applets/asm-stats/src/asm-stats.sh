@@ -15,7 +15,7 @@ main() {
 	
 	java -jar -Xmx1g /opt/java/fastaContigSize.jar asm.fasta
     
-    printf "Scaffolds\n" > asm_stats.txt
+    printf "Scaffolds\n\n" > asm_stats.txt
 	java -jar -Xmx1g /opt/java/lenCalcNGStats.jar asm.fasta.len $gsize >> asm_stats.txt
     
     if [[ "$mode" == "c" ]]; then
