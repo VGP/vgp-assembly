@@ -1,7 +1,7 @@
 {
   "name": "asm-stats",
   "title": "Assembly statistics",
-  "summary": "This apps generates summary statistics for the scaffolds and/or contigs of an assembly. It can also produce stats for primary and alternate haplotigs.",
+  "summary": "This apps generates summary statistics for the scaffolds and/or contigs of an assembly. If primary scaffolds have scaffold_ prefix, the p option can also produce stats for primary and alternate haplotigs. If the relative option is selected, .fasta files for primary and alternate haplotigs are generated as well.",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
