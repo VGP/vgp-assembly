@@ -24,10 +24,10 @@
     },
     {
       "name": "mode",
-      "label": "[p/c] If unset shows stats for both scaffolds and contigs. 'p' splits prim/alt. 'c' shows only scaffolds",
+      "label": "[p/c] Default shows stats for both scaffolds and contigs. 'p' splits prim/alt. 'c' shows only scaffolds",
       "class": "string",
-      "default": "null",
-      "choices": ["null", "p", "c"],
+      "default": "default",
+      "choices": ["default", "p", "c"],
       "optional": true,
       "help": ""
     },
