@@ -11,13 +11,13 @@ main() {
     echo "Value of max: '$MAX'"
     echo "Value of nproc: '$NPROC'"
 
-    dx download "$REF" -o reference
+    dx download "$REF" -o ref
 
     dx download "$BAM" -o bam
 
-	if ! [ -e ${REF}.fai ]; then
+	if ! [ -e ${ref}.fai ]; then
 
-	samtools faidx ${REF}
+	samtools faidx ${ref}
 
 	fi
 
@@ -25,7 +25,7 @@ main() {
 
 	mkdir fa
 
-	cat ${REF}| awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
+	cat ${ref}| awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
 
 	fi
 
@@ -33,11 +33,11 @@ main() {
 
 	mkdir vcf
 
-	awk '{print $1 "\t" $2}' ${REF}.fai > list
+	awk '{print $1 "\t" $2}' ${ref}.fai > list
 	
-	samtools index ${BAM}
+	samtools index ${bam}
 	
-	cat list | awk -v bam=${BAM} -v ref=${REF} -v max=${MAX} '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --max-coverage "max" --fasta-reference "ref" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j ${NPROC}
+	cat list | awk -v bam=${bam} -v ref=${ref} -v max=${MAX} '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --max-coverage "max" --fasta-reference "ref" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j ${NPROC}
 
 	for f in vcf/*.vcf; do bgzip $f; tabix -p vcf $f.gz; done
 
@@ -51,9 +51,9 @@ main() {
 
 	fi
 
-	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ${REF}.fai) > ${REF%.*}_pl.fasta
+	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ${ref}.fai) > ${ref%.*}_pl.fasta
 
-	pl_fasta=$(dx upload ${REF%.*}_pl.fasta --brief)
+	pl_fasta=$(dx upload ${ref%.*}_pl.fasta --brief)
 
 	dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
 }

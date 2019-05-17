@@ -34,7 +34,7 @@
       "help": ""
     },
     {
-      "name": "nproc",
+      "name": "NPROC",
       "label": "number of cores/scaffolds for parallelization",
       "class": "int",
       "optional": false,
@@ -53,11 +53,6 @@
     }
   ],
   "runSpec": {
-	"execDepends": [
-		{"name": "samtools"},
-		{"name": "bcftools"},
-		{"name": "freebayes"}
-      ],
     "timeoutPolicy": {
       "*": {
         "hours": 48
