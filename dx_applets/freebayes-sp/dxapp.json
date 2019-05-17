@@ -1,0 +1,80 @@
+{
+  "name": "freebayes-sp",
+  "title": "Freebayes scaffold-parallel",
+  "summary": "A scaffold-based parallel version of freebayes.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "REF",
+      "label": "reference fasta",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta","*.fa"
+      ],
+      "help": ""
+    },
+    {
+      "name": "BAM",
+      "label": "alignment bam",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bam"
+      ],
+      "help": ""
+    },
+    {
+      "name": "MAX",
+      "label": "max coverage used for polishing (X)",
+      "class": "int",
+      "optional": false,
+      "default": 200,
+      "help": ""
+    },
+    {
+      "name": "nproc",
+      "label": "number of cores/scaffolds for parallelization",
+      "class": "int",
+      "optional": false,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "pl_fasta",
+      "label": "polished fasta",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+	"execDepends": [
+		{"name": "samtools"},
+		{"name": "bcftools"},
+		{"name": "freebayes"}
+      ],
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/freebayes-sp.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x32"
+        }
+      }
+    }
+  }
+}
