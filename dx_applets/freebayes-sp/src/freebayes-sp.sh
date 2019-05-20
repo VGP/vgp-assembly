@@ -5,19 +5,27 @@
 set -x -e -o pipefail
 
 main() {
-
+	
+	sudo chmod 777 /usr/bin/samtools
+	sudo chmod 777 /usr/bin/freebayes
+	sudo chmod 777 /usr/bin/bcftools
+	sudo chmod 777 /usr/bin/bgzip
+	sudo chmod 777 /usr/bin/tabix
+	
     echo "Value of reference: '$REF'"
     echo "Value of bam: '$BAM'"
     echo "Value of max: '$MAX'"
     echo "Value of nproc: '$NPROC'"
 
-    dx download "$REF" -o ref
+    dx download "$REF" -o ref.fa.gz
 
-    dx download "$BAM" -o bam
+    gunzip ref.fa.gz
 
-	if ! [ -e ${ref}.fai ]; then
+    dx download "$BAM" -o aln.bam
 
-	samtools faidx ${ref}
+	if ! [ -e ref.fa.fai ]; then
+
+	samtools faidx ref.fa
 
 	fi
 
@@ -25,7 +33,7 @@ main() {
 
 	mkdir fa
 
-	cat ${ref}| awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
+	cat ref.fa | awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
 
 	fi
 
@@ -33,11 +41,11 @@ main() {
 
 	mkdir vcf
 
-	awk '{print $1 "\t" $2}' ${ref}.fai > list
+	awk '{print $1 "\t" $2}' ref.fa.fai > list
 	
-	samtools index ${bam}
+	samtools index aln.bam
 	
-	cat list | awk -v bam=${bam} -v ref=${ref} -v max=${MAX} '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --max-coverage "max" --fasta-reference "ref" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j ${NPROC}
+	cat list | awk -v bam=aln.bam -v ref=ref.fa -v max=$MAX '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j $NPROC
 
 	for f in vcf/*.vcf; do bgzip $f; tabix -p vcf $f.gz; done
 
@@ -47,13 +55,13 @@ main() {
 
 	mkdir fa_pl
 
-	awk '{print $1}' list | awk '{a["/home/gformenti/bin/bcftools/bcftools consensus \"vcf\/"$1".vcf.gz\" -i'\''QUAL>1 && (GT=\"AA\" || GT=\"Aa\")'\'' -Hla -f \"fa\/"$1".fa\" -o \"fa_pl\/"$1".fa\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j ${NPROC}
+	awk '{print $1}' list | awk '{a["bcftools consensus \"vcf\/"$1".vcf.gz\" -i'\''QUAL>1 && (GT=\"AA\" || GT=\"Aa\")'\'' -Hla -f \"fa\/"$1".fa\" -o \"fa_pl\/"$1".fa\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j $NPROC
 
 	fi
 
-	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ${ref}.fai) > ${ref%.*}_pl.fasta
-
-	pl_fasta=$(dx upload ${ref%.*}_pl.fasta --brief)
-
-	dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
+	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ref.fa.fai) > final_pl.fasta
+ 
+ 	pl_fasta=$(dx upload final_pl.fasta --brief)
+ 
+ 	dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
 }

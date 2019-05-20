@@ -11,7 +11,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.fasta","*.fa"
+        "*.fasta.gz","*.fa.gz"
       ],
       "help": ""
     },
@@ -27,7 +27,7 @@
     },
     {
       "name": "MAX",
-      "label": "max coverage used for polishing (X)",
+      "label": "max coverage for sites to be processed (X)",
       "class": "int",
       "optional": false,
       "default": 200,
@@ -53,6 +53,9 @@
     }
   ],
   "runSpec": {
+	"execDepends": [
+		{"name": "parallel"}
+      ],
     "timeoutPolicy": {
       "*": {
         "hours": 48

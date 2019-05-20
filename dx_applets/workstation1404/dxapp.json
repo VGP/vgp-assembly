@@ -1,0 +1,48 @@
+{
+  "name": "workstation1404",
+  "title": "Cloud Workstation",
+  "summary": "Sets up a cloud workstation which you can access by running with the --ssh or --allow-ssh flags ",
+  "tags": [
+    "Debugging"
+  ],
+  "dxapi": "1.0.0",
+  "inputSpec": [
+    {
+      "help": "The maximum length of time to keep the workstation running.  Value should include units of either s, m, h, d, w, M, y for seconds, minutes, hours, days, weeks, months, or years respectively.",
+      "default": "1h",
+      "label": "Maximum Session Length (suffixes allowed: s, m, h, d, w, M, y)",
+      "optional": false,
+      "class": "string",
+      "name": "max_session_length"
+    },
+    {
+      "optional": true,
+      "label": "Files",
+      "help": "An optional list of files to download to the cloud workstation on startup.",
+      "name": "fids",
+      "class": "array:file"
+    }
+  ],
+  "outputSpec": [],
+  "runSpec": {
+    "execDepends": [
+      {
+        "name": "ipython"
+      }
+    ],
+    "systemRequirements": {
+      "*": {
+        "instanceType": "mem1_ssd1_x4"
+      }
+    },
+    "file": "src/workstation1404.py",
+    "release": "14.04",
+    "interpreter": "python2.7",
+    "distribution": "Ubuntu"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW",
+    "network": ["*"]
+  }
+}
