@@ -16,16 +16,19 @@ main() {
     echo "Value of bam: '$BAM'"
     echo "Value of max: '$MAX'"
     echo "Value of nproc: '$NPROC'"
+    
+    ref_name=$REF_name
+    ref_prefix=$REF_prefix
 
-    dx download "$REF" -o ref.fa.gz
+    dx download "$REF" -o ${ref_name}
 
-    gunzip ref.fa.gz
+    gunzip ${ref_name}
 
     dx download "$BAM" -o aln.bam
 
-	if ! [ -e ref.fa.fai ]; then
+	if ! [ -e ${ref_name%.gz}.fai ]; then
 
-	samtools faidx ref.fa
+	samtools faidx ${ref_name%.gz}
 
 	fi
 
@@ -33,7 +36,7 @@ main() {
 
 	mkdir fa
 
-	cat ref.fa | awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
+	cat ${ref_name%.gz} | awk '{if (substr($0, 1, 1)==">") {filename=(substr($0,2) ".fa")} print $0 > "fa\/"filename}'
 
 	fi
 
@@ -41,11 +44,11 @@ main() {
 
 	mkdir vcf
 
-	awk '{print $1 "\t" $2}' ref.fa.fai > list
+	awk '{print $1 "\t" $2}' ${ref_name%.gz}.fai > list
 	
 	samtools index aln.bam
 	
-	cat list | awk -v bam=aln.bam -v ref=ref.fa -v max=$MAX '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j $NPROC
+	cat list | awk -v bam=aln.bam -v ref=${ref_name%.gz} -v max=$MAX '{a["freebayes --bam "bam" --region \""$1":1-"$2"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j $NPROC
 
 	for f in vcf/*.vcf; do bgzip $f; tabix -p vcf $f.gz; done
 
@@ -59,9 +62,24 @@ main() {
 
 	fi
 
-	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ref.fa.fai) > final_pl.fasta
+	cat $(awk 'BEGIN { ORS = " " } { print "fa_pl\/"$1".fa" }' ${ref_name%.gz}.fai) > ${ref_prefix}_pl.fa
+	
+	gzip ${ref_prefix}_pl.fa
  
- 	pl_fasta=$(dx upload final_pl.fasta --brief)
+ 	pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
  
  	dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
+ 	
+ 	awk '{print "vcf\/" $1 ".vcf.gz"}' ${ref_name%.gz}.fai | bcftools concat -f - -Ou -o ${ref_prefix}_pl.bcf.gz
+ 
+  	pl_vcf=$(dx upload ${ref_prefix}_pl.bcf.gz --brief)
+ 
+ 	dx-jobutil-add-output pl_vcf "$pl_vcf" --class=file
+ 	
+ 	bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$NPROC ${ref_prefix}_pl.bcf.gz > ${ref_prefix}_pl_changes.vcf.gz
+ 	
+ 	pl_vcf_changes=$(dx upload ${ref_prefix}_pl_changes.vcf.gz --brief)
+ 
+ 	dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
+ 	
 }

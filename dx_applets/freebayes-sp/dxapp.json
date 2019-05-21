@@ -50,6 +50,24 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "pl_vcf",
+      "label": "polished vcf",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "pl_vcf_changes",
+      "label": "polished vcf changes",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
     }
   ],
   "runSpec": {
