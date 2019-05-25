@@ -1,0 +1,81 @@
+{
+  "name": "qv-calculator",
+  "title": "QV calculator",
+  "summary": "This app calculates QV score from a post-polishing genome. The app takes the genome, a list of variants and the short-read alignment as inputs to infer the QV score before polishing.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "genome",
+      "label": "Genome ID",
+      "class": "string",
+      "optional": false,
+      "patterns": [
+         "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "BAM",
+      "label": "The short-reads aligned to the reference genome",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+         "*.bam"
+      ],
+      "help": ""
+    },
+    {
+      "name": "VAR",
+      "label": "The vcf file reporting affected bases",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+         "*.vcf.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "qv_report",
+      "label": "The QV score report",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "genomecov",
+      "label": "Base by base coverage",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+      "execDepends": [
+         {"name": "bedtools"}
+      ],    "timeoutPolicy": {
+      "*": {
+        "hours": 3
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/qv-calculator.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}
