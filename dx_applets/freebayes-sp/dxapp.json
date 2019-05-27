@@ -91,6 +91,13 @@
           "instanceType": "mem1_ssd1_x32"
         }
       }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "azure:mem4_ssd1_x32"
+        }
+      }
     }
   }
 }
