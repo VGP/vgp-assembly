@@ -32,13 +32,6 @@
       "optional": false,
       "default": 200,
       "help": ""
-    },
-    {
-      "name": "NPROC",
-      "label": "number of cores/scaffolds for parallelization",
-      "class": "int",
-      "optional": false,
-      "help": ""
     }
   ],
   "outputSpec": [
