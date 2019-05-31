@@ -40,7 +40,7 @@
       "label": "polished fasta",
       "class": "file",
       "patterns": [
-        "*"
+        "*.fa.gz"
       ],
       "help": ""
     },
@@ -58,7 +58,7 @@
       "label": "polished vcf changes",
       "class": "file",
       "patterns": [
-        "*"
+        "*.vcf.gz"
       ],
       "help": ""
     }
