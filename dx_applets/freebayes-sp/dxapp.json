@@ -32,13 +32,6 @@
       "optional": false,
       "default": 200,
       "help": ""
-    },
-    {
-      "name": "NPROC",
-      "label": "number of cores/scaffolds for parallelization",
-      "class": "int",
-      "optional": false,
-      "help": ""
     }
   ],
   "outputSpec": [
@@ -47,7 +40,7 @@
       "label": "polished fasta",
       "class": "file",
       "patterns": [
-        "*"
+        "*.fa.gz"
       ],
       "help": ""
     },
@@ -65,7 +58,7 @@
       "label": "polished vcf changes",
       "class": "file",
       "patterns": [
-        "*"
+        "*.vcf.gz"
       ],
       "help": ""
     }
@@ -89,6 +82,16 @@
       "systemRequirements": {
         "*": {
           "instanceType": "mem3_ssd1_x32"
+<<<<<<< HEAD
+=======
+        }
+      }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "azure:mem4_ssd1_x32"
+>>>>>>> e3f27d94f101441425204540c9aaec7a0c49d9b1
         }
       }
     }
