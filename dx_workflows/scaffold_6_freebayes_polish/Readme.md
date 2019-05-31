@@ -1,6 +1,11 @@
 # Freebayes polish
 ## Update note
 
+**2019-May-30 update**
+- use Giulio's version of Freebayes which parallize by contig rather than fix bp
+- get rid of bcftools consensus applet since it is now baked in Freebayes app
+- add Giulio's applet for asm-stats and qv-calculator which use Arang code
+
 **2019-May-9 update**
 - explicitly add output folder in dxworkflow.json
 
