@@ -1,7 +1,7 @@
 {
   "name": "asm-stats",
   "title": "Assembly statistics",
-  "summary": "This apps generates summary statistics for the scaffolds and/or contigs of an assembly. If primary scaffolds have scaffold_ prefix, the p option can also produce stats for primary and alternate haplotigs. If the relative option is selected, .fasta files for primary and alternate haplotigs are generated as well.",
+  "summary": "This apps generates summary statistics for the scaffolds and/or contigs of an assembly. If primary scaffolds have scaffold_ prefix, an option can also produce stats for primary and alternate haplotigs. If the relative option is selected, .fasta files for primary and alternate haplotigs are generated as well.",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
@@ -16,6 +16,13 @@
       "help": ""
     },
     {
+      "name": "out_name",
+      "label": "Output filename",
+      "class": "string",
+      "optional": false,
+      "help": ""
+    },
+    {
       "name": "gsize",
       "label": "Genome size (bp)",
       "class": "int",
@@ -24,12 +31,12 @@
     },
     {
       "name": "mode",
-      "label": "[p/c] Default shows stats for both scaffolds and contigs. 'p' splits prim/alt. 'c' shows only scaffolds",
+      "label": "Stats to be shown",
       "class": "string",
-      "default": "default",
-      "choices": ["default", "p", "c"],
+      "default": "scaffolds-only",
+      "choices": ["scaffolds-only","scaffolds&contigs", "scaffold&contigs+haplotypes"],
       "optional": true,
-      "help": ""
+      "help": "Default option 'scaffolds' shows stats only for scaffolds. Option 'scaffold/contigs' shows stats for both scaffolds and contigs. Option 'scaffold/contigs+haplotypes' adds stats for primary/alternate scaffolds as well."
     },
     {
       "name": "ext",

@@ -10,6 +10,7 @@ main() {
     echo "Value of gsize: '$gsize'"
     echo "Value of mode: '$mode'"
     echo "Value of ext: '$ext'"
+    echo "Value of out_name: '$out_name'"
 
 
     mem_in_mb=`head -n1 /proc/meminfo | awk '{print int($2*0.8/1024)}'`
@@ -20,17 +21,17 @@ main() {
 	
 	$java -jar /opt/java/fastaContigSize.jar asm.fasta
     
-    printf "Scaffolds\n\n" > asm_stats.txt
-	$java -jar /opt/java/lenCalcNGStats.jar asm.fasta.len $gsize >> asm_stats.txt
+    printf "Scaffolds\n\n" > $out_name.txt
+	$java -jar /opt/java/lenCalcNGStats.jar asm.fasta.len $gsize >> $out_name.txt
     
-    if [[ "$mode" == "c" ]]; then
-    	asm_stats=$(dx upload asm_stats.txt --brief)
+    if [[ "$mode" == "scaffolds-only" ]]; then
+    	asm_stats=$(dx upload $out_name.txt --brief)
     	dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 		exit 0
 	fi
 	
 	N_BASES=`awk '{sum+=$2; sumN+=$3} END {print (sum-sumN)}' asm.fasta.len`
-	printf "\nN bases: $N_BASES\n" >> asm_stats.txt
+	printf "\nN bases: $N_BASES\n" >> $out_name.txt
 	
 	$java -jar /opt/java/fastaGetGaps.jar asm.fasta asm.gaps
 	
@@ -41,43 +42,43 @@ main() {
 	
 	$java -jar /opt/java/lenCalcNGStats.jar asm.contigs.len $gsize 1 > asm.contigs.stats
 
-    printf "\nContigs\n" >> asm_stats.txt	
-	cat asm.contigs.stats >> asm_stats.txt
+    printf "\nContigs\n" >> $out_name.txt	
+	cat asm.contigs.stats >> $out_name.txt
 
 	$java -jar /opt/java/lenCalcNGStats.jar asm.gaps $gsize 3 > asm.gaps.stats
 
-    printf "\nGaps\n" >> asm_stats.txt	
-	cat asm.gaps.stats >> asm_stats.txt	
+    printf "\nGaps\n" >> $out_name.txt	
+	cat asm.gaps.stats >> $out_name.txt	
 
-    if [[ "$mode" != "p" ]]; then
-    	asm_stats=$(dx upload asm_stats.txt --brief)  
+    if [[ "$mode" == "scaffolds&contigs" ]]; then
+    	asm_stats=$(dx upload $out_name.txt --brief)  
     	dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 		exit 0
 	fi
 
- 	printf "\n=== Primary Stats ===\n" >> asm_stats.txt
+ 	printf "\n=== Primary Stats ===\n" >> $out_name.txt
  	grep "scaffold_" asm.fasta.len > asm.p.len || echo "Error: Primary unavailable"
 	$java -jar /opt/java/lenCalcNGStats.jar asm.p.len $gsize > asm.p.stats
 
-	printf "\nScaffolds\n" >> asm_stats.txt
-	cat asm.p.stats >> asm_stats.txt	
+	printf "\nScaffolds\n" >> $out_name.txt
+	cat asm.p.stats >> $out_name.txt	
 
 	grep "scaffold_" asm.contigs.len > asm.contigs.p.len || echo "Error: Primary unavailable"
 	$java -jar /opt/java/lenCalcNGStats.jar asm.contigs.p.len $gsize 1 > asm.contigs.p.stats
-	printf "\nContigs\n" >> asm_stats.txt
-	cat asm.contigs.p.stats >> asm_stats.txt
+	printf "\nContigs\n" >> $out_name.txt
+	cat asm.contigs.p.stats >> $out_name.txt
 
 	grep "scaffold_" asm.gaps > asm.gaps.p || echo "Error: Primary unavailable"
 	$java -jar /opt/java/lenCalcNGStats.jar asm.gaps.p $gsize 3 > asm.gaps.p.stats
-	printf "\nGaps\n" >> asm_stats.txt
-	cat asm.gaps.p.stats >> asm_stats.txt	
+	printf "\nGaps\n" >> $out_name.txt
+	cat asm.gaps.p.stats >> $out_name.txt	
 
-	printf "\n=== Alt Stats ===\n\n" >> asm_stats.txt 
+	printf "\n=== Alt Stats ===\n\n" >> $out_name.txt 
 	grep -v "scaffold_" asm.fasta.len > asm.h.len
 	$java -jar /opt/java/lenCalcNGStats.jar asm.h.len $gsize > asm.h.stats
-	cat asm.h.stats >> asm_stats.txt	
+	cat asm.h.stats >> $out_name.txt	
 
-    asm_stats=$(dx upload asm_stats.txt --brief)
+    asm_stats=$(dx upload $out_name.txt --brief)
     dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 
     if [[ "$ext" == true ]]; then	
