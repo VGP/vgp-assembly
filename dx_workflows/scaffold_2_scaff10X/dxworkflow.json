@@ -10,6 +10,21 @@
       "input": {
         "alignment_option": "-longread 1 -gap 100 -matrix 2000 -read-s1 12 -read-s2 8 -link 10 -score 20 -edge 50000 -block 50000"
       }
+    },
+    {
+      "id": "calculate_contig_scaffold_length",
+      "name": "Calculate scaffold Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "input": {
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "scaffold",
+              "stage": "scaff10x"
+            }
+          }
+        ]
+      }
     }
   ]
 }
