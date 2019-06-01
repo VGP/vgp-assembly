@@ -32,31 +32,31 @@ main() {
 		java -jar /opt/java/fastaGetGaps.jar ${ref_name%.gz} ${ref_name%.gz}.gaps
 		awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' ${ref_name%.gz}.gaps > ${ref_name%.gz}.gaps.bed
 		bedtools complement -i ${ref_name%.gz}.gaps.bed -g ${ref_name%.gz}.len > ${ref_name%.gz}.bed
+		sort -k4 -nr ${ref_name%.gz}.bed > contigs_sorted.bed
+		
 	fi
 
     if ! [ -e vcf ]; then
     	mkdir vcf
         samtools index aln.bam -@ $(nproc)
-        cat ${ref_name%.gz}.bed | awk -v bam=aln.bam -v ref=${ref_name%.gz} -v max=$MAX '{a["freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""]}END{for(i in a) print i a[i]}' | parallel --gnu -j $(nproc)
+        cat contigs_sorted.bed | awk -v bam=aln.bam -v ref=${ref_name%.gz} -v max=$MAX '{print "freebayes --bam "bam" --region "$1":"$2"-"$3" --fasta-reference "ref"  --max-coverage "max" --vcf vcf/"$1"_"$2"-"$3".vcf"}' | parallel --gnu -j $(nproc) -k
     fi
 
-	cat contigs.bed | awk '{print $1"_"$2"-"$3".vcf"}' > concat_list.txt
+	cat ${ref_name%.gz}.bed | awk '{print $1"_"$2"-"$3".vcf"}' > concat_list.txt
 	bcftools concat -f concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f ${REF} -o ${ref_prefix}.bcf --threads $(nproc)
-	bgzip ${ref_prefix}.bcf
-	bcftools index ${ref_prefix}.bcf.gz
-	bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f ${ref_name%.gz} ${ref_prefix}.bcf.gz > ${ref_prefix}_pl.fa
+	bcftools index ${ref_prefix}.bcf
 	
+    pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
+    dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
+
+	bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf.gz > ${ref_prefix}_changes.vcf.gz
+    pl_bcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
+    dx-jobutil-add-output pl_bcf_changes "$pl_bcf_changes" --class=file
+
+	bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fa
 	gzip ${ref_prefix}_pl.fa
 	
     pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
     dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
-	
-    pl_bcf=$(dx upload ${ref_prefix}.bcf.gz  --brief)
-    dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
-
-    bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf.gz > ${ref_prefix}_changes.bcf.gz
-
-    pl_bcf_changes=$(dx upload ${ref_prefix}_changes.bcf.gz --brief)
-    dx-jobutil-add-output pl_bcf_changes "$pl_bcf_changes" --class=file
  	
 }
