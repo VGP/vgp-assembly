@@ -22,6 +22,7 @@ main() {
     gunzip ${ref_name}
 
     dx download "$BAM" -o aln.bam
+    dx download "$BAI" -o aln.bam.bai
 
     if ! [ -e ${ref_name%.gz}.fai ]; then
         samtools faidx ${ref_name%.gz}
@@ -38,7 +39,6 @@ main() {
 
     if ! [ -e vcf ]; then
     	mkdir vcf
-        samtools index aln.bam -@ $(nproc)
         cat contigs_sorted.bed | awk -v bam=aln.bam -v ref=${ref_name%.gz} -v max=$MAX '{print "freebayes --bam "bam" --region "$1":"$2"-"$3" --fasta-reference "ref"  --max-coverage "max" --vcf vcf/"$1"_"$2"-"$3".vcf"}' | parallel --gnu -j $(nproc) -k
     fi
 

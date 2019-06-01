@@ -26,6 +26,16 @@
       "help": ""
     },
     {
+      "name": "BAI",
+      "label": "bam index",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bam.bai"
+      ],
+      "help": ""
+    },
+    {
       "name": "MAX",
       "label": "max coverage for sites to be processed (X)",
       "class": "int",
