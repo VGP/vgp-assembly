@@ -1,0 +1,98 @@
+{
+  "name": "freebayes-sp2",
+  "title": "Freebayes contig-parallel",
+  "summary": "A scaffold-based parallel version of freebayes. Please note that the app uses a lot of virtual memory: consider using at least mem3 when running the app.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "REF",
+      "label": "reference fasta",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta.gz","*.fa.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "BAM",
+      "label": "alignment bam",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.bam"
+      ],
+      "help": ""
+    },
+    {
+      "name": "MAX",
+      "label": "max coverage for sites to be processed (X)",
+      "class": "int",
+      "optional": false,
+      "default": 200,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "pl_fasta",
+      "label": "polished fasta",
+      "class": "file",
+      "patterns": [
+        "*.fa.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "pl_bcf",
+      "label": "polishing bcf",
+      "class": "file",
+      "patterns": [
+        "*.bcf.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "pl_bcf_changes",
+      "label": "changes only bcf",
+      "class": "file",
+      "patterns": [
+        "*.bcf.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+	"execDepends": [
+		{"name": "parallel"},
+		{"name": "bedtools"},
+        {"name": "openjdk-7-jre-headless"}
+      ],
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/freebayes-sp2.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_x32"
+        }
+      }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "azure:mem4_ssd1_x32"
+        }
+      }
+    }
+  }
+}
