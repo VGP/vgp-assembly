@@ -59,16 +59,16 @@
       "label": "polishing bcf",
       "class": "file",
       "patterns": [
-        "*.bcf.gz"
+        "*.bcf"
       ],
       "help": ""
     },
     {
-      "name": "pl_bcf_changes",
-      "label": "changes only bcf",
+      "name": "pl_vcf_changes",
+      "label": "changes only vcf",
       "class": "file",
       "patterns": [
-        "*.bcf.gz"
+        "*.vcf.gz"
       ],
       "help": ""
     }
