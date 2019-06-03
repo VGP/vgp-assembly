@@ -61,7 +61,7 @@
          {"name": "bedtools"}
       ],    "timeoutPolicy": {
       "*": {
-        "hours": 3
+        "days": 2
       }
     },
     "interpreter": "bash",
