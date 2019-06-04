@@ -20,8 +20,8 @@ if [ -e aligned.genomecov ]; then
 else
 	echo "Collect coverage"
 	echo "\
-	samtools view -F 0x100 -hb $bam | bedtools genomecov -ibam - -split > aligned.genomecov"
-	samtools view -F 0x100 -hb $bam | bedtools genomecov -ibam - -split > aligned.genomecov
+	samtools view -F 0x100 -u $bam | bedtools genomecov -ibam - -split > aligned.genomecov"
+	samtools view -F 0x100 -u $bam | bedtools genomecov -ibam - -split > aligned.genomecov
 fi
 echo
 
@@ -29,7 +29,7 @@ echo "\
 awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp"
 awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp
 NUM_BP=`cat $genome.numbp`
-echo "Total bases > 3x: echo $NUM_BP"
+echo "Total bases > 3x: $NUM_BP"
 
 if [ -e $genome.numvar ]; then
 	NUM_VAR=`cat $genome.numvar`
