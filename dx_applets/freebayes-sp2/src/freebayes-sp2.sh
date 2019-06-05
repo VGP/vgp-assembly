@@ -4,25 +4,77 @@
 
 set -x -e -o pipefail
 
+one_freebayes(){
+    sudo chmod 777 /usr/bin/samtools
+    sudo chmod 777 /usr/bin/freebayes
+    sudo chmod 777 /usr/bin/bcftools
+    mkdir -p out/vcf
+    mkdir -p vcf
+    dx-download-all-inputs --except ref 
+    dx cat "$ref" | zcat > ${ref_name%.gz}
+    mv "$fai_path" .
+
+    mv "$bai_path" in/bam/
+    cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  -g "skip_threshold" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    #cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    cd vcf 
+    tar -cvf vcf.tar *
+    mv vcf.tar ~/out/vcf
+    cd ~
+    dx-upload-all-outputs --parallel
+}
+
+merge_vcf(){
+    mkdir vcf
+    sudo chmod 777 /usr/bin/samtools
+    sudo chmod 777 /usr/bin/freebayes
+    sudo chmod 777 /usr/bin/bcftools
+    dx-download-all-inputs --except ref 
+    cd in/vcf
+    for folder in $(ls -d */); do
+        tar -xvf $folder/*.tar -C ~/vcf
+    done
+    cd ~
+    dx cat "$ref" | zcat > ${ref_name%.gz}
+    mv "$fai_path" .
+
+    bcftools concat -f "$concat_list_path" | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f ${ref_name%.gz} -o ${ref_prefix}.bcf --threads $(nproc)
+    bcftools index ${ref_prefix}.bcf
+        
+    pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
+    dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
+
+    bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+    pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
+    dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
+
+    bcftools index ${ref_prefix}_changes.vcf.gz
+    bcftools consensus -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fa
+    gzip ${ref_prefix}_pl.fa
+        
+    pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
+    dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
+}
+
 main() {
 
     sudo chmod 777 /usr/bin/samtools
     sudo chmod 777 /usr/bin/freebayes
     sudo chmod 777 /usr/bin/bcftools
 	
-    echo "Value of reference: '$REF'"
-    echo "Value of bam: '$BAM'"
-    echo "Value of max: '$MAX'"
-    
-    ref_name=$REF_name
-    ref_prefix=$REF_prefix
+    echo "Value of reference: '$ref'"
+    echo "Value of bam: '$bam'"
+    echo "Value of bam: '$bai'"
+    echo "Value of max: '$max'"
+    echo "Value of skip_threshold: '$skip_threshold'"
+    echo "Value of N_job: '$n_job'"
 
-    dx download "$REF" -o ${ref_name}
+    if [ "$n_job" -eq 1 ]; then
+        dx-download-all-inputs --except ref  # get bam and bai
+        mv "$bai_path" in/bam/
+    fi
 
-    gunzip ${ref_name}
-
-    dx download "$BAM" -o aln.bam
-    dx download "$BAI" -o aln.bam.bai
+    dx cat "$ref" | zcat > ${ref_name%.gz}
 
     if ! [ -e ${ref_name%.gz}.fai ]; then
         samtools faidx ${ref_name%.gz}
@@ -33,31 +85,52 @@ main() {
 		java -jar /opt/java/fastaGetGaps.jar ${ref_name%.gz} ${ref_name%.gz}.gaps
 		awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' ${ref_name%.gz}.gaps > ${ref_name%.gz}.gaps.bed
 		bedtools complement -i ${ref_name%.gz}.gaps.bed -g ${ref_name%.gz}.len | awk '{print $0"\t"($3-$2)}' > ${ref_name%.gz}.bed
-		sort -k4 -nr ${ref_name%.gz}.bed > contigs_sorted.bed
-		
+        cat ${ref_name%.gz}.bed | awk '{print "vcf/"$1"_"$2"-"$3".vcf"}' > concat_list.txt
+	    sort -k4 -nr ${ref_name%.gz}.bed > contigs_sorted.bed # change to shuffle if unstable
 	fi
+    
+    # distribution vs single job 
+    if [ "$n_job" -gt 1 ]; then
+        fai=$(dx upload ${ref_name%.gz}.fai --brief)
+        python split_job.py contigs_sorted.bed "$n_job"
+        for i in contigs_sorted_*.bed; do
+            bed=$(dx upload $i --brief)
+            one_freebayes_job+=($(dx-jobutil-new-job -ibam="$bam" -ibai="$bai" -iref="$ref" -ifai="$fai" -imax="$max" -iskip_threshold="$skip_threshold" -ibed="$bed" one_freebayes))
+        done
+        all_bed_list=$(dx upload concat_list.txt --brief)
+        for one_freebayes_job in "${one_freebayes_job[@]}"; do
+            merge_vcf_args+=(-ivcf="$one_freebayes_job":vcf)
+        done
+        concat_list=$(dx upload concat_list.txt --brief)
+        merge_vcf=$(dx-jobutil-new-job "${merge_vcf_args[@]}" -iref="$ref" -ifai="$fai" -iconcat_list=$all_bed_list merge_vcf)
+        dx-jobutil-add-output pl_bcf "$merge_vcf":pl_bcf --class=jobref
+        dx-jobutil-add-output pl_vcf_changes "$merge_vcf":pl_vcf_changes --class=jobref
+        dx-jobutil-add-output pl_fasta "$merge_vcf":pl_fasta --class=jobref
 
-    if ! [ -e vcf ]; then
-    	mkdir vcf
-        cat contigs_sorted.bed | awk -v bam=aln.bam -v ref=${ref_name%.gz} -v max=$MAX '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    else
+
+        if ! [ -e vcf ]; then
+        	mkdir vcf
+            cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" -g "skip_threshold" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+            #cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+        fi
+
+    	bcftools concat -f concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f ${ref_name%.gz} -o ${ref_prefix}.bcf --threads $(nproc)
+    	bcftools index ${ref_prefix}.bcf
+    	
+        pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
+        dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
+
+    	bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+        pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
+        dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
+
+    	bcftools index ${ref_prefix}_changes.vcf.gz
+    	bcftools consensus -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fa
+    	gzip ${ref_prefix}_pl.fa
+    	
+        pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
+        dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
     fi
-
-	cat ${ref_name%.gz}.bed | awk '{print "vcf/"$1"_"$2"-"$3".vcf"}' > concat_list.txt
-	bcftools concat -f concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f ${ref_name%.gz} -o ${ref_prefix}.bcf --threads $(nproc)
-	bcftools index ${ref_prefix}.bcf
-	
-    pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
-    dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
-
-	bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
-    pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
-    dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
-
-	bcftools index ${ref_prefix}_changes.vcf.gz
-	bcftools consensus -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fa
-	gzip ${ref_prefix}_pl.fa
-	
-    pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
-    dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
- 	
+     	
 }
