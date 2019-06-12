@@ -15,8 +15,12 @@ one_freebayes(){
     mv "$fai_path" .
 
     mv "$bai_path" in/bam/
-    cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  -g "skip_threshold" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
-    #cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    if [ -z "$freebayes_op" ]; then
+        cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    else
+        cat "${bed_path}" | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v freebayes_op="$freebayes_op" '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" "freebayes_op" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+    fi
+
     cd vcf 
     tar -cvf vcf.tar *
     mv vcf.tar ~/out/vcf
@@ -44,7 +48,9 @@ merge_vcf(){
     pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
     dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
 
-    bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+
+    bcftools view $bcftools_op -i "$inclusion_expression" --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+
     pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
     dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
 
@@ -66,7 +72,9 @@ main() {
     echo "Value of bam: '$bam'"
     echo "Value of bam: '$bai'"
     echo "Value of max: '$max'"
-    echo "Value of skip_threshold: '$skip_threshold'"
+    echo "Value of freebayes_op: '$freebayes_op'"
+    echo "Value of bcftools_op: '$bcftools_op'"
+    echo "Value of inclusion_expression: '$inclusion_expression'"
     echo "Value of N_job: '$n_job'"
 
     if [ "$n_job" -eq 1 ]; then
@@ -95,14 +103,14 @@ main() {
         python split_job.py contigs_sorted.bed "$n_job"
         for i in contigs_sorted_*.bed; do
             bed=$(dx upload $i --brief)
-            one_freebayes_job+=($(dx-jobutil-new-job -ibam="$bam" -ibai="$bai" -iref="$ref" -ifai="$fai" -imax="$max" -iskip_threshold="$skip_threshold" -ibed="$bed" one_freebayes))
+            one_freebayes_job+=($(dx-jobutil-new-job -ibam="$bam" -ibai="$bai" -iref="$ref" -ifai="$fai" -imax="$max" -ifreebayes_op="$freebayes_op" -ibed="$bed" one_freebayes))
         done
         all_bed_list=$(dx upload concat_list.txt --brief)
         for one_freebayes_job in "${one_freebayes_job[@]}"; do
             merge_vcf_args+=(-ivcf="$one_freebayes_job":vcf)
         done
         concat_list=$(dx upload concat_list.txt --brief)
-        merge_vcf=$(dx-jobutil-new-job "${merge_vcf_args[@]}" -iref="$ref" -ifai="$fai" -iconcat_list=$all_bed_list merge_vcf)
+        merge_vcf=$(dx-jobutil-new-job "${merge_vcf_args[@]}" -iref="$ref" -ifai="$fai" -iconcat_list=$all_bed_list -iinclusion_expression="$inclusion_expression" -ibcftools_op="$bcftools_op" merge_vcf)
         dx-jobutil-add-output pl_bcf "$merge_vcf":pl_bcf --class=jobref
         dx-jobutil-add-output pl_vcf_changes "$merge_vcf":pl_vcf_changes --class=jobref
         dx-jobutil-add-output pl_fasta "$merge_vcf":pl_fasta --class=jobref
@@ -111,8 +119,11 @@ main() {
 
         if ! [ -e vcf ]; then
         	mkdir vcf
-            cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" -g "skip_threshold" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
-            #cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v max=$MAX -v skip_threshold=$skip_threshold '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref"  --max-coverage "max" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+            if [ -z "$freebayes_op" ]; then
+                cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+            else
+                cat contigs_sorted.bed | awk -v bam="$bam_path" -v ref=${ref_name%.gz} -v freebayes_op="$freebayes_op" '{print "freebayes --bam "bam" --region \""$1":"$2"-"$3"\" --fasta-reference "ref" "freebayes_op" --vcf \"vcf/"$1"_"$2"-"$3".vcf\""}' | parallel --gnu -j $(nproc) -k
+            fi
         fi
 
     	bcftools concat -f concat_list.txt | bcftools view -Ou -e'type="ref"' | bcftools norm -Ob -f ${ref_name%.gz} -o ${ref_prefix}.bcf --threads $(nproc)
@@ -121,7 +132,8 @@ main() {
         pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
         dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
 
-    	bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$(nproc) ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+        bcftools view $bcftools_op -i "$inclusion_expression" --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+
         pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
         dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
 
