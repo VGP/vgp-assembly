@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-May-30",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-13",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -28,16 +28,22 @@
     },
     {
       "id": "first_freebayes",
-      "executable": "applet-FYj61Z80j3bK3Yq16KvVxGJz",
+      "executable": "applet-FZ0vYp80j3bJKb88FbZqqpQ3",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
-        "BAM": {
+        "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "first_map"
           }
         },
-        "REF": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "first_map"
+          }
+        },
+        "ref": {
           "$dnanexus_link": {
             "inputField": "ref_fasta",
             "stage": "first_refprep"
@@ -87,16 +93,22 @@
     },
     {
       "id": "second_freebayes",
-      "executable": "applet-FYj61Z80j3bK3Yq16KvVxGJz",
+      "executable": "applet-FZ0vYp80j3bJKb88FbZqqpQ3",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
-        "BAM": {
+        "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "second_map"
           }
         },
-        "REF": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "second_map"
+          }
+        },
+        "ref": {
           "$dnanexus_link": {
             "outputField": "pl_fasta",
             "stage": "first_freebayes"
