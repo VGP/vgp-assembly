@@ -28,7 +28,7 @@
     },
     {
       "id": "first_freebayes",
-      "executable": "applet-FZ0vYp80j3bJKb88FbZqqpQ3",
+      "executable": "applet-FZ6gX2Q0j3bB6VP40G6YvjqK",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
         "bam": {
@@ -47,6 +47,12 @@
           "$dnanexus_link": {
             "inputField": "ref_fasta",
             "stage": "first_refprep"
+          }
+        },
+        "csv_10x": {
+          "$dnanexus_link": {
+            "outputField": "summary",
+            "stage": "first_map"
           }
         }
       }
@@ -93,7 +99,7 @@
     },
     {
       "id": "second_freebayes",
-      "executable": "applet-FZ0vYp80j3bJKb88FbZqqpQ3",
+      "executable": "applet-FZ6gX2Q0j3bB6VP40G6YvjqK",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
         "bam": {
@@ -112,6 +118,12 @@
           "$dnanexus_link": {
             "outputField": "pl_fasta",
             "stage": "first_freebayes"
+          }
+        },
+        "csv_10x": {
+          "$dnanexus_link": {
+            "outputField": "summary",
+            "stage": "second_map"
           }
         }
       }
