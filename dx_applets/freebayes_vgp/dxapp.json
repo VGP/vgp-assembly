@@ -57,14 +57,6 @@
       "default": "-Oz",
       "class": "string",
       "optional": false
-    },
-    {
-      "name": "inclusion_expression",
-      "label": "inclusion expression for bcftools consensus",
-      "default": "'QUAL>1 && (GT=\"AA\" || GT=\"Aa\") && INFO/DP>5'",
-      "help": "",
-      "class": "string",
-      "optional": false
     }
   ],
   "outputSpec": [

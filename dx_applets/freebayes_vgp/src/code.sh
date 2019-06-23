@@ -75,7 +75,7 @@ main() {
     echo "Value of freebayes_op: '$freebayes_op'"
     echo "Value of skip_coverage_fold: '$skip_coverage_fold'"
     echo "Value of bcftools_op: '$bcftools_op'"
-    echo "Value of inclusion_expression: '$inclusion_expression'"
+
     # echo "Value of N_job: '$n_job'"
 
  #   if [ "$n_job" -eq 1 ]; then
@@ -135,7 +135,7 @@ main() {
     pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
     dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
 
-    bcftools view $bcftools_op -i "$inclusion_expression" --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+    bcftools view $bcftools_op -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
 
     pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
     dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
