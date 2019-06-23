@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-13",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-22",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -28,7 +28,7 @@
     },
     {
       "id": "first_freebayes",
-      "executable": "applet-FZ6gX2Q0j3bB6VP40G6YvjqK",
+      "executable": "applet-FZ802V00j3b2bZ5yPkf4QK41",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
         "bam": {
@@ -99,7 +99,7 @@
     },
     {
       "id": "second_freebayes",
-      "executable": "applet-FZ6gX2Q0j3bB6VP40G6YvjqK",
+      "executable": "applet-FZ802V00j3b2bZ5yPkf4QK41",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
         "bam": {
@@ -150,7 +150,7 @@
     },
     {
       "id": "stage-FYj6yZ80j3bPZX142pVFZjy2",
-      "executable": "applet-FYZ6B6Q0x9Y57jYj2kzQq7bz",
+      "executable": "applet-FZ7P1080j3b7q3bfK70kqkFk",
       "folder": "longranger_freebayes_round_2/QV",
       "input": {
         "VAR": {
@@ -168,7 +168,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_x4"
+          "instanceType": "mem1_ssd2_x16"
         }
       }
     }
