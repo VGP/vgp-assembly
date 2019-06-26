@@ -57,6 +57,14 @@
       "default": "-Oz",
       "class": "string",
       "optional": false
+    },
+    {
+      "name": "new_vgp_extension",
+      "label": "new suffix for fasta",
+      "help": "This will replace all existing _xx before . with new suffix",
+      "default": "_t1",
+      "class": "string",
+      "optional": false
     }
   ],
   "outputSpec": [
