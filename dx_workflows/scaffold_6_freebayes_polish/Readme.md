@@ -1,6 +1,9 @@
 # Freebayes polish
 ## Update note
 
+**2019-Jun-26 update**
+- add extension guide for freebayes
+
 **2019-Jun-23 update**
 - fix freebayes quote issue by hardcode inclusion statement
 
