@@ -9,7 +9,7 @@ main() {
     echo "Value of asm: '$asm'"
     echo "Value of gsize: '$gsize'"
     echo "Value of mode: '$mode'"
-    echo "Value of ext: '$ext'"
+    echo "Value of extract: '$extract'"
     echo "Value of out_name: '$out_name'"
 
 
@@ -25,7 +25,8 @@ main() {
 	$java -jar /opt/java/lenCalcNGStats.jar asm.fasta.len $gsize >> $out_name.txt
     
     if [[ "$mode" == "scaffolds-only" ]]; then
-    	asm_stats=$(dx upload $out_name.txt --brief)
+    	mv $out_name.txt $out_name.stat
+    	asm_stats=$(dx upload $out_name.stat --brief)
     	dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 		exit 0
 	fi
@@ -51,7 +52,8 @@ main() {
 	cat asm.gaps.stats >> $out_name.txt	
 
     if [[ "$mode" == "scaffolds&contigs" ]]; then
-    	asm_stats=$(dx upload $out_name.txt --brief)  
+    	mv $out_name.txt $out_name.stat
+    	asm_stats=$(dx upload $out_name.stat --brief)  
     	dx-jobutil-add-output asm_stats "$asm_stats" --class=file
 		exit 0
 	fi
@@ -70,26 +72,32 @@ main() {
 
 	grep "scaffold_" asm.gaps > asm.gaps.p || echo "Error: Primary unavailable"
 	$java -jar /opt/java/lenCalcNGStats.jar asm.gaps.p $gsize 3 > asm.gaps.p.stats
-	printf "\nGaps\n" >> $out_name.txt
-	cat asm.gaps.p.stats >> $out_name.txt	
+	printf "\nGaps\n" >> ${out_name}.txt
+	cat asm.gaps.p.stats >> ${out_name}.txt	
 
 	printf "\n=== Alt Stats ===\n\n" >> $out_name.txt 
 	grep -v "scaffold_" asm.fasta.len > asm.h.len
 	$java -jar /opt/java/lenCalcNGStats.jar asm.h.len $gsize > asm.h.stats
 	cat asm.h.stats >> $out_name.txt	
 
-    asm_stats=$(dx upload $out_name.txt --brief)
-    dx-jobutil-add-output asm_stats "$asm_stats" --class=file
-
-    if [[ "$ext" == true ]]; then	
+    if [[ "$extract" == true ]]; then	
+    	date_vgp_style=$(date +"%Y%m%d")
 		cut -f1 asm.p.len > asm.p.list
-		$java -jar /opt/java/fastaExtractFromList.jar asm.fasta asm.p.list asm.p.fasta
-		asm_p_fasta=$(dx upload asm.p.fasta --brief)
+		$java -jar /opt/java/fastaExtractFromList.jar asm.fasta asm.p.list "${out_name}.pri.asm.${date_vgp_style}.fasta"
+		gzip "${out_name}.pri.asm.${date_vgp_style}.fasta"
+		asm_p_fasta=$(dx upload "${out_name}.pri.asm.${date_vgp_style}.fasta.gz" --brief)
     	dx-jobutil-add-output asm_p_fasta "$asm_p_fasta" --class=file
     	
     	cut -f1 asm.h.len > asm.h.list
-    	$java -jar /opt/java/fastaExtractFromList.jar asm.fasta asm.h.list asm.h.fasta
-		asm_h_fasta=$(dx upload asm.h.fasta --brief)
+    	$java -jar /opt/java/fastaExtractFromList.jar asm.fasta asm.h.list "${out_name}.alt.asm.${date_vgp_style}.fasta"
+    	gzip "${out_name}.alt.asm.${date_vgp_style}.fasta"
+		asm_h_fasta=$(dx upload "${out_name}.alt.asm.${date_vgp_style}.fasta.gz" --brief)
     	dx-jobutil-add-output asm_h_fasta "$asm_h_fasta" --class=file
 	fi
+
+    mv $out_name.txt $out_name.stat
+    asm_stats=$(dx upload $out_name.stat --brief)
+    dx-jobutil-add-output asm_stats "$asm_stats" --class=file
+
+
 }
