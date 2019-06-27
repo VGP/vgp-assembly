@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-26",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-27",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -132,7 +132,7 @@
     },
     {
       "id": "stage-FYj6yBQ0j3b9VfPj4qF37KxG",
-      "executable": "applet-FYfpX9Q0x9YP1y1qKzQZbXYq",
+      "executable": "applet-FZBQzfj0j3b0xgqP4vpKFJ91",
       "folder": "longranger_freebayes_round_2/stats",
       "input": {
         "out_name": "output",
@@ -142,7 +142,8 @@
             "stage": "second_freebayes"
           }
         },
-        "mode": "scaffold&contigs+haplotypes"
+        "mode": "scaffold&contigs+haplotypes",
+        "extract": true
       },
       "systemRequirements": {
         "*": {

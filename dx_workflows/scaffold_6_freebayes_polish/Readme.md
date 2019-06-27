@@ -1,6 +1,9 @@
 # Freebayes polish
 ## Update note
 
+**2019-Jun-27 update**
+- add extension guide for asm-qv
+
 **2019-Jun-26 update**
 - add extension guide for freebayes
 
