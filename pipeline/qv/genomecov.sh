@@ -15,7 +15,7 @@ if [ ! -z $2 ]; then
 	bam=$2
 fi
 
-if [ -e aligned.genomecov ]; then
+if [ -s aligned.genomecov ]; then
 	echo "aligned.genomecov already exists. skip..."
 else
 	echo "Collect coverage"
@@ -25,11 +25,17 @@ else
 fi
 echo
 
+
+mean_cov=`tail -n1 summary.csv | awk -F "," '{printf "%.0f\n", $17}'`	# parse out the mean_cov from summary.csv
+h_filter=$((mean_cov*12))	# exclude any sites >12x
+l_filter=5			# exclude any sites <5x
+echo "Get numbp between $l_filter ~ $h_filter x"
+
 echo "\
-awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp"
-awk '{if ($1=="genome" && $2>3) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp
+awk -v l=$l_filter -v h=$h_filter '{if (\$1=="genome" && \$2>l && \$2<h) {numbp += \$3}} END {print numbp}' aligned.genomecov > $genome.numbp"
+awk -v l=$l_filter -v h=$h_filter '{if ($1=="genome" && $2>l && $2<h) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp
 NUM_BP=`cat $genome.numbp`
-echo "Total bases > 3x: $NUM_BP"
+echo "Total bases > 5x: $NUM_BP"
 
 if [ -e $genome.numvar ]; then
 	NUM_VAR=`cat $genome.numvar`
