@@ -24,22 +24,23 @@ walltime=4-0
 log=$PWD/logs/$name.%A_%a.log
 
 # launch longranger align
-if ! [ -e $sample/outs/possorted_bam.bam ]; then
+if ! [ -e $sample/outs/possorted_bam.bam 2> /dev/null ]; then
 	echo "\
 	sbatch --partition=norm --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
 	sbatch --partition=norm --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > longranger_jid
 	wait_for="--dependency=afterok:`cat longranger_jid`"
 fi
 
-if ! [ -e aligned.bam ]; then	# symlink regardless the actual file exists or not
-	ln -s $sample/outs/possorted_bam.bam aligned.bam
-	ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai
+if ! [ -e aligned.bam 2> /dev/null ]; then	# symlink regardless the actual file exists or not
+	ln -s $sample/outs/possorted_bam.bam aligned.bam 2> /dev/null
+	ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai 2> /dev/null
+	ln -s $sample/outs/summary.csv 2> /dev/null
 fi
 
 cpus=2
 mem=12g
 name=$sample.freebayes
-script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
+script=$VGP_PIPELINE/freebayes-polish/freebayes_v1.3.sh
 args=$sample
 walltime=4-0
 log=logs/$name.%A_%a.log
