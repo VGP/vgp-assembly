@@ -1,6 +1,22 @@
 # Freebayes polish
 ## Update note
 
+**2019-Jun-27 update**
+- add extension guide for asm-qv
+
+**2019-Jun-26 update**
+- add extension guide for freebayes
+
+**2019-Jun-23 update**
+- fix freebayes quote issue by hardcode inclusion statement
+
+**2019-Jun-22 update**
+- change qv applet to use larger storage and longer timeout
+
+**2019-Jun-21 update**
+- added and disable distributed run in Freebayes
+- use summary.csv to guide skip-coverage 
+
 **2019-May-30 update**
 - use Giulio's version of Freebayes which parallize by contig rather than fix bp
 - get rid of bcftools consensus applet since it is now baked in Freebayes app

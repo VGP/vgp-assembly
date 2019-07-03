@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-May-30",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-27",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -28,21 +28,34 @@
     },
     {
       "id": "first_freebayes",
-      "executable": "applet-FYj61Z80j3bK3Yq16KvVxGJz",
+      "executable": "applet-FZB2yG80j3b75K260z2yF688",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
-        "BAM": {
+        "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "first_map"
           }
         },
-        "REF": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "first_map"
+          }
+        },
+        "ref": {
           "$dnanexus_link": {
             "inputField": "ref_fasta",
             "stage": "first_refprep"
           }
-        }
+        },
+        "csv_10x": {
+          "$dnanexus_link": {
+            "outputField": "summary",
+            "stage": "first_map"
+          }
+        },
+        "new_vgp_extension": "_t2"
       }
     },
     {
@@ -87,26 +100,39 @@
     },
     {
       "id": "second_freebayes",
-      "executable": "applet-FYj61Z80j3bK3Yq16KvVxGJz",
+      "executable": "applet-FZB2yG80j3b75K260z2yF688",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
-        "BAM": {
+        "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "second_map"
           }
         },
-        "REF": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "second_map"
+          }
+        },
+        "ref": {
           "$dnanexus_link": {
             "outputField": "pl_fasta",
             "stage": "first_freebayes"
           }
-        }
+        },
+        "csv_10x": {
+          "$dnanexus_link": {
+            "outputField": "summary",
+            "stage": "second_map"
+          }
+        },
+        "new_vgp_extension": "_t3"
       }
     },
     {
       "id": "stage-FYj6yBQ0j3b9VfPj4qF37KxG",
-      "executable": "applet-FYfpX9Q0x9YP1y1qKzQZbXYq",
+      "executable": "applet-FZBQzfj0j3b0xgqP4vpKFJ91",
       "folder": "longranger_freebayes_round_2/stats",
       "input": {
         "out_name": "output",
@@ -116,7 +142,8 @@
             "stage": "second_freebayes"
           }
         },
-        "mode": "scaffold&contigs+haplotypes"
+        "mode": "scaffold&contigs+haplotypes",
+        "extract": true
       },
       "systemRequirements": {
         "*": {
@@ -126,7 +153,7 @@
     },
     {
       "id": "stage-FYj6yZ80j3bPZX142pVFZjy2",
-      "executable": "applet-FYZ6B6Q0x9Y57jYj2kzQq7bz",
+      "executable": "applet-FZ7P1080j3b7q3bfK70kqkFk",
       "folder": "longranger_freebayes_round_2/QV",
       "input": {
         "VAR": {
@@ -144,7 +171,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_x4"
+          "instanceType": "mem1_ssd2_x16"
         }
       }
     }

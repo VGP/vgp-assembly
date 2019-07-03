@@ -1,0 +1,138 @@
+{
+  "name": "freebayes_vgp",
+  "title": "Freebayes",
+  "summary": "A scaffold-based parallel version of freebayes.",
+  "dxapi": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "ref",
+      "label": "reference fasta",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fasta.gz", "*.fa.gz"],
+      "optional": false
+    },
+    {
+      "name": "bam",
+      "label": "alignment bam",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.bam"],
+      "optional": false
+    },
+    {
+      "name": "bai",
+      "label": "bam index",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.bam.bai"],
+      "optional": false
+    },
+    {
+      "name": "csv_10x",
+      "label": "summary stat from 10x mapping",
+      "class": "file",
+      "patterns": ["summary.csv"],
+      "optional": false
+    },  
+    {
+      "name": "skip_coverage_fold",
+      "label": "fold from mean covergae to run --skip-coverage",
+      "class": "int",
+      "optional": false,
+      "default": 12
+    },    
+    {
+      "name": "freebayes_op",
+      "label": "additioanl parameters for Freebayes",
+      "help": "use '' if you don't want to provide parameters",
+      "class": "string",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "name": "bcftools_op",
+      "label": "additioanl parameters for bcftools consensus",
+      "help": "-Oz must be provided",
+      "default": "-Oz",
+      "class": "string",
+      "optional": false
+    },
+    {
+      "name": "new_vgp_extension",
+      "label": "new suffix for fasta",
+      "help": "This will replace all existing _xx before . with new suffix",
+      "default": "_t1",
+      "class": "string",
+      "optional": false
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "pl_fasta",
+      "label": "polished fasta",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.fa.gz"]
+    },
+    {
+      "name": "pl_bcf",
+      "label": "polishing bcf",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.bcf"]
+    },
+    {
+      "name": "pl_vcf_changes",
+      "label": "changes only vcf",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.vcf.gz"]
+    }
+  ],
+  "runSpec": {
+    "execDepends": [
+      {
+        "name": "parallel"
+      },
+      {
+        "name": "bedtools"
+      },
+      {
+        "name": "openjdk-7-jre-headless"
+      }
+    ],
+    "file": "src/code.sh",
+    "release": "14.04",
+    "interpreter": "bash",
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "distribution": "Ubuntu"
+  },
+  "access": {
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW",
+    "network": [
+      "*"
+    ]
+  },
+  "ignoreReuse": false,
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "one_freebayes": {
+          "instanceType": "mem1_ssd1_x8"
+        },
+        "main": {
+          "instanceType": "mem1_ssd1_x32"
+        },
+        "merge_vcf": {
+          "instanceType": "mem1_ssd1_x8"
+        }
+      }
+    }
+  }
+}
