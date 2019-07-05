@@ -2,9 +2,11 @@
 
 module load bedtools
 module load samtools
+module load bcftools
 
 if [ -z $1 ]; then
 	echo "Usage: ./genomecov.sh <genome_id> [bam]"
+	echo "Requires summary.csv, aligned.benomecov, and <genome_id>.changes.vcf.gz"
 	exit -1
 fi
 
@@ -38,6 +40,7 @@ NUM_BP=`cat $genome.numbp`
 echo "Total bases > 5x: $NUM_BP"
 
 if [ -e $genome.numvar ]; then
+	bcftools view -H -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5 && (FORMAT/AD[:1]) / (FORMAT/AD[:1]+FORMAT/AD[:0]) > 0.5' -Ov $genome.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $genome.numvar
 	NUM_VAR=`cat $genome.numvar`
 	echo "Total num. bases subject to change: $NUM_VAR"
 	QV=`echo "$NUM_VAR $NUM_BP" | awk '{print (-10*log($1/$2)/log(10))}'`
