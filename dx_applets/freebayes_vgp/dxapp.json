@@ -59,10 +59,10 @@
       "optional": false
     },
     {
-      "name": "inclusion_expression",
-      "label": "inclusion expression for bcftools consensus",
-      "default": "'QUAL>1 && (GT=\"AA\" || GT=\"Aa\") && INFO/DP>5'",
-      "help": "",
+      "name": "new_vgp_extension",
+      "label": "new suffix for fasta",
+      "help": "This will replace all existing _xx before . with new suffix",
+      "default": "_t1",
       "class": "string",
       "optional": false
     }

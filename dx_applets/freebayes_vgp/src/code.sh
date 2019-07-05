@@ -75,7 +75,8 @@ main() {
     echo "Value of freebayes_op: '$freebayes_op'"
     echo "Value of skip_coverage_fold: '$skip_coverage_fold'"
     echo "Value of bcftools_op: '$bcftools_op'"
-    echo "Value of inclusion_expression: '$inclusion_expression'"
+    echo "Value of new_vgp_extension: '$new_vgp_extension'"
+
     # echo "Value of N_job: '$n_job'"
 
  #   if [ "$n_job" -eq 1 ]; then
@@ -135,16 +136,18 @@ main() {
     pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
     dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
 
-    bcftools view $bcftools_op -i "$inclusion_expression" --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+    bcftools view $bcftools_op -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
 
     pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
     dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
 
 	bcftools index ${ref_prefix}_changes.vcf.gz
-	bcftools consensus -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fa
-	gzip ${ref_prefix}_pl.fa
+	bcftools consensus -Hla -f ${ref_name%.gz} ${ref_prefix}_changes.vcf.gz > ${ref_prefix}_pl.fasta
+    output_fasta=$(python extension_replacement.py ${ref_prefix}_pl.fasta ${new_vgp_extension})
+    mv ${ref_prefix}_pl.fasta "$output_fasta"
+	gzip "$output_fasta"
 	
-    pl_fasta=$(dx upload ${ref_prefix}_pl.fa.gz --brief)
+    pl_fasta=$(dx upload "${output_fasta}.gz" --brief)
     dx-jobutil-add-output pl_fasta "$pl_fasta" --class=file
     # fi
      	

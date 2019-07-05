@@ -31,15 +31,16 @@ if ! [ -e $sample/outs/possorted_bam.bam ]; then
 	wait_for="--dependency=afterok:`cat longranger_jid`"
 fi
 
-if ! [ -e aligned.bam ]; then	# symlink regardless the actual file exists or not
-	ln -s $sample/outs/possorted_bam.bam aligned.bam
-	ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai
+if ! [ -e aligned.bam 2> /dev/null ]; then	# symlink regardless the actual file exists or not
+	ln -s $sample/outs/possorted_bam.bam aligned.bam 2> /dev/null
+	ln -s $sample/outs/possorted_bam.bam.bai aligned.bam.bai 2> /dev/null
+	ln -s $sample/outs/summary.csv	2> /dev/null
 fi
 
 cpus=4
 mem=12g
 name=$1.freebayes
-script=$VGP_PIPELINE/freebayes-polish/freebayes.sh
+script=$VGP_PIPELINE/freebayes-polish/freebayes_v1.3.sh
 args=$sample
 walltime=3-0
 log=logs/$name.%A_%a.log

@@ -17,7 +17,7 @@
     },
     {
       "name": "out_name",
-      "label": "Output filename",
+      "label": "species code",
       "class": "string",
       "optional": false,
       "help": ""
@@ -39,7 +39,7 @@
       "help": "Default option 'scaffolds' shows stats only for scaffolds. Option 'scaffold/contigs' shows stats for both scaffolds and contigs. Option 'scaffold/contigs+haplotypes' adds stats for primary/alternate scaffolds as well."
     },
     {
-      "name": "ext",
+      "name": "extract",
       "label": "Extract also primary and alternate scaffolds?",
       "class": "boolean",
       "default": false,
