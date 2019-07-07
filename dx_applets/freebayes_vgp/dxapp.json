@@ -133,6 +133,19 @@
           "instanceType": "mem1_ssd1_x8"
         }
       }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "one_freebayes": {
+          "instanceType": "azure:mem1_ssd1_x8"
+        },
+        "main": {
+          "instanceType": "azure:mem1_ssd1_x16"
+        },
+        "merge_vcf": {
+          "instanceType": "azure:mem1_ssd1_x8"
+        }
+      }
     }
   }
 }
