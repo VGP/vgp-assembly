@@ -34,6 +34,16 @@
          "*.vcf.gz"
       ],
       "help": ""
+    },
+    {
+      "name": "CSV",
+      "label": "The summary csv file from Longranger",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+         "*.csv"
+      ],
+      "help": ""
     }
   ],
   "outputSpec": [
