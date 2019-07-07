@@ -1,0 +1,9 @@
+{
+  "name": "purge_dup",
+  "title": "purge_dup",
+  "description": "purge_dup",
+  "version": "0.0.1",
+  "distribution": "Ubuntu",
+  "release": "16.04",
+  "instanceType": "mem1_ssd1_x16"
+}
