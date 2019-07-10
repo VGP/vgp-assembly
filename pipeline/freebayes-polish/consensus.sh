@@ -34,8 +34,8 @@ if [ ! -s $sample.bcf.csi ]; then
 fi
 
 echo "\
-bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5 && (FORMAT/AD[:1]) / (FORMAT/AD[:1]+FORMAT/AD[:0]) > 0.5' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz" &&
-bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5 && (FORMAT/AD[:1]) / (FORMAT/AD[:1]+FORMAT/AD[:0]) > 0.5' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz &&
+bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz" &&
+bcftools view -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Oz --threads=$threads $sample.bcf > $sample.changes.vcf.gz &&
 
 echo "\
 bcftools index $sample.changes.vcf.gz" &&
@@ -43,15 +43,15 @@ bcftools index $sample.changes.vcf.gz &&
 echo &&
 
 echo "\
-bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' -Hla -f $fasta $sample.changes.vcf.gz > ${sample}_fb.fasta" &&
-bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' -Hla -f $fasta $sample.changes.vcf.gz > ${sample}_fb.fasta &&
+bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f $fasta $sample.changes.vcf.gz > ${sample}_fb.fasta" &&
+bcftools consensus -i'QUAL>1 && (GT="AA" || GT="Aa")' -Hla -f $fasta $sample.changes.vcf.gz > ${sample}_fb.fasta &&
 echo &&
 
 echo "Done!" ||
 echo "Failed..."
 
 echo
-bcftools view -H -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' -Ov $sample.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $sample.numvar
+bcftools view -H -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ov $sample.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $sample.numvar
 echo "Num. bases affected: `cat $sample.numvar`"
 echo
 
