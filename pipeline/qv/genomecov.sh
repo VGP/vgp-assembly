@@ -30,14 +30,14 @@ echo
 
 mean_cov=`tail -n1 summary.csv | awk -F "," '{printf "%.0f\n", $17}'`	# parse out the mean_cov from summary.csv
 h_filter=$((mean_cov*12))	# exclude any sites >12x
-l_filter=5			# exclude any sites <5x
+l_filter=3			# exclude any sites <3x
 echo "Get numbp between $l_filter ~ $h_filter x"
 
 echo "\
 awk -v l=$l_filter -v h=$h_filter '{if (\$1=="genome" && \$2>l && \$2<h) {numbp += \$3}} END {print numbp}' aligned.genomecov > $genome.numbp"
 awk -v l=$l_filter -v h=$h_filter '{if ($1=="genome" && $2>l && $2<h) {numbp += $3}} END {print numbp}' aligned.genomecov > $genome.numbp
 NUM_BP=`cat $genome.numbp`
-echo "Total bases > 5x: $NUM_BP"
+echo "Total bases > 3x: $NUM_BP"
 
 if [ -e $genome.numvar ]; then
 	bcftools view -H -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5 && (FORMAT/AD[:1]) / (FORMAT/AD[:1]+FORMAT/AD[:0]) > 0.5' -Ov $genome.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $genome.numvar
