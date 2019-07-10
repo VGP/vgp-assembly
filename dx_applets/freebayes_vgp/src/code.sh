@@ -136,7 +136,7 @@ main() {
     pl_bcf=$(dx upload ${ref_prefix}.bcf --brief)
     dx-jobutil-add-output pl_bcf "$pl_bcf" --class=file
 
-    bcftools view $bcftools_op -i 'QUAL>1 && (GT="AA" || GT="Aa") && INFO/DP>5' --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
+    bcftools view $bcftools_op -i 'QUAL>1 && (GT="AA" || GT="Aa")' --threads=$(nproc)  ${ref_prefix}.bcf > ${ref_prefix}_changes.vcf.gz
 
     pl_vcf_changes=$(dx upload ${ref_prefix}_changes.vcf.gz --brief)
     dx-jobutil-add-output pl_vcf_changes "$pl_vcf_changes" --class=file
