@@ -1,6 +1,9 @@
 # Freebayes polish
 ## Update note
 
+**2019-Jul-08 update**
+- update QV to Giulio new version
+
 **2019-Jun-27 update**
 - add extension guide for asm-qv
 

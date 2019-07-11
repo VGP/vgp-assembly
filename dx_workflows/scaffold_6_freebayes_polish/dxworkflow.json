@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jun-27",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jul-8",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -56,6 +56,36 @@
           }
         },
         "new_vgp_extension": "_t2"
+      }
+    },
+     {
+      "id": "first_qv",
+      "executable": "applet-FZVVJ400j3b0pYbYK24FX35v",
+      "folder": "longranger_freebayes_round_1/QV",
+      "input": {
+        "VAR": {
+          "$dnanexus_link": {
+            "outputField": "pl_vcf_changes",
+            "stage": "first_freebayes"
+          }
+        },
+        "BAM": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam",
+            "stage": "first_map"
+          }
+        },
+         "CSV": {
+          "$dnanexus_link": {
+            "outputField": "summary",
+            "stage": "first_map"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd2_x16"
+        }
       }
     },
     {
@@ -152,8 +182,8 @@
       }
     },
     {
-      "id": "stage-FYj6yZ80j3bPZX142pVFZjy2",
-      "executable": "applet-FZ7P1080j3b7q3bfK70kqkFk",
+      "id": "second_qv",
+      "executable": "applet-FZVVJ400j3b0pYbYK24FX35v",
       "folder": "longranger_freebayes_round_2/QV",
       "input": {
         "VAR": {
@@ -165,6 +195,12 @@
         "BAM": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
+            "stage": "second_map"
+          }
+        },
+         "CSV": {
+          "$dnanexus_link": {
+            "outputField": "summary",
             "stage": "second_map"
           }
         }
