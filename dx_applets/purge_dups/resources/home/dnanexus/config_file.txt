@@ -1,6 +1,6 @@
 {
   "cc": {
-    "fofn": "iHelSar1.pri/pb.fofn",
+    "fofn": "pb_input",
     "isdip": 1,
     "core": 12,
     "mem": 20000,
@@ -18,8 +18,8 @@
     "mem": 20000,
     "queue": "long",
     "skip": 1,
-    "lineage": "insecta",
-    "prefix": "iHelSar1.PB.asm1_purged",
+    "lineage": "vertebrate",
+    "prefix": "asm1_purged",
     "tmpdir": "busco_tmp"
   },
   "pd": {
@@ -32,11 +32,11 @@
   "kcp": {
     "core": 12,
     "mem": 30000,
-    "fofn": "iHelSar1.pri/10x.fofn",
-    "prefix": "iHelSar1.PB.asm1_purged_kcm",
+    "fofn": "pb_input",
+    "prefix": "asm1_purged_kcm",
     "tmpdir": "kcp_tmp",
     "skip": 1
   },
-  "ref": "/home/dnanexus",
+  "ref": "/home/dnanexus/ref.fa",
   "out_dir": "/home/dnanexus/alloutput"
 }
