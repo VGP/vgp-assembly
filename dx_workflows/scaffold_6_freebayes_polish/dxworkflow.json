@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jul-8",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jul-11",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -28,7 +28,7 @@
     },
     {
       "id": "first_freebayes",
-      "executable": "applet-FZB2yG80j3b75K260z2yF688",
+      "executable": "applet-FZY5j400j3bP4b62GxKB057v",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
         "bam": {
@@ -60,7 +60,7 @@
     },
      {
       "id": "first_qv",
-      "executable": "applet-FZVVJ400j3b0pYbYK24FX35v",
+      "executable": "applet-FZY5kG00j3bKz7vY8p8G670X",
       "folder": "longranger_freebayes_round_1/QV",
       "input": {
         "VAR": {
@@ -130,7 +130,7 @@
     },
     {
       "id": "second_freebayes",
-      "executable": "applet-FZB2yG80j3b75K260z2yF688",
+      "executable": "applet-FZY5j400j3bP4b62GxKB057v",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
         "bam": {
@@ -183,7 +183,7 @@
     },
     {
       "id": "second_qv",
-      "executable": "applet-FZVVJ400j3b0pYbYK24FX35v",
+      "executable": "applet-FZY5kG00j3bKz7vY8p8G670X",
       "folder": "longranger_freebayes_round_2/QV",
       "input": {
         "VAR": {
