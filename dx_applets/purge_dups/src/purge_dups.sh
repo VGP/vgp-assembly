@@ -35,7 +35,7 @@ main() {
     done
     ls  $PWD/* > ~/pb_input
     cd ~
-    run_purge_dups.py config.txt /purge_dups/src $spid
+    python /purge_dups/scripts/run_purge_dups.py config.txt /purge_dups/src $spid
 
 
     exit 1
