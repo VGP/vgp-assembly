@@ -1,4 +1,12 @@
-# VGP Upload Script
+# Symlink genomeark objects to DNAnexus
+
+Maintaining large datasets on DNAnexus projects are costful.
+Instead, we symlink aws objects to DNAnexus platform, which are almost 0-sized data objects.
+The symlinks contain md5sum, that needs to be generated locally.
+
+* `vgp_upload_to_cloud.py` : Upload local genomic_data or transcriptomic_data to aws, and create symlinks
+*  `symlink_genomeark.py` : Symlink an existing aws object
+
 
 ## Dependencies
 
@@ -6,6 +14,9 @@
 * dx-toolkit (https://wiki.dnanexus.com/Downloads#DNAnexus-Platform-SDK)
 * aws cli (https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
 * python2.7
+
+Build python dx environment by sourcing:
+`source /path/to/dx-toolkit/environment`
 
 Please authenticate your user using dx toolkit before running this script, by running:
 `dx login` or `dx login --token [yourauthtoken]`
@@ -16,7 +27,8 @@ The script assumes that the DNAnexus drive and AWS profile will have the same na
 
 The bucket name is hardcoded into the script under "VGP_BUCKET"
 
-## Running
+
+## vgp_upload_to_cloud.py
 
 The script is run using python:
 `python vgp_upload_to_cloud.py /path/to/file --species-name [species_name] --species-id [species_id] --datatype [datatype] --profile [profile]`
@@ -106,6 +118,16 @@ dx api file new '{"project": "project-xxx",
                    		}
                  }'
 ```
+
+## symlink_genomeark.py
+
+Download the object that needs to be linked:
+`aws s3 cp --no-sign-request <s3-path> .`
+
+Create symlink:
+`python symlink_genomeark.py <s3-path> -l <local-file> -p <profile> -n <species_name> -i <genome_id>`
+
+
 ## Future Improvements
 * Provide a mechanism for detecting files in AWS S3 which do not have DNAnexus links and creating them [ One option for this would be to add the DNAnexus file-id as metadata in AWS, and iterate through S3 files for objects that do not have this metadata field supplied. ]
 * Provide mechanism for deleting DNAnexus links of AWS file is deleted
