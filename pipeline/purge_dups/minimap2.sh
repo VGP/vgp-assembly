@@ -26,14 +26,13 @@ qry=`sed -n ${i}p input.fofn`
 out=`basename $qry`
 out=`echo $out | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
 
-
 if [ -s $out.paf.gz ]; then
 	echo "$out.paf.gz found. Skip alignment."
 else
 	echo "Start aligning $qry to $ref.idx"
 
 	echo "\
-	minimap2 -x map-pb -t $cpus $ref.idx $qry | gz -c - > $out.paf.gz"
-	minimap2 -x map-pb -t $cpus $ref.idx $qry | gz -c - > $out.paf.gz
+	minimap2 -x map-pb -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz"
+	minimap2 -x map-pb -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz
 fi
 

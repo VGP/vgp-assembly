@@ -26,13 +26,13 @@ if [ ! -e $ref.idx ]; then
 	log=logs/$name.%A.log
 	echo "\
 	sbatch --partition=quick -D `pwd` --job-name=$name --time=240 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args"
-	#sbatch --partition=quick -D `pwd` --job-name=$name --time=240 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args > idx_jid
+	sbatch --partition=quick -D `pwd` --job-name=$name --time=240 --cpus-per-task=$cpus --mem=$mem --error=$log --output=$log $script $args > idx_jid
 	wait_for="--dependency=afterok:"`cat idx_jid`
 fi
 
 if [ ! -s purged.fa ]; then
 	LEN=`wc -l $fofn | awk '{print $1}'`
-	NUM_PAF=`ls *.paf.gz 2> /dev/null | wc -l | awk '{print $1}'`
+	NUM_PAF=`ls *.read.paf.gz 2> /dev/null | wc -l | awk '{print $1}'`
 	echo "$NUM_PAF pafs found."
 	if [[ $LEN -gt $PAFs ]]; then
 		cpus=16
@@ -44,7 +44,7 @@ if [ ! -s purged.fa ]; then
 	
 		echo "\
 		sbatch --job-name=$name -a 1-$LEN $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args"
-		#sbatch --job-name=$name -a 1-$LEN $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args > minimap2_jid
+		sbatch --job-name=$name -a 1-$LEN $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args > minimap2_jid
 	fi
 
         if [[ ! -s $asm.split.self.paf.gz ]]; then
@@ -53,22 +53,22 @@ if [ ! -s purged.fa ]; then
                 name=minimap2_self.$ref
                 script=$VGP_PIPELINE/purge_dups/minimap2_self.sh
                 args=$asm
-                log=logs/$name.%A_%a.log
+                log=logs/$name.%A.log
 		wait_for=""
 
                 echo "\
-                sbatch --job-name=$name -a 1-$LEN $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args"
-                sbatch --job-name=$name -a 1-$LEN $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args > self_jid
+                sbatch --job-name=$name $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args"
+                sbatch --job-name=$name $wait_for --cpus-per-task=$cpus --mem=$mem --partition=norm -D `pwd` --time=1-0 --error=$log --output=$log $script $args > self_jid
         fi
 
 	cpus=4
 	mem=12g
 	name=purge_dups.$ref
 	script=$VGP_PIPELINE/purge_dups/purge_dups.sh
-	args=$ref
+	args=$asm
 	walltime=1:00:00
 	dependency=""
-	if [ -e minimap2_jid ]; then
+	if [[ -e minimap2_jid || -e self_jid ]]; then
 	        dependency=`cat minimap2_jid`
 		dependency=$dependency,`cat self_jid`
 	        dependency="--dependency=afterok:$dependency"
