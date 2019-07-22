@@ -1,0 +1,60 @@
+{
+  "name": "proc10xg",
+  "title": "Remove gembarcodes from 10x reads",
+  "summary": "This app uses the script proc10xG to trim the 10x barcordes from short reads.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "input_fastq",
+      "label": "Input fastq files",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.fastq.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+	{
+      "name": "output_fastq",
+      "class": "array:file",
+      "label": "Trimmed fastq files",
+      "patterns": [
+        "*.fastq.gz"
+      ],
+      "help": ""
+    }
+  ],
+   "runSpec": {
+   "execDepends": [
+    {
+        "name": "parallel"
+    },
+	{
+       "name": "python-numpy"
+     }
+     ],
+      "file": "src/proc10xg.sh",
+      "release": "16.04",
+      "interpreter": "bash",
+      "distribution": "Ubuntu"      
+   },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "azure:mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}

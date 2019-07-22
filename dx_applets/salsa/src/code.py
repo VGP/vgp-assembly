@@ -83,6 +83,14 @@ def main(input_assembly, hic_alignments, restriction_enzyme_bases, filter_alignm
     final_agp = glob.glob('scaffold*FINAL.agp')[0]
     output['final_scaffold_agp'] = dx_utils.gzip_and_upload(final_agp)
 
+    # alignment_iteration_1 bed
+    alignment_iteration_1 = glob.glob('alignment_iteration_1.bed')[0]
+    output['alignment_iteration_1'] = dx_utils.gzip_and_upload(alignment_iteration_1)
+    
+    # scaffold_length_iteration_1
+    scaffold_length_iteration_1 = glob.glob('scaffold_length_iteration_1')[0]
+    output['scaffold_length_iteration_1'] = dx_utils.gzip_and_upload(scaffold_length_iteration_1)
+
     # all others
     files = glob.glob('scaffold*fasta')
     files.extend( glob.glob('scaffold*agp'))
