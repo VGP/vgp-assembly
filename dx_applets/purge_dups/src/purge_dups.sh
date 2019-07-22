@@ -14,42 +14,31 @@
 #
 # See https://wiki.dnanexus.com/Developer-Portal for tutorials on how
 # to modify this file.
-
+set -x -e -o pipefail
 main() {
 
     echo "Value of ref_fastagz: '$ref_fastagz'"
     echo "Value of raw_reads_pacbio_fastagz: '${raw_reads_pacbio_fastagz[@]}'"
+    echo "Value of spid: '$spid'"
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
     # recover the original filenames, you can use the output of "dx describe
     # "$variable" --name".
 
-    dx download "$ref_fastagz" -o ref_fastagz
+    dx download "$ref_fastagz" -o ref.fa
+    mkdir -p pacb_fofn
+    cd pacb_fofn
     for i in ${!raw_reads_pacbio_fastagz[@]}
     do
-        dx download "${raw_reads_pacbio_fastagz[$i]}" -o raw_reads_pacbio_fastagz-$i
+        dx download "${raw_reads_pacbio_fastagz[$i]}" 
     done
+    ls  $PWD/* > ~/pb_input
+    cd ~
+    python /purge_dups/scripts/run_purge_dups.py config.txt /purge_dups/src $spid
 
-    # Fill in your application code here.
-    #
-    # To report any recognized errors in the correct format in
-    # $HOME/job_error.json and exit this script, you can use the
-    # dx-jobutil-report-error utility as follows:
-    #
-    #   dx-jobutil-report-error "My error message"
-    #
-    # Note however that this entire bash script is executed with -e
-    # when running in the cloud, so any line which returns a nonzero
-    # exit code will prematurely exit the script; if no error was
-    # reported in the job_error.json file, then the failure reason
-    # will be AppInternalError with a generic error message.
 
-    # The following line(s) use the dx command-line tool to upload your file
-    # outputs after you have created them on the local file system.  It assumes
-    # that you have used the output field name for the filename for each output,
-    # but you can change that behavior to suit your needs.  Run "dx upload -h"
-    # to see more options to set metadata.
+    exit 1
 
     primary_fastagz=$(dx upload primary_fastagz --brief)
     dup_fastagz=$(dx upload dup_fastagz --brief)

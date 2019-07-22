@@ -22,6 +22,16 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "spid",
+      "class": "string",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "default": "species",
+      "help": ""
     }
   ],
   "outputSpec": [
@@ -67,7 +77,8 @@
         "*": {
           "instanceType": "mem1_ssd1_x16"
         }
-      }
+      },
+      "assetDepends": [{"id": "record-FZbY9gj0272fBgqFJ6V2X3Pj"}]
     }
   }
 }
