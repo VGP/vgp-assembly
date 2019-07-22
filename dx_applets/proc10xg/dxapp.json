@@ -1,7 +1,7 @@
 {
   "name": "proc10xg",
   "title": "Remove gembarcodes from 10x reads",
-  "summary": "This app uses the script proc10xG to trim the 10x barcordes from short reads.",
+  "summary": "This apps removes the GEM barcodes from paired 10x reads. It accepts arrays of files. Filenames need to be in the form <Specied_ID>_S1_L001_R1_001.fastq.gz and paired. You can run it on small-to-large instances, depending on the number of files to process. It will use a core for each pair, so if you have 8 paired files, you should use an instance with 4 cores.",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
