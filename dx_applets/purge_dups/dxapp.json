@@ -30,6 +30,30 @@
       "optional": false,
       "default": 4,
       "help": ""
+    },
+    {
+      "name": "core_per_job",
+      "label": "number of core per job for minimap2",
+      "class": "int",
+      "optional": false,
+      "default": 4,
+      "help": ""
+    },
+    {
+      "name": "suffix_primary",
+      "label": "purge fa suffix",
+      "class": "string",
+      "optional": false,
+      "default": "_p1",
+      "help": ""
+    },
+    {
+      "name": "suffix_haplotig",
+      "label": "hap fa suffix",
+      "class": "string",
+      "optional": false,
+      "default": "_p2",
+      "help": ""
     }
   ],
   "outputSpec": [
@@ -77,11 +101,7 @@
           "instanceType": "mem3_ssd1_x16"
         }
       },
-<<<<<<< HEAD
       "assetDepends": [{"id": "record-FZkkKV00z2VXKBzJ98G245fK"}]
-=======
-      "assetDepends": [{"id": "record-FZjYPvj0Fq402K7F99p78Pf7"}]
->>>>>>> 1fe2e9d42b9226b4eaf0fbb396e2ad4a546e7aaa
     }
   }
 }

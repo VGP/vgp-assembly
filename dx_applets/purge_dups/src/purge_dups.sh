@@ -32,7 +32,7 @@ main() {
     busyproc=0
     for i in ${!raw_reads_pacbio_fastagz[@]}; do
 
-        if [[ "${busyproc}" -ge $(($(nproc)/4)) ]]; then
+        if [[ "${busyproc}" -ge $(($(nproc)/$core_per_job)) ]]; then
             echo Processes hit max
             wait -n 
             busyproc=$((busyproc-1))
@@ -59,14 +59,15 @@ main() {
     /purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
     basename="$ref_fastagz_prefix"
     basename=${basename%_c1}
-    mv purged.fa "$basename"_p1.fasta
-    mv hap.fa "$basename"_p2.fasta 
-    gzip "$basename"_p1.fasta 
-    gzip "$basename"_p2.fasta 
+    basename=${basename%_c2p2}
+    mv purged.fa "$basename""$suffix_primary".fasta
+    mv hap.fa "$basename""$suffix_haplotig".fasta 
+    gzip "$basename""$suffix_primary".fasta 
+    gzip "$basename""$suffix_haplotig".fasta 
     #python /purge_dups/scripts/run_purge_dups.py config.txt /purge_dups/src $spid
 
-    primary_fastagz=$(dx upload "$basename"_p1.fasta.gz --brief)
-    dup_fastagz=$(dx upload "$basename"_p2.fasta.gz --brief)
+    primary_fastagz=$(dx upload "$basename""$suffix_primary".fasta.gz --brief)
+    dup_fastagz=$(dx upload "$basename""$suffix_haplotig".fasta.gz --brief)
 
 
     dx-jobutil-add-output primary_fastagz "$primary_fastagz" --class=file
