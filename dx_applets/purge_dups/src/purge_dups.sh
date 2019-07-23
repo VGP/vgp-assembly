@@ -19,38 +19,59 @@ main() {
 
     echo "Value of ref_fastagz: '$ref_fastagz'"
     echo "Value of raw_reads_pacbio_fastagz: '${raw_reads_pacbio_fastagz[@]}'"
-    echo "Value of spid: '$spid'"
+    echo "Value of max_genomesize: '$max_genomesize'"
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
     # recover the original filenames, you can use the output of "dx describe
     # "$variable" --name".
 
-    dx download "$ref_fastagz" -o ref.fa
+    dx cat "$ref_fastagz" | zcat > ref.fa
     mkdir -p pacb_fofn
-    cd pacb_fofn
-    for i in ${!raw_reads_pacbio_fastagz[@]}
-    do
+
+    busyproc=0
+    for i in ${!raw_reads_pacbio_fastagz[@]}; do
+
+        if [[ "${busyproc}" -ge $(($(nproc)/4)) ]]; then
+            echo Processes hit max
+            wait -n 
+            busyproc=$((busyproc-1))
+        fi
         dx download "${raw_reads_pacbio_fastagz[$i]}" 
+        /minimap2-2.17_x64-linux/minimap2 -xmap-pb ~/ref.fa -I "$max_genomesize"G "${raw_reads_pacbio_fastagz_name[$i]}" | gzip -c - > $i.paf.gz  &      
+        busyproc=$((busyproc+1))
+    done 
+
+    while [[ "${busyproc}" -gt  0 ]]; do
+        wait -n # p_id
+        busyproc=$((busyproc-1))
     done
-    ls  $PWD/* > ~/pb_input
-    cd ~
-    python /purge_dups/scripts/run_purge_dups.py config.txt /purge_dups/src $spid
 
 
-    exit 1
+    /purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
+    /purge_dups/bin/calcuts PB.stat > cutoffs 2>calcults.log
+    #ls  $PWD/* > ~/pb_input
+    /purge_dups/bin/split_fa ref.fa > pri_asm.split
+    /minimap2-2.17_x64-linux/minimap2 -xasm5 -DP pri_asm.split pri_asm.split | gzip -c - > pri_asm.split.self.paf.gz
 
-    primary_fastagz=$(dx upload primary_fastagz --brief)
-    dup_fastagz=$(dx upload dup_fastagz --brief)
 
-    # The following line(s) use the utility dx-jobutil-add-output to format and
-    # add output variables to your job's output as appropriate for the output
-    # class.  Run "dx-jobutil-add-output -h" for more information on what it
-    # does.
+    /purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov pri_asm.split.self.paf.gz > dups.bed 2> purge_dups.log
+    /purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
+    basename="$ref_fastagz_prefix"
+    basename=${basename%_c1}
+    mv purged.fa "$basename"_p1.fasta
+    mv hap.fa "$basename"_p2.fasta 
+    gzip "$basename"_p1.fasta 
+    gzip "$basename"_p2.fasta 
+    #python /purge_dups/scripts/run_purge_dups.py config.txt /purge_dups/src $spid
+
+    primary_fastagz=$(dx upload "$basename"_p1.fasta.gz --brief)
+    dup_fastagz=$(dx upload "$basename"_p2.fasta.gz --brief)
+
 
     dx-jobutil-add-output primary_fastagz "$primary_fastagz" --class=file
     dx-jobutil-add-output dup_fastagz "$dup_fastagz" --class=file
-    for i in "${!auxillary_files[@]}"; do
-        dx-jobutil-add-output auxillary_files "${auxillary_files[$i]}" --class=array:file
-    done
+    # for i in "${!auxillary_files[@]}"; do
+    #     dx-jobutil-add-output auxillary_files "${auxillary_files[$i]}" --class=array:file
+    # done
 }

@@ -10,7 +10,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*"
+        "*.fasta.gz","*.fa.gz"
       ],
       "help": ""
     },
@@ -19,18 +19,16 @@
       "class": "array:file",
       "optional": false,
       "patterns": [
-        "*"
+        "*.fasta.gz","*.fa.gz", "*.fastq.gz","*.fq.gz"
       ],
       "help": ""
     },
     {
-      "name": "spid",
-      "class": "string",
+      "name": "max_genomesize",
+      "label": "max genome size (Gbp)",
+      "class": "int",
       "optional": false,
-      "patterns": [
-        "*"
-      ],
-      "default": "species",
+      "default": 4,
       "help": ""
     }
   ],
@@ -57,6 +55,7 @@
       "patterns": [
         "*"
       ],
+      "optional": true,
       "help": ""
     }
   ],
@@ -75,10 +74,14 @@
     "aws:us-east-1": {
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_x16"
+          "instanceType": "mem3_ssd1_x16"
         }
       },
+<<<<<<< HEAD
+      "assetDepends": [{"id": "record-FZkkKV00z2VXKBzJ98G245fK"}]
+=======
       "assetDepends": [{"id": "record-FZjYPvj0Fq402K7F99p78Pf7"}]
+>>>>>>> 1fe2e9d42b9226b4eaf0fbb396e2ad4a546e7aaa
     }
   }
 }
