@@ -20,6 +20,9 @@ main() {
     echo "Value of ref_fastagz: '$ref_fastagz'"
     echo "Value of raw_reads_pacbio_fastagz: '${raw_reads_pacbio_fastagz[@]}'"
     echo "Value of max_genomesize: '$max_genomesize'"
+    echo "Value of core_per_job: '$core_per_job'"
+    echo "Value of suffix_primary: '$suffix_primary'"
+    echo "Value of suffix_haplotig: '$suffix_haplotig'"
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
@@ -58,6 +61,7 @@ main() {
     /purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov pri_asm.split.self.paf.gz > dups.bed 2> purge_dups.log
     /purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
     basename="$ref_fastagz_prefix"
+    basename=${basename//.renamed}
     basename=${basename%_c1}
     basename=${basename%_c2p2}
     mv purged.fa "$basename""$suffix_primary".fasta
