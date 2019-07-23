@@ -1,0 +1,64 @@
+{
+  "name": "concat_c2_p2",
+  "title": "concat_c2_p2",
+  "summary": "concat_c2_p2",
+  "dxapi": "1.0.0",
+  "version": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "input1",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta.gz","*_c2.fasta.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "input2",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*_p2.fasta.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "output_extension",
+      "class": "string",
+      "optional": false,
+      "default": "_c2p2",
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/code.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}
