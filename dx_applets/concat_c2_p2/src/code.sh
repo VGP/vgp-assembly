@@ -17,7 +17,7 @@ main() {
     basename=${basename//.renamed}
     basename=${basename%_c2}
     basename=${basename%_p2}
-    basename="$basename"+"$output_extension"
+    basename="$basename""$output_extension"
 
     mv temp_output.fasta.gz "$basename".fasta.gz
 
