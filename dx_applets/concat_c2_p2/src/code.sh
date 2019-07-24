@@ -21,7 +21,7 @@ main() {
 
     mv temp_output.fasta.gz "$basename".fasta.gz
 
-    output=$(dx upload "$output_name" --brief)
+    output=$(dx upload "$basename".fasta.gz --brief)
 
     dx-jobutil-add-output output "$output" --class=file
 }
