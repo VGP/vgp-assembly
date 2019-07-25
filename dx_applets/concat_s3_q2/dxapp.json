@@ -7,6 +7,7 @@
   "inputSpec": [
     {
       "name": "input1",
+      "label": "s3 input",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -16,18 +17,19 @@
     },
     {
       "name": "input2",
+      "label": "q2 input",
       "class": "file",
       "optional": false,
       "patterns": [
         "*_q2.fasta.gz"
       ],
-      "help": ""
+      "help": "The prefix of q2 input will be used as basename"
     },
     {
-      "name": "output_name",
+      "name": "output_extension",
       "class": "string",
       "optional": false,
-      "default": "output_s4.fasta.gz",
+      "default": "_s4",
       "help": ""
     }
   ],
@@ -50,7 +52,7 @@
     "interpreter": "bash",
     "release": "16.04",
     "distribution": "Ubuntu",
-    "file": "src/concat_s3_q2.sh"
+    "file": "src/code.sh"
   },
   "regionalOptions": {
     "aws:us-east-1": {
