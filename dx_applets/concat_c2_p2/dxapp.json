@@ -7,15 +7,17 @@
   "inputSpec": [
     {
       "name": "input1",
+      "label": "c2 input",
       "class": "file",
       "optional": false,
       "patterns": [
         "*.fasta.gz","*_c2.fasta.gz"
       ],
-      "help": ""
+      "help": "The prefix of c2 input will be used as basename"
     },
     {
       "name": "input2",
+      "label": "p2 input",
       "class": "file",
       "optional": false,
       "patterns": [
