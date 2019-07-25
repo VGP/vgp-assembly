@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_4_salsa",
+  "name": "scaffold_4_salsa 2019-Jul-24",
   "title": "Scaffold 4 Salsa Scaffolding",
   "stages": [
     {
@@ -40,10 +40,10 @@
     },
     {
       "id": "concat",
-      "executable": "applet-FY6YVV00j3b63z067J8kqj6P",
-      "name": "concat s3+c2+p2",
+      "executable": "applet-FZvXxG80j3b7XfxPJgGQ9Kq6",
+      "name": "concat s3+q2",
       "input": {
-        "s3_fastagz": {
+        "input1": {
             "$dnanexus_link": {
             "outputField": "final_scaffold_fasta",
             "stage": "salsa2"
@@ -60,7 +60,7 @@
         "input_files": [
           {
             "$dnanexus_link": {
-              "outputField": "s4_fastagz",
+              "outputField": "output",
               "stage": "concat"
             }
           }
