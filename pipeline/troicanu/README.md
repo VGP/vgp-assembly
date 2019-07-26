@@ -32,7 +32,7 @@ canu -p asm -d triocanu genomeSize=3.1g \
     -haplotypeMaternal maternal/*.fastq.gz \
     -pacbio-raw pacbio/*subreads.fasta.gz \
     correctedErrorRate=0.105 \
-    hapUnknownFraction=0.1 \
+    hapUnknownFraction=0.01 \
     corMhapSensitivity=normal \
     corMinCoverage=0 \
     useGrid=true gridOptions="--time=3-0" \
@@ -42,7 +42,7 @@ canu -p asm -d triocanu genomeSize=3.1g \
 ```
 
 * `correctedErrorRate=0.105`: Tuned for Sequel1 instruments, where most of our VGP genomes are sequenced with
-* `hapUnknownFraction=0.1`: Use unknown reads (not enough hap-specific markers supported to be binned) for assembly when unknown read fraction is > 0.1.
+* `hapUnknownFraction=0.01`: Include unknown reads (not enough hap-specific markers supported to be binned) for assembly when unknown base fraction is > 0.01.
 * `corMhapSensitivity=normal` : For genomes sequenced with ~60x, binned reads marginally end up to be less than 30x. By default, MHAP is set to `sensitive` for low coverage sequenced genomes. To avoid sequence noise being targeted for overlaps, which causes frequent breaks in the assembly, set this slightly less sensitive.
 * `corMinCoverage=0` : Use all reads.
 * `hapMemory` and `batMemory` needs to be set.
