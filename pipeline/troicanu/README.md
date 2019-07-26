@@ -45,7 +45,9 @@ canu -p asm -d triocanu genomeSize=3.1g \
 * `hapUnknownFraction=0.1`: Use unknown reads (not enough hap-specific markers supported to be binned) for assembly when unknown read fraction is > 0.1.
 * `corMhapSensitivity=normal` : For genomes sequenced with ~60x, binned reads marginally end up to be less than 30x. By default, MHAP is set to `sensitive` for low coverage sequenced genomes. To avoid sequence noise being targeted for overlaps, which causes frequent breaks in the assembly, set this slightly less sensitive.
 * `corMinCoverage=0` : Use all reads.
-The rest are tuned for slurm environment.
+* `hapMemory` and `batMemory` needs to be set.
+
+The rest are tuned for the slurm environment local at NIH. `lscratch` is the temporary local scratch disk to prevent overhead IO for shared environments.
 
 # Other options
 
