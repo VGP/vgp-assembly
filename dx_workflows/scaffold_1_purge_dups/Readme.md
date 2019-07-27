@@ -1,3 +1,11 @@
+# What it does?
+
+1. c1 -purge_dups-> p1 + p2
+2. c2 + p2 ==> c2p2
+3. c2p2 -purge_dups-> q2 + useless
+
+p1 and q2 will be used for next step
+
 # Update Logs
 
 2019-07-26
