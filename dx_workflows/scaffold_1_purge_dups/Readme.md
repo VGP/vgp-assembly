@@ -8,6 +8,10 @@ p1 and q2 will be used for next step
 
 # Update Logs
 
+2019-07-29
+
+* Add more auxillary outputs
+
 2019-07-26
 
 * Add auxillary outputs

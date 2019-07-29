@@ -1,12 +1,12 @@
 {
-  "name": "Scaffold 1 purge_dups 2019-Jul-26",
+  "name": "Scaffold 1 purge_dups 2019-Jul-29",
   "title": "Scaffold 1 purge_Dups",
   "version": "1.6.0",
   "stages": [
     {
       "id": "purge_dups_primary",
-      "executable": "applet-FZxv6pQ0j3bBfBjG4J4f5vK6",
-      "folder": "purge_dups/primary_purges"
+      "executable": "applet-FZzYXQ00j3b97qyqG69VJqXP",
+      "folder": "purge_dups/primary_purged"
     },
     {
       "id": "concat_c2_p2",
@@ -24,8 +24,8 @@
     },
     {
       "id": "purge_dups_haplotig",
-      "executable": "applet-FZxv6pQ0j3bBfBjG4J4f5vK6",
-      "folder": "purge_dups/haplotig_purges",
+      "executable": "applet-FZzYXQ00j3b97qyqG69VJqXP",
+      "folder": "purge_dups/haplotig_purged",
       "input": {
         "ref_fastagz": {
           "$dnanexus_link": {
