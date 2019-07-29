@@ -64,7 +64,7 @@ main() {
     dx-jobutil-add-output primary_fastagz "$primary_fastagz" --class=file
     dx-jobutil-add-output dup_fastagz "$dup_fastagz" --class=file
     mkdir auxillary_files
-    mv purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs pacb_fofn PB.stat auxillary_files
+    mv purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs PB.stat auxillary_files
     cd auxillary_files/
     for i in $(ls); do 
         auxillary_file=$(dx upload $i --brief)
