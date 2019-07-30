@@ -1,35 +1,35 @@
 {
-  "name": "concat_s3_q2",
-  "title": "concat_s3_q2",
-  "summary": "concat_s3_q2",
+  "name": "concat_c2_p2",
+  "title": "concat_c2_p2",
+  "summary": "concat_c2_p2",
   "dxapi": "1.0.0",
   "version": "1.0.0",
   "inputSpec": [
     {
       "name": "input1",
-      "label": "s3 input",
+      "label": "c2 input",
       "class": "file",
       "optional": false,
       "patterns": [
-        "*.fasta.gz","*_s3.fasta.gz"
+        "*.fasta.gz","*_c2.fasta.gz"
       ],
-      "help": ""
+      "help": "The prefix of c2 input will be used as basename"
     },
     {
       "name": "input2",
-      "label": "q2 input",
+      "label": "p2 input",
       "class": "file",
       "optional": false,
       "patterns": [
-        "*_q2.fasta.gz"
+        "*_p2.fasta.gz"
       ],
-      "help": "The prefix of q2 input will be used as basename"
+      "help": ""
     },
     {
       "name": "output_extension",
       "class": "string",
       "optional": false,
-      "default": "_s4",
+      "default": "_c2p2",
       "help": ""
     }
   ],
