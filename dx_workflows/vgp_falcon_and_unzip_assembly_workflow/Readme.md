@@ -1,6 +1,10 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
+**2019-Jul-31 update**
+- update bam_to_fasta and unzip_4_haplotype_polish to SMRTlink7 to support Sequel II
+- change tan and rep mask second stage to newer version which we forgot in 2019-Feb-15
+
 **2019-Feb-26 update**
 - change default instance type for Align and Phase
 
