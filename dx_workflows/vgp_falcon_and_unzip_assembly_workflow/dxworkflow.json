@@ -571,7 +571,7 @@
     {
       "id": "unzip_4_haplotype_polish",
       "name": "Unzip Haplotype Polish",
-      "executable": "app-unzip_4_haplotype_polish/1.1.0",
+      "executable": "app-unzip_4_haplotype_polish/1.2.0",
       "folder": "unzip_stage_5",
       "input": {
         "all_p_ctg": {
