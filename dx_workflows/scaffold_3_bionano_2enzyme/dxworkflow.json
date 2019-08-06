@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_3_bionano_2enzyme",
+  "name": "scaffold_3_bionano_2enzyme 2019-Aug-6",
   "title": "Scaffold3 Bionano 2 Enzyme Scaffold",
   "version": "1.5.0",
   "stages": [
@@ -29,7 +29,7 @@
     {
       "id": "trim_fasta",
       "name": "trim N and enz from bionano",
-      "executable": "applet-FXzyKqj0j3b17kPk90KKgV9Y",
+      "executable": "applet-Fb4q8Y00j3b9jqjG8fBk620q",
       "input": {
         "input_fastagz": {
             "$dnanexus_link": {
