@@ -13,6 +13,13 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "species_id",
+      "label": "species id",
+      "class": "string",
+      "optional": false,
+      "help": ""
     }
   ],
   "outputSpec": [
@@ -42,7 +49,7 @@
     "interpreter": "bash",
     "release": "16.04",
     "distribution": "Ubuntu",
-    "file": "src/trimmed_bionano_errorneous_N.sh"
+    "file": "src/code.sh"
   },
   "regionalOptions": {
     "aws:us-east-1": {
