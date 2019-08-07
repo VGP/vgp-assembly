@@ -1,12 +1,12 @@
 {
    "name": "minimap2_align_longread",
-   "title": "Minimap2 Align for Long Reads",
+   "title": "Minimap2 Aligner for Long Reads",
    "billTo": "org-dnanexus",
    "inputSpec": [
     {
        "name": "reads",
        "label": "Reads",
-       "patterns": ["*.fastq", "*.fasta", "*.fastq.gz", 
+       "patterns": ["*.subreads.bam", "*.fastq", "*.fasta", "*.fastq.gz", 
                     "*.fasta.gz", "*.fa.gz", "*.fq.gz", "*.fq", "*.fa"],
        "class": "array:file",
        "optional": false
@@ -23,7 +23,7 @@
         "label": "Input data format",
         "class": "string",
         "optional": false,
-        "choices": ["PacBio", "ONT"],
+        "choices": ["PacBio", "ONT", "CCS"],
         "default": "PacBio"
      },
     {
@@ -53,6 +53,14 @@
        ],
        "class": "file",
        "optional": true
+    },
+    {
+       "name": "pbbamify",
+       "label": "Run pbbamify",
+       "default": true,
+       "class": "boolean",
+       "optional": false,
+       "help": "Run pbbamify after pbmm2 to enable compatibility with Arrow. Only compatible with PacBio BAM input."
     },
     {
        "name": "output_prefix",
@@ -91,80 +99,120 @@
    ],
    "runSpec": {
       "file": "src/minimap2_align.py",
-      "release": "14.04",
+      "release": "16.04",
       "interpreter": "python2.7",
       "distribution": "Ubuntu",
       "restartableEntryPoints": "all",
       "timeoutPolicy": {
       "*": {
-        "hours": 12
+        "hours": 120
       }
     }
    },
     "regionalOptions": {
-        "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+        "aws:us-east-1": {"systemRequirements": {
+              "main": {"instanceType": "mem1_ssd1_x8"},
+              "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
+              "map_reads_minimap2": {"instanceType": "mem3_ssd1_x32"},
+              "map_reads_pbmm2": {"instanceType": "mem3_ssd1_x32"}
+              },
                           "assetDepends": [
                                 {"name": "minimap2_pb_asset",
-                                "id": "record-FPkYqgj0b1QY8ZkY3GVQkqXb",
+                                "id": "record-FZyj4kj03b0p78gb93bb91BJ",
                                 "stages": ["map_reads_pbmm2"]},
                                 {"name": "minimap2_asset",
-                                "id": "record-FBx3xvj0PZf8qy5yG6qv1ygQ",
+                                "id": "record-FZyKJ3Q0zXqK48PJ992GK7q1",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         },
-        "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+        "aws:eu-central-1": {"systemRequirements": {
+                  "main": {"instanceType": "mem1_ssd1_x8"},
+                  "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
+                  "map_reads_minimap2": {"instanceType": "mem3_ssd1_x32"},
+                  "map_reads_pbmm2": {"instanceType": "mem3_ssd1_x32"}
+                    },
                              "assetDepends": [
                                 {"name": "minimap2_pb_asset",
-                                "id": "record-FPJ8ZX84PxPF2xzk1k7yVYg1",
+                                "id": "record-FVv7KXj4ZxQ4v2Gx8jYZ5p5g",
                                 "stages": ["map_reads_pbmm2"]},
                                 {"name": "minimap2_asset",
-                                "id": "record-FBxJXk842G7PQq5yJ9f667jF",
+                                "id": "record-FV8FJq84g6gX68FkKzFVB208",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         },
-        "azure:westeurope": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+        "azure:westeurope": {"systemRequirements": {
+                  "main": {"instanceType": "azure:mem1_ssd1_x16"},
+                  "run_minimap_index": {"instanceType": "azure:mem1_ssd1_x16"},
+                  "map_reads_minimap2": {"instanceType": "azure:mem4_ssd1_x32"},
+                  "map_reads_pbmm2": {"instanceType": "azure:mem4_ssd1_x32"}
+                    },
                              "assetDepends": [
                                 {"name": "minimap2_pb_asset",
                                 "stages": ["map_reads_pbmm2"],
-                                "id": "record-FPJ9K68B5Zq66Z8k1kyVV32p"},
+                                "id": "record-Fb5V4B891f7KFY8v2k5f11JX"},
                                 {"name": "minimap2_asset",
-                                "id": "record-FPXpy20BzJQX99Jf6qvZq2J3",
+                                "id": "record-FZyKjG89F7Zg80QVKf209bq3",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         },
-        "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+        "aws:ap-southeast-2": {"systemRequirements": {
+                  "main": {"instanceType": "mem1_ssd1_x8"},
+                  "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
+                  "map_reads_minimap2": {"instanceType": "mem3_ssd1_x32"},
+                  "map_reads_pbmm2": {"instanceType": "mem3_ssd1_x32"}
+                    },
                              "assetDepends": [
                                 {"name": "minimap2_pb_asset",
                                 "stages": ["map_reads_pbmm2"],
-                                "id": "record-FPJ269Q57k55p7XF1kjB8j7B"},
+                                "id": "record-FVv7G3j50jYQpg8g96zBBK9b"},
                                 {"name": "minimap2_asset",
-                                "id": "record-FBxJYJ85qbPpxY6YFpjb374k",
+                                "id": "record-FV8FK285jpFz2yJj7F7FbVBz",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         },      
-        "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem3_ssd1_x32"}},
+        "aws:cn-north-1": {"systemRequirements": {
+                  "main": {"instanceType": "mem1_ssd1_x8"},
+                  "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
+                  "map_reads_minimap2": {"instanceType": "mem3_ssd1_x32"},
+                  "map_reads_pbmm2": {"instanceType": "mem3_ssd1_x32"}
+                    },
                              "assetDepends": [
                                 {"name": "minimap2_pb_asset",
                                 "stages": ["map_reads_pbmm2"],
-                                "id": "record-FPJ8qq02yvv5p7XF1kjBj9vJ"},
+                                "id": "record-FV8F82j20bj4gPPGBGxjk77F"},
                                 {"name": "minimap2_asset",
-                                "id": "record-FBxJY6Q2p24k1B8Q115zZg97",
+                                "id": "record-FV8FJj02XbxxQVQZKz3V6Kb8",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         },          
-        "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
+        "azure:westus": {"systemRequirements": {
+                  "main": {"instanceType": "azure:mem1_ssd1_x16"},
+                  "run_minimap_index": {"instanceType": "azure:mem1_ssd1_x16"},
+                  "map_reads_minimap2": {"instanceType": "azure:mem2_ssd1_x16"},
+                  "map_reads_pbmm2": {"instanceType": "azure:mem2_ssd1_x16"}
+                    },
                          "assetDepends": [
                                 {"name": "minimap2_pb_asset",
                                 "stages": ["map_reads_pbmm2"],
-                                "id": "record-FPJ2Q9j9GjBX0j7p1jK2BBvf"},
+                                "id": "record-FVJpK6Q9Yq5yQPYpPX5YGQxX"},
                                 {"name": "minimap2_asset",
-                                "id": "record-FBxJg009715fYBB50F25PQYV",
+                                "id": "record-FV8FJ989Z02996vB754zxbGB",
                                 "stages": ["run_minimap_index", "map_reads_minimap2"]}
                             ]
                         }
    },
-   "summary": "minimap2_align",
-   "version": "0.0.1",
+   "summary": "Perform read mapping of PacBio and ONT long reads using Minimap2",
+   "version": "1.1.0",
    "dxapi": "1.0.0",
-   "categories": ["Read Mapping"]
+   "categories": ["Read Mapping"],
+     "details": {
+    "whatsNew": "* 1.1.0 use -N 1 for pbmm2; Update pbmm2:1.0.0 and samtools 1.9 in aws-us-east and azure-westus\n* 1.0.2 Update pbmm2:0.12.0 for all except China, add pbbamify option\n* 1.0.1 update docker to pbmm2:0.12.0, Azure instance type, timeout\n* 1.0.0 Initial version release.",
+    "upstreamVersion": "2.14",
+    "upstreamAuthor": "Li, H.",
+    "upstreamUrl": "https://github.com/lh3/minimap2",
+    "upstreamLicenses": ["MIT"],
+    "citations": [
+      "doi:10.1093/bioinformatics/bty191"
+    ]
+  }
 }

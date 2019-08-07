@@ -5,6 +5,7 @@ import os
 import unittest
 import time
 import json
+from uuid import uuid4
 
 import dxpy
 import dxpy.app_builder
@@ -33,7 +34,9 @@ class Testminimap2_longread(unittest.TestCase):
             app_name = os.path.basename(os.path.abspath(src_dir)) + "_test"
         except OSError:
             app_name = "test_app"
-        applet_basename = app_name + "_" + str(int(time.time()))
+
+        # make sure applet always has unique name
+        applet_basename = app_name + "_" + str(uuid4())
         cls.applet_id, _ignored_applet_spec = dxpy.app_builder.upload_applet(
             src_dir, bundled_resources, override_name=applet_basename, project=DX_PROJECT_ID)
 
@@ -59,7 +62,7 @@ class Testminimap2_longread(unittest.TestCase):
 
     def test_pacb_input(self):
         """
-        Tests the app with a basic input.
+        Tests the app with a single "PacBio" format BAM input
         """
         job_input = self.base_input
         job_input["reads"] = [{"$dnanexus_link": "file-FPY0BY80pbJvg49Z3k4zZp71"}]
@@ -74,9 +77,25 @@ class Testminimap2_longread(unittest.TestCase):
             DX_PROJ_OBJ.move_folder(self.tempdirdx, ARTIFACTS_FOLDER)
             raise
 
+    def test_pacb_input_no_pbi(self):
+        """
+        Tests the app with a single "PacBio" format BAM input and no PBI input
+        """
+        job_input = self.base_input
+        job_input["reads"] = [{"$dnanexus_link": "file-FPY0BY80pbJvg49Z3k4zZp71"}]
+        job_input["datatype"] = "PacBio"
+        job = dxpy.DXApplet(self.applet_id).run(job_input, folder=self.tempdirdx, name=self.testname, project=DX_PROJECT_ID)
+        print "Waiting for %s to complete" % (job.get_id(),)
+        try:
+            job.wait_on_done()
+            print json.dumps(job.describe()["output"])
+        except Exception:
+            DX_PROJ_OBJ.move_folder(self.tempdirdx, ARTIFACTS_FOLDER)
+            raise
+
     def test_ont_input(self):
         """
-        Tests the app with a basic input.
+        Test the app with a single "ONT" format input.
         """
         job_input = self.base_input
         job_input["reads"] = [{"$dnanexus_link": "file-FPXx7v00x99J3b743k9z93x8"}]
@@ -91,7 +110,8 @@ class Testminimap2_longread(unittest.TestCase):
 
     def test_datatype_compatbility(self):
         """
-        Tests the app with a basic input.
+        Make sure the app fails when the input reads are in BAM format but 
+        the datatype is specified as ONT
         """
         job_input = self.base_input
         # this is a subreads.bam file
@@ -107,15 +127,22 @@ class Testminimap2_longread(unittest.TestCase):
         job_input["datatype"] = "ONT"
         job = dxpy.DXApplet(self.applet_id).run(job_input, folder=self.tempdirdx, name=self.testname, project=DX_PROJECT_ID)
         print "Waiting for %s to complete" % (job.get_id(),)
+        # check that the job failed
         try:
             job.wait_on_done()
             print json.dumps(job.describe()["output"])
             # if job continued, fail this test
             raise Exception("Job should have failed with DXAppError")
-        except dxpy.exceptions.AppError:
-            pass
+        except dxpy.exceptions.DXJobFailureError:
+            # confirm that error is an AppError and not something else
+            failureReason = job.describe()["failureReason"]
+            self.assertTrue(failureReason == "AppError")
 
     def test_pacb_subjobs(self):
+        """
+        Make sure PacBio format subjobs work as expected by running the app
+        with multiple file inputs
+        """
         job_input = self.base_input
         # these are 10GB files
         job_input["reads"] = [
@@ -134,34 +161,19 @@ class Testminimap2_longread(unittest.TestCase):
             job.wait_on_done()
             output = job.describe()["output"]
             # check that 2 chunks were run and 2 files are output
-            mappings_files = output["mapped_reads"]
+            mappings_files = output["bam_files"]
             self.assertTrue(len(mappings_files) > 1)
-        except dxpy.exceptions.AppError:
+
+            # check that two subjobs named "map_reads_pbmm2" were run
+            subjobs = dxpy.find_jobs(parent_job=job.id)
+            subjob_names = [dxpy.DXJob(subjob['id']).name for subjob in subjobs]
+            subjob_names = [s.split(':')[-1] for s in subjob_names]
+            mapping_jobs = [s for s in subjob_names if s.split(':')[-1] == 'map_reads_pbmm2']
+            self.assertTrue(len(mapping_jobs) == 2)
+        except Exception:
             DX_PROJ_OBJ.move_folder(self.tempdirdx, ARTIFACTS_FOLDER)
             raise
 
-    def test_ont_subjobs(self):
-        job_input = self.base_input
-        # these are 40MB files
-        job_input["reads"] = [
-            {"$dnanexus_link": "file-FPXx7v00x99J3b743k9z93x8"},
-            {"$dnanexus_link": "file-FPXxJXQ0zYzGg49Z3k4zKFP7"}
-                              ]
-        job_input["datatype"] = "ONT"
-        job_input["chunk_size"] = 1
-        job = dxpy.DXApplet(self.applet_id).run(job_input, folder=self.tempdirdx,
-                                                name=self.testname, project=DX_PROJECT_ID)
-        print "Waiting for %s to complete" % (job.get_id(),)
-        try:
-            job.wait_on_done()
-            output = job.describe()["output"]
-            # check that 2 chunks were run and 2 files are output
-            mappings_files = output["mapped_reads"]
-            self.assertTrue(len(mappings_files) > 1)
-        except dxpy.exceptions.AppError:
-            DX_PROJ_OBJ.move_folder(self.tempdirdx, ARTIFACTS_FOLDER)
-            raise
-    
     def test_duplicate_outputs(self):
         """
         If bax files are converted to BAM or FASTA, the output will be of the
@@ -184,14 +196,14 @@ class Testminimap2_longread(unittest.TestCase):
             job.wait_on_done()
             output = job.describe()["output"]
             # check that 2 files are output
-            mappings_files = output["mapped_reads"]
+            mappings_files = output["bam_files"]
 
             # check that both files don't have the same name
             self.assertTrue(len(mappings_files) == 2)
             filename1 = dxpy.DXFile(mappings_files[0]).describe()['name']
             filename2 = dxpy.DXFile(mappings_files[1]).describe()['name']
             self.assertTrue(filename1 != filename2)
-        except dxpy.exceptions.AppError:
+        except Exception:
             DX_PROJ_OBJ.move_folder(self.tempdirdx, ARTIFACTS_FOLDER)
             raise
 

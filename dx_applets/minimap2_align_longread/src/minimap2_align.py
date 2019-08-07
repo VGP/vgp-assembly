@@ -16,7 +16,6 @@ import multiprocessing
 import dxpy
 import dx_utils
 import re
-import tempfile
 from collections import defaultdict
 
 SORT_THREADS = 2
@@ -138,7 +137,8 @@ def run_pbmm2_subjobs(job_inputs):
             'bam_files': group,
             'pbi_files': group_pbis,
             'genome_fastagz': job_inputs['genome_fastagz'],
-            'genome_mmi': job_inputs['genome_mmi']
+            'genome_mmi': job_inputs['genome_mmi'],
+            'pbbamify': job_inputs['pbbamify']
         }
         job = dxpy.new_dxjob(map_reads_input, 'map_reads_pbmm2')
         jobs.append(job)
@@ -147,75 +147,116 @@ def run_pbmm2_subjobs(job_inputs):
 
 @dxpy.entry_point('run_minimap_index')
 def run_minimap_index(genome_fastagz):
+    # load the docker images
+    dx_utils.run_cmd(['docker', 'load', '-i', '/opt/minimap2_images.tar'])
+
+    # download the reference genome
     ref_genome = dx_utils.download_and_gunzip_file(genome_fastagz)
     ofn = os.path.splitext(ref_genome)[0] + '.mmi'
 
-    minimap2_indx_cmd = ["minimap2", "-d", ofn, ref_genome]
+    # run minimap2 index
+    docker_cmd = ['docker', 'run', '-v', '/home/dnanexus:/home/dnanexus', 
+                  '-w', '/home/dnanexus']
+    minimap2_indx_cmd = docker_cmd + ['quay.io/biocontainers/minimap2:2.17--h84994c4_0']
+    minimap2_indx_cmd += ["minimap2", "-d", ofn, ref_genome]
     dx_utils.run_cmd(minimap2_indx_cmd)
 
     return {'genome_mmi': dxpy.dxlink(dxpy.upload_local_file(ofn))}
 
 
 @dxpy.entry_point('map_reads_pbmm2')
-def map_reads_pbmm2(bam_files, pbi_files, genome_fastagz, genome_mmi):
+def map_reads_pbmm2(bam_files, pbi_files, genome_fastagz, genome_mmi, pbbamify):
+    # Unpack the docker image
+    dx_utils.run_cmd("docker load -i /opt/pbmm2/pbmm2_docker.tar.gz")
     # Download inputs
     reads = [dx_utils.download_and_gunzip_file(f) for f in bam_files]
-    pbis = [dx_utils.download_and_gunzip_file(f) for f in pbi_files]
+    pbis = [dx_utils.download_and_gunzip_file(f) for f in pbi_files if f is not None]
     ref_genome = dx_utils.download_and_gunzip_file(genome_fastagz)
     ref_genome_mmi = dx_utils.download_and_gunzip_file(genome_mmi)
 
-    # find out what environment we're dealing with
-    print(os.environ)
+    # make sure we have full paths of inputs
+    reads = [os.path.join('/home/dnanexus', r) for r in reads]
+    pbis = [os.path.join('/home/dnanexus', r) for r in pbis]
+    ref_genome = os.path.join('/home/dnanexus', ref_genome)
+    ref_genome_mmi = os.path.join('/home/dnanexus', ref_genome_mmi)
 
-    # use environment to set path
-    pbmm2_env = {
-        "PATH":  os.environ['PATH'] + os.pathsep + '/anaconda/bin/',
-        "SHELL": '/bin/bash',
-        "USER": 'dnanexus'
-                }
+    # use environment to set the pbmm2 variable
+    docker_run = ["docker", "run",
+                 # this mounts /home/dnanexus into the docker container and 
+                 # sets it as the work dir
+                 "-v", "/home/dnanexus:/home/dnanexus", "-w", "/home/dnanexus",
+                 # this calls the container and the command we want
+                 "quay.io/biocontainers/pbmm2:1.0.0--ha888412_0"]
+    pbmm2_cmd = docker_run + ["pbmm2"]
+    pbindex_cmd = docker_run + ["pbindex"]
+    pbbamify_cmd = docker_run + ["pbbamify"]
+    # run man page
+    dx_utils.run_cmd(pbmm2_cmd + ['-h'])
 
-    # create bam dataset
-    with dx_utils.set_env(**pbmm2_env):
-        # Iterate over bam files
-        output_ofns = []
-        for bam in reads:
-            prefix = re.sub("(\.subreads)?(\.bam){1}$", "", bam)
-            ofn = '{0}.mapped.bam'.format(prefix)
-            if bam + '.pbi' not in pbis:
-                dx_utils.run_cmd('pbindex {0}'.format(bam))
+    # Iterate over bam files
+    output_ofns = []
+    for bam in reads:
+        prefix = re.sub("(\.subreads)?(\.bam){1}$", "", bam)
+        ofn = '{0}.mapped.bam'.format(prefix)
+        pb_ofn = '{0}.pb.mapped.bam'.format(prefix)
+        s_pb_ofn = '{0}.pb.sorted.bam'.format(prefix)
 
-            dx_utils.run_cmd(['pbmm2', 'align', '--help'])
-            # Call minimap2
-            # compute memory per sorting thread
-            system_memory = dx_utils.get_memory(suffix='G') - 40
-            memory_per_thread = system_memory / SORT_THREADS
-            pbmm2_cmd = ['/anaconda/bin/pbmm2', 'align', str(ref_genome_mmi), str(bam), str(ofn),
-            '-j', str(MAP_THREADS), 
-            '--sort', '-J', str(SORT_THREADS), 
-            '-m', '{0}G'.format(int(memory_per_thread)),
-            '--log-level', 'DEBUG']
+        if bam + '.pbi' not in pbis:
+            print('DNAnexus run pbindex')
+            dx_utils.run_cmd(pbindex_cmd + [bam])
+        else:
+            print('DNAnexus not run pbindex')
 
-            # there's some env variable that is causing pbmm2 to misbehave
-            # when run from a python shell. Therefore, write the command to a
-            # temp .sh file and execute it that way.
-            tmp_cmd = tempfile.NamedTemporaryFile(mode='w', suffix='.sh', delete=False)
-            tmp_cmd.write(' '.join(pbmm2_cmd))
-            tmp_cmd.close()
-            print('Executing: {0}'.format(' '.join(pbmm2_cmd)))
-            dx_utils.run_cmd(['sudo', 'bash', tmp_cmd.name])
+        # compute memory per sorting thread
+        system_memory = dx_utils.get_memory(suffix='G') - 40
+        memory_per_thread = system_memory / SORT_THREADS
 
+        # Call pbmm2 align
+        pbmm2_cmd = pbmm2_cmd + ['align', str(ref_genome_mmi), str(bam), str(ofn),
+        '-j', str(MAP_THREADS), 
+        '--sort', '-J', str(SORT_THREADS), 
+        '-m', '{0}G'.format(int(memory_per_thread)),"-N","1",
+        '--log-level', 'DEBUG']
+        dx_utils.run_cmd(pbmm2_cmd)
+        if pbbamify:
+            print('DNAnexus call pbbamify')
+            pbbamify_cmd = pbbamify_cmd + ['--input=' + ofn, '--output=' + pb_ofn, ref_genome, bam]
+            dx_utils.run_cmd(pbbamify_cmd)
+            dx_utils.run_cmd(['rm', ofn])
+            # sort
+            cmd = ['samtools', 'sort', '-o', s_pb_ofn, '-@', str(multiprocessing.cpu_count()), '-T', prefix, pb_ofn]
+            dx_utils.run_cmd(cmd)
+            dx_utils.run_cmd(['rm', pb_ofn])
+            # Create index
+            cmd = ['samtools', 'index', s_pb_ofn]
+            dx_utils.run_cmd(cmd)
+            # append to outputs
+            output_ofns.append(s_pb_ofn)
+
+        else:
             # Create index
             cmd = ['samtools', 'index', ofn]
             dx_utils.run_cmd(cmd)
-
             # append to outputs
             output_ofns.append(ofn)
-    return {'mapped_reads': [dxpy.dxlink(dxpy.upload_local_file(ofn)) for ofn in output_ofns],
-            'mapped_reads_index': [dxpy.dxlink(dxpy.upload_local_file(ofn + '.bai')) for ofn in output_ofns]}
+
+        # check what files are created
+        dx_utils.run_cmd(['ls', '.'])
+
+    if pbbamify:
+        return {'mapped_reads': [dxpy.dxlink(dxpy.upload_local_file(ofn)) for ofn in output_ofns],
+                'mapped_reads_index': [dxpy.dxlink(dxpy.upload_local_file(ofn + '.bai')) for ofn in output_ofns]}
+    else:
+        return {'mapped_reads': [dxpy.dxlink(dxpy.upload_local_file(s_pb_ofn)) for s_pb_ofn in output_ofns],
+                'mapped_reads_index': [dxpy.dxlink(dxpy.upload_local_file(s_pb_ofn + '.bai')) for s_pb_ofn in
+                                       output_ofns]}
 
 
 @dxpy.entry_point('map_reads_minimap2')
 def map_reads_minimap2(reads, genome_fastagz, genome_mmi, datatype):
+    # load the docker images
+    dx_utils.run_cmd(['docker', 'load', '-i', '/opt/minimap2_images.tar'])
+
     # Download inputs
     reads = [dx_utils.download_and_gunzip_file(f, skip_decompress=True) for f in reads]
     ref_genome = dx_utils.download_and_gunzip_file(genome_fastagz)
@@ -224,27 +265,34 @@ def map_reads_minimap2(reads, genome_fastagz, genome_mmi, datatype):
     # configure preset params
     if datatype == 'PacBio':
         preset_param = 'map-pb'
+    elif datatype == 'CCS':
+        preset_param = 'asm20'
     else:
         preset_param = 'map-ont'
 
+    docker_cmd = ['docker', 'run', '-v', '/home/dnanexus:/home/dnanexus', 
+                  '-w', '/home/dnanexus']
+    minimap2_docker_cmd = docker_cmd + ['quay.io/biocontainers/minimap2:2.17--h84994c4_0']
+    # Run sambamba with -i flag, meaning it can read from stdin
+    sambamba_docker_cmd = docker_cmd + ['-i', 
+                        'quay.io/biocontainers/sambamba:0.6.8--h682856c_1']
     # Iterate over reads files
     output_ofns = []
     for read in reads:
         output_prefix = re.sub("\.(fastq|fasta|fa|fq){1}(.gz)?$", "", read)
         ofn = '{0}.mapped.bam'.format(output_prefix)
-        # Get help info
-        dx_utils.run_cmd(['minimap2', '-h'])
+
         # Call minimap2
-        minimap2_cmd = ['minimap2', '-ax', preset_param, ref_genome, read]
-        view_cmd = ['sambamba', 'view', '--sam-input', '--format=bam',
+        minimap2_cmd = minimap2_docker_cmd + ['minimap2', '-ax', preset_param, ref_genome_mmi, read]
+        view_cmd = sambamba_docker_cmd + ['sambamba', 'view', '--sam-input', '--format=bam',
                     '--compression-level=0', '/dev/stdin']
-        sort_cmd = ['sambamba', 'sort', '-m', 
+        sort_cmd = sambamba_docker_cmd + ['sambamba', 'sort', '-m', 
                     '{0}G'.format(int(dx_utils.get_memory(suffix='G'))), '-o',
                     ofn, '-t', str(multiprocessing.cpu_count()), '/dev/stdin']
         dx_utils.run_pipe(minimap2_cmd, view_cmd, sort_cmd)
 
         # index
-        dx_utils.run_cmd(['sambamba', 'index', ofn])
+        dx_utils.run_cmd(sambamba_docker_cmd + ['sambamba', 'index', ofn])
         # append to outputs
         output_ofns.append(ofn)
     return {'mapped_reads': [dxpy.dxlink(dxpy.upload_local_file(ofn)) for ofn in output_ofns],
@@ -264,12 +312,23 @@ def main(**job_inputs):
     datatype = job_inputs['datatype']
     one_reads_file = dxpy.DXFile(job_inputs['reads'][0]).describe()['name']
     try:
-        file_ext = re.search("(fastq|fasta|fa|fq){1}(.gz)?$", one_reads_file, flags=re.I).group(1).lower()
+        file_ext = re.search("(bam|fastq|fasta|fa|fq){1}(.gz)?$", one_reads_file, flags=re.I).group(1).lower()
     except AttributeError:
-        raise dxpy.AppError("Invalid filetype extension supplied.")
+        raise dxpy.AppError("Unknown filetype extension supplied.")
 
-    # for fasta and fastq inputs, run jobs using native minimap2
-    jobs = run_minimap2_subjobs(job_inputs)
+    if file_ext == 'bam':
+        # input bam files must be pacbio raw reads
+        if datatype == 'ONT':
+            raise dxpy.AppError("Invalid file input for provided datatype.")
+
+        # for bam input, run jobs using pbmm2
+        jobs = run_pbmm2_subjobs(job_inputs)
+
+    else:
+        # for fasta and fastq inputs, run jobs using native minimap2
+        if job_inputs['pbbamify']:
+            print('WARNING: The "Run pbbamify" option is only valid for BAM input')
+        jobs = run_minimap2_subjobs(job_inputs)
 
     output['bam_files'] = [j.get_output_ref('mapped_reads') for j in jobs]
     output['bai_files'] = [j.get_output_ref('mapped_reads_index') for j in jobs]
