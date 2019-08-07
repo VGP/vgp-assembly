@@ -215,7 +215,7 @@ def map_reads_pbmm2(bam_files, pbi_files, genome_fastagz, genome_mmi, pbbamify):
         pbmm2_cmd = pbmm2_cmd + ['align', str(ref_genome_mmi), str(bam), str(ofn),
         '-j', str(MAP_THREADS), 
         '--sort', '-J', str(SORT_THREADS), 
-        '-m', '{0}G'.format(int(memory_per_thread)),"-N","1",
+        '-m', '{0}G'.format(int(memory_per_thread)),
         '--log-level', 'DEBUG']
         dx_utils.run_cmd(pbmm2_cmd)
         if pbbamify:
