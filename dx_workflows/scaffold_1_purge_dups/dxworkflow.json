@@ -5,7 +5,7 @@
   "stages": [
     {
       "id": "purge_dups_primary",
-      "executable": "applet-FZzYjYQ0j3b9pVP06qg4Q97Y",
+      "executable": "applet-Fb721zj0j3b1xV916kB8Y14J",
       "folder": "purge_dups/primary_purged"
     },
     {
@@ -24,7 +24,7 @@
     },
     {
       "id": "purge_dups_haplotig",
-      "executable": "applet-FZzYjYQ0j3b9pVP06qg4Q97Y",
+      "executable": "applet-Fb721zj0j3b1xV916kB8Y14J",
       "folder": "purge_dups/haplotig_purged",
       "input": {
         "ref_fastagz": {

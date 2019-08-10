@@ -10,6 +10,7 @@ main() {
     echo "Value of core_per_job: '$core_per_job'"
     echo "Value of suffix_primary: '$suffix_primary'"
     echo "Value of suffix_haplotig: '$suffix_haplotig'"
+    echo "Value of calcuts_opts: '$calcuts_opts'"
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
