@@ -39,7 +39,7 @@ main() {
 
 
     /purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
-    /purge_dups/bin/calcuts PB.stat > cutoffs 2>calcults.log
+    /purge_dups/bin/calcuts ${calcuts_opts} PB.stat > cutoffs 2>calcults.log
     #ls  $PWD/* > ~/pb_input
     /purge_dups/bin/split_fa ref.fa > pri_asm.split
     /minimap2-2.17_x64-linux/minimap2 -xasm5 -DP pri_asm.split pri_asm.split | gzip -c - > pri_asm.split.self.paf.gz

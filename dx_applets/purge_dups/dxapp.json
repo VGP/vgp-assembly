@@ -54,6 +54,13 @@
       "optional": false,
       "default": "_p2",
       "help": ""
+    },
+    {
+      "name": "calcuts_opts",
+      "label": "additional options for calcuts tool",
+      "class": "string",
+      "optional": true,
+      "help": "if set to -d1 the genome is processed as haploid (only for trios), otherwise default is diploid"
     }
   ],
   "outputSpec": [
