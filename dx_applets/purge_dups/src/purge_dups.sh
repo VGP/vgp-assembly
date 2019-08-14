@@ -40,6 +40,13 @@ main() {
 
 
     /purge_dups/bin/pbcstat *.paf.gz #(produces PB.base.cov and PB.stat files)
+    
+    if [[ "$ploidy_mode" == "haploid" ]]; then
+    
+    	calcuts_opts="-d1"
+    
+    fi
+    
     /purge_dups/bin/calcuts ${calcuts_opts} PB.stat > cutoffs 2>calcults.log
     #ls  $PWD/* > ~/pb_input
     /purge_dups/bin/split_fa ref.fa > pri_asm.split
@@ -47,7 +54,22 @@ main() {
 
 
     /purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov pri_asm.split.self.paf.gz > dups.bed 2> purge_dups.log
-    /purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
+
+    if [[ "$OVLP" == true ]]; then
+    
+    	grep OVLP dups.bed > dups.OVLP.bed
+    	/purge_dups/bin/get_seqs dups.OVLP.bed ref.fa > purged.fa 2> hap.fa 
+    	OVLP_bed="dups.OVLP.bed"
+    
+    else
+
+		/purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
+		
+    fi
+
+    
+
+
     basename="$ref_fastagz_prefix"
     basename=${basename//.renamed}
     basename=${basename%_c1}
@@ -65,7 +87,7 @@ main() {
     dx-jobutil-add-output primary_fastagz "$primary_fastagz" --class=file
     dx-jobutil-add-output dup_fastagz "$dup_fastagz" --class=file
     mkdir auxillary_files
-    mv purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs PB.stat auxillary_files
+    mv ${OVLP_bed} purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs PB.stat auxillary_files
     cd auxillary_files/
     for i in $(ls); do 
         auxillary_file=$(dx upload $i --brief)

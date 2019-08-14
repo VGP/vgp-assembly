@@ -56,11 +56,22 @@
       "help": ""
     },
     {
-      "name": "calcuts_opts",
-      "label": "additional options for calcuts tool",
+      "name": "ploidy_mode",
+      "label": "Ploidy mode",
       "class": "string",
+      "choices": ["diploid","haploid"],
       "optional": true,
-      "help": "if set to -d1 the genome is processed as haploid (only for trios), otherwise default is diploid"
+      "default": "diploid",
+      "help": "if set to haploid the genome is processed with the -d1 option (only for trios), otherwise default is diploid"
+    },
+        {
+      "name": "OVLP",
+      "label": "Remove only overlaps",
+      "class": "string",
+      "choices": ["true","false"],
+      "optional": true,
+      "default": "false",
+      "help": "if set purges only the overlaps between contigs (no repeat, junk, or haplotigs)"
     }
   ],
   "outputSpec": [
