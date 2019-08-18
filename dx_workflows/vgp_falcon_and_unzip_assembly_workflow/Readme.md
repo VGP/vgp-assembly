@@ -1,6 +1,10 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
+**2019-Aug-18 update**
+- debug unzip_4_haplotype_polish
+- increase timeout for unzip_3_haplotype_track_reads due to recent long running of mPanTro1
+
 **2019-Jul-31 update**
 - update bam_to_fasta and unzip_4_haplotype_polish to SMRTlink7 to support Sequel II
 - change tan and rep mask second stage to newer version which we forgot in 2019-Feb-15
