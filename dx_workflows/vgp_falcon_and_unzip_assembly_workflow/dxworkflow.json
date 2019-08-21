@@ -1,12 +1,12 @@
 {
-  "name": "vgp_falcon_and_unzip_assembly_workflow",
+  "name": "vgp_falcon_and_unzip_assembly_workflow 2019-Aug-18",
   "title": "Falcon and Falcon Unzip Assembly Workflow",
-  "summary": "VGP1.5 Falcon and Falcon-Unzip workflow",
+  "summary": "VGP1.6 Falcon and Falcon-Unzip workflow",
   "stages": [
     {
       "id": "bam_to_fasta",
       "name": "BAM to FASTA",
-      "executable": "app-bam_to_fasta/5.0.4",
+      "executable": "app-bam_to_fasta/7.0.1",
       "folder": "bam_to_fasta"
     },
     {
@@ -207,7 +207,7 @@
     },
     {
       "id": "falcon_1_hpc_tanmask",
-      "executable": "app-hpc_tanmask/1.9.3",
+      "executable": "app-hpc_tanmask/2.0.0",
       "name": "Falcon Preads HPC TANmask",
       "folder": "stage_1",
       "input": {
@@ -227,7 +227,7 @@
     },
     {
       "id": "falcon_1_hpc_repmask",
-      "executable": "app-hpc_repmask/1.9.3",
+      "executable": "app-hpc_repmask/2.0.1",
       "name": "Falcon Preads HPC REPmask",
       "folder": "stage_1",
       "input": {
@@ -508,7 +508,7 @@
     {
       "id": "unzip_3_haplotype_track_reads",
       "name": "Unzip Haplotype Track Reads",
-      "executable": "app-unzip_3_haplotype_track_reads/1.0.3",
+      "executable": "app-unzip_3_haplotype_track_reads/1.0.4",
       "folder": "unzip_stage_4",
       "input": {
         "raw_read_ids": {
@@ -571,7 +571,7 @@
     {
       "id": "unzip_4_haplotype_polish",
       "name": "Unzip Haplotype Polish",
-      "executable": "app-unzip_4_haplotype_polish/1.1.0",
+      "executable": "app-unzip_4_haplotype_polish/1.2.1",
       "folder": "unzip_stage_5",
       "input": {
         "all_p_ctg": {

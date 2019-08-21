@@ -1,6 +1,9 @@
 # Bionano 2enz scaffolding Workflow
 ## Update note
 
+**2019-Aug-6 update**
+- change naming of trimmer output to have VGP convention
+
 **2019-Apr-27 update**
 - add calculate read length distribution
 

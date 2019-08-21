@@ -1,0 +1,77 @@
+{
+  "name": "Scaffold 1 purge_dups 2019-Ago-9",
+  "title": "Scaffold 1 purge_Dups",
+  "version": "1.6.0",
+  "stages": [
+    {
+      "id": "purge_dups_primary",
+      "executable": "applet-Fb721zj0j3b1xV916kB8Y14J",
+      "folder": "purge_dups/primary_purged"
+    },
+    {
+      "id": "concat_c2_p2",
+      "executable": "applet-FZvJ2300j3b4xkByJZYfQ3Y0",
+      "name": "concat c2+p2",
+      "input": {
+        "input2": {
+            "$dnanexus_link": {
+            "outputField": "dup_fastagz",
+            "stage": "purge_dups_primary"
+          
+            }
+          }
+      }
+    },
+    {
+      "id": "purge_dups_haplotig",
+      "executable": "applet-Fb721zj0j3b1xV916kB8Y14J",
+      "folder": "purge_dups/haplotig_purged",
+      "input": {
+        "ref_fastagz": {
+          "$dnanexus_link": {
+            "outputField": "output",
+            "stage": "concat_c2_p2"
+          }
+        },
+        "raw_reads_pacbio_fastagz": {
+          "$dnanexus_link": {
+            "inputField": "raw_reads_pacbio_fastagz",
+            "stage": "purge_dups_primary"
+          }
+        },
+        "suffix_primary": "_q2",
+        "suffix_haplotig": "_useless"
+      }
+    },
+    {
+      "id": "calculate_primary_length",
+      "name": "Calculate p1 Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "input": {
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "primary_fastagz",
+              "stage": "purge_dups_primary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "calculate_haplotig_length",
+      "name": "Calculate q2 Length Distribution",
+      "executable": "app-calculate_read_length_distribution/1.9.2",
+      "input": {
+        "input_files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "primary_fastagz",
+              "stage": "purge_dups_haplotig"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

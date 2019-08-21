@@ -1,0 +1,37 @@
+ 
+./process_10xReads.py -o testing -1 data/CaCon-sm_R1_001.fastq.gz -2 data/CaCon-sm_R2_001.fastq.gz
+
+bwa mem -C data/polished_p_ctg.fa testing_R1_001.fastq testing_R2_001.fastq | ./samConcat2Tag.py | samtools sort -n - | samtools view -h -o mapping.sam -
+
+bwa mem -t 1 -p -C data/polished_p_ctg.fa testing_R1_001.fastq testing_R2_001.fastq | ./samConcat2Tag.py | samtools sort -n -o mapping.bam -
+
+samConcat2Tag.py saved.sam | samtools sort - | samtools view
+
+./process_10xReads.py -a -1 data/CaCon-sm_R1_001.fastq.gz -2 data/CaCon-sm_R2_001.fastq.gz | bwa mem -t 1 -p -C data/polished_p_ctg.fa - | ./samConcat2Tag.py | samtools sort -m 768M --threads 0 -n -o mapping.bam -
+
+#################################################################################################################
+## first process reads with process_10xReads.py which extracts the GEM barcode and primer sequence,
+##   then compares the barcode to a white list, marking reads with status
+##	   MATCH - a perfect match of bc to the whitelist
+##     MISMATCH1 - a single mismatch to only one bc on the whitelist
+##     AMBIGUOUS - a single mismatch to more than one bc on the whitelist
+##     UNKNOWN - greater than 1 mismatch from any bc on the whitelist
+##   then appends the status, library barcocde, GEM barcode, primer sequences and cooresponding
+##		quality scores to the comment of the read ID and the whitelisted barcode to the
+##      beginning of the read, in interleaved format
+##  Then map to the genome using bwa mem with flags -p (interleaved) and -C (appends comment to the sam file)
+##  Next process with samContcat2Tag.py which extracts the appended commend and add the following falgs
+##     ST:Z - Read status
+##     BX:Z - GEM Barcode ID (with appended sample '-1'), whitelisted ID
+##     BC:Z - Library Barcode
+##     QT:Z - Library Barcode Quality (if Index read not provided then all '!')
+##     RX:Z - GEM Barcode Sequence
+##     QX:Z - GEM Barcode Quality
+##     TR:Z - Primer Sequence
+##     TQ:Z - Primer Quality
+##  Finally, sort using samtools sort, sorting on reads ID (GEM Barcode)
+#################################################################################################################
+
+./process_10xReads.py -a -1 data/CaCon-sm_R1_001.fastq.gz \
+  -2 data/CaCon-sm_R2_001.fastq.gz | \
+  bwa mem -t 1 -p -C data/polished_p_ctg.fa - | ./samConcat2Tag.py | samtools sort -n -o mapping.bcmapped.bam - 2> stderr.out > stdout.out

@@ -47,6 +47,20 @@
   ],
   "outputSpec": [
     {
+      "name": "alignment_iteration_1",
+      "label": "Alignment iteration 1",
+      "help": "",
+      "class": "file",
+      "patterns": ["*.bed"]
+    },
+    {
+      "name": "scaffold_length_iteration_1",
+      "label": "scaffold length iteration 1",
+      "help": "",
+      "class": "file",
+      "patterns": ["*"]
+    },
+    {
       "name": "final_scaffold_fasta",
       "label": "Final Scaffold Fasta",
       "help": "",

@@ -1,0 +1,59 @@
+{
+  "name": "scaffold_1_purge_haplotigs_pt1",
+  "title": "Scaffold1 Purge Haplotigs Part 1",
+  "version": "1.5.0",
+  "stages": [
+    {
+      "id": "rename_contigs",
+      "executable": "app-vgp_rename_contigs/0.0.1",
+      "folder": "purge_haplotigs/rename_contigs"
+    },
+    {
+      "id": "minimap2",
+      "executable": "app-minimap2_align_longread/0.0.1",
+      "folder": "purge_haplotigs/mapped_reads",
+      "input": {
+        "genome_fastagz": {
+          "$dnanexus_link": {
+            "outputField": "output_fasta",
+            "stage": "rename_contigs"
+          }
+        }
+      }
+    },
+    {
+      "id": "bam_merge",
+      "executable": "app-bamtools_merge/1.1.0",
+      "folder": "purge_haplotigs",
+      "input": {
+        "sorted_bams": [
+          {
+            "$dnanexus_link": {
+              "outputField": "bam_files",
+              "stage": "minimap2"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "readhist",
+      "folder": "purge_haplotigs",
+      "executable": "app-purge_haplotigs_readhist/0.0.3",
+      "input": {
+        "bam": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam",
+            "stage": "bam_merge"
+          }
+        },
+        "genome": {
+          "$dnanexus_link": {
+            "outputField": "output_fasta",
+            "stage": "rename_contigs"
+          }
+        }
+      }
+    }
+  ]
+}

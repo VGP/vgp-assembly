@@ -10,7 +10,7 @@
       "class": "file",
       "optional": false,
       "patterns": [
-        "*"
+        "*.fasta.gz","*.fa.gz"
       ],
       "help": ""
     },
@@ -19,19 +19,59 @@
       "class": "array:file",
       "optional": false,
       "patterns": [
-        "*"
+        "*.fasta.gz","*.fa.gz", "*.fastq.gz","*.fq.gz"
       ],
       "help": ""
     },
     {
-      "name": "spid",
+      "name": "max_genomesize",
+      "label": "max genome size (Gbp)",
+      "class": "int",
+      "optional": false,
+      "default": 4,
+      "help": ""
+    },
+    {
+      "name": "core_per_job",
+      "label": "number of core per job for minimap2",
+      "class": "int",
+      "optional": false,
+      "default": 4,
+      "help": ""
+    },
+    {
+      "name": "suffix_primary",
+      "label": "purge fa suffix",
       "class": "string",
       "optional": false,
-      "patterns": [
-        "*"
-      ],
-      "default": "species",
+      "default": "_p1",
       "help": ""
+    },
+    {
+      "name": "suffix_haplotig",
+      "label": "hap fa suffix",
+      "class": "string",
+      "optional": false,
+      "default": "_p2",
+      "help": ""
+    },
+    {
+      "name": "ploidy_mode",
+      "label": "Ploidy mode",
+      "class": "string",
+      "choices": ["diploid","haploid"],
+      "optional": true,
+      "default": "diploid",
+      "help": "if set to haploid the genome is processed with the -d1 option (only for trios), otherwise default is diploid"
+    },
+        {
+      "name": "OVLP",
+      "label": "Remove only overlaps",
+      "class": "string",
+      "choices": ["true","false"],
+      "optional": true,
+      "default": "false",
+      "help": "if set purges only the overlaps between contigs (no repeat, junk, or haplotigs)"
     }
   ],
   "outputSpec": [
@@ -57,6 +97,7 @@
       "patterns": [
         "*"
       ],
+      "optional": true,
       "help": ""
     }
   ],
@@ -75,10 +116,10 @@
     "aws:us-east-1": {
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_x16"
+          "instanceType": "mem3_ssd1_x16"
         }
       },
-      "assetDepends": [{"id": "record-FZbY9gj0272fBgqFJ6V2X3Pj"}]
+      "assetDepends": [{"id": "record-FZkkKV00z2VXKBzJ98G245fK"}]
     }
   }
 }
