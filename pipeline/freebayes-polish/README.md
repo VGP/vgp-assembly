@@ -1,6 +1,6 @@
 These steps describe how to call with freebayes and then use `bcftools consensus` to create a polished fasta file. Requirements are:
 
-* freebayes (>=1.1)
+* freebayes (>=1.3.1)
 * bcftools (>=1.8)
 * samtools
 
@@ -16,9 +16,10 @@ These steps describe how to call with freebayes and then use `bcftools consensus
 		samtools faidx $fasta
 		samtools index $bam
 
-2. Parallelise into chunks across the genome. This awk command will print out the commands to be run:
+2. Parallelise into chunks across the genome. `mean_cov` is taken from longranger `summary.csv` and used for skipping excessive coverage region. This awk command will print out the commands to be run:
 
-		awk '{print "freebayes --bam $bam --region "$1":1-"$2" -f $fasta | bcftools view --no-version -Ob -o "$1":1-"$2".bcf"}' $fasta.fai
+		awk '{print "freebayes --bam $bam --region "$1":1-"$2" --skip-coverage $((mean_cov*12)) -f $fasta | bcftools view --no-version -Ob -o "$1":1-"$2".bcf"}' $fasta.fai
+
 
 3. Make a list of the output files (in the same order as the reference) to be concatenated together when done:
 
