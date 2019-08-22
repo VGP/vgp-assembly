@@ -42,17 +42,17 @@ mem=12g
 name=$1.freebayes
 script=$VGP_PIPELINE/freebayes-polish/freebayes_v1.3.sh
 args=$sample
-walltime=3-0
+walltime=4:00:00
 log=logs/$name.%A_%a.log
 
 mkdir -p bcf
 
-fb_done=`ls bcf/*.done | wc -l | awk '{print $1}'`
+fb_done=`ls bcf/*.done 2> /dev/null | wc -l | awk '{print $1}'`
 if ! [[ $fb_done -eq 100 ]]; then
 	# Submit job arrays for every 100th contig
 	echo "\
-	sbatch --partition=norm --array=1-100 -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
-	sbatch --partition=norm --array=1-100 -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > freebayes_jid
+	sbatch --partition=quick --array=1-100 -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
+	sbatch --partition=quick --array=1-100 -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > freebayes_jid
 	wait_for="--dependency=afterok:`cat freebayes_jid`"
 fi
 
@@ -68,6 +68,12 @@ echo "\
 sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
 sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args > consensus_jid
 wait_for="--dependency=afterok:`cat consensus_jid`"
+
+if [ -s $sample.qv ]; then
+	echo "$sample.qv found. exit."
+	exit 0
+
+fi
 
 cpus=4
 mem=4g
