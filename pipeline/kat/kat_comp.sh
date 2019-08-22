@@ -15,6 +15,6 @@ out=$out/kat_comp
 options="-H 10000000000 -I 10000000000 -m 21 -h"
 
 echo "\
-kat comp -o $out -t $threads $options 'read-BC1.fastq.gz read-BC2.fastq.gz' $assembly"
-kat comp -o $out -t $threads $options 'read-BC1.fastq.gz read-BC2.fastq.gz' $assembly
+kat comp -o $out -t $threads $options 'R1.fastq.gz R2.fastq.gz' $assembly"
+kat comp -o $out -t $threads $options 'R1.fastq.gz R2.fastq.gz' $assembly
 
