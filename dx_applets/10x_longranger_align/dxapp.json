@@ -72,7 +72,7 @@
         }
     },
    "summary": "10x_longranger_align",
-   "version": "2.2.2",
+   "version": "2.2.2.1",
    "inputSpec": [
       {
          "patterns": [
@@ -126,5 +126,9 @@
          "name": "ref"
       }
    ],
-   "dxapi": "1.0.0"
+   "dxapi": "1.0.0",
+   "details": {
+    "upstreamVersion": "2.2.2",
+    "whatsNew": "* 2.2.2.1 allow operation in .fq and on .gz directly"
+  }
 }

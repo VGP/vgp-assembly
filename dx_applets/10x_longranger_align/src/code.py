@@ -90,8 +90,10 @@ def main(**job_inputs):
             untar_to_work_dir(tar_file, fastq_dir)
     else:
         for f in fastq_files:
-            fastq_file = download_and_gunzip_file(f)
-            if fastq_file.endswith('.fq'):
+            fastq_file = download_and_gunzip_file(f,skip_decompress= True)
+            if fastq_file.endswith('.fq.gz'):
+                new_file = os.path.join(fastq_dir, fastq_file.replace('.fq.gz', '.fastq.gz'))
+            elif fastq_file.endswith('.fq'):
                 new_file = os.path.join(fastq_dir, fastq_file.replace('.fq', '.fastq'))
             else:
                 new_file = os.path.join(fastq_dir, fastq_file)
