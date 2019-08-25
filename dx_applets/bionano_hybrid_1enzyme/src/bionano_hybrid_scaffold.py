@@ -3,10 +3,10 @@ import glob
 import dxpy
 
 import dx_utils
-BIONANO_ROOT = '/Solve3.2.1_04122018/'
+BIONANO_ROOT = '/Solve3.4_06042019a/'
 SCRIPTS_DIR = os.path.join(BIONANO_ROOT, 'PIPELINE', 'Pipeline')
 
-HYBRID_DIR = os.path.join(BIONANO_ROOT, 'HybridScaffold', '04122018')
+HYBRID_DIR = os.path.join(BIONANO_ROOT, 'HybridScaffold', '06042019')
 TOOLS_DIR = os.path.join(BIONANO_ROOT, 'RefAligner', '7437.7523rel')
 
 

@@ -2,7 +2,7 @@
   "name": "bionano_hybrid_2enzyme",
   "title": "Bionano Hybrid Scaffolding - Two Enzyme Workflow",
   "dxapi": "1.0.0",
-  "version": "1.0.1",
+  "version": "3.4.0",
   "billTo": "org-dnanexus",
   "inputSpec": [
     {
@@ -115,14 +115,14 @@
   ],
   "runSpec": {
     "file": "src/code.py",
-    "release": "14.04",
+    "release": "16.04",
     "interpreter": "python2.7",
     "distribution": "Ubuntu"
   },
   "details": {
-    "upstreamVersion": "Solve3.2.1_04122018",
-    "whatsNew": "* 1.0.1 Update possible locations of outputs * 1.0.0 App release",
-    "upstreamURL": "https://bionanogenomics.com/support-page/bionano-solve/"
+    "upstreamVersion": "Solve3.4_06042019a",
+    "whatsNew": "* 3.4.0 update to use upstream version and to 3.4\n* 1.0.1 Update possible locations of outputs * 1.0.0 App release",
+    "upstreamURL": "https://bionanogenomics.com/support/software-downloads/"
   },
   "access": {
     "network": [
@@ -131,7 +131,7 @@
   },
   "timeoutPolicy": {
       "*": {
-        "hours": 12
+        "hours": 48
       }
     },
   "regionalOptions": {

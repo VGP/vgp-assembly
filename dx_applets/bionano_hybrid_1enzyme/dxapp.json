@@ -1,8 +1,9 @@
 {
     "name": "bionano_hybrid_1enzyme",
     "title": "Bionano Hybrid Scaffolding - One Enzyme Workflow",
-    "billTo": "org-dnanexus_science",
-    "version": "1.0.0",
+    "billTo": "org-dnanexus",
+    "dxapi": "1.0.0",
+    "version": "3.4.0",
     "inputSpec": [
         {
             "name": "refinefinal_merged_cmap",
@@ -131,11 +132,11 @@
         "file": "src/bionano_hybrid_scaffold.py",
         "interpreter": "python2.7",
         "distribution": "Ubuntu",
-        "release": "14.04"
+        "release": "16.04"
     },
     "timeoutPolicy": {
       "*": {
-        "hours": 12
+        "hours": 48
       }
     },
     "regionalOptions": {
@@ -143,5 +144,10 @@
                       "assetDepends": [{"id": "record-FGVz00Q0Q1zB3fPk3JqVfKzZ"} ]},
     "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem4_ssd1_x32"}},
                       "assetDepends": [{"id": "record-FGXxb8Q9Z8XYPXBv9b3q56kF"} ]}
-  }
+    },
+    "details": {
+      "upstreamUrl": "https://bionanogenomics.com/support/software-downloads/",
+      "upstreamVersion": "Solve3.4_06042019a",
+      "whatsNew": "* 3.4.0 update to use upstream version and to 3.4"
+    }
 }

@@ -8,6 +8,9 @@ ifeq ($(UBUNTU_VERSION), 12.04)
         CRAN_SITE = "deb http://cran.rstudio.com/bin/linux/ubuntu precise/"
 else ifeq ($(UBUNTU_VERSION), 14.04)
        CRAN_SITE="deb http://cran.rstudio.com/bin/linux/ubuntu trusty/"
+else ifeq ($(UBUNTU_VERSION), 16.04)
+       CRAN_SITE="deb http://cran.rstudio.com/bin/linux/ubuntu xenial/"
+endif
 endif
 
 SRC="/etc/apt/sources.list"
@@ -36,8 +39,8 @@ LIBXML_DIR="libxml2-2.7.2"
 
 # bundle url created from file-FFVZ0KPKGbk5pyPxJGpvQ1FJ
 BIONANO_BUNDLE_URL="https://dl.dnanex.us/F/D/7FzGkPzbK22339V0yP2V5j7g24xbXj5q1JFVk231/Solve3.2.1_04122018.tar.gz"
-BIONANO_BUNDLE="Solve3.2.1_04122018.tar.gz"
-SCAFFOLD_DIR="/Solve3.2.1_04122018/HybridScaffold/04122018"
+BIONANO_BUNDLE="Solve3.4_06042019a.tar.gz"
+SCAFFOLD_DIR="/Solve3.4_06042019a/HybridScaffold/06042019"
 
 all:
 
