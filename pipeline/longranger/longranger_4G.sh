@@ -28,8 +28,6 @@ $tools/longranger/longranger-2.2.2/longranger align \
 --sample=$genome \
 --reference=refdata-$ref \
 --jobmode=slurm \
---localcores=32 \
---localmem=60 \
 --maxjobs=500 \
 --jobinterval=1000 \
 --override=$pipeline/longranger/override_4G.json \

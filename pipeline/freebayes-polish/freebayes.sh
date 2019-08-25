@@ -15,9 +15,13 @@ fi
 
 module load freebayes/1.2.0
 #### [+] Loading freebayes  1.2.0
-module load samtools
-#### [+] Loading samtools 1.8  ... 
+module load samtools/1.9
+#### [+] Loading samtools 1.9  ... 
 # This is co-installed with bcftools
+
+module load bedtools
+
+echo "WARNING: This script is no longer in use. Use freebayes_v1.3 version."
 
 #ref=${sample}_t1
 ref=asm
@@ -46,9 +50,9 @@ do
     end=`sed -n ${j}p $fasta.fai | awk '{print $2}'`
     # Skip if bcf is not empty
     if ! [ -s bcf/$contig_no_pipe.bcf ]; then
-        echo "\
-        freebayes --bam $bam --region $contig:1-$end --max-coverage 200 -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf"
-        freebayes --bam $bam --region $contig:1-$end --max-coverage 200 -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf
+	echo "\
+	freebayes --bam $bam --region=$contig:1-$end --max-coverage 200 -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf"
+        freebayes --bam $bam --region=$contig:1-$end --max-coverage 200 -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf
     else
 	echo "Found bcf/$contig_no_pipe.bcf"
     fi

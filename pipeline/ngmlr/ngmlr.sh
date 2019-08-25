@@ -38,15 +38,16 @@ prefix=`echo $input |awk -F "/" '{print $NF}' |sed s/.fastq.gz//g |sed s/.fastq/
 ref="asm.fasta"
 echo "Running with $input $prefix $ref"
 
+module load ngmlr/0.2.6
 module load samtools
 
 if [ ! -e $prefix.sorted.bam ]; then
    if [ ! -e $prefix.sam ]; then
-      echo "$tools/ngmlr/ngmlr-0.2.6/ngmlr -r $ref -q $input -t $SLURM_CPUS_PER_TASK -x pacbio --skip-write > $prefix.sam"
-      $tools/ngmlr/ngmlr-0.2.6/ngmlr -r $ref -q $input -t $SLURM_CPUS_PER_TASK -x pacbio --skip-write > $prefix.sam
+      echo "ngmlr -r $ref -q $input -t $SLURM_CPUS_PER_TASK -x pacbio --skip-write > $prefix.sam"
+      ngmlr -r $ref -q $input -t $SLURM_CPUS_PER_TASK -x pacbio --skip-write > $prefix.sam
    fi
    echo "samtools sort -@$SLURM_CPUS_PER_TASK -O bam -o $prefix.sorted.bam -T $prefix.tmp $prefix.sam" &&
-   samtools sort -@$SLURM_CPUS_PER_TASK -O bam -o $prefix.sorted.bam -T $prefix.tmp $prefix.sam &&
+   samtools sort -m2g -@ $SLURM_CPUS_PER_TASK -O bam -o $prefix.sorted.bam -T $prefix.tmp $prefix.sam &&
    echo "samtools index $prefix.sorted.bam" &&
    samtools index $prefix.sorted.bam &&
    echo "rm $prefix.sam" &&

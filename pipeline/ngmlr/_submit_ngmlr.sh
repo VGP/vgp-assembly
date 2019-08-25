@@ -12,7 +12,7 @@ if [ -z $1 ]; then
 fi
 
 cpus=32
-mem=40g
+mem=52g
 name=ngmlr_$1
 script=$VGP_PIPELINE/ngmlr/ngmlr.sh
 walltime=3-0
