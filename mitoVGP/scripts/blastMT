@@ -1,0 +1,139 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+#++++                  This script is part of:                    ++++
+#++++                        mitoVGP v2.0                         ++++
+#++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
+#++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
+
+if [ -z $1 ]; then
+
+	echo "use $0 -h for help"
+	exit 0
+elif [ $1 == "-h" ]; then
+
+	cat << EOF
+
+	Usage: '$0 -a assembly -r reference -o output_prefix'
+
+	blastgenomes.sh is used to test for the presence of a mitocontig in Canu genome assembly.
+
+	Required arguments are:
+	-s the species name (e.g. Calypte_anna)
+	-i the VGP species ID (e.g. bCalAnn1)
+	-r the reference sequence fasta file
+
+	Optional arguments are:
+	-c if run on cluster. Supported options are:
+		SLURM
+		None (Default)
+
+EOF
+
+exit 0
+
+fi
+
+printf "\n\n++++ running: blastMT.sh ++++\n\n"
+
+#set options
+
+while getopts "s:i:c:a:r:o:" opt; do
+
+	case $opt in
+	
+		s)
+			SPECIES=$OPTARG
+			echo "Species: -s $OPTARG"
+			;;
+        i)
+        	ID=$OPTARG
+        	echo "Species ID: -i $OPTARG"
+            ;;
+		c)
+            GRID=$OPTARG
+			echo "Cluster: -c $OPTARG"
+			;;
+		r)
+			REF=$OPTARG
+			echo "Reference mitocontig: -r $OPTARG"
+			;;
+		\?)
+			echo "ERROR - Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+
+printf "\n"
+
+done
+
+if [[  ${GRID} == "SLURM" ]]; then
+
+echo Starting at `date`
+echo This is job $SLURM_JOB_ID
+echo Running on `hostname`
+
+fi
+
+printf "\n"
+
+#define working directory
+W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+printf "Working directory: $W_URL\n\n"
+
+if [[ -e "${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt" ]]; then
+
+	printf "\n\noutput already present: skipping.\n\n"
+	exit 0
+
+fi
+
+if ! [[ -e "${W_URL}/blast" ]]; then
+
+	mkdir -p ${W_URL}/blast
+
+fi
+
+if ! [[ -e "${W_URL}/db" ]]; then
+
+	mkdir -p ${W_URL}/db
+
+fi
+
+makeblastdb -in ${W_URL}/canu/${ID}.contigs.fasta -parse_seqids -dbtype nucl -out ${W_URL}/blast/${ID%.*}.db
+
+#search the putative mitocontig using blastn
+
+blastn -outfmt 6 -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/blast/${ID%.*}.db -out ${W_URL}/blast/${ID%.*.*}_in.out
+sed -i "1iquery_acc.ver\tsubject_acc.ver\t%_identity\talignment_length\tmismatches\tgap_opens\tq.start\tq.end\ts.start\ts.end\tevalue\tbitscore" ${W_URL}/blast/${ID%.*.*}_in.out
+cat ${W_URL}/blast/${ID%.*.*}_in.out | column -t > ${W_URL}/blast/${ID%.*.*}.out
+
+rm ${W_URL}/blast/${ID%.*.*}_in.out
+
+printf "\n"
+
+cat ${W_URL}/blast/${ID%.*.*}.out
+
+printf "\n"
+
+awk '{if(NR>1) printf "%.0f", $3 * $4;if(NR>1) print "\t" $2}' ${W_URL}/blast/${ID%.*.*}.out | sort -nr > ${W_URL}/blast/${ID%.*.*}_candidates.ls
+
+grep ">" ${W_URL}/canu/${ID}.contigs.fasta > ${W_URL}/blast/${ID%.*.*}_contig_names.ls
+
+grep -oe ">tig[0-9]*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls | tr -d '>' > ${W_URL}/blast/${ID%.*.*}_tig_IDs.ls
+
+grep -oe "suggestCircular=.*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls > ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls
+
+paste ${W_URL}/blast/${ID%.*.*}_tig_IDs.ls ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls > ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity.ls
+
+printf "\n"
+
+awk 'FNR==NR{a[$1]=$2;next}{if ($2 in a) {print $1 "\t" $2 "\t" $3 a[$2]}}' ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity.ls ${W_URL}/blast/${ID%.*.*}_candidates.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
+
+candidate=$(head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | awk '{print $2}')
+
+head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | awk '{print $2}' > ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt
+
+printf "best candidate is probably contig: $candidate\n"
