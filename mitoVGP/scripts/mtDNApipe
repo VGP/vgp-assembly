@@ -256,8 +256,6 @@ if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads" ]]; then
 
 		cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 	
-		gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
-	
 	fi
 
 	rm ${W_URL}/pacbio_MT_extracted_reads/*.subreads
@@ -271,6 +269,8 @@ if ! [[ -z ${FL} ]]; then
 	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
 	
 fi
+
+gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 
 #assemble mtDNA reads with canu
 if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then

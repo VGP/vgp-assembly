@@ -128,7 +128,7 @@ if [[ -z  ${GSIZE} ]]; then
 fi
 
 #retrieve mito-like reads and assemble
-sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${REF} -g ${GSIZE} -t ${NPROC} -d ${DOWNL} -o ${OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
+sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${REF} -g ${GSIZE} -t ${NPROC} -d ${DOWNL} -f ${FL} -o ${OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
 
 #identify the mitocontig
 sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${REF} 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out &&

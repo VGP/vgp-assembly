@@ -247,7 +247,7 @@ rm ${W_URL}/bowtie2_round1/aligned_${ID}_all.bam
 
 fi
 
-printf "\n--Sorting and indexing completed\n"
+printf "\n--Sorting and indexing completed:\n"
 
 printf "\n--Variant calling and polishing:\n"
 
