@@ -1,0 +1,87 @@
+{
+  "name": "mitovgp-re",
+  "title": "mitoVGP read extractor",
+  "summary": "This app is used to fish out raw Pacbio reads matching a reference sequence.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "ID",
+      "label": "Species ID (e.g. bCalAnn1)",
+      "class": "string",
+      "optional": false,
+      "help": "The official VGP ID for the species assembly."
+    },
+    {
+      "name": "REF",
+      "label": "Reference sequence",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fa", "*.fasta"
+      ],
+      "help": "The reference sequence used to fish out the reads. A sequence, not necessarily complete, from the same species or from a closely-to-distantly related organism."
+    },
+    {
+      "name": "READS",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.bam"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "OUTPUT1",
+      "label": "intermediates",
+      "class": "array:file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "OUTPUT2",
+      "label": "Extracted reads",
+      "class": "file",
+      "patterns": [
+        "*.fastq.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+      "execDepends": [
+         {"name": "bedtools"}
+      ],
+      "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/mitovgp-re.sh",
+    "distribution": "Ubuntu",
+    "release": "14.04",
+	"assetDepends": [
+		{"id":
+			{"$dnanexus_link": "record-FF1B3f80QX6Xb6Q4FqggbbBQ"}
+		}]
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x32"
+        }
+      }
+    }
+  }
+}

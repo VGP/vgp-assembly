@@ -1,0 +1,92 @@
+{
+  "name": "mitoVGP-canu",
+  "title": "mitoVGP Canu assembler",
+  "summary": "This apps allows the generation of the mitocontig from a raw mitoreads dataset.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "SPECIES",
+      "label": "Genus_species",
+      "class": "string",
+      "optional": false,
+      "help": "The species name, words separated by underscore"
+    },
+    {
+      "name": "ID",
+      "label": "Species ID (e.g. bCalAnn1)",
+      "class": "string",
+      "optional": false,
+      "help": "The official VGP ID for the species assembly."
+    },
+    {
+      "name": "REF",
+      "label": "Reference sequence",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fa, *.fasta"
+      ],
+      "help": "The reference sequence used to fish out the reads. A sequence, not necessarily complete, from the same species or from a closely-to-distantly related organism."
+    },
+    {
+      "name": "SIZE",
+      "label": "Estimated mitogenome size",
+      "class": "string",
+      "optional": false,
+      "help": "The expected size of the mitogenome assembly. Usually around 16k. Accepts Canu formatting."
+    },
+    {
+      "name": "NPROC",
+      "label": "Number of cores",
+      "class": "int",
+      "optional": false,
+      "help": "The number of cores to be employed in the analysis."
+    },
+    {
+      "name": "minOverlapLength",
+      "label": "Canu parameter",
+      "class": "int",
+      "optional": false,
+      "help": ""
+    },
+    {
+      "name": "correctedErrorRate",
+      "label": "Canu parameter 2",
+      "class": "int",
+      "optional": false,
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "log",
+      "label": "Log file",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/mitoVGP-canu.sh",
+    "distribution": "Ubuntu",
+    "release": "16.04"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x32"
+        }
+      }
+    }
+  }
+}
