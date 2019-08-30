@@ -1,0 +1,22 @@
+{
+  "name": "Evaluation - Align Hi-C",
+  "title": "Evaluation - Align Hi-C",
+  "stages": [
+    {
+      "id": "stage-FbZXq080j3b616VY5zZq8Z9G",
+      "executable": "app-bwa_fasta_indexer/2.0.2"
+    },
+    {
+      "id": "stage-FbZXqFj0j3bGfvvq9yFxbjqX",
+      "executable": "app-arima_mapping/0.0.1",
+      "input": {
+        "ref_genome": {
+          "$dnanexus_link": {
+            "outputField": "genomeindex_targz",
+            "stage": "stage-FbZXq080j3b616VY5zZq8Z9G"
+          }
+        }
+      }
+    }
+  ]
+}
