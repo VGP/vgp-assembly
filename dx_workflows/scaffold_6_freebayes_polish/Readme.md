@@ -1,6 +1,9 @@
 # Freebayes polish
 ## Update note
 
+**2019-Sep-03 update**
+- use fastq.gz directly for longranger 10x align
+
 **2019-Jul-08 update**
 - update QV to Giulio new version
 

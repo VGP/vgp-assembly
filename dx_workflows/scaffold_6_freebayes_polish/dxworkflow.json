@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Jul-11",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Sep-03",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -9,7 +9,7 @@
     },
     {
       "id": "first_map",
-      "executable": "app-10x_longranger_align/2.2.2",
+      "executable": "app-10x_longranger_align/2.2.2.1",
       "folder": "longranger_freebayes_round_1/10x_longranger",
       "input": {
         "output_prefix": "longranger_round1",
@@ -103,7 +103,7 @@
     },
     {
       "id": "second_map",
-      "executable": "app-10x_longranger_align/2.2.2",
+      "executable": "app-10x_longranger_align/2.2.2.1",
       "folder": "longranger_freebayes_round_2/10x_longranger",
       "input": {
         "ref": {
