@@ -105,49 +105,81 @@ if ! [[ -e "${W_URL}" ]]; then
 
 fi
 
+#create log folder
 if ! [[ -e "${W_URL}/log" ]]; then
 
 	mkdir ${W_URL}/log
 
 fi
 
-#copy the user-provided reference mitogenome to the reference folder
+#create reference folder
 if ! [[ -e "${W_URL}/reference" ]]; then
-
+	
 	mkdir ${W_URL}/reference
-	cp ${REF} ${W_URL}/reference/${REF%.*}.fasta
 
 fi
 
+#copy the user-provided reference mitogenome to the reference folder
+filename=$(basename -- "${REF}")
+filename="${filename%.*}"
+
+printf "\nUsing '${REF}' as reference\n"
+cp ${REF} ${W_URL}/reference/${filename}.fasta
+
 if [[ -z  ${GSIZE} ]]; then
 	
-	GSIZE=$(awk 'BEGIN {FS="\t"} $0 !~ ">" {sum+=length($0)} END {print sum}' ${W_URL}/reference/${REF%.*}.fasta)
+	GSIZE=$(awk 'BEGIN {FS="\t"} $0 !~ ">" {sum+=length($0)} END {print sum}' ${W_URL}/reference/${filename}.fasta)
 	
 	printf "\nGenome size not provided, using reference genome size: ${GSIZE} bp\n"
 	
 fi
 
+if ! [[ -z  ${DOWNL} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-d ${DOWNL} "
+
+fi
+
+if ! [[ -z  ${FL} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-f ${FL} "
+
+fi
+
+if ! [[ -z  ${OPTS} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-o ${OPTS} "
+
+fi
+
 #retrieve mito-like reads and assemble
-sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${REF} -g ${GSIZE} -t ${NPROC} -d ${DOWNL} -f ${FL} -o ${OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
 
 #identify the mitocontig
-sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${REF} 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out &&
 CONTIG_ID=$(cat ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt) &&
 
 #polish the mitocontig with long reads
+printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
 
 #polish the mitocontig with short reads
+printf "\nCommand: sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out &&
 
 #trim the mitocontig
+printf "\nCommand: sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out &&
 
 #polish the trimmed mitocontig with short reads
-sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S")out &&
+printf "\nCommand: sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S").out &&
 
 #perform final end trimming
+printf "\nCommand: sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out &&
 
 printf "\n\nDone!" &&
-printf "\n$(date "+%Y%m%d-%H%M%S")"
+printf "\n\n$(date "+%Y%m%d-%H%M%S")\n\n"

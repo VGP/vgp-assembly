@@ -39,7 +39,7 @@ exit 0
 
 fi
 
-printf "\n\n++++ running: trimmer.sh ++++\n\n"
+printf "\n\n++++ running: trimmer ++++\n\n"
 
 #set options
 

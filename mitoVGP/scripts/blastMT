@@ -35,7 +35,7 @@ exit 0
 
 fi
 
-printf "\n\n++++ running: blastMT.sh ++++\n\n"
+printf "\n\n++++ running: blastMT ++++\n\n"
 
 #set options
 
@@ -132,8 +132,18 @@ printf "\n"
 
 awk 'FNR==NR{a[$1]=$2;next}{if ($2 in a) {print $1 "\t" $2 "\t" $3 a[$2]}}' ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity.ls ${W_URL}/blast/${ID%.*.*}_candidates.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
 
-candidate=$(head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | awk '{print $2}')
+awk '{print $2}' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | sort | uniq -c| awk '{print $2}' > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_uniq.ls
 
-head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | awk '{print $2}' > ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt
+while read p; do
+
+	awk -v tig="${p}" '{if ($2 == tig) {c+=$1;name=$2}} END{printf c"\t"name"\t"$3"\n"}' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
+	
+done <${W_URL}/blast/${ID%.*.*}_candidates_to_circular_uniq.ls>${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls
+
+sort -nr ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums_sorted.ls
+
+candidate=$(head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums_sorted.ls | awk '{print $2}')
+
+head -1 ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums_sorted.ls | awk '{print $2}' > ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt
 
 printf "best candidate is probably contig: $candidate\n"

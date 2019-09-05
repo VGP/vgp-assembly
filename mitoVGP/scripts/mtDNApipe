@@ -64,7 +64,7 @@ exit 0
 
 fi
 
-printf "\n\n++++ running: mtDNApipe.sh ++++\n\n"
+printf "\n\n++++ running: mtDNApipe ++++\n\n"
 
 #set options
 

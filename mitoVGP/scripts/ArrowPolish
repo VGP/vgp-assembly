@@ -48,7 +48,7 @@ exit 0
 
 fi
 
-printf "\n\n++++ running: ArrowPolish.sh ++++\n\n"
+printf "\n\n++++ running: ArrowPolish ++++\n\n"
 
 #set options
 

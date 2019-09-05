@@ -46,7 +46,7 @@ exit 0
 
 fi
 
-printf "\n\n++++ running: map10x2.sh ++++\n\n"
+printf "\n\n++++ running: map10x2 ++++\n\n"
 
 #set options
 
