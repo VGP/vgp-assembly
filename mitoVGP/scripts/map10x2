@@ -15,7 +15,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 	
-	This script (map10x2.sh) is used for the final step of short read polishing. This step
+	This script (map10x2) is used for the final step of short read polishing. This step
 	requires the output of the script map10x1.sh to be trimmed at the overlapping ends. This
 	can be achieved using mummer or BLAST to determine the coordinates for trimming.
 	Experimental script trimmer.sh may also be employed.
@@ -104,41 +104,59 @@ if [[ -e "${W_URL}/freebayes_round2/${FNAME}_10x2.fasta" ]]; then
 
 fi
 
+printf "\n--Generate sorted alignment:\n"
+
 if ! [[ -e "${W_URL}/bowtie2_round2" ]]; then
 
 	mkdir ${W_URL}/bowtie2_round2
 
-	printf "\n--Align:\n"
+	printf "\nAlign...\n"
 
 	#align
 	bowtie2-build ${W_URL}/trimmed/${FNAME}.fasta ${W_URL}/bowtie2_round2/${ID}
 	bowtie2 -x ${W_URL}/bowtie2_round2/${ID} -1 ${W_URL}/bowtie2_round1/fq/aligned_${ID}_all_1.fq -2 ${W_URL}/bowtie2_round1/fq/aligned_${ID}_all_2.fq -p ${NPROC} --no-mixed | samtools view -bSF4 - > "${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed.bam"
 
-	printf "\n--Sort and index the alignment:\n"
+	printf "\nSort and index the alignment...\n"
 
 	#sort and index the alignment
 	samtools sort -@ ${NPROC} ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed.bam -o ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed_sorted.bam -@ ${NPROC}
 	samtools index -@ ${NPROC} ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed_sorted.bam
 	rm ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed.bam
 
-fi
+	printf "\n--Sorting and indexing completed.\n"
 
-printf "\n--Sorting and indexing completed:\n"
+else
+
+	printf "\n\noutput already present: skipping.\n\n"
+
+fi
 
 printf "\n--Variant calling and polishing:\n"
 
 if ! [[ -e "${W_URL}/freebayes_round2/" ]]; then
 
 	mkdir ${W_URL}/freebayes_round2/
-
-	freebayes --bam ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed_sorted.bam --fasta-reference ${W_URL}/trimmed/${FNAME}.fasta --vcf ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf --theta 0.001 --ploidy 1 --region $(sed -n 1p ${W_URL}/trimmed/${FNAME}.fasta | tr -d '>'):50-$(( $(sed -n 2p ${W_URL}/trimmed/${FNAME}.fasta | tr -d '\n' | wc -c) - 50 ))
+	
+	printf "\nVariant calling...\n"
+	
+	freebayes --bam ${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed_sorted.bam --fasta-reference ${W_URL}/trimmed/${FNAME}.fasta --vcf ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf --region $(sed -n 1p ${W_URL}/trimmed/${FNAME}.fasta | tr -d '>'):50-$(( $(sed -n 2p ${W_URL}/trimmed/${FNAME}.fasta | tr -d '\n' | wc -c) - 50 ))
 
 	bgzip ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf
 
 	tabix -p vcf ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf.gz
+	
+	bcftools view --threads=${NPROC} ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf.gz -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ou | bcftools norm -Ob -f ${W_URL}/trimmed/${FNAME}.fasta -o ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.bcf --threads ${NPROC}
+	
+	printf "\nPolishing...\n\n"
+	
+	bcftools index ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.bcf
+	
+	bcftools consensus -Hla ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.bcf -f ${W_URL}/trimmed/${FNAME}.fasta -o ${W_URL}/freebayes_round2/${FNAME}_10x2.fasta
 
-	bcftools consensus ${W_URL}/freebayes_round2/aligned_${ID}_all_trimmed_sorted.vcf.gz -f ${W_URL}/trimmed/${FNAME}.fasta -o ${W_URL}/freebayes_round2/${FNAME}_10x2.fasta
+	printf "\n--Variant calling and polishing completed.\n"
+
+else
+
+	printf "\n\noutput already present: skipping.\n\n"
 
 fi
-
-printf "\n--Variant calling and polishing completed:\n"

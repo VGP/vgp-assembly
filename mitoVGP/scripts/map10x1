@@ -15,8 +15,8 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 
-	This script (map10x1.sh) is used for short read polishing of the long-read assembly 
-	resulting from Canu (mtDNApipe.sh) and Arrow polishing (ArrowPolish.sh).
+	This script (map10x1) is used for short read polishing of the long-read assembly 
+	resulting from Canu (mtDNApipe) and Arrow polishing (ArrowPolish).
 	In the VGP pipeline it uses 10x data (currently with random barcodes) but it can be used
 	with any short read data containing mitogenomic reads using information from Canu
 	intermediate files.
@@ -154,7 +154,7 @@ fi
 mapfile -t p1 < ${W_URL}/bowtie2_round1/p_fw.txt
 mapfile -t p2 < ${W_URL}/bowtie2_round1/p_rv.txt
 
-echo "\n--Following PE files found:"
+printf "\n--Following PE files found:\n"
 
 for ((i=0; i<${#p1[*]}; i++));
 do
@@ -200,6 +200,10 @@ do
 		#remove
 		rm ${W_URL}/${p1[i]} ${W_URL}/${p2[i]}
 
+	else
+	
+		printf "${p1[i]} and ${p2[i]} already aligned, skipping.\n"
+	
 	fi
 
 done
@@ -247,7 +251,7 @@ rm ${W_URL}/bowtie2_round1/aligned_${ID}_all.bam
 
 fi
 
-printf "\n--Sorting and indexing completed:\n"
+printf "\n--Sorting and indexing completed.\n"
 
 printf "\n--Variant calling and polishing:\n"
 
@@ -258,8 +262,10 @@ if ! [[ -e "${W_URL}/freebayes_round1/" ]]; then
 fi
 
 if ! [[ -e "${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf" ]] && ! [[ -e "${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz" ]]; then
-
-	freebayes -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -b ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam --ploidy 1 -v ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf
+	
+	printf "\nVariant calling...\n\n"
+	
+	freebayes -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -b ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam -v ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf
 
 fi
 
@@ -270,11 +276,17 @@ if ! [[ -e "${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz" ]]; then
 fi
 
 if ! [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta" ]]; then
-
+	
+	printf "\nPolishing...\n\n"
+	
 	tabix -p vcf ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz
+	
+	bcftools view --threads=${NPROC} ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ou | bcftools norm -Ob -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -o ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf --threads ${NPROC}
+	
+	bcftools index ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf
+	
+	bcftools consensus -Hla ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -o ${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta
 
-	bcftools consensus ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -o ${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta
+	printf "\n--Variant calling and polishing completed.\n"
 
 fi
-
-printf "\n--Variant calling and polishing completed:\n"

@@ -1,0 +1,152 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+#++++                  This script is part of:                    ++++
+#++++                        mitoVGP v2.0                         ++++
+#++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
+#++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
+
+if [ -z $1 ]; then
+
+	echo "use $0 -h for help"
+	exit 0
+elif [ $1 == "-h" ]; then
+
+	cat << EOF
+
+	This script (linearizePhe) is used to allow the final sequence generated to start with Glutammine.
+
+	It requires the following software (and their dependencies) installed:
+	samtools/1.9, pbmm2/1.0.0, variantCaller/2.2.2, picard/2.18.22
+
+	For picard to work, it requires the absolute file to the jar to be defined in the code.
+
+	Required arguments are:
+		-s the species name (e.g. Calypte_anna)
+		-i the VGP species ID (e.g. bCalAnn1)
+		-n the contig ID identified from the BLAST search by the script blastMT.sh
+		-t the number of threads
+
+	Optional arguments are:
+		-c if run on cluster. Supported options are:
+			SLURM
+			None (Default)
+
+EOF
+
+exit 0
+
+fi
+
+printf "\n\n++++ running: linearizePhe ++++\n\n"
+
+#set options
+
+while getopts ":s:i:c:n:t:" opt; do
+
+	case $opt in
+		s)
+			SPECIES=$OPTARG
+			echo "Species: -s $OPTARG"
+			;;
+        i)
+        	ID=$OPTARG
+        	echo "Species ID: -i $OPTARG"
+            ;;
+		c)
+            GRID=$OPTARG
+			echo "Cluster: -c $OPTARG"
+			;;
+		n)
+            CONTIG=$OPTARG
+			echo "Contig number: -n $OPTARG"
+			;;
+		t)
+			NPROC=$OPTARG
+			echo "Number of threads: -t $OPTARG" >&2
+            ;;
+		\?)
+			echo "ERROR - Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+
+printf "\n"
+
+done
+
+if [[  ${GRID} == "SLURM" ]]; then
+
+	echo Starting at `date`
+	echo This is job $SLURM_JOB_ID
+	echo Running on `hostname`
+
+fi
+
+printf "\n"
+
+#define working directory
+W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+printf "Working directory: $W_URL\n\n"
+
+FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1_10x2"
+
+if ! [[ -e "${W_URL}/linearizeGln" ]]; then
+
+	mkdir -p ${W_URL}/linearizeGln
+
+fi
+
+printf "\n--Annotating tRNAs:\n\n"
+
+if ! [[ -e "${W_URL}/linearizeGln/tRNAscan-SE.out" ]]; then
+
+	tRNAscan-SE ${W_URL}/trimmed2/${FNAME}_trim2.fasta -M vert -q > ${W_URL}/linearizeGln/tRNAscan-SE.out
+
+fi
+
+printf "\n\n"
+
+cat ${W_URL}/linearizeGln/tRNAscan-SE.out
+
+printf "\n\n"
+
+printf "Phenylalanine coordinates:\n\n"
+
+grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE.out
+
+GLN_START=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE.out | awk '{print $3}')
+GLN_END=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE.out | awk '{print $4}')
+GSIZE=$(awk 'BEGIN {FS="\t"} $0 !~ ">" {sum+=length($0)} END {print sum}' ${W_URL}/trimmed2/${FNAME}_trim2.fasta)
+
+if (( ${GLN_START} > ${GLN_END} )); then
+
+	printf "\nThe sequence is likely reversed. Generating reverse-complement.\n\n"
+
+	printf "$(sed -n 1p ${W_URL}/trimmed2/${FNAME}_trim2.fasta)\n$(grep -v ">" ${W_URL}/trimmed2/${FNAME}_trim2.fasta | tr -d "\n " | tr "[ATGCUatgcuNnYyRrSsWwKkMmBbDdHhVv]" "[TACGAtacgaNnRrYySsWwMmKkVvHhDdBb]" | rev)" > ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta
+
+	tRNAscan-SE ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta -M vert -q > ${W_URL}/linearizeGln/tRNAscan-SE_rv.out
+	
+	GLN_START=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE_rv.out | awk '{print $3}')
+	GLN_END=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE_rv.out | awk '{print $4}')
+	
+	printf "$(sed -n 1p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta)\n$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+
+else
+
+	printf "$(sed -n 1p ${W_URL}/trimmed2/${FNAME}_trim2.fasta)\n$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+
+fi
+
+printf "\nFinal coordinates are:\n"
+printf "\nGln start:${GLN_START}\n"
+printf "Gln end:${GLN_END}\n"
+
+printf "\nFinal sequence:\n\n"
+cat ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+	
+printf "\n\nMitogenome size: ${GSIZE} bp\n"
+
+gzip -f ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.*.fasta
+

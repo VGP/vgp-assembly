@@ -181,5 +181,9 @@ sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | 
 printf "\nCommand: sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out &&
 
+#allow the final sequence to start with Phenylalanine
+printf "\nCommand: sh -e scripts/linearizePhe -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/linearizePhe -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_linearizePhe_$(date "+%Y%m%d-%H%M%S").out &&
+
 printf "\n\nDone!" &&
-printf "\n\n$(date "+%Y%m%d-%H%M%S")\n\n"
+printf "\n\nCompleted at: $(date "+%Y-%m-%d %H-%M-%S")\n\n"
