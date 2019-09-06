@@ -6,7 +6,7 @@ module load bcftools
 
 if [ -z $1 ]; then
 	echo "Usage: ./genomecov.sh <genome_id> [bam]"
-	echo "Requires summary.csv, aligned.benomecov, and <genome_id>.changes.vcf.gz"
+	echo "Requires summary.csv, aligned.genomecov, and <genome_id>.changes.vcf.gz"
 	exit -1
 fi
 
