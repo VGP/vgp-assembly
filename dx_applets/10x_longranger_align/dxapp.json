@@ -1,6 +1,7 @@
 {
    "name": "10x_longranger_align",
    "title": "10X Longranger Align Only Analysis",
+   "billTo": "org-dnanexus",
    "outputSpec": [
       {
          "name": "sorted_bam",
