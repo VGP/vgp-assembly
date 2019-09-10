@@ -111,10 +111,10 @@
    },
     "regionalOptions": {
         "aws:us-east-1": {"systemRequirements": {
-              "main": {"instanceType": "mem1_ssd1_x8"},
-              "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
-              "map_reads_minimap2": {"instanceType": "mem3_ssd1_x32"},
-              "map_reads_pbmm2": {"instanceType": "mem3_ssd1_x32"}
+              "main": {"instanceType": "mem1_ssd1_v2_x8"},
+              "run_minimap_index": {"instanceType": "mem1_ssd1_v2_x32"},
+              "map_reads_minimap2": {"instanceType": "mem3_ssd1_v2_x32"},
+              "map_reads_pbmm2": {"instanceType": "mem3_ssd1_v2_x32"}
               },
                           "assetDepends": [
                                 {"name": "minimap2_pb_asset",
@@ -206,7 +206,7 @@
    "dxapi": "1.0.0",
    "categories": ["Read Mapping"],
      "details": {
-    "whatsNew": "* 1.1.0 use -N 1 for pbmm2; Update pbmm2:1.0.0 and samtools 1.9 in aws-us-east and azure-westus\n* 1.0.2 Update pbmm2:0.12.0 for all except China, add pbbamify option\n* 1.0.1 update docker to pbmm2:0.12.0, Azure instance type, timeout\n* 1.0.0 Initial version release.",
+    "whatsNew": "* 1.1.0 V2 instance\n* 1.1.0 Update pbmm2:1.0.0 and samtools 1.9 in aws-us-east and azure-westus\n* 1.0.2 Update pbmm2:0.12.0 for all except China, add pbbamify option\n* 1.0.1 update docker to pbmm2:0.12.0, Azure instance type, timeout\n* 1.0.0 Initial version release.",
     "upstreamVersion": "2.14",
     "upstreamAuthor": "Li, H.",
     "upstreamUrl": "https://github.com/lh3/minimap2",
