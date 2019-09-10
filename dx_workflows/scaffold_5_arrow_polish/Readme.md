@@ -1,6 +1,10 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2019-Sep-10 update**
+- use V2
+- update to SMRTlink7.0.1
+
 **2019-Apr-25 update**
 - use bam_slicing and use default instance for slicer_instance_type=mem1_hdd2_x32 and polish_instance_tpye=mem1_ssd1_x32
 

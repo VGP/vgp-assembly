@@ -4,13 +4,13 @@
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "app-minimap2_align_longread/1.0.2",
+      "executable": "applet-Fbv26xQ0j3bPjjqY4B2Zy3Y5",
       "name": "subreads.bam Minimap2",
       "folder": "mapped_reads"
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/6.0.0",
+      "executable": "app-run_polish/7.0.1.2",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
@@ -39,7 +39,7 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem3_ssd1_x32",
+        "polish_instance_tpye": "mem3_ssd1_v2_x32",
         "slicer_instance_type": "mem1_hdd2_x32",
         "polishing_algorithm": "arrow",
         "skip_slicer": false
