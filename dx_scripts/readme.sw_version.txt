@@ -1,3 +1,7 @@
+How to use:
+1 dx select # to choose the project
+2 python sw_version.py
+
 Rows represent:
 1 step name
 2 job-id
