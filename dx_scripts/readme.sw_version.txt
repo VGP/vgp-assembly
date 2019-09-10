@@ -6,4 +6,6 @@ Rows represent:
 5 app version of applet built time
 6 upstream version
 
-Caveat: job finding use name matching and report only the last job. Unless every analysis are done on DNAnexus with its native job name, there is no guarantee that we will catch the correct execution. E.g. fNotCel1 purge_dups was done outside DNAnexus, so it would report purge_haplotig as execution even though latest results rely on purge_dups.
+Caveat: 
+1 job finding use name matching and report only the last job. Unless every analysis are done on DNAnexus with its native job name, there is no guarantee that we will catch the correct execution. E.g. fNotCel1 purge_dups was done outside DNAnexus, so it would report purge_haplotig as execution even though latest results rely on purge_dups.
+2 all step needs to finish in DNAnexus, otherwise the script will crash.
