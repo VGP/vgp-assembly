@@ -1,4 +1,4 @@
-Roles represent:
+Rows represent:
 1 step name
 2 job-id
 3 job create time
