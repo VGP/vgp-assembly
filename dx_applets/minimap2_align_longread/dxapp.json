@@ -112,7 +112,7 @@
     "regionalOptions": {
         "aws:us-east-1": {"systemRequirements": {
               "main": {"instanceType": "mem1_ssd1_v2_x8"},
-              "run_minimap_index": {"instanceType": "mem1_ssd1_v2_x32"},
+              "run_minimap_index": {"instanceType": "mem1_ssd1_x32"},
               "map_reads_minimap2": {"instanceType": "mem3_ssd1_v2_x32"},
               "map_reads_pbmm2": {"instanceType": "mem3_ssd1_v2_x32"}
               },
