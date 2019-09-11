@@ -40,7 +40,7 @@
           }
         },
         "polish_instance_tpye": "mem3_ssd1_v2_x16",
-        "slicer_instance_type": "mem1_sdd2_v2_x36",
+        "slicer_instance_type": "mem1_ssd2_v2_x36",
         "polishing_algorithm": "arrow",
         "skip_slicer": false
       }
