@@ -43,7 +43,9 @@ For additional options and specifications you can type:
 sh mitoVGP.sh -h
 ```
 
-The pipeline workflow is as follows:
+<b> Pipeline workflow </b>
+
+An existing reference from closely to distantly related species is used to identify mito-like reads in pacbio WGS data, which are then employed in <i>de novo</i> genome assembly. The assembly is further polished using both long and short read data, and linearized to start with the conventional Phenylalanine tRNA.
 
 <img src="MitoVGP_pipeline_Rockefeller_v.2.0.png" />
 
