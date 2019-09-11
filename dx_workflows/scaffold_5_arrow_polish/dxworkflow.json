@@ -39,7 +39,7 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem3_ssd1_v2_x16",
+        "polish_instance_tpye": "mem1_ssd1_v2_x72",
         "slicer_instance_type": "mem1_ssd2_v2_x36",
         "polishing_algorithm": "arrow",
         "skip_slicer": false
