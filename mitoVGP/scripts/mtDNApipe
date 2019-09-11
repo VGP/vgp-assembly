@@ -178,7 +178,7 @@ fi
 #if vgp mode download
 if [[ ${DOWNL} == true ]] && ! [[ "$(ls -A ${W_URL}/pacbio_bam)" ]] ; then
 
-	aws s3 --no-sign-request cp --recursive --exclude="*scrap*" --exclude="*bai*" --exclude="*pbi*" --include="*.subreads.bam" s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ ${W_URL}/
+	aws s3 --no-sign-request cp --recursive --exclude="*scrap*" --exclude="*xml*" --exclude="*bai*" --exclude="*pbi*" --include="*.subreads.bam" s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ ${W_URL}/
 
 fi
 

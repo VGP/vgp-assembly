@@ -96,12 +96,6 @@ if ! [[ -e "${W_URL}/blast" ]]; then
 
 fi
 
-if ! [[ -e "${W_URL}/db" ]]; then
-
-	mkdir -p ${W_URL}/db
-
-fi
-
 makeblastdb -in ${W_URL}/canu/${ID}.contigs.fasta -parse_seqids -dbtype nucl -out ${W_URL}/blast/${ID%.*}.db
 
 #search the putative mitocontig using blastn
@@ -124,21 +118,27 @@ grep ">" ${W_URL}/canu/${ID}.contigs.fasta > ${W_URL}/blast/${ID%.*.*}_contig_na
 
 grep -oe ">tig[0-9]*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls | tr -d '>' > ${W_URL}/blast/${ID%.*.*}_tig_IDs.ls
 
-grep -oe "suggestCircular=.*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls > ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls
+grep -oe "suggestCircular=.*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls | grep -o "[^suggestCircular=].*" > ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls
 
-paste ${W_URL}/blast/${ID%.*.*}_tig_IDs.ls ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls > ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity.ls
+grep -oe "reads=[0-9]*" ${W_URL}/blast/${ID%.*.*}_contig_names.ls | grep -o "[^reads=].*" > ${W_URL}/blast/${ID%.*.*}_tig_nreads.ls
+
+paste -d '\t,' ${W_URL}/blast/${ID%.*.*}_tig_IDs.ls ${W_URL}/blast/${ID%.*.*}_tig_circularity.ls ${W_URL}/blast/${ID%.*.*}_tig_nreads.ls > ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity_nreads.ls
 
 printf "\n"
 
-awk 'FNR==NR{a[$1]=$2;next}{if ($2 in a) {print $1 "\t" $2 "\t" $3 a[$2]}}' ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity.ls ${W_URL}/blast/${ID%.*.*}_candidates.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
+awk 'FNR==NR{a[$1]=$2;next}{if ($2 in a) {print $1 "\t" $2 "\t" a[$2] "\t"}}' ${W_URL}/blast/${ID%.*.*}_tig_IDs_circularity_nreads.ls ${W_URL}/blast/${ID%.*.*}_candidates.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
 
 awk '{print $2}' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls | sort | uniq -c| awk '{print $2}' > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_uniq.ls
 
 while read p; do
 
-	awk -v tig="${p}" '{if ($2 == tig) {c+=$1;name=$2}} END{printf c"\t"name"\t"$3"\n"}' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
+	awk -v tig="${p}" '{if ($2 == tig) {c+=$1;name=$2;chars=$3}} END{split(chars,b,","); if (b[1] == "yes") {printf c*b[2]*10 "\t" name "\t" c "\t" b[1] "\t" b[2] "\n"}else{printf c*b[2]*10 "\t" name "\t" c "\t" b[1] "\t" b[2] "\n"}}' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular.ls
 	
 done <${W_URL}/blast/${ID%.*.*}_candidates_to_circular_uniq.ls>${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls
+
+sed -i '1s/^/score\ttig\tidentity*coverage\tis_circular\tread_number\n/' ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls
+
+column -t ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls
 
 sort -nr ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums.ls > ${W_URL}/blast/${ID%.*.*}_candidates_to_circular_sums_sorted.ls
 

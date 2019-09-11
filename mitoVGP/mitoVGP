@@ -51,7 +51,7 @@ fi
 
 #set options
 
-while getopts ":s:i:r:g:t:d:l:m:f:o:" opt; do
+while getopts ":s:i:r:g:t:d:l:m:f:o:n:" opt; do
 
 	case $opt in
 		s)
@@ -83,6 +83,9 @@ while getopts ":s:i:r:g:t:d:l:m:f:o:" opt; do
 			;;
 		o)
             OPTS=$OPTARG
+			;;
+		n)
+            CONTIG=$OPTARG
 			;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
@@ -158,8 +161,17 @@ sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} 
 
 #identify the mitocontig
 printf "\nCommand: sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out\n"
-sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out &&
-CONTIG_ID=$(cat ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt) &&
+sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out
+
+if [[ -z  ${CONTIG} ]]; then
+
+	CONTIG_ID=$(cat ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt)
+
+else
+
+	CONTIG_ID=${CONTIG}
+
+fi
 
 #polish the mitocontig with long reads
 printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"

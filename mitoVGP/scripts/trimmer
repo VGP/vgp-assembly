@@ -146,7 +146,7 @@ if ! [[ -z ${NUCMER_OUT} ]]; then
 
 	if (( ${BEGIN2} > ${END1} )); then
 
-		echo ">${FNAME}" > "${W_URL}/trimmed/${FNAME}_new.fasta" & grep -v ">" ${W_URL}/freebayes_round1/${FNAME} | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_new.fasta"
+		echo ">${FNAME}" > "${W_URL}/trimmed/${FNAME}_new.fasta" & grep -v ">" ${W_URL}/freebayes_round1/${FNAME}.fasta | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_new.fasta"
 
 		nucmer --maxmatch --nosimplify "${W_URL}/trimmed/${FNAME}_new.fasta" "${W_URL}/trimmed/${FNAME}_new.fasta" -f -p "${W_URL}/trimmed/${FNAME}" -b 500
 
@@ -317,7 +317,7 @@ else
 
 	printf "\nWARNING: the sequence does not appear to be circular\n\n"
 	show-coords "${W_URL}/trimmed/${FNAME}.delta" -lrcTHo
-	printf "\n\nUsing: ${W_URL}/freebayes_round1/${FNAME}\n\n"
+	printf "\n\nUsing: ${W_URL}/freebayes_round1/${FNAME}.fasta\n\n"
 	grep ">" ${W_URL}/freebayes_round1/${FNAME}.fasta > ${W_URL}/trimmed/${FNAME}.fasta
 	grep -v ">" ${W_URL}/freebayes_round1/${FNAME}.fasta | tr -d '\n' >> ${W_URL}/trimmed/${FNAME}.fasta
 	
