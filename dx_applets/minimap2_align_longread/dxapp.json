@@ -6,7 +6,7 @@
     {
        "name": "reads",
        "label": "Reads",
-       "patterns": ["*.subreads.bam", "*.fastq", "*.fasta", "*.fastq.gz", 
+       "patterns": ["*.subreads.bam", "*.bam", "*.fastq", "*.fasta", "*.fastq.gz", 
                     "*.fasta.gz", "*.fa.gz", "*.fq.gz", "*.fq", "*.fa"],
        "class": "array:file",
        "optional": false
