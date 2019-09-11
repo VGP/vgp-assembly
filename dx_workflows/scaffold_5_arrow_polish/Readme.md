@@ -1,6 +1,9 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2019-Sep-11 update**
+- adjust instance type
+
 **2019-Sep-10 update**
 - use V2
 - update to SMRTlink7.0.1

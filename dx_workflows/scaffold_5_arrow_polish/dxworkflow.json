@@ -1,16 +1,16 @@
 {
-  "name": "Scaffold 5 Arrow Polish",
+  "name": "Scaffold 5 Arrow Polish 2019-09-11",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "applet-Fbv26xQ0j3bPjjqY4B2Zy3Y5",
+      "executable": "applet-FbvgJg00j3b44GP3GKzGGKvj",
       "name": "subreads.bam Minimap2",
       "folder": "mapped_reads"
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/7.0.1.2",
+      "executable": "app-run_polish/7.0.1.4",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
@@ -39,8 +39,8 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem3_ssd1_v2_x32",
-        "slicer_instance_type": "mem1_hdd2_x32",
+        "polish_instance_tpye": "mem3_ssd1_v2_x16",
+        "slicer_instance_type": "mem1_sdd2_v2_x36",
         "polishing_algorithm": "arrow",
         "skip_slicer": false
       }
