@@ -5,12 +5,11 @@ SHELL=/bin/bash -e -x -o pipefail
 UBUNTU_VERSION := $(shell test -e /etc/issue && (grep -o "Ubuntu [0-9]\+\.[0-9]\+" /etc/issue | sed -e "s/Ubuntu //"))
 
 ifeq ($(UBUNTU_VERSION), 12.04)
-        CRAN_SITE = "deb http://cran.rstudio.com/bin/linux/ubuntu precise/"
+	CRAN_SITE = "deb http://cran.rstudio.com/bin/linux/ubuntu precise/"
 else ifeq ($(UBUNTU_VERSION), 14.04)
-       CRAN_SITE="deb http://cran.rstudio.com/bin/linux/ubuntu trusty/"
+	CRAN_SITE="deb http://cran.rstudio.com/bin/linux/ubuntu trusty/"
 else ifeq ($(UBUNTU_VERSION), 16.04)
-       CRAN_SITE="deb http://cran.rstudio.com/bin/linux/ubuntu xenial/"
-endif
+	CRAN_SITE="deb http://lib.stat.cmu.edu/R/CRAN/bin/linux/ubuntu xenial-cran35/"
 endif
 
 SRC="/etc/apt/sources.list"
@@ -48,14 +47,14 @@ ifeq ($(IS_FOUND), )
 	$(shell sudo echo $(CRAN_SITE) >> $(SRC))
 endif
 	# Trust the signing key for this repo.Reference: http://cran.rstudio.com/bin/linux/ubuntu/README.html
-	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 	sudo rm -f /etc/apt/apt.conf.d/99dnanexus
 	#Update apt-get
-	sudo apt-get --yes update
+	sudo apt-get update 
 	sudo apt-get --yes upgrade
 	sudo apt-get --yes install xorg-dev 
-	sudo apt-get --yes install zlib1g-dev liblzma-dev
-	
+	sudo apt-get --yes install zlib1g-dev liblzma-dev libcurl4-openssl-dev
+
 	sudo curl -L $(R_URL) > $(TMP_DIR)/$(R_FILE)
 	sudo tar -zxf $(TMP_DIR)/$(R_FILE) -C $(TMP_DIR)
 	
@@ -77,7 +76,7 @@ endif
 	cd $(TMP_DIR)/$(R_DIR); ./configure
 	sudo $(MAKE) -C $(TMP_DIR)/$(R_DIR)
 	sudo $(MAKE) -C $(TMP_DIR)/$(R_DIR) install
-
+#
 	echo "Downloading libxml...."
 	sudo apt-get install libxml2-dev
 
