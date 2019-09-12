@@ -190,8 +190,8 @@ do
 
 		if [[ -z ${DOWNL} ]] || ! [[  ${DOWNL} == true ]]; then
 			#download
-			aws s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p1[i]} ${W_URL}
-			aws s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p2[i]} ${W_URL}
+			aws --no-sign-request s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p1[i]} ${W_URL}
+			aws --no-sign-request s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p2[i]} ${W_URL}
 		fi
 		
 		#align
