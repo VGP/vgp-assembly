@@ -7,7 +7,7 @@ BIONANO_ROOT = '/Solve3.4_06042019a/'
 SCRIPTS_DIR = os.path.join(BIONANO_ROOT, 'PIPELINE', 'Pipeline')
 
 HYBRID_DIR = os.path.join(BIONANO_ROOT, 'HybridScaffold', '06042019')
-TOOLS_DIR = os.path.join(BIONANO_ROOT, 'RefAligner', '7437.7523rel')
+TOOLS_DIR = os.path.join(BIONANO_ROOT, 'RefAligner', '8949.9232rel')
 
 
 os.environ['PATH'] = HYBRID_DIR + \
