@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2019-09-12",
+  "name": "Scaffold 5 Arrow Polish 2019-Sep-14",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
@@ -39,7 +39,7 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem1_ssd1_v2_x72",
+        "polish_instance_tpye": "mem3_ssd1_v2_x16",
         "slicer_instance_type": "mem1_ssd2_v2_x36",
         "polishing_algorithm": "arrow",
         "skip_slicer": false

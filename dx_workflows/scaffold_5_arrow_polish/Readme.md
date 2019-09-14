@@ -1,6 +1,9 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2019-Sep-14 update**
+- change default instance type for polishing
+
 **2019-Sep-12 update**
 - remove invalid instance type option
 
