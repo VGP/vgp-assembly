@@ -1,5 +1,5 @@
 {
-  "name": "vgp_falcon_and_unzip_assembly_workflow 2019-Aug-18",
+  "name": "vgp_falcon_and_unzip_assembly_workflow 2019-Sep-22",
   "title": "Falcon and Falcon Unzip Assembly Workflow",
   "summary": "VGP1.6 Falcon and Falcon-Unzip workflow",
   "stages": [
@@ -28,7 +28,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x8"
+          "instanceType": "mem3_ssd1_v2_x8"
         }
       }
     },
@@ -70,7 +70,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x8"
+          "instanceType": "mem3_ssd1_v2_x8"
         }
       }
     },
@@ -97,16 +97,18 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x16"
+          "instanceType": "mem3_ssd1_v2_x16"
         }
       }
     },
     {
       "id": "falcon_0_hpc_daligner",
       "name": "Falcon Raw Reads Daligner",
-      "executable": "app-fc_hpc_daligner/2.0.0",
+      "executable": "app-fc_hpc_daligner/2.0.1",
       "folder": "stage_1",
       "input": {
+        "daligner_instance_type": "mem3_ssd1_v2_x16",
+        "lasort_instance_type": "mem3_ssd1_v2_x8",
         "trim": false,
         "daligner_arguments": "-k14 -e0.75 -s100 -l2500 -h240 -w8 ",
         "sync_time": 1,
@@ -131,7 +133,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x16"
+          "instanceType": "mem3_ssd1_v2_x16"
         }
       }
     },
@@ -201,7 +203,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x8"
+          "instanceType": "mem3_ssd1_v2_x8"
         }
       }
     },
@@ -221,7 +223,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x8"
+          "instanceType": "mem3_ssd1_v2_x8"
         }
       }
     },
@@ -248,7 +250,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x16"
+          "instanceType": "mem3_ssd1_v2_x16"
         }
       }
     },
@@ -258,6 +260,8 @@
       "executable": "app-fc_hpc_daligner/2.0.0",
       "folder": "stage_2",
       "input": {
+        "daligner_instance_type": "mem3_ssd1_v2_x16",
+        "lasort_instance_type": "mem3_ssd1_v2_x8",
         "generate_consensus_fastas": "None",
         "dazzler_db": {
           "$dnanexus_link": {
@@ -279,7 +283,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem3_ssd1_x16"
+          "instanceType": "mem3_ssd1_v2_x16"
         }
       }
     },
@@ -339,6 +343,11 @@
       "name": "Unzip Track Reads",
       "executable": "app-unzip_0_track_reads/1.1.0",
       "folder": "unzip_stage_1",
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x16"
+        }
+      },
       "input": {
         "sg_edges_list": {
           "$dnanexus_link": {
@@ -445,7 +454,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_x32"
+          "instanceType": "mem1_ssd1_v2_x36"
         }
       }
     },
@@ -566,6 +575,11 @@
           }
         },
         "max_num_jobs": 50
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x36"
+        }
       }
     },
     {
@@ -597,6 +611,11 @@
             "outputField": "mapped_reads",
             "stage": "unzip_3_haplotype_track_reads"
           }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x36"
         }
       }
     },
