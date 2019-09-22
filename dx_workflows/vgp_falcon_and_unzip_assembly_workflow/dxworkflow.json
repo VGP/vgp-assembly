@@ -257,7 +257,7 @@
     {
       "id": "falcon_1_hpc_daligner",
       "name": "Falcon Preads Daligner",
-      "executable": "app-fc_hpc_daligner/2.0.0",
+      "executable": "app-fc_hpc_daligner/2.0.1",
       "folder": "stage_2",
       "input": {
         "daligner_instance_type": "mem3_ssd1_v2_x16",
