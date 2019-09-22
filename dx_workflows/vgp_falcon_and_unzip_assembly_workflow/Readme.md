@@ -2,6 +2,9 @@
 ## Update note
 
 **2019-Sep-22 update**
+- fix restart policy
+
+**2019-Sep-21 update**
 - update to V2 instance
 
 **2019-Aug-18 update**
