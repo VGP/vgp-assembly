@@ -1,14 +1,17 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-    echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p/c]"
+    echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p/s/c]"
     echo "[p]: set for getting primary / alt haplotig stats, assuming the primary begins with scaffold_ in its name"
-    echo "[c]: set for getting scaffolds (direct sttas) only."
+    echo "[s]: set for getting scaffolds (direct stats) only."
+    echo "[c]: set for getting contig (direct stats) as well."
     exit -1
 fi
 
 fasta=$1
 gsize=$2
+opt=$3
+
 script=$VGP_PIPELINE/stats/
 
 asm=${fasta/.fasta/}
@@ -20,8 +23,8 @@ echo "Scaffolds"
 java -jar -Xmx1g $script/lenCalcNGStats.jar $fasta.len $gsize > $asm.stats
 cat $asm.stats
 
-c=$3
-if [[ "$c" == "c" ]]; then
+
+if [[ "$opt" == "s" ]]; then
         exit 0
 fi
 
@@ -53,8 +56,7 @@ cat $asm.gaps.stats
 #rm $fasta.len.bed
 #rm $asm.gaps.bed
 
-p=$3
-if [[ "$p" != "p" ]]; then
+if [[ "$opt" != "p" ]]; then
 	exit 0
 fi
 echo
