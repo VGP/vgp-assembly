@@ -37,7 +37,7 @@ LIBXML_FILE="libxml2-2.7.2.tar.gz"
 LIBXML_DIR="libxml2-2.7.2"
 
 # bundle url created from file-FbQxQpzKGbkKXVb0GBGJX66y
-BIONANO_BUNDLE_URL="https://dl.dnanex.us/F/D/85G781Z4902XZX35F5ykB463jGqk5yzZq0PjPQ6J/Solve3.4_06042019a.tar.gz"
+BIONANO_BUNDLE_URL="https://dl.dnanex.us/F/D/PFvfjq6GjpZf2FKfGVPpJYKG5qK6JQGk64bbfxbK/Solve3.4_06042019a.tar.gz"
 BIONANO_BUNDLE="Solve3.4_06042019a.tar.gz"
 SCAFFOLD_DIR="/Solve3.4_06042019a/HybridScaffold/06042019"
 

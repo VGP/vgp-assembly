@@ -1,6 +1,12 @@
 # FALCON and FALCON-Unzip Assembly
 ## Update note
 
+**2019-Sep-22 update**
+- fix restart policy
+
+**2019-Sep-21 update**
+- update to V2 instance
+
 **2019-Aug-18 update**
 - debug unzip_4_haplotype_polish
 - increase timeout for unzip_3_haplotype_track_reads due to recent long running of mPanTro1

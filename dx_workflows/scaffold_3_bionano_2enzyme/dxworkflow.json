@@ -1,11 +1,11 @@
 {
-  "name": "scaffold_3_bionano_2enzyme 2019-Aug-6",
+  "name": "scaffold_3_bionano_2enzyme 2019-Sep-14",
   "title": "Scaffold3 Bionano 2 Enzyme Scaffold",
   "version": "1.5.0",
   "stages": [
     {
       "id": "bionano_hybrid",
-      "executable": "app-bionano_hybrid_2enzyme/1.0.1"
+      "executable": "app-bionano_hybrid_2enzyme/3.4.0"
     },
     {
       "id": "concatenate_unscaffolded",

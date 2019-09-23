@@ -1,6 +1,9 @@
 # Bionano 2enz scaffolding Workflow
 ## Update note
 
+**2019-Sep-14 update**
+- Update to Bionano 3.4
+
 **2019-Aug-6 update**
 - change naming of trimmer output to have VGP convention
 
