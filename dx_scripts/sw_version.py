@@ -7,6 +7,7 @@ import time
 app_id_hardcode_up_version={
     "app-FPkkQ4j0gjx97J1X1496B9zF":"purge_haplotig (bitbucket v1.0.3+ 1.Nov.2018)",
     "applet-FZzYjYQ0j3b9pVP06qg4Q97Y": "purge_dups github ca23030ccf4254dfd2d3a5ea90d0eed41c24f88b",
+    "applet-Fb721zj0j3b1xV916kB8Y14J": "purge_dups github ca23030ccf4254dfd2d3a5ea90d0eed41c24f88b"
     "app-FVVgJ7Q09zJpb0KZ9P3v1BpQ": "Solve3.2.1_04122018",
     "app-FVpb0j00px8fVZ9qPPGYxxP8": "Salsa 2.2",
     "app-FXF87GQ0yV32v3Q32v06xBvv": "smrtlink_6.0.0.47841",
