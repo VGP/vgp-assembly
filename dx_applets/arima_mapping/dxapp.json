@@ -3,7 +3,7 @@
   "title": "Arima mapping",
   "summary": "arima_mapping",
   "dxapi": "1.0.0",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "inputSpec": [
     {
       "name": "fwd_reads",
@@ -85,7 +85,7 @@
   ],
   "regionalOptions": {
     "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem2_ssd1_x16"}}},
-    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_v2_x16"}}},
     "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
     "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}},
     "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x16"}}}
@@ -93,12 +93,15 @@
   "runSpec": {
     "timeoutPolicy": {
       "*": {
-        "hours": 48
+        "hours": 72
       }
     },
     "interpreter": "python2.7",
     "file": "src/arima_mapping.py",
     "distribution": "Ubuntu",
     "release": "14.04"
+  },
+  "details": {
+    "whatsNew": "* 0.1.0: present silent failure by prepending set -e -o pipefail"
   }
 }
