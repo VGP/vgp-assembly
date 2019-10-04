@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_4_salsa 2019-Jul-24",
+  "name": "scaffold_4_salsa 2019-Oct-3",
   "title": "Scaffold 4 Salsa Scaffolding",
   "stages": [
     {
@@ -8,7 +8,7 @@
     },
     {
       "id": "arima_mapping",
-      "executable": "app-arima_mapping/0.0.1",
+      "executable": "app-arima_mapping/0.1.0",
       "input": {
         "ref_genome": {
           "$dnanexus_link": {
