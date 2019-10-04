@@ -4,7 +4,7 @@
   "stages": [
     {
       "id": "bwa_fasta_index",
-      "executable": "app-bwa_fasta_indexer/2.0.1"
+      "executable": "app-bwa_fasta_indexer/2.0.2"
     },
     {
       "id": "arima_mapping",
