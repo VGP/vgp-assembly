@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -43,7 +43,7 @@ printf "\n\n++++ running: trimmer ++++\n\n"
 
 #set options
 
-while getopts ":s:i:n:c:t:" opt; do
+while getopts ":s:i:n:c:t:s:z:" opt; do
 
 	case $opt in
 		s)
@@ -66,6 +66,10 @@ while getopts ":s:i:n:c:t:" opt; do
 			NPROC=$OPTARG
 			echo "Number of threads: -t $OPTARG" >&2
             ;;
+		z)
+			SEN=$OPTARG
+			echo "Mummer sensitivity: -z $OPTARG" >&2
+            ;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -87,7 +91,7 @@ fi
 printf "\n"
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
 FNAME="${ID}.${CONTIG}_arrow2_10x1"
@@ -99,6 +103,12 @@ if [[ -e "${W_URL}/trimmed/${FNAME}_trim1.fasta" ]]; then
 
 fi
 
+if [[ -z ${SEN} ]]; then
+
+	SEN=500
+
+fi
+
 CONTIG_NAME=$(cat ${W_URL}/freebayes_round1/${FNAME}.fasta | awk '$0 ~ ">" {print substr($0,2)}')
 
 
@@ -106,10 +116,14 @@ CONTIG_NAME=$(cat ${W_URL}/freebayes_round1/${FNAME}.fasta | awk '$0 ~ ">" {prin
 if ! [[ -e "${W_URL}/trimmed" ]]; then
 
 	mkdir ${W_URL}/trimmed
+	
+	cp ${W_URL}/freebayes_round1/${FNAME}.fasta ${W_URL}/trimmed/intermediate.fasta
 
+	sed -i '2 s/^\(.\{4\}\)./\1/' ${W_URL}/trimmed/intermediate.fasta
+	
 	samtools sort -@ ${NPROC} -n ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam -o ${W_URL}/trimmed/aligned_${ID}_all_paired.bam
 	samtools fastq -@ ${NPROC} ${W_URL}/trimmed/aligned_${ID}_all_paired.bam -1 ${W_URL}/trimmed/aligned_${ID}_all_1.fq -2 ${W_URL}/trimmed/aligned_${ID}_all_2.fq -s ${W_URL}/trimmed/aligned_${ID}_all_s.fq
-	bowtie2-build --threads ${NPROC} ${W_URL}/freebayes_round1/${FNAME}.fasta ${W_URL}/trimmed/${ID}
+	bowtie2-build --threads ${NPROC} ${W_URL}/trimmed/intermediate.fasta ${W_URL}/trimmed/${ID} -q
 	bowtie2 -x ${W_URL}/trimmed/${ID} -1 ${W_URL}/trimmed/aligned_${ID}_all_1.fq -2 ${W_URL}/trimmed/aligned_${ID}_all_2.fq -p ${NPROC} --no-mixed | samtools view -bSF4 - > "${W_URL}/trimmed/realigned_${ID}_all.bam"
 	samtools sort -@ ${NPROC} ${W_URL}/trimmed/realigned_${ID}_all.bam -o ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam -@ ${NPROC}
 	samtools index -@ ${NPROC} ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam
@@ -119,7 +133,7 @@ fi
 
 if ! [[ -e "${W_URL}/trimmed/${FNAME}.delta" ]]; then
 
-	nucmer --maxmatch --nosimplify ${W_URL}/freebayes_round1/${FNAME}.fasta ${W_URL}/freebayes_round1/${FNAME}.fasta -f -p "${W_URL}/trimmed/${FNAME}" -b 500
+	nucmer --maxmatch --nosimplify ${W_URL}/trimmed/intermediate.fasta ${W_URL}/trimmed/intermediate.fasta -f -p "${W_URL}/trimmed/${FNAME}" -b ${SEN}
 
 fi
 
@@ -142,13 +156,13 @@ if ! [[ -z ${NUCMER_OUT} ]]; then
 	printf "END1: ${END1}\n"
 	printf "\n"
 
-	CONTIG_NEW=${W_URL}/freebayes_round1/${FNAME}.fasta
+	CONTIG_NEW=${W_URL}/trimmed/intermediate.fasta
 
 	if (( ${BEGIN2} > ${END1} )); then
 
-		echo ">${FNAME}" > "${W_URL}/trimmed/${FNAME}_new.fasta" & grep -v ">" ${W_URL}/freebayes_round1/${FNAME}.fasta | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_new.fasta"
+		echo ">${FNAME}" > "${W_URL}/trimmed/${FNAME}_new.fasta" & grep -v ">" ${W_URL}/trimmed/intermediate.fasta | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_new.fasta"
 
-		nucmer --maxmatch --nosimplify "${W_URL}/trimmed/${FNAME}_new.fasta" "${W_URL}/trimmed/${FNAME}_new.fasta" -f -p "${W_URL}/trimmed/${FNAME}" -b 500
+		nucmer --maxmatch --nosimplify "${W_URL}/trimmed/${FNAME}_new.fasta" "${W_URL}/trimmed/${FNAME}_new.fasta" -f -p "${W_URL}/trimmed/${FNAME}" -b ${SEN}
 
 		CONTIG_NEW="${W_URL}/trimmed/${FNAME}_new.fasta"
 
@@ -173,7 +187,7 @@ if ! [[ -z ${NUCMER_OUT} ]]; then
 
 		echo ">${FNAME}" > "${W_URL}/trimmed/${FNAME}_new2.fasta" & grep -v ">" ${W_URL}/trimmed/${FNAME}_new.fasta | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_new2.fasta"
 
-		nucmer --maxmatch --nosimplify "${W_URL}/trimmed/${FNAME}_new2.fasta" "${W_URL}/trimmed/${FNAME}_new2.fasta" -f -p "${W_URL}/trimmed/${FNAME}_2" -b 500
+		nucmer --maxmatch --nosimplify "${W_URL}/trimmed/${FNAME}_new2.fasta" "${W_URL}/trimmed/${FNAME}_new2.fasta" -f -p "${W_URL}/trimmed/${FNAME}_2" -b ${SEN}
 
 		CONTIG_NEW="${W_URL}/trimmed/${FNAME}_new2.fasta"
 

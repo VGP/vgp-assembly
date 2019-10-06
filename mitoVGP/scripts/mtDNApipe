@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -53,6 +53,7 @@ elif [ $1 == "-h" ]; then
 	-l use files from list of files (default looks into aws)
 	-m the aligner for mitoread identification (blasr|pbmm2). Default is pbmm2
 	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
+	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
 	-o the options for Canu
 	-c if run on cluster. Supported options are:
 		SLURM
@@ -68,7 +69,7 @@ printf "\n\n++++ running: mtDNApipe ++++\n\n"
 
 #set options
 
-while getopts ":l:s:i:r:g:c:f:o:m:t:d:" opt; do
+while getopts ":l:s:i:r:g:c:f:o:m:t:d:p:" opt; do
 
 	case $opt in
 		l)
@@ -115,6 +116,10 @@ while getopts ":l:s:i:r:g:c:f:o:m:t:d:" opt; do
 			DOWNL=$OPTARG
 			echo "Multithreaded download: -d $OPTARG"
             ;;
+		p)
+			PER=$OPTARG
+			echo "Percent coverage of reads: -p > $OPTARG"
+            ;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -135,7 +140,7 @@ printf "\n"
 fi
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
 if [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
@@ -209,11 +214,11 @@ if ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && [[ $p == *.bam ]] && ! [[ -e
 
 	elif [[  ${ALN} == "pbmm2" ]]; then
 	
-		pbmm2 align --best-n 1 ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/$p ${W_URL}/pacbio_bam/aligned_${p%.*}.bam -j ${NPROC}
+		pbmm2 align --best-n 1 --min-concordance-perc 0 ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/$p ${W_URL}/pacbio_bam/aligned_${p%.*}.bam -j ${NPROC}
 		
 	else
 
-		echo "mapper unset or unidentified"
+		printf "mapper unset or unidentified.\n"
 
 	fi
 #remove
@@ -253,24 +258,81 @@ if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads" ]]; then
 
 	#merge into a single read file
 	if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq" ]]; then
-
-		cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 	
+		if ! [[ $(cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads) == "" ]]; then
+
+			cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+			
+			N_READS_EX=$(grep "@" -c ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq)
+			
+			printf "\nextracted ${N_READS_EX} reads\n"
+			
+		else
+		
+			printf "\nno reads extracted.\n"
+			exit 1
+		
+		fi
+		
 	fi
 
-	rm ${W_URL}/pacbio_MT_extracted_reads/*.subreads
+	rm -f ${W_URL}/pacbio_MT_extracted_reads/*.subreads
 
 fi
 
-if ! [[ -z ${FL} ]]; then
+if ! [[ -z ${FL} ]] && ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]]; then
 
 	awk 'BEGIN {FS = "\t" ; OFS = "\n"} {header = $0 ; getline seq ; getline qheader ; getline qseq ; if (length(seq) <= '${FL}') {print header, seq, qheader, qseq}}' < ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq > ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
 	
-	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
-	
 fi
 
-gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+if ! [[ -z ${PER} ]] && (! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]] || ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz ]]); then
+
+	if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+	
+		readset=${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+	
+	else
+
+		readset=${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq	
+	
+	fi
+
+	cat ${readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta
+
+	makeblastdb -in ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta -parse_seqids -dbtype nucl -out ${W_URL}/pacbio_MT_extracted_reads/${ID}.db
+
+	blastn -outfmt "6 sseqid qcovs slen" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/pacbio_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v per="${PER}" '{if($2>per) printf $0 "\n"}' > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
+	
+	printf "\n\nExtracting following read by coverage:\n\n"
+	
+	cat ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
+	
+	printf "\n\n"
+
+	awk '{printf $1 "\n"}' ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls
+
+	cat ${readset} | grep -f ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
+
+fi
+
+if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq.gz ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+
+fi
+
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
+
+fi
+
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
+
+fi
 
 #assemble mtDNA reads with canu
 if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
@@ -287,8 +349,12 @@ if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
 	CANU="${CANU} genomeSize=${GSIZE}"
 #	CANU="${CANU} -gridEngineResourceOption=\"-R\\\"select[mem>${LSF_MEM}] rusage[mem=${LSF_MEM}]\\\" -M${LSF_MEM} -n ${NPROC}\""
 
-	if ! [[ -z ${FL} ]]; then
+	if ! [[ -z ${FL} ]] && ! [[ -z ${PER} ]]; then
 
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz"
+	
+	elif ! [[ -z ${FL} ]]; then
+	
 		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz"
 	
 	else

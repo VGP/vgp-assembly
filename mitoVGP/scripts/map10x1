@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -100,7 +100,7 @@ fi
 
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
 if [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta" ]]; then
@@ -127,14 +127,15 @@ if ! [[ -e "${W_URL}/bowtie2_round1/log/" ]]; then
 fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/log/file_list_$dw_date.txt" ]]; then
-
+	
+	printf "Collecting data using: aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/\n\n"
 	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/ > ${W_URL}/bowtie2_round1/log/file_list_$dw_date.txt
 
 fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/${ID}.1.bt2" ]]; then
 
-bowtie2-build --threads ${NPROC} ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta ${W_URL}/bowtie2_round1/${ID}
+bowtie2-build --threads ${NPROC} ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta ${W_URL}/bowtie2_round1/${ID} -q
 
 fi
 
@@ -210,8 +211,10 @@ done
 
 #generate single alignment file out of all raw data
 if ! [[ -e "${W_URL}/bowtie2_round1/aligned_${ID}_all.bam" ]]; then
-
-	samtools merge ${W_URL}/bowtie2_round1/aligned_${ID}_all.bam ${W_URL}/bowtie2_round1/aligned_raw_reads/*.bam
+	
+	printf "\nMerging bam files...\n"
+	
+	samtools merge ${W_URL}/bowtie2_round1/aligned_${ID}_all.bam ${W_URL}/bowtie2_round1/aligned_raw_reads/*.bam -@ ${NPROC}
 
 	#downsample the file if >1.5M reads
 	#READ_N=$(bedtools bamtobed -i ${W_URL}/bowtie2_round1/aligned_${ID}_all.bam | cut -f 4 | wc -l)

@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -42,7 +42,10 @@ elif [ $1 == "-h" ]; then
 	-l use files from list of files (default looks into aws)
 	-m the aligner (blasr|minimap2|pbmm2). Default is pbmm2
 	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
+	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
 	-o the options for Canu
+	-v picard validation stringency (STRICT/LENIENT default: STRICT)
+	-z increase sensitivity of mummer overlap detection
 
 EOF
 
@@ -52,7 +55,7 @@ fi
 
 #set options
 
-while getopts ":s:i:r:g:t:d:l:m:f:o:n:" opt; do
+while getopts ":s:i:r:g:t:d:l:m:f:o:n:v:p:z:" opt; do
 
 	case $opt in
 		s)
@@ -88,6 +91,15 @@ while getopts ":s:i:r:g:t:d:l:m:f:o:n:" opt; do
 		n)
             CONTIG=$OPTARG
 			;;
+		v)
+            VAL=$OPTARG
+			;;
+		p)
+            PER=$OPTARG
+			;;
+		z)
+            SEN=$OPTARG
+			;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -100,8 +112,12 @@ printf "\n\n++++                        mitoVGP v2.0                         +++
 printf "++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++\n"
 printf "++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++\n\n"
 
+printf "\nStarted at at: $(date "+%Y-%m-%d %H-%M-%S")\n"
+printf "\nWith command:\n"
+printf "\n${0}\n"
+
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 
 if ! [[ -e "${W_URL}" ]]; then
 
@@ -156,8 +172,20 @@ if ! [[ -z  ${OPTS} ]]; then
 
 fi
 
+if ! [[ -z  ${ALN} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-m ${ALN} "
+
+fi
+
+if ! [[ -z  ${PER} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-p ${PER} "
+
+fi
+
 #retrieve mito-like reads and assemble
-printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
+printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
 
 #identify the mitocontig
@@ -174,20 +202,32 @@ else
 
 fi
 
+if ! [[ -z  ${VAL} ]]; then
+
+	SCRIPT3_OPTS="${SCRIPT3_OPTS}-v ${VAL} "
+
+fi
+
 #polish the mitocontig with long reads
-printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
-sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
 
 #polish the mitocontig with short reads
 printf "\nCommand: sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out &&
 
+if ! [[ -z  ${SEN} ]]; then
+
+	SCRIPT5_OPTS="${SCRIPT5_OPTS}-z ${SEN} "
+
+fi
+
 #trim the mitocontig
-printf "\nCommand: sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out\n"
-sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT5_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT5_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out &&
 
 #polish the trimmed mitocontig with short reads
-printf "\nCommand: sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S").out\n"
+printf "\nCommand: sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S").out &&
 
 #perform final end trimming

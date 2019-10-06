@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -92,7 +92,7 @@ echo Running on `hostname`
 fi
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
 FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1"
@@ -113,7 +113,7 @@ if ! [[ -e "${W_URL}/bowtie2_round2" ]]; then
 	printf "\nAlign...\n"
 
 	#align
-	bowtie2-build ${W_URL}/trimmed/${FNAME}.fasta ${W_URL}/bowtie2_round2/${ID}
+	bowtie2-build --threads ${NPROC} ${W_URL}/trimmed/${FNAME}.fasta ${W_URL}/bowtie2_round2/${ID} -q
 	bowtie2 -x ${W_URL}/bowtie2_round2/${ID} -1 ${W_URL}/bowtie2_round1/fq/aligned_${ID}_all_1.fq -2 ${W_URL}/bowtie2_round1/fq/aligned_${ID}_all_2.fq -p ${NPROC} --no-mixed | samtools view -bSF4 - > "${W_URL}/bowtie2_round2/aligned_${ID}_all_trimmed.bam"
 
 	printf "\nSort and index the alignment...\n"

@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -50,7 +50,7 @@ printf "\n\n++++ running: ArrowPolish ++++\n\n"
 
 #set options
 
-while getopts ":s:i:c:n:t:" opt; do
+while getopts ":s:i:c:n:t:v:" opt; do
 
 	case $opt in
 		s)
@@ -73,6 +73,10 @@ while getopts ":s:i:c:n:t:" opt; do
 			NPROC=$OPTARG
 			echo "Number of threads: -t $OPTARG" >&2
             ;;
+		v)
+			VAL=$OPTARG
+			echo "SAM validation stringency: -v $OPTARG" >&2
+            ;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -91,10 +95,16 @@ echo Running on `hostname`
 
 fi
 
+if [[ -z  ${VAL} ]]; then
+
+	VAL="STRICT"
+
+fi
+
 printf "\n"
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
 if [[ -e "${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta" ]]; then
@@ -141,7 +151,7 @@ if ! [[ -e "${W_URL}/arrow/arrow_round1" ]]; then
 	
 	pbmerge ${W_URL}/arrow/arrow_round1/${ID}_read_set.xml -o ${W_URL}/arrow/arrow_round1/BAM1.bam
 	
-	picard RevertSam I=${W_URL}/arrow/arrow_round1/BAM1.bam O=${W_URL}/arrow/arrow_round1/uBAM1.bam MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP SORT_ORDER=unsorted RESTORE_ORIGINAL_QUALITIES=true REMOVE_DUPLICATE_INFORMATION=true REMOVE_ALIGNMENT_INFORMATION=true
+	picard RevertSam I=${W_URL}/arrow/arrow_round1/BAM1.bam O=${W_URL}/arrow/arrow_round1/uBAM1.bam MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP SORT_ORDER=unsorted RESTORE_ORIGINAL_QUALITIES=true REMOVE_DUPLICATE_INFORMATION=true REMOVE_ALIGNMENT_INFORMATION=true VALIDATION_STRINGENCY=${VAL}
 	
 	pbmm2 align --best-n 1 ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}.fasta.mmi ${W_URL}/arrow/arrow_round1/uBAM1.bam ${W_URL}/arrow/arrow_round1/${ID}.realigned_raw_reads.bam -j ${NPROC}
 
@@ -153,7 +163,7 @@ if ! [[ -e "${W_URL}/arrow/arrow_round1" ]]; then
 
 	#extract reads used by Canu using their names
 	samtools view -H ${W_URL}/arrow/arrow_round1/${ID}.realigned_raw_reads.bam | sed "s/SO:UNKNOWN/SO:unknown/g" | samtools reheader - ${W_URL}/arrow/arrow_round1/${ID}.realigned_raw_reads.bam > ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh.bam
-	picard FilterSamReads I=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh.bam O=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}.bam READ_LIST_FILE=${W_URL}/arrow/arrow_round1/${ID}_${CONTIG}_names.txt FILTER=includeReadList VALIDATION_STRINGENCY=STRICT
+	picard FilterSamReads I=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh.bam O=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}.bam READ_LIST_FILE=${W_URL}/arrow/arrow_round1/${ID}_${CONTIG}_names.txt FILTER=includeReadList VALIDATION_STRINGENCY=${VAL}
 
 	#Arrow polishing using only reads from the Canu assembly
 	samtools faidx ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}.fasta
@@ -174,7 +184,7 @@ printf "\n--Second round of arrow polishing:\n\n"
 
 if ! [[ -e "${W_URL}/arrow/arrow_round2" ]]; then
 	
-	picard RevertSam I=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam O=${W_URL}/arrow/arrow_round1/uBAM2.bam MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP SORT_ORDER=unsorted RESTORE_ORIGINAL_QUALITIES=true REMOVE_DUPLICATE_INFORMATION=true REMOVE_ALIGNMENT_INFORMATION=true
+	picard RevertSam I=${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam O=${W_URL}/arrow/arrow_round1/uBAM2.bam MAX_DISCARD_FRACTION=0.005 ATTRIBUTE_TO_CLEAR=XT ATTRIBUTE_TO_CLEAR=XN ATTRIBUTE_TO_CLEAR=AS ATTRIBUTE_TO_CLEAR=OC ATTRIBUTE_TO_CLEAR=OP SORT_ORDER=unsorted RESTORE_ORIGINAL_QUALITIES=true REMOVE_DUPLICATE_INFORMATION=true REMOVE_ALIGNMENT_INFORMATION=true VALIDATION_STRINGENCY=${VAL}
 		
 	pbmm2 index ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta.mmi 
 	pbmm2 align --best-n 1 ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta.mmi ${W_URL}/arrow/arrow_round1/uBAM2.bam ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_pl.bam -j ${NPROC}
