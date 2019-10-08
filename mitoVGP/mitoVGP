@@ -184,6 +184,12 @@ if ! [[ -z  ${PER} ]]; then
 
 fi
 
+if ! [[ -z  ${LIST} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-l ${LIST} "
+
+fi
+
 #retrieve mito-like reads and assemble
 printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
