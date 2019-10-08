@@ -1,6 +1,9 @@
 # Freebayes polish
 ## Update note
 
+**2019-Oct-07 update**
+- use mem3_ssd1_v2_x48 for 10x align instance
+
 **2019-Sep-03 update**
 - use fastq.gz directly for longranger 10x align
 

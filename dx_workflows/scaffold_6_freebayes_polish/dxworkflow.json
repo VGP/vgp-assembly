@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Sep-03",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Oct-7",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -22,7 +22,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x36"
+          "instanceType": "mem3_ssd1_v2_x48"
         }
       }
     },
@@ -124,7 +124,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x36"
+          "instanceType": "mem3_ssd1_v2_x48"
         }
       }
     },
