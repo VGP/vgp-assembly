@@ -1,14 +1,17 @@
 # Definitions
-name = tpesout/modules2
-version = 4.3.0
-git_commit = c999abdc958fe45c735dca093555b5413aecb678
+name = tpesout/vgp_qv
+version = 0.0.0
+git_commit ?= $(shell git log --pretty=oneline -n 1 | cut -f1 -d " ")
 tag = ${version}--${git_commit}
 
 # Steps
 build:
 	# do the docker build
-	docker build -t ${name}:${tag} --build-arg git_commit=${git_commit} .
+	mkdir tmp
+	cp ../../../pipeline/qv/* tmp
+	docker build -t ${name}:${tag} .
 	docker tag ${name}:${tag} ${name}:latest
+	rm -r tmp
 
 push: build
 	# Requires ~/.dockercfg
