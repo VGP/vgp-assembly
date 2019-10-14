@@ -52,36 +52,83 @@ An existing reference from closely to distantly related species is used to ident
 To date, mitogenomes assembled using mitoVGP pipeline are:
 
 <i>
+Acanthisitta chloris<br/>
+Acipenser ruthenus<br/>
 Alca torda<br/>
 Amblyraja radiata<br/>
 Anabas testudineus<br/>
+Anableps anableps<br/>
+Antennarius maculatus<br/>
+Aquila chrysaetos<br/>
 Archocentrus centrarchus<br/>
 Arvicanthis niloticus<br/>
 Astatotilapia calliptera<br/>
-Balearica regulorum<br/>
+Balaenoptera musculus<br/>
+Bos taurus<br/>
+Bufo bufo<br/>
 Callithrix jacchus<br/>
-Calypte anna <br/>
-Chiroxiphia lanceolata<br/>
+Calypte anna<br/>
+Carcharodon carcharias<br/>
+Cariama cristata<br/>
+Catharus ustulatus<br/>
+Chelmon rostratus<br/>
 Choloepus didactylus<br/>
-Cuculus canorus<br/>
+Corvus moneduloides<br/>
+Cyclopterus lumpus<br/>
+Cygnus olor<br/>
+Danio rerio<br/>
 Dendropsophus ebraccatus<br/>
+Denticeps clupeoides<br/>
 Dermochelys coriacea<br/>
-Gopherus evgoodei <br/>
-Gopherus flavomarginatus<br/>
-Gouania willdenowi <br/>
+Dryobates pubescens<br/>
+Echeneis naucrates<br/>
+Electrophorus electricus<br/>
+Erpetoichthys calabaricus<br/>
+Esox lucius<br/>
+Falco rusticolus<br/>
+Gallus gallus<br/>
+Geotrypetes seraphini<br/>
+Gopherus evgoodei<br/>
+Gouania willdenowi<br/>
+Hippoglossus hippoglossus<br/>
 Homo sapiens<br/>
+Lacerta agilis<br/>
 Lemur catta<br/>
+Lutra lutra<br/>
 Lynx canadensis<br/>
 Mastacembelus armatus<br/>
+Megalops cyprinoides<br/>
+Melanotaenia boesemani<br/>
 Melopsittacus undulatus<br/>
+Merops nubicus<br/>
+Microcaecilia unicolor<br/>
+Mustela erminea<br/>
+Notolabrus celidotus<br/>
+Nyctibius grandis<br/>
 Ornithorhynchus anatinus<br/>
+Pan troglodytes<br/>
+Periophthalmus magnuspinnatus<br/>
+Phocoena sinus<br/>
 Phyllostomus discolor<br/>
+Pipistrellus pipistrellus<br/>
 Pristis pectinata<br/>
 Pterocles gutturalis<br/>
+Rana temporaria<br/>
 Rhinatrema bivittatum<br/>
 Rhinolophus ferrumequinum<br/>
+Salmo trutta<br/>
+Sciurus vulgaris<br/>
+Sparus aurata<br/>
+Sterna hirundo<br/>
 Strigops habroptilus<br/>
+Syngnathus acus<br/>
+Tachyglossus aculeatus<br/>
 Taeniopygia guttata</i> (x2) <i><br/>
-Tursiops truncatus
+Takifugu rubripes<br/>
+Trachurus trachurus<br/>
+Trichosurus vulpecula<br/>
+Tursiops truncatus<br/>
+Xenentodon cancila<br/>
+Zalophus californianus<br/>
+Zeus faber
 </i>
-

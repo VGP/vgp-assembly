@@ -15,7 +15,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 
-	Usage: '$0 -s species -i species_ID -r reference -g genome_size -t threads [-m mapper -l filelist -f size_cutoff -o canu_options]'
+	Usage: '$0 -s species -i species_ID -r reference -t threads'
 
 	mitoVGP is used for reference-guided de novo mitogenome assembly using a combination of long and short read data.
 	
@@ -30,22 +30,23 @@ elif [ $1 == "-h" ]; then
 	on each step in the help (-h) of each script.
 
 	Required arguments are:
-	-s the species name (e.g. Calypte_anna)
-	-i the VGP species ID (e.g. bCalAnn1)
-	-r the reference sequence fasta file
-	-t the number of threads
+		-s the species name (e.g. Calypte_anna)
+		-i the VGP species ID (e.g. bCalAnn1)
+		-r the reference sequence fasta file
+		-t the number of threads
 	
 	Optional arguments are:
-	-g the putative mitogenome size (potentially, that of the reference genome). If not provided, length of reference is used.
-	It does not need to be precise. Accepts Canu formatting.
-	-d multithreaded download of files (true/false default: false) !! warning: it may require considerable amount of space.
-	-l use files from list of files (default looks into aws)
-	-m the aligner (blasr|minimap2|pbmm2). Default is pbmm2
-	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
-	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
-	-o the options for Canu
-	-v picard validation stringency (STRICT/LENIENT default: STRICT)
-	-z increase sensitivity of mummer overlap detection
+		-g the putative mitogenome size (potentially, that of the reference genome). If not provided, length of reference is used.
+		   It does not need to be precise. Accepts Canu formatting.
+		-d multithreaded download of files (true/false default: false) !! caution: true may require considerable amount of space.
+		-1 use pacbio/nanopore reads from list of files, requires absolute path (default looks into aws)
+		-2 use PE illumina reads from list of files (with fw and rv reads including R1/R2 in their names), requires absolute path (default looks into aws)
+		-m the aligner (blasr|minimap2|pbmm2). Default is pbmm2
+		-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
+		-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
+		-o the options for Canu
+		-v picard validation stringency (STRICT/LENIENT default: STRICT)
+		-z increase sensitivity of mummer overlap detection
 
 EOF
 
@@ -55,7 +56,7 @@ fi
 
 #set options
 
-while getopts ":s:i:r:g:t:d:l:m:f:o:n:v:p:z:" opt; do
+while getopts ":s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:" opt; do
 
 	case $opt in
 		s)
@@ -76,8 +77,11 @@ while getopts ":s:i:r:g:t:d:l:m:f:o:n:v:p:z:" opt; do
 		d)
 			DOWNL=$OPTARG
             ;;
-		l)
-			LIST=$OPTARG
+		1)
+			PB=$OPTARG
+			;;
+		2)
+			IL=$OPTARG
 			;;
 		m)
 			ALN=$OPTARG
@@ -184,9 +188,9 @@ if ! [[ -z  ${PER} ]]; then
 
 fi
 
-if ! [[ -z  ${LIST} ]]; then
+if ! [[ -z  ${PB} ]]; then
 
-	SCRIPT1_OPTS="${SCRIPT1_OPTS}-l ${LIST} "
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-1 ${PB} "
 
 fi
 
@@ -218,9 +222,21 @@ fi
 printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
 
+if ! [[ -z  ${IL} ]]; then
+
+	SCRIPT4_OPTS="${SCRIPT4_OPTS}-2 ${IL} "
+
+fi
+
+if ! [[ -z  ${DOWNL} ]]; then
+
+	SCRIPT4_OPTS="${SCRIPT4_OPTS}-d ${DOWNL} "
+
+fi
+
 #polish the mitocontig with short reads
-printf "\nCommand: sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out\n"
-sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} -d ${DOWNL} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT4_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT4_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out &&
 
 if ! [[ -z  ${SEN} ]]; then
 

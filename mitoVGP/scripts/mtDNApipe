@@ -15,7 +15,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 
-	Usage: '$0 -s species -i species_ID -r reference -g genome_size -t threads -m mapper (optional) -l filelist (optional) -c cluster (optional)'
+	Usage: '$0 -s species -i species_ID -r reference -g genome_size -t threads -m mapper (optional) -1 filelist (optional) -c cluster (optional)'
 
 	mtDNApipe.sh is used to retrieve mitochondrial-like sequences from the raw Pacbio data
 	generated in the framework of the Vertebrate Genomes Project and assemble them using Canu.
@@ -49,8 +49,8 @@ elif [ $1 == "-h" ]; then
 	-t the number of threads
 	
 	Optional arguments are:
-	-d multithreaded download of files (true/false default: false) !! warning: it may require considerable amount of space.
-	-l use files from list of files (default looks into aws)
+	-d multithreaded download of files (true/false default: false) !! caution: true may require considerable amount of space.
+	-1 use pacbio/nanopore files from list of files, requires absolute path (default looks into aws)
 	-m the aligner for mitoread identification (blasr|pbmm2). Default is pbmm2
 	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
 	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
@@ -69,13 +69,9 @@ printf "\n\n++++ running: mtDNApipe ++++\n\n"
 
 #set options
 
-while getopts ":l:s:i:r:g:c:f:o:m:t:d:p:" opt; do
+while getopts ":s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
 
 	case $opt in
-		l)
-			LIST=$OPTARG
-			echo "Mode: -l $OPTARG"
-			;;
 		s)
 			SPECIES=$OPTARG
 			echo "Species: -s $OPTARG"
@@ -120,6 +116,10 @@ while getopts ":l:s:i:r:g:c:f:o:m:t:d:p:" opt; do
 			PER=$OPTARG
 			echo "Percent coverage of reads: -p > $OPTARG"
             ;;
+		1)
+			PB=$OPTARG
+			echo "Local long read data: -1 $OPTARG"
+			;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -152,15 +152,15 @@ fi
 
 dw_date=`date "+%Y%m%d-%H%M%S"`;
 
-if [[ -z ${LIST} ]]; then
+if ! [[ -e ${W_URL}/log/long_reads_file_list_$dw_date.txt ]] && [[ -z ${PB} ]]; then
 
 	#record Pacbio raw data files available in the cloud at the time of the analysis
 	printf "Collecting data using: aws s3 ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/\n\n"
-	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ | grep -oP "m.*.subreads.bam" | uniq > ${W_URL}/log/file_list_$dw_date.txt
+	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ | grep -oP "m.*.subreads.bam" | uniq > ${W_URL}/log/long_reads_file_list_$dw_date.txt
 
 else
 
-	cat ${LIST} > ${W_URL}/log/file_list_$dw_date.txt
+	cat ${PB} > ${W_URL}/log/long_reads_file_list_$dw_date.txt
 
 fi
 
@@ -187,12 +187,22 @@ if [[ ${DOWNL} == true ]] && ! [[ "$(ls -A ${W_URL}/pacbio_bam)" ]] ; then
 
 fi
 
+printf "\n--Following long read files found:\n"
+
+while read p; do
+
+echo ${p}
+
+done < ${W_URL}/log/long_reads_file_list_$dw_date.txt
+
+printf "\n"
+
 #for each Pacbio raw data file do
 while read p; do
 
 if ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && [[ $p == *.bam ]] && ! [[ -e "${W_URL}/pacbio_bam/aligned_$(basename -- "$p")" ]]; then
 	
-	if [[ -z ${LIST} ]]; then
+	if [[ -z ${PB} ]]; then
 
 		if [[ -z ${DOWNL} ]] || ! [[  ${DOWNL} == true ]]; then
 
@@ -226,7 +236,7 @@ rm ${W_URL}/${p%.*}.bam
 
 fi
 
-done < ${W_URL}/log/file_list_$dw_date.txt
+done < ${W_URL}/log/long_reads_file_list_$dw_date.txt
 
 #organize the files
 

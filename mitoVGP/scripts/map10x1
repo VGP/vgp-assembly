@@ -38,6 +38,7 @@ elif [ $1 == "-h" ]; then
 		-t the number of threads
 
 	Optional arguments are:	
+		-2 use PE illumina reads from list of files (with fw and rv reads including R1/R2 in their names), requires absolute path (default looks into aws)
 		-c if run on cluster. Supported options are:
 			SLURM
 			None (Default)
@@ -52,7 +53,7 @@ printf "\n\n++++ running: map10x1 ++++\n\n"
 
 #set options
 
-while getopts ":s:i:n:c:t:d:" opt; do
+while getopts ":s:i:n:c:t:2:d:" opt; do
 
 	case $opt in
 		s)
@@ -73,16 +74,20 @@ while getopts ":s:i:n:c:t:d:" opt; do
 			;;
 		t)
 			NPROC=$OPTARG
-			echo "Number of threads: -t $OPTARG" >&2
+			echo "Number of threads: -t $OPTARG"
             ;;
-		\?)
-			echo "ERROR - Invalid option: -$OPTARG" >&2
-			exit 1
+		2)
+			IL=$OPTARG
+			echo "Local short read data: -2 $OPTARG"
 			;;
 		d)
 			DOWNL=$OPTARG
 			echo "Multithreaded download: -d $OPTARG"
-            ;;			
+            ;;           
+		\?)
+			echo "ERROR - Invalid option: -$OPTARG" >&2
+			exit 1
+			;;		
 	esac
 	
 printf "\n"
@@ -126,29 +131,35 @@ if ! [[ -e "${W_URL}/bowtie2_round1/log/" ]]; then
 
 fi
 
-if ! [[ -e "${W_URL}/bowtie2_round1/log/file_list_$dw_date.txt" ]]; then
+
+
+if ! [[ -e "${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt" ]] && [[ -z ${IL} ]]; then
 	
 	printf "Collecting data using: aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/\n\n"
-	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/ > ${W_URL}/bowtie2_round1/log/file_list_$dw_date.txt
+	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/ > ${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt
+
+else
+
+	cat ${IL} > ${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt
 
 fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/${ID}.1.bt2" ]]; then
 
-bowtie2-build --threads ${NPROC} ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta ${W_URL}/bowtie2_round1/${ID} -q
+	bowtie2-build --threads ${NPROC} ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta ${W_URL}/bowtie2_round1/${ID} -q
 
 fi
 
 #determine fw and rv reads
 if ! [[ -e "${W_URL}/bowtie2_round1/p_fw.txt" ]]; then
 
-	grep -o -E "${ID}.*_R1_.*" ${W_URL}/bowtie2_round1/log/file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_fw.txt
+	grep -o -E ".*_R1_.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_fw.txt
 
 fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/p_rv.txt" ]]; then
 
-	grep -o -E "${ID}.*_R2_.*" ${W_URL}/bowtie2_round1/log/file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_rv.txt
+	grep -o -E ".*_R2_.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_rv.txt
 
 fi
 
@@ -189,17 +200,31 @@ do
 		printf "${p1[i]}\n"
 		printf "${p2[i]}\n\n"
 
+	if [[ -z ${IL} ]]; then
+
 		if [[ -z ${DOWNL} ]] || ! [[  ${DOWNL} == true ]]; then
 			#download
 			aws --no-sign-request s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p1[i]} ${W_URL}
 			aws --no-sign-request s3 cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/${p2[i]} ${W_URL}
 		fi
+
+	p1=${p1[i]}
+	p2=${p2[i]}
+
+	else
+	
+	ln -s ${p1[i]} ${W_URL}/$(basename -- "${p1[i]}")
+	p1=$(basename -- "${p1[i]}")
+	ln -s ${p2[i]} ${W_URL}/$(basename -- "${p2[i]}")
+	p2=$(basename -- "${p2[i]}")
+	
+	fi
 		
 		#align
-		bowtie2 -x ${W_URL}/bowtie2_round1/${ID} -1 ${W_URL}/${p1[i]} -2 ${W_URL}/${p2[i]} -p ${NPROC} | samtools view -bSF4 - > "${W_URL}/bowtie2_round1/aligned_raw_reads/aligned_${ID}_${i}.bam"
+		bowtie2 -x ${W_URL}/bowtie2_round1/${ID} -1 ${W_URL}/${p1} -2 ${W_URL}/${p2} -p ${NPROC} | samtools view -bSF4 - > "${W_URL}/bowtie2_round1/aligned_raw_reads/aligned_${ID}_${i}.bam"
 
 		#remove
-		rm ${W_URL}/${p1[i]} ${W_URL}/${p2[i]}
+		rm ${W_URL}/${p1} ${W_URL}/${p2}
 
 	else
 	
