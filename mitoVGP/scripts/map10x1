@@ -136,8 +136,10 @@ fi
 if ! [[ -e "${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt" ]] && [[ -z ${IL} ]]; then
 	
 	printf "Collecting data using: aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/\n\n"
-	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/ > ${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt
-
+	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/10x/ > ${W_URL}/bowtie2_round1/log/short_reads_file_list_aws_$dw_date.txt
+	
+	awk '{print $4}' ${W_URL}/bowtie2_round1/log/short_reads_file_list_aws_$dw_date.txt > ${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt
+	
 else
 
 	cat ${IL} > ${W_URL}/bowtie2_round1/log/short_reads_file_list_$dw_date.txt
