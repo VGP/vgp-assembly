@@ -155,13 +155,13 @@ fi
 #determine fw and rv reads
 if ! [[ -e "${W_URL}/bowtie2_round1/p_fw.txt" ]]; then
 
-	grep -o -E ".*_R1_.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_fw.txt
+	grep -o -E ".*R1.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_fw.txt
 
 fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/p_rv.txt" ]]; then
 
-	grep -o -E ".*_R2_.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_rv.txt
+	grep -o -E ".*R2.*" ${W_URL}/bowtie2_round1/log/short_reads_file_list_${dw_date}.txt | sort | uniq > ${W_URL}/bowtie2_round1/p_rv.txt
 
 fi
 
