@@ -2,97 +2,36 @@
 FROM tpesout/modules:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
-# install cmake
-WORKDIR /opt/cmake_install
-RUN mkdir /opt/cmake && \
-    wget https://cmake.org/files/v3.13/cmake-3.13.5-Linux-x86_64.sh && \
-    sh cmake-3.13.5-Linux-x86_64.sh --prefix=/opt/cmake --skip-license && \
-    ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
-    rm -r /opt/cmake_install
+### BUSCO
+# 3.0.2
+WORKDIR /root/tools/BUSCO
+RUN wget https://gitlab.com/ezlab/busco/-/archive/3.0.2/busco-3.0.2.tar.gz && \
+    tar xvf busco-3.0.2.tar.gz && \
+    mv busco-3.0.2 busco/ && \
+    rm busco-3.0.2.tar.gz && \
+    cd busco && \
+    bash -i -c "module load python/3.6 && \
+    python setup.py install"
+COPY config.ini /root/tools/BUSCO/busco/config/config.ini
+# vertebrata dataset
+WORKDIR /root/tools/BUSCO/dataset/
+RUN wget http://busco.ezlab.org/v2/datasets/vertebrata_odb9.tar.gz && \
+    tar xvf vertebrata_odb9.tar.gz && \
+    rm vertebrata_odb9.tar.gz
 
-WORKDIR /opt/bamtools
-RUN wget https://github.com/pezmaster31/bamtools/archive/v2.5.1.tar.gz && \
-    tar -xvf v2.5.1.tar.gz && \
-    cmake -DCMAKE_INSTALL_PREFIX=/opt/bamtools bamtools-2.5.1/ && \
-    make install && \
-    mkdir /root/bin/bamtools_2.5.1 && \
-    cp bin/bamtools /root/bin/bamtools_2.5.1 && \
-    rm -r /opt/bamtools && \
-    mkdir /root/modules/bamtools && \
-    echo "#%Module" >>/root/modules/bamtools/2.5.1 && \
-    echo "append-path PATH /root/bin/bamtools_2.5.1" >>/root/modules/bamtools/2.5.1 && \
-    echo "#%Module" >>/root/modules/bamtools/.modulerc && \
-    echo "module-version /2.5.1 default" >>/root/modules/bamtools/.modulerc
-
-WORKDIR /opt/blast
-RUN wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.2.30/ncbi-blast-2.2.30+-x64-linux.tar.gz && \
-    tar -xvf ncbi-blast-2.2.30+-x64-linux.tar.gz && \
-    mkdir /root/bin/blast_2.2.30+ && \
-    mv /opt/blast/ncbi-blast-2.2.30+/bin/* /root/bin/blast_2.2.30+/ && \
-    rm -r /opt/blast && \
-    mkdir /root/modules/blast && \
-    echo "#%Module" >>/root/modules/blast/2.2.30+ && \
-    echo "append-path PATH /root/bin/blast_2.2.30+" >>/root/modules/blast/2.2.30+ && \
-    echo "#%Module" >>/root/modules/blast/.modulerc && \
-    echo "module-version /2.2.30+ default" >>/root/modules/blast/.modulerc
-
-WORKDIR /opt/hmmer
-RUN wget https://github.com/EddyRivasLab/hmmer/archive/hmmer-3.2.1.tar.gz && \
-    tar -xvf hmmer-3.2.1.tar.gz && \
-    cd hmmer-hmmer-3.2.1 && \
-    git clone https://github.com/EddyRivasLab/easel.git && \
-    cd easel && \
-    git checkout 924d7efff9a765d1d5807904f9686e2513a1e4f2 && \
-    cd .. && \
-    autoconf && \
-    ./configure --prefix /opt/hmmer/hmmer-hmmer-3.2.1/install/ && \
-    make && \
-    make install && \
-    mkdir /root/bin/hmmer_3.2.1 && \
-    cp install/bin/* /root/bin/hmmer_3.2.1 && \
-    rm -r /opt/hmmer && \
-    mkdir /root/modules/hmmer && \
-    echo "#%Module" >>/root/modules/hmmer/3.2.1 && \
-    echo "append-path PATH /root/bin/hmmer_3.2.1" >>/root/modules/hmmer/3.2.1 && \
-    echo "#%Module" >>/root/modules/hmmer/.modulerc && \
-    echo "module-version /3.2.1 default" >>/root/modules/hmmer/.modulerc
-
-WORKDIR /opt/R
-RUN apt-get install -y gfortran build-essential fort77 xorg-dev libblas-dev gcc-multilib gobjc++ aptitude libreadline-dev
-RUN apt-get install -y libpcre3 libpcre3-dev
-RUN wget https://cran.r-project.org/src/base/R-3/R-3.2.1.tar.gz && \
-    tar xvf R-3.2.1.tar.gz && \
-    cd R-3.2.1 && \
-    ./configure --enable-utf8 && \
-    make && \
-    mkdir /root/bin/R_3.2.1 && \
-    cp -r bin/* /root/bin/R_3.2.1 && \
-    rm -r /opt/R && \
-    mkdir /root/modules/R && \
-    echo "#%Module" >>/root/modules/R/3.2.1 && \
-    echo "append-path PATH /root/bin/R_3.2.1" >>/root/modules/R/3.2.1 && \
-    echo "#%Module" >>/root/modules/R/.modulerc && \
-    echo "module-version /3.2.1 default" >>/root/modules/R/.modulerc
-
-WORKDIR /opt/python3
-RUN wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz && \
-    tar xvf Python-3.6.0.tgz && \
-    cd Python-3.6.0 && \
-    ./configure && \
-    make && \
-    mkdir /root/bin/python_3.6.0 && \
-    cp python /root/bin/python_3.6.0 && \
-    rm -r /opt/python3 && \
-    mkdir /root/modules/python && \
-    echo "#%Module" >>/root/modules/python/3.6 && \
-    echo "append-path PATH /root/bin/python_3.6.0" >>/root/modules/python/3.6 && \
-    echo "#%Module" >>/root/modules/python/.modulerc && \
-    echo "module-version /3.6 default" >>/root/modules/python/.modulerc
-
-
-
-# TODO
-#module load python/3.6
+### Augustus
+# 3.3.1
+WORKDIR /root/tools/Augustus/
+RUN wget https://github.com/Gaius-Augustus/Augustus/archive/v3.3.1-tag1.tar.gz && \
+    tar xvf v3.3.1-tag1.tar.gz && \
+    mv Augustus-3.3.1-tag1/ Augustus-3.3.1/ && \
+    rm v3.3.1-tag1.tar.gz && \
+    cd Augustus-3.3.1/ && \
+    mkdir tooldir && \
+    ln -s /opt/samtools/samtools-1.9/ tooldir/samtools  && \
+    ln -s /opt/bcftools/bcftools-1.9/ tooldir/bcftools && \
+    ln -s /opt/htslib/htslib-1.9/ tooldir/htslib && \
+    TOOLDIR=/root/tools/Augustus/Augustus-3.3.1/tooldir make
 
 WORKDIR /root/scripts/busco/
 COPY _docker_busco.sh tmp/*.sh ./

@@ -7,6 +7,8 @@ fi
 
 # variable overwriting
 export VGP_PIPELINE=/root/scripts
+export tools=/root/tools
+export SLURM_CPUS_PER_TASK=12
 
 assembly=$1
 if ! [ -e `basename $assembly` ]; then
