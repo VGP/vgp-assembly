@@ -3,6 +3,5 @@ FROM tpesout/modules:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
 WORKDIR /root/scripts/minimap2/
-COPY _docker_minimap2.sh tmp/*.sh ./
+COPY tmp/*.sh ./
 WORKDIR /data
-ENTRYPOINT ["bash", "-i", "/root/scripts/minimap2/_docker_minimap2.sh"]
