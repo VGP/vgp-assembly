@@ -34,6 +34,5 @@ RUN wget https://github.com/Gaius-Augustus/Augustus/archive/v3.3.1-tag1.tar.gz &
     TOOLDIR=/root/tools/Augustus/Augustus-3.3.1/tooldir make
 
 WORKDIR /root/scripts/busco/
-COPY _docker_busco.sh tmp/*.sh ./
+COPY tmp/*.sh ./
 WORKDIR /data
-ENTRYPOINT ["bash", "-i", "/root/scripts/busco/_docker_busco.sh"]

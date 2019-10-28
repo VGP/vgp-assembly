@@ -5,8 +5,6 @@ workflow helloMinimap2 {
 task minimap2 {
     File refFasta
     File readFile
-    Int cpuCount
-    Int memoryGB
     String dockerMinimap2Tag
 	command <<<
         # initialize modules
@@ -31,9 +29,7 @@ task minimap2 {
         ln -s ${refFasta}
         ln -s ${readFile}
         echo $READS >input.fofn
-        export SLURM_CPUS_PER_TASK=${cpuCount}
-
-        mkdir -p logs
+        export SLURM_CPUS_PER_TASK=16
 
         # index ref (if not present)
         if [ ! -e $REF.idx ]; then
@@ -54,8 +50,8 @@ task minimap2 {
 		File minimap2BamIdx = outputBase + ".bam.bai"
 	}
     runtime {
-        cpu: cpuCount
-        memory: memoryGB + " GB"
+        cpu: 16
+        memory: "32 GB"
         docker: "tpesout/vgp_minimap2"
     }
 }
