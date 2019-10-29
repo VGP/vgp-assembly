@@ -5,7 +5,8 @@ workflow helloMinimap2 {
 task minimap2 {
     File refFasta
     File readFile
-    String dockerMinimap2Tag
+    String minimapPreset
+    String samtoolsFilter
 	command <<<
         # initialize modules
         source /usr/local/Modules/init/bash
@@ -33,12 +34,12 @@ task minimap2 {
 
         # index ref (if not present)
         if [ ! -e $REF.idx ]; then
-            bash /root/scripts/minimap2/minimap2_idx.sh $REF
+            bash /root/scripts/minimap2/minimap2_idx.sh $REF ${minimapPreset}
         fi
 
         # align
         if [ ! -e $REF.bam ]; then
-            bash /root/scripts/minimap2/minimap2.sh $REF 1
+            bash /root/scripts/minimap2/minimap2.sh $REF 1 ${minimapPreset} "${samtoolsFilter}"
         fi
 
         bash /root/scripts/minimap2/merge.sh `cat outputBase`
