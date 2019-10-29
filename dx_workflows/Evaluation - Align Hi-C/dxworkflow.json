@@ -1,5 +1,5 @@
 {
-  "name": "Evaluation - Align Hi-C",
+  "name": "Evaluation - Align Hi-C 2019-Oct-29",
   "title": "Evaluation - Align Hi-C",
   "stages": [
     {
@@ -8,7 +8,7 @@
     },
     {
       "id": "stage-FbZXqFj0j3bGfvvq9yFxbjqX",
-      "executable": "app-arima_mapping/0.0.1",
+      "executable": "app-arima_mapping/0.1.0",
       "input": {
         "ref_genome": {
           "$dnanexus_link": {
