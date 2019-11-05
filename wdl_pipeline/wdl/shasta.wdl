@@ -7,6 +7,7 @@ task shasta {
     String sampleName
     Int threadCount
     Int memoryGigabyte
+
 	command <<<
         # initialize modules
         source /usr/local/Modules/init/bash

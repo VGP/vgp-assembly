@@ -4,9 +4,10 @@ workflow helloMinimap2 {
 
 task minimap2 {
     File refFasta
-    File readFile
+    Array[File] readFiles
     String minimapPreset
     String samtoolsFilter
+
 	command <<<
         # initialize modules
         source /usr/local/Modules/init/bash
@@ -25,22 +26,25 @@ task minimap2 {
         # get name of output file
         REF=`basename ${refFasta}`
         echo $REF | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g' >outputBase
-        READS=`basename ${readFile}`
 
         ln -s ${refFasta}
-        ln -s ${readFile}
-        echo $READS >input.fofn
+
+        for RF in ${sep=" " readFiles} ; do
+            ln -s $RF
+            echo `basename $RF` >>input.fofn
+        done
+
         export SLURM_CPUS_PER_TASK=16
 
         # index ref (if not present)
-        if [ ! -e $REF.idx ]; then
-            bash /root/scripts/minimap2/minimap2_idx.sh $REF ${minimapPreset}
-        fi
+        bash /root/scripts/minimap2/minimap2_idx.sh $REF ${minimapPreset}
 
         # align
-        if [ ! -e $REF.bam ]; then
-            bash /root/scripts/minimap2/minimap2.sh $REF 1 ${minimapPreset} "${samtoolsFilter}"
-        fi
+        IDX=1
+        for RF in ${sep=" " readFiles} ; do
+            bash /root/scripts/minimap2/minimap2.sh $REF $IDX ${minimapPreset} "${samtoolsFilter}"
+            IDX=$(($IDX + 1))
+        done
 
         bash /root/scripts/minimap2/merge.sh `cat outputBase`
 

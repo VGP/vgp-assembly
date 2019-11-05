@@ -11,6 +11,7 @@ task marginPolish {
     String featureType
     Int threadCount
     Int memoryGigabyte
+
 	command <<<
         # initialize modules
         source /usr/local/Modules/init/bash

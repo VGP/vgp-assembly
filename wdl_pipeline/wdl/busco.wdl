@@ -3,7 +3,8 @@ workflow helloBusco {
 }
 
 task busco {
-	File assemblyFasta
+    File assemblyFasta
+
 	command <<<
         # initialize modules
         source /usr/local/Modules/init/bash
