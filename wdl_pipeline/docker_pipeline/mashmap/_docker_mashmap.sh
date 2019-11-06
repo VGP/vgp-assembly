@@ -1,17 +1,16 @@
 #!/bin/bash
 
-# module load gnuplot
-# module load bwa
+module load gnuplot
+module load bwa
 # module load repeatmasker
 
-# module load ngmlr/0.2.6
+module load ngmlr/0.2.6
 # module load perl/5.18.2
 # module load picard/2.9.2
 
 
 # module load juicer/1.5.6
-
-# module load minimap2/2.17
+module load minimap2/2.17
 
 # module load purge_haplotigs
 # module load purge_haplotigs/0~20180710.f4fd019
@@ -26,3 +25,5 @@
 #module load perl/5.18.2
 #module load R
 
+module load mummer 
+module load mash
