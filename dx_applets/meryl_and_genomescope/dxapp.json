@@ -118,7 +118,7 @@
     "aws:us-east-1": {
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd1_v2_x16"
+          "instanceType": "mem3_ssd1_v2_x32"
         }
       },
       "bundledDepends": [{"name": "jellyfish_2.23_genomescope_1.0.0.tar.gz", "id": {"$dnanexus_link": "file-FBKg7bv2J35fY0g9Pxb7VyPG"}}],
