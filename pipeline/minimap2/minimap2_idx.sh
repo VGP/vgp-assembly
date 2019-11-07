@@ -6,6 +6,11 @@ if [ -z $1 ]; then
 	exit -1
 fi
 
+preset="$2"
+if [ -z $2 ]; then
+    preset="map-pb"
+fi
+
 ref=$1
 ref=`echo $ref | sed 's/.fasta$//g' | sed 's/.fa$//g'`
 
@@ -21,7 +26,7 @@ echo "Start indexing $1"
 module load minimap2/2.11
 
 echo "\
-minimap2 -t $cpus -x map-pb -d $ref.idx $1"
-minimap2 -t $cpus -x map-pb -d $ref.idx $1
+minimap2 -t $cpus -x $preset -d $ref.idx $1"
+minimap2 -t $cpus -x $preset -d $ref.idx $1
 echo
 

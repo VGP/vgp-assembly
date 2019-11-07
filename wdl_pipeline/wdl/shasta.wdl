@@ -1,9 +1,12 @@
-workflow helloBusco {
-	call busco
+workflow helloShasta {
+	call shasta
 }
 
-task busco {
-    File assemblyFasta
+task shasta {
+    Array[File] readFiles
+    String sampleName
+    Int threadCount
+    Int memoryGigabyte
 
 	command <<<
         # initialize modules
@@ -20,27 +23,19 @@ task busco {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        # get name of output file
-        ASSEMBLY=`basename ${assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' `
-        echo $ASSEMBLY >outputBase
-
-        ln -s ${assemblyFasta}
-
-        export SLURM_CPUS_PER_TASK=24
-        export tools=/root/tools
-
-        bash /root/scripts/busco/busco.sh `basename ${assemblyFasta}`
-
-        tar czvf $ASSEMBLY.busco.tar.gz run_$ASSEMBLY
-
+        module load shasta
+        shasta --input ${sep=" --input " readFiles} --threads ${threadCount}
+        mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
+        mv ShastaRun ${sampleName}
+        tar czvf ${sampleName}.shasta.tar.gz ${sampleName}/*
 	>>>
 	output {
-		String outputBase = read_string("outputBase")
-		File outputTarball = outputBase + ".busco.tar.gz"
+		File assemblyFasta = sampleName + ".shasta.fasta"
+		File assemblyExtra = sampleName + ".shasta.tar.gz"
 	}
     runtime {
-        cpu: 24
-        memory: "42 GB"
-        docker: "tpesout/vgp_busco"
+        cpu: threadCount
+        memory: memoryGigabyte + " GB"
+        docker: "tpesout/vgp_shasta"
     }
 }
