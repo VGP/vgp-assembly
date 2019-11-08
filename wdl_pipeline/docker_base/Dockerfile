@@ -9,7 +9,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
                        perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev libncurses5-dev \
                        gfortran build-essential fort77 xorg-dev libblas-dev gcc-multilib gobjc++ aptitude \
                        libreadline-dev openjdk-8-jdk libpcre3 libpcre3-dev libbamtools-dev libsuitesparse-dev \
-                       liblpsolve55-dev libboost-iostreams-dev
+                       liblpsolve55-dev libboost-iostreams-dev libhdf5-dev libboost-all-dev libpng-dev \
+                       graphviz sudo
 #&& \
 #    apt-get clean && \
 #    apt-get purge && \
@@ -40,8 +41,20 @@ RUN mkdir /opt/cmake && \
     ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake && \
     rm -r /opt/cmake_install
 
-
 ### minimap2
+# 2.17
+WORKDIR /opt/minimap2
+RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17.tar.bz2 && \
+	tar xvf minimap2-2.17.tar.bz2 && \
+	cd minimap2-2.17 && \
+	make && \
+	mkdir /root/bin/minimap2_2.17  && \
+    mkdir /root/modules/minimap2 && \
+	cp -r minimap2 /root/bin/minimap2_2.17 && \
+	echo "#%Module" >>/root/modules/minimap2/2.17 && \
+    echo "append-path PATH /root/bin/minimap2_2.17" >>/root/modules/minimap2/2.17 && \
+    echo "#%Module" >>/root/modules/minimap2/.modulerc && \
+    echo "module-version /2.17 default" >>/root/modules/minimap2/.modulerc
 # 2.11 
 WORKDIR /opt/minimap2
 RUN wget https://github.com/lh3/minimap2/archive/v2.11.tar.gz && \
@@ -51,11 +64,8 @@ RUN wget https://github.com/lh3/minimap2/archive/v2.11.tar.gz && \
     make && \
     mkdir /root/bin/minimap2_2.11 && \
     cp minimap2 /root/bin/minimap2_2.11 && \
-    mkdir /root/modules/minimap2 && \
     echo "#%Module" >>/root/modules/minimap2/2.11 && \
-    echo "append-path PATH /root/bin/minimap2_2.11" >>/root/modules/minimap2/2.11 && \
-    echo "#%Module" >>/root/modules/minimap2/.modulerc && \
-    echo "module-version /2.11 default" >>/root/modules/minimap2/.modulerc
+    echo "append-path PATH /root/bin/minimap2_2.11" >>/root/modules/minimap2/2.11
 
 ### samtools
 # 1.9
@@ -210,3 +220,87 @@ RUN wget https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar
     cd htslib-1.9 && \
     ./configure && \
     make
+
+### bwa
+# 0.7.17
+WORKDIR /opt/bwa
+RUN wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2 && \
+	tar xvf bwa-0.7.17.tar.bz2 && \
+	rm bwa-0.7.17.tar.bz2 && \
+	cd bwa-0.7.17 && \
+	make && \
+	mkdir /root/bin/bwa_0.7.17  && \
+	cp bwa qualfa2fq.pl xa2multi.pl bwakit/* /root/bin/bwa_0.7.17 && \
+	mkdir /root/modules/bwa && \
+	echo "#%Module" >>/root/modules/bwa/0.7.17 && \
+    echo "append-path PATH /root/bin/bwa_0.7.17" >>/root/modules/bwa/0.7.17 && \
+    echo "#%Module" >>/root/modules/bwa/.modulerc && \
+    echo "module-version /0.7.17 default" >>/root/modules/bwa/.modulerc
+
+### mash
+# 2.2
+WORKDIR /opt/mash
+RUN wget https://github.com/marbl/Mash/releases/download/v2.2/mash-Linux64-v2.2.tar && \
+	tar xvf mash-Linux64-v2.2.tar && \
+	rm mash-Linux64-v2.2.tar && \
+	cd mash-Linux64-v2.2 && \
+	mkdir /root/bin/mash_v2.2  && \
+	cp -r . /root/bin/mash_v2.2 && \
+	mkdir /root/modules/mash && \
+	echo "#%Module" >>/root/modules/mash/2.2 && \
+    echo "append-path PATH /root/bin/mash_v2.2" >>/root/modules/mash/2.2 && \
+    echo "#%Module" >>/root/modules/mash/.modulerc && \
+    echo "module-version /2.2 default" >>/root/modules/mash/.modulerc
+
+### mummer
+# 3.9.4alpha
+WORKDIR /opt/mummer
+RUN wget https://github.com/mummer4/mummer/releases/download/v3.9.4alpha/mummer-3.9.4alpha.tar.gz && \
+	tar xvf mummer-3.9.4alpha.tar.gz && \
+	rm mummer-3.9.4alpha.tar.gz && \
+	cd mummer-3.9.4alpha && \
+	./configure && \
+	make && \
+	make install && \
+	ldconfig && \
+	mkdir /root/bin/mummer_3.9.4alpha  && \
+	ls -la | grep -v drwx | grep -v config | grep rwx | awk '{print $9}' | xargs -n1 -I{} cp {} /root/bin/mummer_3.9.4alpha/ && \
+	mkdir /root/modules/mummer && \
+	echo "#%Module" >>/root/modules/mummer/3.9.4 && \
+    echo "append-path PATH /root/bin/mummer_3.9.4alpha" >>/root/modules/mummer/3.9.4 && \
+    echo "#%Module" >>/root/modules/mummer/.modulerc && \
+    echo "module-version /3.9.4 default" >>/root/modules/mummer/.modulerc
+
+### ngmlr
+# 0.2.6
+WORKDIR /opt/ngmlr
+RUN wget https://github.com/philres/ngmlr/releases/download/v0.2.6/ngmlr-0.2.6-beta-linux-x86_64.tar.gz && \
+	tar xvf ngmlr-0.2.6-beta-linux-x86_64.tar.gz && \
+	rm ngmlr-0.2.6-beta-linux-x86_64.tar.gz && \
+	cd ngmlr-0.2.6 && \
+	mkdir /root/bin/ngmlr_0.2.6  && \
+	cp -r . /root/bin/ngmlr_0.2.6 && \
+	mkdir /root/modules/ngmlr && \
+	echo "#%Module" >>/root/modules/ngmlr/0.2.6 && \
+    echo "append-path PATH /root/bin/ngmlr_0.2.6" >>/root/modules/ngmlr/0.2.6 && \
+    echo "#%Module" >>/root/modules/ngmlr/.modulerc && \
+    echo "module-version /0.2.6 default" >>/root/modules/ngmlr/.modulerc
+
+
+### gnuplot
+# 5.2.7
+WORKDIR /opt/gnuplot
+RUN wget https://sourceforge.net/projects/gnuplot/files/gnuplot/5.2.7/gnuplot-5.2.7.tar.gz && \
+	tar xvf gnuplot-5.2.7.tar.gz && \
+	rm gnuplot-5.2.7.tar.gz && \
+	cd gnuplot-5.2.7 && \
+	./configure --prefix=/opt/gnuplot/gnuplot-5.2.7 && \
+	make && \
+	make install && \
+	mkdir /root/bin/gnuplot_5.2.7  && \
+	cp -r bin/* /root/bin/gnuplot_5.2.7 && \
+	mkdir /root/modules/gnuplot && \
+	echo "#%Module" >>/root/modules/gnuplot/5.2.7 && \
+    echo "append-path PATH /root/bin/gnuplot_5.2.7" >>/root/modules/gnuplot/5.2.7 && \
+    echo "#%Module" >>/root/modules/gnuplot/.modulerc && \
+    echo "module-version /5.2.7 default" >>/root/modules/gnuplot/.modulerc

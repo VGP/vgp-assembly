@@ -1,12 +1,10 @@
-workflow helloShasta {
-	call shasta
+workflow helloStats {
+	call stats
 }
 
-task shasta {
-    Array[File] readFilesONT
-    String sampleName
-    Int threadCount
-    Int memoryGigabyte
+task stats {
+    File assemblyFasta
+    Int expectedGenomeSize
 
 	command <<<
         # initialize modules
@@ -23,19 +21,23 @@ task shasta {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        module load shasta
-        shasta --input ${sep=" --input " readFilesONT} --threads ${threadCount}
-        mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
-        mv ShastaRun ${sampleName}
-        tar czvf ${sampleName}.shasta.tar.gz ${sampleName}/*
+        export VGP_PIPELINE=/root/scripts
+
+        ln -s ${assemblyFasta}
+        export REF=`basename ${assemblyFasta}`
+        echo $REF | sed 's/.fasta//' | sed 's/.fa//' >outputBase
+
+        bash /root/scripts/stats/asm_stats.sh $REF ${expectedGenomeSize}
+
+        tar czvf $(cat outputBase).stats.tar.gz *.stats
 	>>>
 	output {
-		File assemblyFasta = sampleName + ".shasta.fasta"
-		File assemblyExtra = sampleName + ".shasta.tar.gz"
+		String outputBase = read_string("outputBase")
+		File statsTarball = outputBase + ".stats.tar.gz"
 	}
     runtime {
-        cpu: threadCount
-        memory: memoryGigabyte + " GB"
-        docker: "tpesout/vgp_shasta"
+        cpu: 1
+        memory: 1 + " GB"
+        docker: "tpesout/vgp_stats"
     }
 }

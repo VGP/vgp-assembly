@@ -2,8 +2,6 @@
 FROM tpesout/modules:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
-RUN apt-get install -y libcurl4-openssl-dev libhdf5-dev
-
 WORKDIR /opt/marginPolish/
 RUN git clone https://github.com/UCSC-nanopore-cgl/MarginPolish.git MarginPolish_1.2.0 && \
     cd MarginPolish_1.2.0 && \

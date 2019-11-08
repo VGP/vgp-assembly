@@ -2,7 +2,7 @@
 FROM tpesout/modules:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
-RUN apt-get install -y libboost-all-dev libpng-dev graphviz ncbi-blast+ python3 python3-pip curl sudo && \
+RUN apt-get install -y ncbi-blast+ python3 python3-pip && \
     pip3 install pybind11
 
 WORKDIR /opt/shasta/

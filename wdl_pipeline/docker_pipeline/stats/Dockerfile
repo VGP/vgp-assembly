@@ -3,7 +3,6 @@ FROM tpesout/modules:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
 
-WORKDIR /root/scripts/mashmap/
-COPY _docker_mashmap.sh tmp/*.sh ./
+WORKDIR /root/scripts/stats/
+COPY tmp/* ./
 WORKDIR /data
-ENTRYPOINT ["bash", "-i", "/root/scripts/mashmap/_docker_mashmap.sh"]
