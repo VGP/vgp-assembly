@@ -115,13 +115,9 @@ def _run_meryl(output, sequences, k_mer_size, min_k_mer_count):
     meryl_kmer.extend(["output", "out"])
     
     dx_utils.run_cmd(meryl_kmer)
-    with open("kmers",'w') as kmers:
-        
-        subprocess.check_call(["./meryl", "print", "greater-than", str(min_k_mer_count), "out"],shell=False,stdout=kmers)
-
     with open("mer_counts.tsv",'w') as kmers_index:
-
-        subprocess.check_call(['awk', r'{printf "%s %s\n", NR,$2}', 'kmers'],shell=False, stdout=kmers_index)    
+        
+        subprocess.check_call(["./meryl", "histogram", "out"],shell=False,stdout=kmers_index)
 
     output["histogram"] = dxpy.dxlink(dxpy.upload_local_file("mer_counts.tsv"))
 
