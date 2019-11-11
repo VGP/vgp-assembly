@@ -23,14 +23,6 @@
       "default": 18,
       "help": ""
     },
-	{
-      "name": "min_k_mer_count",
-      "label": "Minimum K-mer Count",
-      "class": "int",
-      "optional": true,
-      "default": 1,
-      "help": "The minimum occurence count for a given K-mer"
-    },
     {
       "name": "output_prefix",
       "label": "Output prefix",
