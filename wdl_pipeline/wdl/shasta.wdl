@@ -23,7 +23,7 @@ task shasta {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        module load shasta
+        module load shasta/0.3.0_bf757a3
         shasta --input ${sep=" --input " readFilesONT} --threads ${threadCount}
         mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
         mv ShastaRun ${sampleName}

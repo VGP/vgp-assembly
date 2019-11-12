@@ -8,12 +8,14 @@ workflow ONTAssembly {
     Array[File] READ_FILES
     String SAMPLE_NAME
     File MARGIN_POLISH_PARAMS
+    Int EXPECTED_GENOME_SIZE
     Int THREAD_COUNT
     Int MEMORY_GB
 
+
     call shasta.shasta as shastaAssemble {
         input:
-            readFiles=READ_FILES,
+            readFilesONT=READ_FILES,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
             memoryGigabyte=MEMORY_GB
@@ -24,7 +26,8 @@ workflow ONTAssembly {
 	}
 	call stats.stats as shastaStats {
 	    input:
-	        assemblyFasta=shastaAssemble.assemblyFasta
+	        assemblyFasta=shastaAssemble.assemblyFasta,
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE
 	}
 	call minimap2.minimap2 as shastaAlign {
 	    input:
@@ -46,7 +49,8 @@ workflow ONTAssembly {
 	}
 	call stats.stats as marginPolishStats {
 	    input:
-	        assemblyFasta=shastaMarginPolish.polishedFasta
+	        assemblyFasta=shastaMarginPolish.polishedFasta,
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE
 	}
 	call busco.busco as marginPolishBusco {
 	    input:
