@@ -95,14 +95,14 @@ def _get_genomescope_summary(fn, model_exists):
 
     return genomescope_summary
 
-def _run_meryl(output, sequences, k_mer_size, min_k_mer_count):
+def _run_meryl(output, sequences, k_mer_size):
 
     dx_utils.run_cmd(["mkdir","unuse"])
     dx_utils.run_cmd(["mv", "/usr/src/canu", "/home/dnanexus/unuse"])
     dx_utils.run_cmd(["chmod","777","meryl"])
     dx_utils.run_cmd(["./meryl","--version"])
     #dx_utils.run_cmd(["./meryl"])
-    mem_in_gb=dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.8/1024/1024)}'",returnOutput=True)
+    mem_in_gb=dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.6/1024/1024)}'",returnOutput=True)
     print('mem in GB',mem_in_gb)
 
     meryl_kmer = ["./meryl", "count", "threads={}".format(multiprocessing.cpu_count()), "k={}".format(k_mer_size),"memory={}".format(mem_in_gb)]
@@ -115,13 +115,9 @@ def _run_meryl(output, sequences, k_mer_size, min_k_mer_count):
     meryl_kmer.extend(["output", "out"])
     
     dx_utils.run_cmd(meryl_kmer)
-    with open("kmers",'w') as kmers:
-        
-        subprocess.check_call(["./meryl", "print", "greater-than", str(min_k_mer_count), "out"],shell=False,stdout=kmers)
-
     with open("mer_counts.tsv",'w') as kmers_index:
-
-        subprocess.check_call(['awk', r'{printf "%s %s\n", NR,$2}', 'kmers'],shell=False, stdout=kmers_index)    
+        
+        subprocess.check_call(["./meryl", "histogram", "out"],shell=False,stdout=kmers_index)
 
     output["histogram"] = dxpy.dxlink(dxpy.upload_local_file("mer_counts.tsv"))
 
@@ -133,10 +129,10 @@ def main(**job_inputs):
 
     # make k-mer histogra w/ meryl
     _write_generator_file(job_inputs['sequences_fastx'], GENERATOR_FILENAME)
-    _run_meryl(output, job_inputs["sequences_fastx"], job_inputs["k_mer_size"], job_inputs["min_k_mer_count"])
+    _run_meryl(output, job_inputs["sequences_fastx"], job_inputs["k_mer_size"])
 
     # Run Genomescope
-    mem_in_b = dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.8*1024)}'", returnOutput=True)
+    mem_in_b = dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.6*1024)}'", returnOutput=True)
     read_length = _get_read_length()
     cmd = ['Rscript', './genomescope.R', "mer_counts.tsv", str(job_inputs['k_mer_size']),
            str(read_length), './', str(MAX_KMER_COVERAGE)
