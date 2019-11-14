@@ -41,6 +41,7 @@ task scaff10x {
         fi
 
         # run script
+        export tools=/root/tools
         bash /root/scripts/scaff10x/scaff10x_v4.1.sh
 
         mv $REF.scaff10x.fasta ${sampleName}.scaff10x.fasta

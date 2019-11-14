@@ -22,14 +22,15 @@ RUN wget http://www.netgull.com/gcc/releases/gcc-7.4.0/gcc-7.4.0.tar.gz && \
     cd build_7.4.0 && \
     ../gcc-7.4.0/configure --prefix=/opt/gcc/build_7.4.0 --enable-languages=c,c++,fortran && \
     make -j 12 && \
-    make install
-RUN mkdir /root/bin/gcc_7.4  && \
-	cp -r /opt/gcc/build_7.4.0/bin/* /root/bin/gcc_7.4 && \
+    make install && \
+    mkdir /root/bin/gcc_7.4.0  && \
+	cp -r /opt/gcc/build_7.4.0/bin/* /root/bin/gcc_7.4.0 && \
+	rm -r /opt/gcc && \
 	mkdir /root/modules/gcc && \
-	echo "#%Module" >>/root/modules/gcc/7.4 && \
-    echo "prepend-path PATH /root/bin/gcc_7.4" >>/root/modules/gcc/7.4 && \
+	echo "#%Module" >>/root/modules/gcc/7.4.0 && \
+    echo "prepend-path PATH /root/bin/gcc_7.4.0" >>/root/modules/gcc/7.4.0 && \
     echo "#%Module" >>/root/modules/gcc/.modulerc && \
-    echo "module-version /7.4 default" >>/root/modules/gcc/.modulerc
+    echo "module-version /7.4.0 default" >>/root/modules/gcc/.modulerc
 
 WORKDIR /root/scripts/scaff10x/
 COPY tmp/*.sh ./

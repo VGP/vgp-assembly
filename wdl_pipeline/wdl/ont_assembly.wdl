@@ -53,7 +53,7 @@ workflow ONTAssembly {
     call scaff10x.scaff10x as scaff10xPolishedPurged {
         input:
             assemblyFasta=polishedPurgeDups.primary,
-            readFiles=READ_FILES_10X,
+            readFiles10x=READ_FILES_10X,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
             memoryGigabyte=MEMORY_GB
