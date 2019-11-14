@@ -61,8 +61,8 @@ task purge_dups {
 
 	>>>
 	output {
-		File purged = sampleName + ".purged.fa"
-		File hap = sampleName + ".hap.fa"
+		File primary = sampleName + ".purged.fa"
+		File alternate = sampleName + ".hap.fa"
 	}
     runtime {
         cpu: threadCount
