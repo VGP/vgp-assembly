@@ -11,6 +11,26 @@ RUN git clone https://github.com/wtsi-hpag/Scaff10X.git Scaff10X-4.1 && \
     rm -rf .git && \
     ./install.sh
 
+RUN apt-get install -y libgmp-dev libmpfr-dev libmpc-dev
+WORKDIR /opt/gcc
+RUN wget http://www.netgull.com/gcc/releases/gcc-7.4.0/gcc-7.4.0.tar.gz && \
+    tar xvf gcc-7.4.0.tar.gz && \
+    cd gcc-7.4.0 && \
+    ./contrib/download_prerequisites && \
+    cd .. && \
+    mkdir build_7.4.0 && \
+    cd build_7.4.0 && \
+    ../gcc-7.4.0/configure --prefix=/opt/gcc/build_7.4.0 --enable-languages=c,c++,fortran && \
+    make -j 12 && \
+    make install
+RUN mkdir /root/bin/gcc_7.4  && \
+	cp -r /opt/gcc/build_7.4.0/bin/* /root/bin/gcc_7.4 && \
+	mkdir /root/modules/gcc && \
+	echo "#%Module" >>/root/modules/gcc/7.4 && \
+    echo "prepend-path PATH /root/bin/gcc_7.4" >>/root/modules/gcc/7.4 && \
+    echo "#%Module" >>/root/modules/gcc/.modulerc && \
+    echo "module-version /7.4 default" >>/root/modules/gcc/.modulerc
+
 WORKDIR /root/scripts/scaff10x/
 COPY tmp/*.sh ./
 WORKDIR /data

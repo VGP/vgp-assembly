@@ -1,11 +1,10 @@
-workflow helloPurgeDups {
-	call purge_dups
+workflow helloScaff10x {
+	call scaff10x
 }
 
-task purge_dups {
+task scaff10x {
     File assemblyFasta
     Array[File] readFiles10x
-    String minimapPreset
     String sampleName
     Int threadCount
     Int memoryGigabyte
@@ -52,6 +51,6 @@ task purge_dups {
     runtime {
         cpu: 32
         memory: "72 GB"
-        docker: "tpesout/vgp_purge_dups"
+        docker: "tpesout/vgp_scaff10x"
     }
 }
