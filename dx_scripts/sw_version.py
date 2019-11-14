@@ -14,6 +14,7 @@ app_id_hardcode_up_version={
     "app-Fb0JBK8012x8z3gG91Yxyj3q": "smrtlink_7.0.1.66975",
     "app-FPgQ4Y8086pf03z5J04ZkXF3": "longranger 2.2.2",
     "applet-FZY5j400j3bP4b62GxKB057v": "freebayes 1.3.1",
+    "applet-FZB2yG80j3b75K260z2yF688": "freebayes 1.3.1",
     "applet-FYVY3X00x9Y0YpKZ6xgjQxZG": "freebayes v1.2.0-17-ga78ffc0 parallel by chr",
 }
 
