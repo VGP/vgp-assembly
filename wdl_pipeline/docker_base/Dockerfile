@@ -207,7 +207,7 @@ RUN wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz && \
     cp python /root/bin/python_3.6.0 && \
     mkdir /root/modules/python && \
     echo "#%Module" >>/root/modules/python/3.6 && \
-    echo "append-path PATH /root/bin/python_3.6.0" >>/root/modules/python/3.6 && \
+    echo "prepend-path PATH /root/bin/python_3.6.0" >>/root/modules/python/3.6 && \
     echo "#%Module" >>/root/modules/python/.modulerc && \
     echo "module-version /3.6 default" >>/root/modules/python/.modulerc
 
