@@ -22,16 +22,20 @@ def latest_job(name_string):
 
     if '||' not in name_string:
         job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --brief'.format(name_string),shell=True)
-        return job_id.strip()
+        if job_id.strip() != '':
+            return job_id.strip()
     else:
         name_list = name_string.split('||')
         for name_list_member in name_list:
             job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --brief'.format(name_list_member), shell=True)
-            if job_id != '':
+            if job_id.strip() != '':
                 return job_id.strip()
+    return 'job_not_found'
 
 
 def job_2_app(job_id):
+    if job_id == 'job_not_found':
+        return 'job_not_found'
     try:
         app_id = dxpy.describe(job_id)['app']
 
@@ -40,13 +44,17 @@ def job_2_app(job_id):
     return app_id.strip()
 
 def app_2_version(app_id):
+    if app_id == 'job_not_found':
+        return 'job_not_found'
     try:
         version = dxpy.describe(app_id)['version']
     except KeyError:
-        version = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(dxpy.describe(app_id)['created']))
+        version = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(dxpy.describe(app_id)['created']/1000.0))
     return version
 
 def app_2_upversion(app_id):
+    if app_id == 'job_not_found':
+        return 'job_not_found'
     try:
         upversion = dxpy.describe(app_id)['details']['upstreamVersion']
     except KeyError:
@@ -57,8 +65,10 @@ def app_2_upversion(app_id):
     return upversion.strip()
 
 def start_time(job_id):
+    if job_id == 'job_not_found':
+        return 'job_not_found'
     epoch_time=dxpy.describe(job_id)['startedRunning']
-    startedRunning = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_time))
+    startedRunning = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_time/1000.0))
     return startedRunning
 
 falcon_job_id=latest_job("*alcon*aligner*")
@@ -73,15 +83,15 @@ freebayes_job_id=latest_job("Free*ayes*")
 
 
 
-print('\t'.join(['falcon','falcon_unzip','purge','scaff10x','bionano','salsa','polish','longranger','freebayes']))
+print('\t'.join(['header','falcon','falcon_unzip','purge','scaff10x','bionano','salsa','polish','longranger','freebayes']))
 
 job_list = [falcon_job_id,falcon_unzip_job_id,purge_job_id,scaff10x_job_id,bionano_job_id,
               salsa_job_id,polish_job_id,longranger_job_id,freebayes_job_id]
-print('\t'.join(job_list))
-
+#print(job_list)
+print('job_id'+'\t'+'\t'.join(job_list))
 app_list = map(job_2_app,job_list)
-print('\t'.join(map(start_time,job_list)))
-print('\t'.join(app_list))
-print('\t'.join(map(app_2_version,app_list)))
-print('\t'.join(map(app_2_upversion,app_list)))
+print('start_time'+'\t'+'\t'.join(map(start_time,job_list)))
+print('app_id'+'\t'+'\t'.join(app_list))
+print('DNAnexus_version'+'\t'+'\t'.join(map(app_2_version,app_list)))
+print('actual_tool_version'+'\t'+'\t'.join(map(app_2_upversion,app_list)))
 
