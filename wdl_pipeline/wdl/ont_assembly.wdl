@@ -13,7 +13,9 @@ workflow ONTAssembly {
     File MARGIN_POLISH_PARAMS
     Int EXPECTED_GENOME_SIZE
     Int THREAD_COUNT
-    Int MEMORY_GB
+    Int MEMORY_GB=8
+    String DOCKER_REPOSITORY="tpesout"
+    String DOCKER_TAG="latest"
 
     # actual work
     call shasta.shasta as shastaAssemble {
@@ -21,14 +23,18 @@ workflow ONTAssembly {
             readFilesONT=READ_FILES_ONT,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB
+            memoryGigabyte=MEMORY_GB,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
     }
 	call minimap2.minimap2 as shastaAlign {
 	    input:
             refFasta=shastaAssemble.assemblyFasta,
             readFiles=READ_FILES_ONT,
             minimapPreset="map-ont",
-            samtoolsFilter="-F 0x904"
+            samtoolsFilter="-F 0x904",
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call marginPolish.marginPolish as shastaMarginPolish {
 	    input:
@@ -39,7 +45,9 @@ workflow ONTAssembly {
             parameters=MARGIN_POLISH_PARAMS,
             featureType="",
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB
+            memoryGigabyte=MEMORY_GB,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
     call purgeDups.purge_dups as polishedPurgeDups {
         input:
@@ -48,7 +56,9 @@ workflow ONTAssembly {
             minimapPreset="map-ont",
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB
+            memoryGigabyte=MEMORY_GB,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
     }
     call scaff10x.scaff10x as scaff10xPolishedPurged {
         input:
@@ -56,7 +66,9 @@ workflow ONTAssembly {
             readFiles10x=READ_FILES_10X,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB
+            memoryGigabyte=MEMORY_GB,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
     }
     
 
@@ -65,40 +77,56 @@ workflow ONTAssembly {
 	call stats.stats as shastaStats {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
-	        expectedGenomeSize=EXPECTED_GENOME_SIZE
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call stats.stats as marginPolishStats {
 	    input:
 	        assemblyFasta=shastaMarginPolish.polishedFasta,
-	        expectedGenomeSize=EXPECTED_GENOME_SIZE
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call stats.stats as purgedPolishedPriStats {
 	    input:
 	        assemblyFasta=polishedPurgeDups.primary,
-	        expectedGenomeSize=EXPECTED_GENOME_SIZE
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call stats.stats as purgedPolishedAltStats {
 	    input:
 	        assemblyFasta=polishedPurgeDups.alternate,
-	        expectedGenomeSize=EXPECTED_GENOME_SIZE
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call stats.stats as scaffoldedPurgedPolishedStats {
 	    input:
 	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta,
-	        expectedGenomeSize=EXPECTED_GENOME_SIZE
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	# busco stats
 	call busco.busco as shastaBusco {
 	    input:
-	        assemblyFasta=shastaAssemble.assemblyFasta
+	        assemblyFasta=shastaAssemble.assemblyFasta,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call busco.busco as marginPolishBusco {
 	    input:
-	        assemblyFasta=shastaMarginPolish.polishedFasta
+	        assemblyFasta=shastaMarginPolish.polishedFasta,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 	call busco.busco as scaffoldedPolishedPurgedBusco {
 	    input:
-	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta
+	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta,
+            dockerRepository=DOCKER_REPOSITORY,
+            dockerTag=DOCKER_TAG
 	}
 
 	output {

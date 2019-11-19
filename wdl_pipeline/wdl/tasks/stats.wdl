@@ -1,9 +1,12 @@
-workflow helloBusco {
-	call busco
+workflow runStats {
+	call stats
 }
 
-task busco {
+task stats {
     File assemblyFasta
+    Int expectedGenomeSize
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -20,27 +23,23 @@ task busco {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        # get name of output file
-        ASSEMBLY=`basename ${assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' `
-        echo $ASSEMBLY >outputBase
+        export VGP_PIPELINE=/root/scripts
 
         ln -s ${assemblyFasta}
+        export REF=`basename ${assemblyFasta}`
+        echo $REF | sed 's/.fasta//' | sed 's/.fa//' >outputBase
 
-        export SLURM_CPUS_PER_TASK=24
-        export tools=/root/tools
+        bash /root/scripts/stats/asm_stats.sh $REF ${expectedGenomeSize}
 
-        bash /root/scripts/busco/busco.sh `basename ${assemblyFasta}`
-
-        tar czvf $ASSEMBLY.busco.tar.gz run_$ASSEMBLY
-
+        tar czvf $(cat outputBase).stats.tar.gz *.stats
 	>>>
 	output {
 		String outputBase = read_string("outputBase")
-		File outputTarball = outputBase + ".busco.tar.gz"
+		File statsTarball = outputBase + ".stats.tar.gz"
 	}
     runtime {
-        cpu: 24
-        memory: "42 GB"
-        docker: "tpesout/vgp_busco"
+        cpu: 1
+        memory: 1 + " GB"
+        docker: dockerRepository+"/vgp_stats:"+dockerTag
     }
 }

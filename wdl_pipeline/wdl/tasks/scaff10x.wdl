@@ -1,4 +1,4 @@
-workflow helloScaff10x {
+workflow runScaff10x {
 	call scaff10x
 }
 
@@ -8,6 +8,8 @@ task scaff10x {
     String sampleName
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -24,8 +26,8 @@ task scaff10x {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        # get name of output file
-        REF=`basename ${assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
+        # link assembly
+        ln -s ${assemblyFasta} asm.fasta
 
         # link input files
         mkdir input
@@ -34,7 +36,7 @@ task scaff10x {
         done
 
         # make and validate input.dat
-        ls input/*_R[1-2]_001.fastq.gz | awk '{if (NR%2==1) {print "q1="$0} else {print "q2="$0}}' > input.dat
+        ls input/*_R[1-2]_001.fastq.gz | awk '{if (NR%2==1) {print "q1="pwd"/"$0} else {print "q2="pwd"/"$0}}' pwd=$PWD > input.dat
         if [[ ! -s input.dat ]] ; then
             echo "Check input.dat"
             exit -1
@@ -42,9 +44,8 @@ task scaff10x {
 
         # run script
         export tools=/root/tools
-        bash /root/scripts/scaff10x/scaff10x_v4.1.sh
-
-        mv $REF.scaff10x.fasta ${sampleName}.scaff10x.fasta
+        export SLURM_CPUS_PER_TASK=${threadCount}
+        bash /root/scripts/scaff10x/scaff10x_v4.1.sh ${sampleName}
 	>>>
 	output {
 		File scaffoldedFasta = sampleName + ".scaff10x.fasta"
@@ -52,6 +53,6 @@ task scaff10x {
     runtime {
         cpu: 32
         memory: "72 GB"
-        docker: "tpesout/vgp_scaff10x"
+        docker: dockerRepository+"/vgp_scaff10x:"+dockerTag
     }
 }

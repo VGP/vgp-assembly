@@ -1,4 +1,4 @@
-workflow helloShasta {
+workflow runShasta {
 	call shasta
 }
 
@@ -7,6 +7,8 @@ task shasta {
     String sampleName
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -36,6 +38,6 @@ task shasta {
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: "tpesout/vgp_shasta"
+        docker: dockerRepository+"/vgp_shasta:"+dockerTag
     }
 }
