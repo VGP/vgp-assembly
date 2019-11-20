@@ -1,10 +1,10 @@
-import "shasta.wdl" as shasta
-import "minimap2.wdl" as minimap2
-import "marginPolish.wdl" as marginPolish
-import "purge_dups.wdl" as purgeDups
-import "scaff10x.wdl" as scaff10x
-import "busco.wdl" as busco
-import "stats.wdl" as stats
+import "tasks/shasta.wdl" as shasta
+import "tasks/minimap2.wdl" as minimap2
+import "tasks/marginPolish.wdl" as marginPolish
+import "tasks/purge_dups.wdl" as purgeDups
+import "tasks/scaff10x.wdl" as scaff10x
+import "tasks/busco.wdl" as busco
+import "tasks/stats.wdl" as stats
 
 workflow ONTAssembly {
     Array[File] READ_FILES_ONT

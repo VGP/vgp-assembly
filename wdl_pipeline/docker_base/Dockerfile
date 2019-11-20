@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
-ARG git_commit
+ARG modules_git_commit=c999abdc958fe45c735dca093555b5413aecb678
 
 # update and install dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
@@ -22,7 +22,7 @@ WORKDIR /opt
 RUN git clone https://github.com/cea-hpc/modules.git && \
     cd /opt/modules && \
     git fetch && \
-    git checkout $git_commit && \
+    git checkout $modules_git_commit && \
     ./configure --with-tclx-ver=8.6 --with-tcl-ver=8.6 && \
     make && \
     make install

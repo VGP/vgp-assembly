@@ -10,7 +10,7 @@ tag = ${version}--${git_commit}
 # Steps
 build:
 	# do the docker build
-	docker build -t ${name}:${tag} --build-arg git_commit=${git_commit} .
+	docker build -t ${name}:${tag} .
 	docker tag ${name}:${tag} ${name}:latest
 
 push: build
