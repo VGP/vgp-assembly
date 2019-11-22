@@ -15,8 +15,6 @@ workflow PolishAssembly {
     String DOCKER_TAG="latest"
 
     # actual work
-    call extractReads.extractReads
-
 
     call extractReads.runExtractReads as extract {
         input:
