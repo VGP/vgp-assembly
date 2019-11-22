@@ -1,6 +1,5 @@
 workflow runExtractReads {
     Array[File] inputFiles
-    Int threadCount=1
     String dockerRepository="tpesout"
     String dockerTag="latest"
 
@@ -8,7 +7,6 @@ workflow runExtractReads {
         call extractReads {
             input:
                 readFile=file,
-                threadCount=threadCount,
                 dockerRepository=dockerRepository,
                 dockerTag=dockerTag
             }
@@ -21,7 +19,6 @@ workflow runExtractReads {
 
 task extractReads {
     File readFile
-    Int threadCount
     String dockerRepository="tpesout"
     String dockerTag="latest"
 
@@ -63,7 +60,7 @@ task extractReads {
 		File outputFile = outputFilename
 	}
     runtime {
-        cpu: threadCount
+        cpu: 1
         docker: dockerRepository+"/vgp_base:"+dockerTag
     }
 }
