@@ -5,6 +5,7 @@ workflow runMinimap2 {
 task minimap2 {
     File refFasta
     Array[File] readFiles
+    Int threadCount
     String minimapPreset=""
     String samtoolsFilter=""
     String dockerRepository="tpesout"
@@ -57,7 +58,7 @@ task minimap2 {
 		File minimap2BamIdx = outputBase + ".bam.bai"
 	}
     runtime {
-        cpu: 16
+        cpu: threadCount
         memory: "32 GB"
         docker: dockerRepository+"/vgp_minimap2:"+dockerTag
     }

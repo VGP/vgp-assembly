@@ -8,7 +8,7 @@ task marginPolish {
     File alignmentBamIdx
     File referenceFasta
     File parameters
-    String featureType
+    String featureType=""
     Int threadCount
     Int memoryGigabyte
     String dockerRepository="tpesout"

@@ -4,6 +4,7 @@ workflow runBusco {
 
 task busco {
     File assemblyFasta
+    Int threadCount
     String dockerRepository="tpesout"
     String dockerTag="latest"
 
@@ -28,7 +29,7 @@ task busco {
 
         ln -s ${assemblyFasta}
 
-        export SLURM_CPUS_PER_TASK=24
+        export SLURM_CPUS_PER_TASK=${threadCount}
         export tools=/root/tools
 
         bash /root/scripts/busco/busco.sh `basename ${assemblyFasta}`
@@ -41,7 +42,7 @@ task busco {
 		File outputTarball = outputBase + ".busco.tar.gz"
 	}
     runtime {
-        cpu: 24
+        cpu: threadCount
         memory: "42 GB"
         docker: dockerRepository+"/vgp_busco:"+dockerTag
     }

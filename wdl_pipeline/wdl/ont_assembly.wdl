@@ -113,18 +113,21 @@ workflow ONTAssembly {
 	call busco.busco as shastaBusco {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
+            threadCount=THREAD_COUNT,
             dockerRepository=DOCKER_REPOSITORY,
             dockerTag=DOCKER_TAG
 	}
 	call busco.busco as marginPolishBusco {
 	    input:
 	        assemblyFasta=shastaMarginPolish.polishedFasta,
+            threadCount=THREAD_COUNT,
             dockerRepository=DOCKER_REPOSITORY,
             dockerTag=DOCKER_TAG
 	}
 	call busco.busco as scaffoldedPolishedPurgedBusco {
 	    input:
 	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta,
+            threadCount=THREAD_COUNT,
             dockerRepository=DOCKER_REPOSITORY,
             dockerTag=DOCKER_TAG
 	}
