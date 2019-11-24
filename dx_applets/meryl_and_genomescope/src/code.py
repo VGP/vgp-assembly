@@ -2,6 +2,7 @@
 import dxpy, dx_utils, os, subprocess, re, matplotlib, pylab, multiprocessing
 matplotlib.use('Agg')
 import pylab
+import os
 
 GENERATOR_FILENAME = 'generators.txt'
 MAX_KMER_COVERAGE = 1000
@@ -95,7 +96,7 @@ def _get_genomescope_summary(fn, model_exists):
 
     return genomescope_summary
 
-def _run_meryl(output, sequences, k_mer_size):
+def _run_meryl(output, sequences, k_mer_size,is10x):
 
     dx_utils.run_cmd(["mkdir","unuse"])
     dx_utils.run_cmd(["mv", "/usr/src/canu", "/home/dnanexus/unuse"])
@@ -104,20 +105,47 @@ def _run_meryl(output, sequences, k_mer_size):
     #dx_utils.run_cmd(["./meryl"])
     mem_in_gb=dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.6/1024/1024)}'",returnOutput=True)
     print('mem in GB',mem_in_gb)
+    dx_utils.run_cmd('ulimit -Sn 32000')
 
-    meryl_kmer = ["./meryl", "count", "threads={}".format(multiprocessing.cpu_count()), "k={}".format(k_mer_size),"memory={}".format(mem_in_gb)]
+    meryl_kmer = ["./meryl", "threads={}".format(multiprocessing.cpu_count()), "k={}".format(k_mer_size),"memory={}".format(mem_in_gb)]
 
     for file_ref in sequences:
 
         dx_utils.download_and_gunzip_file(file_ref)
-        meryl_kmer.extend([dxpy.describe(file_ref)["name"].replace(".gz",'')])
+        each_file_name=dxpy.describe(file_ref)["name"].replace(".gz",'')
+        print('processing {0}'.format(each_file_name))
+        each_file_prefix=each_file_name.replace('fastq','')
+        each_file_prefix=each_file_prefix.replace('fq','')
+        if 'R1' in each_file_name:
+            if is10x:
+                print('10x trimming')
+                dx_utils.run_cmd(
+                    "cat "+ each_file_name +" | awk '{if (NR%2==1) {print $1} else {print substr($1,24)}}'| split -a 4 -d -l 300000000 --additional-suffix='.fq' - split/"+each_file_prefix)
+            else:
+                print('no trimming')
+                dx_utils.run_cmd(
+                    "cat {0} | split -a 4 -d -l 300000000 --additional-suffix='.fq' - split/{1}".format(each_file_name, each_file_prefix))
+        else:
+            print('no trimming')
+            dx_utils.run_cmd(
+                "cat {0} | split -a 4 -d -l 300000000 --additional-suffix='.fq' - split/{1}".format(each_file_name, each_file_prefix))
 
-    meryl_kmer.extend(["output", "out"])
-    
-    dx_utils.run_cmd(meryl_kmer)
+        #meryl_kmer.extend([dxpy.describe(file_ref)["name"].replace(".gz",'')])
+    for split_file in os.listdir('/home/dnanexus/split'):
+        split_file_prefix=split_file.replace('.fq','')
+        command=meryl_kmer+["count","split/"+split_file,"output","split/"+split_file_prefix+'.meryl']
+        dx_utils.run_cmd(command)
+    os.listdir('/home/dnanexus/split')
+    folder_string = subprocess.check_output('ls -d split/*/',shell=True)
+    folder_list = folder_string.strip().split('\n')
+    folder_list = map(lambda x: x[:-1], folder_list)
+    meryl_union_sum=["meryl","threads={}".format(multiprocessing.cpu_count()), "k={}".format(k_mer_size),"memory={}".format(mem_in_gb),"union-sum","output","output"]
+    meryl_union_sum.extend(folder_list)
+    dx_utils.run_cmd(meryl_union_sum)
+
     with open("mer_counts.tsv",'w') as kmers_index:
         
-        subprocess.check_call(["./meryl", "histogram", "out"],shell=False,stdout=kmers_index)
+        subprocess.check_call(["./meryl", "histogram", "output"],shell=False,stdout=kmers_index)
 
     output["histogram"] = dxpy.dxlink(dxpy.upload_local_file("mer_counts.tsv"))
 
@@ -126,10 +154,11 @@ def _run_meryl(output, sequences, k_mer_size):
 def main(**job_inputs):
 
     output = {}
+    os.mkdir('/home/dnanexus/split')
 
     # make k-mer histogra w/ meryl
     _write_generator_file(job_inputs['sequences_fastx'], GENERATOR_FILENAME)
-    _run_meryl(output, job_inputs["sequences_fastx"], job_inputs["k_mer_size"])
+    _run_meryl(output, job_inputs["sequences_fastx"], job_inputs["k_mer_size"],job_inputs["is10x"])
 
     # Run Genomescope
     mem_in_b = dx_utils.run_cmd("head -n1 /proc/meminfo | awk '{print int($2*0.6*1024)}'", returnOutput=True)

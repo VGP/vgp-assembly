@@ -13,7 +13,7 @@
       "patterns": [
         "*.fa.gz", "*.fasta.gz", "*.fq.gz", "*.fastq.gz"
       ],
-      "help": ""
+      "help": "need 3G of fasta.gz file or 12GB of fasta file"
     },
     {
       "name": "k_mer_size",
@@ -22,6 +22,14 @@
       "optional": false,
       "default": 18,
       "help": ""
+    },
+    {
+      "name": "is10x",
+      "label": "is it untrimmed 10x",
+      "class": "boolean",
+      "optional": false,
+      "default": false,
+      "help": "trimmed 10x or non-10x should use false"
     },
     {
       "name": "output_prefix",
