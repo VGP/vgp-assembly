@@ -1,5 +1,8 @@
+version 1.0
+
 workflow runMinimap2ScatterGather {
 
+    input {
     File refFasta
     Array[File] readFiles
     Int threadCount
@@ -7,6 +10,7 @@ workflow runMinimap2ScatterGather {
     String samtoolsFilter=""
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	call minimap2_idx as idx {
         input:
@@ -49,11 +53,13 @@ workflow runMinimap2ScatterGather {
 }
 
 task minimap2_idx {
+    input {
     File refFasta
     Int threadCount
     String minimapPreset=""
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules
@@ -92,6 +98,7 @@ task minimap2_idx {
     }
 }
 task minimap2_align {
+    input {
     File refFasta
     File refFastaIdx
     Int threadCount
@@ -100,6 +107,7 @@ task minimap2_align {
     String samtoolsFilter=""
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules
@@ -147,12 +155,14 @@ task minimap2_align {
 
 
 task minimap2_merge {
+    input {
     String outputBase
     Array[File] alignFiles
     Array[File] alignIndexFiles
     Int threadCount
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

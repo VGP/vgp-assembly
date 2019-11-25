@@ -1,8 +1,8 @@
-workflow runMarginPolish {
-	call marginPolish
-}
+version 1.0
+
 
 task marginPolish {
+    input {
     String sampleName
     File alignmentBam
     File alignmentBamIdx
@@ -13,6 +13,7 @@ task marginPolish {
     Int memoryGigabyte
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

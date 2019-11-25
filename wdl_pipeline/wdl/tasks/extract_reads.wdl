@@ -1,7 +1,10 @@
+version 1.0
 workflow runExtractReads {
+    input {
     Array[File] inputFiles
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
     scatter (file in inputFiles) {
         call extractReads {
@@ -18,9 +21,11 @@ workflow runExtractReads {
 }
 
 task extractReads {
+    input {
     File readFile
     String dockerRepository="tpesout"
     String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

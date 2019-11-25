@@ -1,8 +1,11 @@
+version 1.0
+
 import "tasks/extract_reads.wdl" as extractReads
 import "tasks/minimap2_scatter_gather.wdl" as minimap2
 import "tasks/marginPolish.wdl" as marginPolish
 
 workflow PolishAssembly {
+    input {
     File ASSEMBLY_FILE
     Array[File] READ_FILES
     String SAMPLE_NAME
@@ -13,6 +16,7 @@ workflow PolishAssembly {
     Int MEMORY_GB=8
     String DOCKER_REPOSITORY="tpesout"
     String DOCKER_TAG="latest"
+    }
 
     # actual work
 
