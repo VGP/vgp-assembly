@@ -5,49 +5,55 @@ import "tasks/minimap2_scatter_gather.wdl" as minimap2
 import "tasks/marginPolish.wdl" as marginPolish
 
 workflow PolishAssembly {
-    input {
+  input {
     File ASSEMBLY_FILE
     Array[File] READ_FILES
     String SAMPLE_NAME
     File MARGIN_POLISH_PARAMS
-    String MINIMAP_PRESET="map-pb"
-    String SAMTOOLS_FILTER="-F 0x904"
+    String? MINIMAP_PRESET
+    String? SAMTOOLS_FILTER
     Int THREAD_COUNT
-    Int MEMORY_GB=8
-    String DOCKER_REPOSITORY="tpesout"
-    String DOCKER_TAG="latest"
-    }
+    Int? MARGINPOLISH_MEMORY_GB
+    String? DOCKER_REPOSITORY
+    String? DOCKER_TAG
+  }
 
-    # actual work
+  String defaultMinimapPreset = select_first([MINIMAP_PRESET, "map-pb"])
+  String defaultSamtoolsFilter = select_first([SAMTOOLS_FILTER, "-F 0x904"])
+  Int defaultMarginPolishMemoryGB = select_first([MARGINPOLISH_MEMORY_GB, 8])
+  String defaultDockerRepository = select_first([DOCKER_REPOSITORY, "tpesout"])
+  String defaultDockerTag = select_first([DOCKER_TAG, "latest"])
 
-    call extractReads.runExtractReads as extract {
-        input:
-            inputFiles=READ_FILES,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
-    }
+  call extractReads.runExtractReads as extract {
+    input:
+      inputFiles=READ_FILES,
+      dockerRepository=defaultDockerRepository,
+      dockerTag=defaultDockerTag
+  }
+
 	call minimap2.runMinimap2ScatterGather as align {
-	    input:
-            refFasta=ASSEMBLY_FILE,
-            readFiles=extract.reads,
-            minimapPreset=MINIMAP_PRESET,
-            samtoolsFilter=SAMTOOLS_FILTER,
-            threadCount=THREAD_COUNT,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+    input:
+      refFasta=ASSEMBLY_FILE,
+      readFiles=extract.reads,
+      minimapPreset=defaultMinimapPreset,
+      samtoolsFilter=defaultSamtoolsFilter,
+      threadCount=THREAD_COUNT,
+      dockerRepository=defaultDockerRepository,
+      dockerTag=defaultDockerTag
 	}
+
 	call marginPolish.marginPolish as polish {
-	    input:
-            sampleName=SAMPLE_NAME,
-            alignmentBam=align.alignment,
-            alignmentBamIdx=align.alignmentIdx,
-            referenceFasta=ASSEMBLY_FILE,
-            parameters=MARGIN_POLISH_PARAMS,
-            featureType="",
-            threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+    input:
+      sampleName=SAMPLE_NAME,
+      alignmentBam=align.alignment,
+      alignmentBamIdx=align.alignmentIdx,
+      referenceFasta=ASSEMBLY_FILE,
+      parameters=MARGIN_POLISH_PARAMS,
+      featureType="",
+      threadCount=THREAD_COUNT,
+      memoryGigabyte=defaultMarginPolishMemoryGB,
+      dockerRepository=defaultDockerRepository,
+      dockerTag=defaultDockerTag
 	}
 
 	output {
