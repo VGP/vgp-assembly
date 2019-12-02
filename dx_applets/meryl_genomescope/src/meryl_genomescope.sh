@@ -4,25 +4,15 @@
 
 set -x -e -o pipefail
 
-# Basic execution pattern: Your app will run on a single machine from
-# beginning to end.
-#
-# Your job's input variables (if any) will be loaded as environment
-# variables before this script runs.  Any array inputs will be loaded
-# as bash arrays.
-#
-# Any code outside of main() (or any entry point you may add) is
-# ALWAYS executed, followed by running the entry point itself.
-#
-# See https://wiki.dnanexus.com/Developer-Portal for tutorials on how
-# to modify this file.
 
 main() {
 
     sudo chmod 777 /usr/bin/meryl
 
     echo "Value of fastq: '${fastq[@]}'"
-	echo "Memory: $(mem)"
+	echo "Value of kmer: '$kmer'"
+	echo "Value of read_length: '$read_length'"
+	echo "Value of kmer_max: '$kmer_max'"
 
     for i in ${!fastq[@]}
     do
@@ -35,19 +25,30 @@ main() {
 	ids_d=${ids_d:1}
     
     echo $ids_d
-    
-    #ulimit -Sn 32000
-    #meryl union-sum output union_meryl $ids_d
+
+    for one_fastq_jobs in "${one_fastq_jobs[@]}"; do 
+        merge_fastq_args+=(-icount_kmer="$one_fastq_jobs":fastq_meryl)
+    done
+
+    merge_job=$(dx-jobutil-new-job "${merge_bam_args[@]}" union_meryl)
+}
+
+union_meryl(){
+
+	dx-download-all-inputs
+
+    ulimit -Sn 32000
+    meryl union-sum output union_meryl "${icount_kmer[@]}"
    
-    #meryl histogram union_meryl | sed 's/\t/ /g' > union_meryl.hist
+    meryl histogram union_meryl | sed 's/\t/ /g' > union_meryl.hist
     
-    #echo union_meryl.hist
+    echo union_meryl.hist
     
-    #Rscript /resources/scripts/genomescope.R union_meryl.hist $kmer $read_length union_meryl_gs $kmer_max 
+    Rscript /resources/scripts/genomescope.R union_meryl.hist $kmer $read_length union_meryl_gs $kmer_max 
 
 	mkdir -p ~/out/output_genomescope
 	echo "test" > ~/out/output_genomescope/test.txt
-	#mv union_meryl_gs ~/out/output_genomescope/
+	mv union_meryl_gs ~/out/output_genomescope/
 
 	dx-upload-all-outputs --parallel
 
@@ -56,12 +57,14 @@ main() {
 meryl_fastq() {
 	
 	sudo chmod 777 /usr/bin/meryl
+
+	mem_in_gb=`head -n1 /proc/meminfo | awk '{print int($2*0.8/1024/2014)}'`
 	
     dx-download-all-inputs
 
 	mkdir -p ~/out/fastq_meryl/
 	
-	meryl count k="$kmer" output ~/out/fastq_meryl/${fastq_name%.fastq.gz}.meryl "${fastq_path}" memory=5
+	meryl count k="$kmer" output ~/out/fastq_meryl/${fastq_name%.fastq.gz}.meryl "${fastq_path}" memory=$mem_in_gb
 
     dx-upload-all-outputs --parallel
 }

@@ -66,7 +66,7 @@
     "aws:us-east-1": {
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x16"
+          "instanceType": "mem2_hdd2_v2_x4"
         }
       }
     }
