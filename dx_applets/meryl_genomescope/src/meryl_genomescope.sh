@@ -30,7 +30,9 @@ main() {
         merge_fastq_args+=(-icount_kmer="$one_fastq_jobs":fastq_meryl)
     done
 
-    merge_job=$(dx-jobutil-new-job "${merge_bam_args[@]}" union_meryl)
+    merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" union_meryl)
+    dx-jobutil-add-output output_genomescope "$merge_job":output_genomescope --class=array:jobref
+    
 }
 
 union_meryl(){
