@@ -10,21 +10,21 @@ The overall assembly pipeline can be depicted in the following simplified diagra
 
 . [Getting Started](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#getting-started)
 
-. [Falcon and Unzip Assembly](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-falcon-and-unzip)
+. [Falcon and Unzip Assembly](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#1-falcon-and-unzip)
 
-. [Purge Dups](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-purge-dups)
+. [Purge Dups](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#2-purge-dups)
 
-. [10X Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-10x)
+. [10X Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#1-10x)
 
-. [Bionano Hybrid Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-bionano)
+. [Bionano Hybrid Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#2-bionano)
 
-. [Salsa Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#3-salsa)
+. [Salsa Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#3-salsa)
 
-. [Arrow Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-arrow)
+. [Arrow Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#1-arrow)
 
-. [Freebayes Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-freebayes)
+. [Freebayes Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#2-freebayes)
 
-. [Final Checks](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#final-checks)
+. [Final Checks](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#final-checks)
 
 
 IMPORTANT: Remember that your questions are always welcome in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC)!
@@ -290,7 +290,7 @@ Next, it is required that every intermediate assembly produced during the pipeli
 
 <br/>
 
-**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflow named **Evaluation KAT Plot**.
+**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflow named **Evaluation KAT Plot**.
 
 To obtain the standard assembly statistics run the **asm_stats** applet using as input the respective assembly to be evaluated. In addition, click the gear icon and complete the "Genome size (bp)" field with the size of the genome in base pairs, and `fArcCen1` in the "species code" field. Inside the `assembly_vgp_standard_1.6` folder, create a new folder with the name `evaluation`. Create a folder inside `evaluation` with the name of the assembly stage to be evaluated (for example, `c1`) and select it as the output folder. Finally, click `Run as Analysis...` to launch the applet.
 You should check for an improvement in the assembly metrics with the progress of the pipeline.
