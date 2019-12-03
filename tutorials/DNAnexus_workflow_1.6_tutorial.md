@@ -1,7 +1,7 @@
 # _fArcCen1_ Assembly Tutorial
 
 This tutorial covers the assembly of the fish species [Flier Cyclid](https://vgp.github.io/genomeark/Archocentrus_centrarchus) (_Archocentrus centrarchus_) using the [DNAnexus platform](https://platform.dnanexus.com/).
-The overall assembly pipeline can be depicted in the following simplified diagram (for a more general diagram, click [here](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/VGP_1.6_general.md)):
+The overall assembly pipeline can be depicted in the following simplified diagram (for a more general diagram, click [here](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/VGP_1.6_general.md)):
 
 ![DNAnexus assembly diagram 1.6](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNAnexus_VGP_1.6_diagram_03122019.png)
 
@@ -133,20 +133,20 @@ fArcCen1
 
 Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
 
-![DNAnexus working project](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/DNA_nexus_front.png)
+![DNAnexus working project](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNA_nexus_front.png)
 
 <br/>
 <br/>
 
 In your working project, click the workflow to open it in _Run_ mode.
 
-![Falcon and unzip workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/falcon_unzip_workflow.png)
+![Falcon and unzip workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/falcon_unzip_workflow.png)
 
 <br/>
 
 Before configuring the workflow, it is good practice to create an editable copy of the workflow in case anything is misconfigured or needs to be re-run. This can be done by selecting `Workflow Actions` and then selecting the `Save as template` action. This will take you to a copy of the workflow that can be modified. Workflows are automatically saved if any changes are made. Return to the `Run Analysis...` screen by clicking the `Start Analysis` button.
 
-![Workflow Actions: Save as Template](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/WorkflowSaveAsTemplate.png)
+![Workflow Actions: Save as Template](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/WorkflowSaveAsTemplate.png)
 
 <br/>
 
@@ -154,14 +154,14 @@ Look through the workflow to make sure all instances and inputs are configured c
 
 Once the workflow is configured, select the `BAM Files` input under the `BAM to FASTA` stage. This will pop up a dialogue window to select input files. Select the _PacBio Sequel Reads_ from the `pacbio` folder as input (as a good practice, please always select the corresponding files by locating them in their respective folders).
 
-![BAM to FASTA input](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/BAMtoFASTAinput.png)
+![BAM to FASTA input](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/BAMtoFASTAinput.png)
 
 <br/>
 
 Under the `Create Raw Reads Dazzler DB` stage, click the gear icon to open the parameters panel and fill in the "Estimated genome size" parameter with the given species' expected genome size. For `fArcCen1`, the estimated genome size is 0.99Gbp, so we fill in `0.99G`. The genome size can be obtained from the [Animal Genome Size Database](http://www.genomesize.com/) or if the species is no available there, can also be estimated by running **Jellyfish and GenomeScope** on the 10x Genomics reads as explained before).
 
-![Create Raw Reads stage](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/CreateRawReadsConfig.png)
-![Configure genome size](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/LengthCutoffConfig.png)
+![Create Raw Reads stage](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/CreateRawReadsConfig.png)
+![Configure genome size](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/LengthCutoffConfig.png)
 
 <br/>
 
@@ -180,8 +180,8 @@ In addition to selecting parameters, you should specify an output folder for the
 
 All the stages of the workflow should now be in the "Runnable" state. Before running, make sure to save your workflow changes (including input specification) by selecting `Workflow Actions` and selecting `Update workflow with changes`. This will make it easier to modify and relaunch the workflow should any failures occur. Finally, click `Run as Analysis...` to launch the workflow.
 
-![Remember to save your workflow configuration by clicking "Update Workflow with Changes"](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/WorkflowUpdateWithChanges.png)
-![Click the Run as Analysis button to launch the workflow.](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/RunAsAnalysisGo.png)
+![Remember to save your workflow configuration by clicking "Update Workflow with Changes"](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/WorkflowUpdateWithChanges.png)
+![Click the Run as Analysis button to launch the workflow.](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/RunAsAnalysisGo.png)
 
 Should any failures occur, the workflow can be restarted from the point of failure by navigating to the "Monitor" tab of the project and selecting the launched **vgp_falcon_and_unzip_assembly_workflow**. There you can select the `Rerun As Analysis` button. Be sure to wait while all inputs and links populate before making any changes to the analysis parameters.
 
@@ -340,7 +340,7 @@ In your working project, click the green button `+ Add Data` and search and sele
 
 Click the workflow to open it in _Run_ mode and create an editable copy of it in case anything is misconfigured or needs to be re-run.
 
-![Purge Dups workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/purge_dups_workflow.png)
+![Purge Dups workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/purge_dups_workflow.png)
 
 The inputs for the workflow are:
 * For the `purge_dups` stage: the **c1** file `fArcCen1_c1.fasta.gz` and the _PacBio Reads converted to fasta_ from the `bam_to_fasta` folder
@@ -403,7 +403,7 @@ The inputs for the workflow are:
 
 In addition, specify the `Output Folder` for the workflow to `intermediates` as before. Launch the analysis.
 
-![Configured Scaff10x workflow](https://raw.githubusercontent.com/VGP/vgp-assembly/master/tutorials/images/Scaff10XRunnable.png)
+![Configured Scaff10x workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/Scaff10XRunnable.png)
 
 The final output of scaff10x should look like this:
 ```
@@ -460,7 +460,7 @@ fArcCen1
 
 From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore, copy the **scaffold_3_bionano_1enzyme** workflow from VGP tools as explained before. In some cases you may see two `*.cmap.gz` files in your input data corresponding to two enzymes used for the Bionano data, and therefore you will need to use the _2 enzyme_ workflow.
 
-![Bionano workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/bionano_workflow.png)
+![Bionano workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/bionano_workflow.png)
 
 The inputs for the workflow are:
 * `Merged refineFinal CMAP file`: the `fArcCen1_Saphyr_DLE-1.cmap.gz` from `genomic_data/bionano/` folder
@@ -555,7 +555,7 @@ Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into
 2. Run _Salsa2_ on aligned reads and the `s2.fasta.gz` scaffolds file
 3. Concatenate the output with the _Haplotigs_ from _FALCON Unzip_
 
-![New Salsa workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/new_salsa_workflow.png)
+![New Salsa workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/new_salsa_workflow.png)
 
 The inputs for the workflow are:
 * For the `BWA FASTA Indexer` stage: the scaffolds file `fArcCen1_s2.fasta.gz` for the `Genome` input
@@ -622,7 +622,7 @@ The workflow performs the following steps:
 1. Align the _PacBio reads_ to the assembly using _Minimap2_
 2. Polish of scaffolds using _Arrow_
 
-![Arrow workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/arrow_workflow.png)
+![Arrow workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/arrow_workflow.png)
 
 The inputs for the workflow are:
 * `Reads`: the _PacBio Sequel Reads_ (`subreads.bam`) from the `pacbio` folder
@@ -680,7 +680,7 @@ Remember to move the **t1** file to the `intermediates` folder by "drag and drop
 
 Copy the latest version of the **Scaffold 6 Longranger Freebayes Polish** workflow from VGP tools into your project as explained before.
 
-![Longranger Freebayes workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/longranger_freebayes_workflow.png)
+![Longranger Freebayes workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/longranger_freebayes_workflow.png)
 
 The inputs for the workflow are:
 * For the `10X Longranger Reference Builder` stage: the polished scaffolds file `fArcCen1_t1.fasta.gz`
