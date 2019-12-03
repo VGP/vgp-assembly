@@ -1,30 +1,30 @@
 # _fArcCen1_ Assembly Tutorial
 
 This tutorial covers the assembly of the fish species [Flier Cyclid](https://vgp.github.io/genomeark/Archocentrus_centrarchus) (_Archocentrus centrarchus_) using the [DNAnexus platform](https://platform.dnanexus.com/).
-The overall assembly pipeline can be depicted in the following simplified diagram (for a more general diagram, click [here](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/VGP_1.6_general.md)):
+The overall assembly pipeline can be depicted in the following simplified diagram (for a more general diagram, click [here](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/VGP_1.6_general.md)):
 
 ![DNAnexus assembly diagram 1.6](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNAnexus_VGP_1.6_diagram_03122019.png)
 
 
 **Index:**
 
-. [Getting Started](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#getting-started)
+. [Getting Started](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#getting-started)
 
-. [Falcon and Unzip Assembly](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#1-falcon-and-unzip)
+. [Falcon and Unzip Assembly](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-falcon-and-unzip)
 
-. [Purge Dups](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#2-purge-dups)
+. [Purge Dups](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-purge-dups)
 
-. [10X Scaffolding](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#1-10x)
+. [10X Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-10x)
 
-. [Bionano Hybrid Scaffolding](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#2-bionano)
+. [Bionano Hybrid Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-bionano)
 
-. [Salsa Scaffolding](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#3-salsa)
+. [Salsa Scaffolding](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#3-salsa)
 
-. [Arrow Polishing](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#1-arrow)
+. [Arrow Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#1-arrow)
 
-. [Freebayes Polishing](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#2-freebayes)
+. [Freebayes Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#2-freebayes)
 
-. [Final Checks](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#final-checks)
+. [Final Checks](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#final-checks)
 
 
 IMPORTANT: Remember that your questions are always welcome in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC)!
@@ -133,14 +133,14 @@ fArcCen1
 
 Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
 
-![DNAnexus working project](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/DNA_nexus_front.png)
+![DNAnexus working project](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/DNA_nexus_front.png)
 
 <br/>
 <br/>
 
 In your working project, click the workflow to open it in _Run_ mode.
 
-![Falcon and unzip workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/falcon_unzip_workflow.png)
+![Falcon and unzip workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/falcon_unzip_workflow.png)
 
 <br/>
 
@@ -290,7 +290,7 @@ Next, it is required that every intermediate assembly produced during the pipeli
 
 <br/>
 
-**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/DNAnexus_workflow_1.6.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflow named **Evaluation KAT Plot**.
+**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflow named **Evaluation KAT Plot**.
 
 To obtain the standard assembly statistics run the **asm_stats** applet using as input the respective assembly to be evaluated. In addition, click the gear icon and complete the "Genome size (bp)" field with the size of the genome in base pairs, and `fArcCen1` in the "species code" field. Inside the `assembly_vgp_standard_1.6` folder, create a new folder with the name `evaluation`. Create a folder inside `evaluation` with the name of the assembly stage to be evaluated (for example, `c1`) and select it as the output folder. Finally, click `Run as Analysis...` to launch the applet.
 You should check for an improvement in the assembly metrics with the progress of the pipeline.
@@ -340,7 +340,7 @@ In your working project, click the green button `+ Add Data` and search and sele
 
 Click the workflow to open it in _Run_ mode and create an editable copy of it in case anything is misconfigured or needs to be re-run.
 
-![Purge Dups workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/purge_dups_workflow.png)
+![Purge Dups workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/purge_dups_workflow.png)
 
 The inputs for the workflow are:
 * For the `purge_dups` stage: the **c1** file `fArcCen1_c1.fasta.gz` and the _PacBio Reads converted to fasta_ from the `bam_to_fasta` folder
@@ -460,7 +460,7 @@ fArcCen1
 
 From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore, copy the **scaffold_3_bionano_1enzyme** workflow from VGP tools as explained before. In some cases you may see two `*.cmap.gz` files in your input data corresponding to two enzymes used for the Bionano data, and therefore you will need to use the _2 enzyme_ workflow.
 
-![Bionano workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/bionano_workflow.png)
+![Bionano workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/bionano_workflow.png)
 
 The inputs for the workflow are:
 * `Merged refineFinal CMAP file`: the `fArcCen1_Saphyr_DLE-1.cmap.gz` from `genomic_data/bionano/` folder
@@ -555,7 +555,7 @@ Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into
 2. Run _Salsa2_ on aligned reads and the `s2.fasta.gz` scaffolds file
 3. Concatenate the output with the _Haplotigs_ from _FALCON Unzip_
 
-![New Salsa workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/new_salsa_workflow.png)
+![New Salsa workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/new_salsa_workflow.png)
 
 The inputs for the workflow are:
 * For the `BWA FASTA Indexer` stage: the scaffolds file `fArcCen1_s2.fasta.gz` for the `Genome` input
@@ -622,7 +622,7 @@ The workflow performs the following steps:
 1. Align the _PacBio reads_ to the assembly using _Minimap2_
 2. Polish of scaffolds using _Arrow_
 
-![Arrow workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/arrow_workflow.png)
+![Arrow workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/arrow_workflow.png)
 
 The inputs for the workflow are:
 * `Reads`: the _PacBio Sequel Reads_ (`subreads.bam`) from the `pacbio` folder
@@ -680,7 +680,7 @@ Remember to move the **t1** file to the `intermediates` folder by "drag and drop
 
 Copy the latest version of the **Scaffold 6 Longranger Freebayes Polish** workflow from VGP tools into your project as explained before.
 
-![Longranger Freebayes workflow](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/longranger_freebayes_workflow.png)
+![Longranger Freebayes workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images/longranger_freebayes_workflow.png)
 
 The inputs for the workflow are:
 * For the `10X Longranger Reference Builder` stage: the polished scaffolds file `fArcCen1_t1.fasta.gz`
@@ -807,6 +807,3 @@ The required QV value can be obtained from `qv_report.txt` file in the `longrang
 Finally, it is requested a HiC heatmap before sending the genome to curation. Evaluation-Align HiC / Pretext / HiC heatmaps.
 
 Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
-
-
-
