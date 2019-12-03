@@ -17,7 +17,7 @@ main() {
     for i in ${!fastq[@]}
     do
         
-		one_fastq_jobs+=($(dx-jobutil-new-job --instance-type="mem2_hdd2_x4" -ikmer="$kmer" -ifastq="${fastq[$i]}" meryl_fastq))
+		one_fastq_jobs+=($(dx-jobutil-new-job -ikmer="$kmer" -ifastq="${fastq[$i]}" meryl_fastq))
         
     done
  
@@ -30,29 +30,40 @@ main() {
         merge_fastq_args+=(-icount_kmer="$one_fastq_jobs":fastq_meryl)
     done
 
-    merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" union_meryl)
+    merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" -ikmer="$kmer" -iread_length="$read_length" -ikmer_max="$kmer_max" union_meryl)
     dx-jobutil-add-output output_genomescope "$merge_job":output_genomescope --class=array:jobref
     
 }
 
 union_meryl(){
 
-	dx-download-all-inputs
+    sudo chmod 777 /usr/bin/meryl
+    mkdir all_count
+    cd all_count
 
+    for i in $(dx ls); do 
+        ending=$(echo "$i" | grep '/$' || echo ""); 
+        if [ -n "$ending" ]; then 
+            meryl_count_kmer+=($ending)
+            dx download -r "$ending" 
+        fi 
+    done
+
+                
     ulimit -Sn 32000
-    meryl union-sum output union_meryl "${icount_kmer[@]}"
+    meryl union-sum output union_meryl "${meryl_count_kmer[@]}"
    
     meryl histogram union_meryl | sed 's/\t/ /g' > union_meryl.hist
     
     echo union_meryl.hist
     
-    Rscript /resources/scripts/genomescope.R union_meryl.hist $kmer $read_length union_meryl_gs $kmer_max 
+    Rscript /scripts/genomescope.R union_meryl.hist $kmer $read_length union_meryl_gs $kmer_max 
 
-	mkdir -p ~/out/output_genomescope
-	echo "test" > ~/out/output_genomescope/test.txt
-	mv union_meryl_gs ~/out/output_genomescope/
+    mkdir -p ~/out/output_genomescope
+    echo "test" > ~/out/output_genomescope/test.txt
+    mv union_meryl_gs ~/out/output_genomescope/
 
-	dx-upload-all-outputs --parallel
+    dx-upload-all-outputs --parallel
 
 }
 
@@ -60,7 +71,8 @@ meryl_fastq() {
 	
 	sudo chmod 777 /usr/bin/meryl
 
-	mem_in_gb=`head -n1 /proc/meminfo | awk '{print int($2*0.8/1024/2014)}'`
+	mem_in_gb=`head -n1 /proc/meminfo | awk '{print int($2*0.8/1024/1024)}'`
+	echo $mem_in_gb
 	
     dx-download-all-inputs
 
