@@ -150,7 +150,7 @@ Before configuring the workflow, it is good practice to create an editable copy 
 
 <br/>
 
-Look through the workflow to make sure all instances and inputs are configured correctly. Please check the following as it tend to be misconfigured: Under the `Unzip Track Reads` stage, the instance type should be set to `mem4_ssd1_x128`, unless something different is told to you in the training channel of Slack (for more information about memory and other instances in DNAnexus, click [here](https://github.com/lunfardista/VGP1.6_tutorial/tree/master/updated_workflow/docs/DNAnexus_instances.md)).
+Look through the workflow to make sure all instances and inputs are configured correctly. Please check the following as it tend to be misconfigured: Under the `Unzip Track Reads` stage, the instance type should be set to `mem4_ssd1_x128`, unless something different is told to you in the training channel of Slack (for more information about memory and other instances in DNAnexus, click [here](https://github.com/VGP/vgp-assembly/blob/master/tutorials/docs_1.6/DNAnexus_instances.md)).
 
 Once the workflow is configured, select the `BAM Files` input under the `BAM to FASTA` stage. This will pop up a dialogue window to select input files. Select the _PacBio Sequel Reads_ from the `pacbio` folder as input (as a good practice, please always select the corresponding files by locating them in their respective folders).
 
