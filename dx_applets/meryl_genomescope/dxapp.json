@@ -49,7 +49,16 @@
         "*"
       ],
       "help": ""
-    }
+  },
+  {
+      "name": "meryl_intermediate_file",
+      "class": "file",
+      "label": "meryl intermediate files",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+  }
   ],
   "runSpec": {
     "timeoutPolicy": {

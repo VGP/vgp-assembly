@@ -32,7 +32,8 @@ main() {
 
     merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" -ikmer="$kmer" -iread_length="$read_length" -ikmer_max="$kmer_max" union_meryl)
     dx-jobutil-add-output output_genomescope "$merge_job":output_genomescope --class=array:jobref
-    
+    dx-jobutil-add-output meryl_intermediate_file "$merge_job":meryl_intermediate_file --class=jobref
+
 }
 
 union_meryl(){
@@ -62,7 +63,10 @@ union_meryl(){
     mkdir -p ~/out/output_genomescope
     echo "test" > ~/out/output_genomescope/test.txt
     mv union_meryl_gs ~/out/output_genomescope/
-
+    cd ~
+    tar -cvf meryl_files.tar all_count/
+    mkdir -p ~/out/meryl_intermediate_file
+    mv meryl_files.tar ~/out/meryl_intermediate_file
     dx-upload-all-outputs --parallel
 
 }
