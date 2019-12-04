@@ -70,5 +70,8 @@
         }
       }
     }
+  },
+ "details": {
+    "upstreamVersion": "https://github.com/marbl/meryl f2d4fb98d2614681f1ab4e45c86d4cef442c962f"
   }
 }
