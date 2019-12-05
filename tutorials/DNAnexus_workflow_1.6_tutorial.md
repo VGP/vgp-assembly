@@ -90,6 +90,7 @@ This includes 4 types of raw data:
 3. Pacbio Sequel reads (`*.bam`). Only use the _.subreads_ files.
 4. HiC (provided by Arima or Phase Genomics) (`*.fastq.gz`).
 
+<br/>
 
 To make sure the project is configured correctly, navigate to the "Settings" tab of the project. In addition to the project name (_**fArcCen1**_), the following fields should be configured as such:
 
