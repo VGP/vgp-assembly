@@ -135,7 +135,7 @@ fArcCen1
 
 <br/>
 
-Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
+Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
 In your working project, click the workflow to open it in _Run_ mode.
 
