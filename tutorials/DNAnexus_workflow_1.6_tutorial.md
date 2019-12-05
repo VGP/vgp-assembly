@@ -119,7 +119,7 @@ In your working project, click the green button `+ Add Data` and search and sele
 
 <br/>
 
-Click the workflow to open it in _Run_ mode. The workflow only only need to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
+Click the workflow to open it in _Run_ mode. The workflow only needs to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
 
 At this stage, the final folder structure should look in general like this:
 ```
