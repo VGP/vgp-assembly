@@ -84,10 +84,10 @@ fArcCen1
         └── re_bases.txt
 ```
 
-This includes 4 types of raw data:
-1. 10X Genomics linked reads (`*.fastq.gz`). The reads are contained in the files _\_R1\__ and _\_R2\__ (the files _\_I1\__ are index). Shortly, 10X reads are Illumina short reads that contain a barcode that link each one of them to the DNA molecule (ideally a chromosome) from where they come (for more details, click [here](https://www.10xgenomics.com/linked-reads/)). 
+This includes 4 types of **raw** data:
+1. 10X Genomics linked reads (`*.fastq.gz`). The reads are contained in the compressed _fastq_ files _\_R1\__ and _\_R2\__ (the files _\_I1\__ are index). Shortly, 10X reads are Illumina short reads that contain a barcode that link each one of them to the DNA molecule (ideally a chromosome) from where they come (for more details, click [here](https://www.10xgenomics.com/linked-reads/)). 
 2. Bionano optical maps (`*.cmap`). 
-3. Pacbio Sequel reads (`*.bam`). These are long reads generated with the Sequel platform (for more information, click [here](https://www.pacb.com/products-and-services/sequel-system/)). Please be sure to only use the _.subreads_ files.
+3. Pacbio Sequel reads (`*.bam`). Binary files that contain long reads generated with the Sequel platform (for more information, click [here](https://www.pacb.com/products-and-services/sequel-system/)). Please be sure to only use the _.subreads_ files.
 4. HiC (provided by Arima or Phase Genomics) (`*.fastq.gz`).
 
 <br/>
