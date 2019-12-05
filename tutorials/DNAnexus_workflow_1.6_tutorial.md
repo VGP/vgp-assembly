@@ -185,7 +185,7 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       └── falcon_unzip
@@ -310,7 +310,7 @@ fArcCen1
 │   │   │   └── ...
 │   │   └── KAT_c1c2
 │   │       └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
@@ -348,7 +348,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
@@ -401,7 +401,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
@@ -465,7 +465,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── bionano
@@ -561,7 +561,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── bionano
@@ -621,7 +621,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── arrow
@@ -678,7 +678,7 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── arrow
@@ -746,7 +746,7 @@ fArcCen1
 │   ├── fArcCen1_pri.asm.20191231.fasta.gz
 │   ├── evaluation
 │   │   └── ...
-│   ├── genomescope
+│   ├── meryl_genomescope
 │   │   └── ...
 │   └── intermediates
 │       ├── arrow
