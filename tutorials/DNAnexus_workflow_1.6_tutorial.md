@@ -113,7 +113,13 @@ FALCON and FALCON-Unzip are _de novo_ genome assemblers for PacBio long reads (f
 
 Since the Falcon workflow needs an estimated genome size, and it is useful to know some other properties of the genome before starting, you must first run the **meryl+genomescope_10x** workflow.
 
-In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **meryl+genomescope_10x** workflow. Click the applet to open it in _Run_ mode. The workflow only only need to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
+In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **meryl+genomescope_10x** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
+
+![DNAnexus working project](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNA_nexus_front.png)
+
+<br/>
+
+Click the workflow to open it in _Run_ mode. The workflow only only need to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
 
 At this stage, the final folder structure should look in general like this:
 ```
@@ -127,13 +133,9 @@ fArcCen1
 
 **!)** In addition to the genome size, it is useful to take a look to other values in the GenomeScope results plot (e.g. heterozygosity percentage).
 
+<br/>
 
 Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
-
-![DNAnexus working project](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNA_nexus_front.png)
-
-<br/>
-<br/>
 
 In your working project, click the workflow to open it in _Run_ mode.
 
