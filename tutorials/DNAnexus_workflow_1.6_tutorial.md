@@ -80,16 +80,15 @@ fArcCen1
         ├── fArcCen1_DDHiC_R1.fastq.gz
         ├── fArcCen1_DDHiC_R2.fastq.gz
         ├── fArcCen1_S3HiC_R1.fastq.gz
-        ├── fArcCen1_S3HiC_R1.fastq.gz        
+        ├── fArcCen1_S3HiC_R2.fastq.gz        
         └── re_bases.txt
 ```
 
 This includes 4 types of raw data:
-1. 10X Genomics linked reads (`*.fastq.gz`)
-2. Bionano optical maps (`*.cmap`)
-3. Pacbio Sequel reads (`*.bam`)
-4. HiC (provided by Arima or Phase Genomics) (`*.fastq.gz`)
-
+1. 10X Genomics linked reads (`*.fastq.gz`). The reads are contained in the files _\_R1\__ and _\_R2\__ (the files _\_I1\__ are index). Shortly, 10X reads are Illumina short reads that contain a barcode that link each one of them to the DNA molecule (ideally a chromosome) from where they come (for more details, click [here](https://www.10xgenomics.com/linked-reads/)). 
+2. Bionano optical maps (`*.cmap`). 
+3. Pacbio Sequel reads (`*.bam`). Only use the _.subreads_ files.
+4. HiC (provided by Arima or Phase Genomics) (`*.fastq.gz`).
 
 
 To make sure the project is configured correctly, navigate to the "Settings" tab of the project. In addition to the project name (_**fArcCen1**_), the following fields should be configured as such:
@@ -111,25 +110,22 @@ IMPORTANT: All work should be done in the project shared with you. Do **not** cr
 
 FALCON and FALCON-Unzip are _de novo_ genome assemblers for PacBio long reads (for more information, click [here](https://pb-falcon.readthedocs.io/en/latest/about.html#overview)).
 
-Since the Falcon workflow needs an estimated genome size, and it is useful to know some other properties of the genome before starting, you must first run the **_Jellyfish and GenomeScope_** applet.
+Since the Falcon workflow needs an estimated genome size, and it is useful to know some other properties of the genome before starting, you must first run the **meryl+genomescope_10x** workflow.
 
-To do this correctly, first the barcodes from the 10X reads have to be removed. In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **proc10xg** applet. Click the applet to open it in _Run_ mode. For the input files, select all the `fastq.gz` in the `10x` folder. To specify an output folder for the applet, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `edited_reads`. Finally, click `Run as Analysis...` to launch the applet.
-
-Once the task is finished, click the green button `Start Analysis` and search the **Jellyfish and GenomeScope** applet. For the input files, select all the `fastq.gz` in the `edited_reads` folder. Next, click the gear icon to open the parameters panel and set a k-mer length of `31`. To specify an output folder for the applet, under `Workflow Actions`, select `Set Output Folder`, navigate to the `assembly_vgp_standard_1.6` and create a new folder named `genomescope`. Finally, click `Run as Analysis...` to launch the applet.
+In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **meryl+genomescope_10x** workflow. Click the applet to open it in _Run_ mode. The workflow only only need to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
 
 At this stage, the final folder structure should look in general like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
-│   └── genomescope
+│   └── meryl_genomescope
 │       └── ...
 └── genomic_data
     └── ...
 ```
 
 **!)** In addition to the genome size, it is useful to take a look to other values in the GenomeScope results plot (e.g. heterozygosity percentage).
+
 
 Now, to formally start with the assembly workflow, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **vgp_falcon_and_unzip_assembly_workflow** and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project (the latest version of the workflows and applets should allways be in the main _VGP tools_ folder, make sure not use archived versions).
 
@@ -189,8 +185,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── genomescope
 │   │   └── ...
 │   └── intermediates
@@ -307,8 +301,6 @@ At this stage, the folder structure should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   ├── c1
 │   │   │   ├── ...
@@ -354,8 +346,6 @@ Once finished, the final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -409,8 +399,6 @@ The final output of scaff10x should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -475,8 +463,6 @@ Once the app completes, the output should look smilar as follows:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -533,11 +519,11 @@ Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano. T
 fArcCen1
 └── genomic_data
     ├── 10x
-    │   └── ..
+    │   └── ...
     ├── bionano
-    │   └── ..
+    │   └── ...
     ├── pacbio
-    │   └── ..
+    │   └── ...
     └── phase
         ├── fArcCen1_DDHiC_R1.fastq.gz
         ├── fArcCen1_DDHiC_R2.fastq.gz
@@ -573,8 +559,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -635,8 +619,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -644,10 +626,10 @@ fArcCen1
 │   └── intermediates
 │       ├── arrow
 │       │   ├── mapped_reads
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   └── polished_output
 │       │       ├── fArcCen1_t1.fasta.gz
-│       │       └── ..
+│       │       └── ...
 │       ├── bionano
 │       │   └── ...
 │       ├── hic
@@ -694,8 +676,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
@@ -720,25 +700,25 @@ fArcCen1
 │       ├── fArcCen1_t1.fasta.gz
 │       ├── longranger_freebayes_round_1
 │       │   ├── 10x_longranger
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   ├── freebayes
 │       │   │   ├── fArcCen1_t2.fasta.gz
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   └── QV
-│       │       └── ..
+│       │       └── ...
 │       ├── longranger_freebayes_round_2
 │       │   ├── 10x_longranger
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   ├── freebayes
 │       │   │   ├── fArcCen1_t3.fasta.gz
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   ├── QV
 │       │   │   ├── qv_report.txt
-│       │   │   └── ..
+│       │   │   └── ...
 │       │   └── stats
 │       │   │   ├── fArcCen1_alt.asm.20191231.fasta.gz
 │       │   │   ├── fArcCen1_pri.asm..20191231.fasta.gz
-│       │   │   └── ..
+│       │   │   └── ...
 │       ├── purge_dups
 │       │   └── ...
 │       └── scaff10x
@@ -764,8 +744,6 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── fArcCen1_alt.asm.20191231.fasta.gz
 │   ├── fArcCen1_pri.asm.20191231.fasta.gz
-│   ├── edited_reads
-│   │   └── ...
 │   ├── evaluation
 │   │   └── ...
 │   ├── genomescope
