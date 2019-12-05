@@ -157,7 +157,7 @@ Once the workflow is configured, select the `BAM Files` input under the `BAM to 
 
 <br/>
 
-Under the `Create Raw Reads Dazzler DB` stage, click the gear icon to open the parameters panel and fill in the "Estimated genome size" parameter with the given species' expected genome size. For `fArcCen1`, the estimated genome size is 0.99Gbp, so we fill in `0.99G`. The genome size can be obtained from the [Animal Genome Size Database](http://www.genomesize.com/) or if the species is no available there, can also be estimated by running **Jellyfish and GenomeScope** on the 10x Genomics reads as explained before).
+Under the `Create Raw Reads Dazzler DB` stage, click the gear icon to open the parameters panel and fill in the "Estimated genome size" parameter with the given species' expected genome size. For `fArcCen1`, the estimated genome size is 0.99Gbp, so we fill in `0.99G`. The genome size can be obtained from the [Animal Genome Size Database](http://www.genomesize.com/) or if the species is no available there, can also be estimated using the result of the **meryl+genomescope_10x** workflow on the 10x Genomics reads as explained before).
 
 ![Create Raw Reads stage](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/CreateRawReadsConfig.png)
 ![Configure genome size](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/LengthCutoffConfig.png)
