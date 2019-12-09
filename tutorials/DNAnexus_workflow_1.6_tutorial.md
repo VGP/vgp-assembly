@@ -332,6 +332,7 @@ In your working project, click the menu "TOOLS" and select "Tool Library", next 
 ### 2. Purge Dups
 
 Briefly, Purge Dups identifies heterozygous regions (mistakenly present in the primary contigs instead of the alternate), removes them from the primary contigs to place them with the alternate contigs.
+
 In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **Scaffold 1 purge_dups** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
 Click the workflow to open it in _Run_ mode and create an editable copy of it in case anything is misconfigured or needs to be re-run.
@@ -518,6 +519,7 @@ Remember to move the **s2** file `fArcCen1_s2.fasta.gz` to the `intermediates` f
 ### 3. Salsa
 
 Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano.
+
 Take a look at the HiC input data: It will be located under the `genomic_data` folder with the name of the HiC provider who generated it, such as `phase`, `arima` or `dovetail`.
 
 ```
