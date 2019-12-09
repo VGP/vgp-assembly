@@ -331,7 +331,7 @@ In your working project, click the menu "TOOLS" and select "Tool Library", next 
 
 ### 2. Purge Dups
 
-Briefly, Purge Dups identifies heterozygous regions (mistakenly present in the primary contigs instead of the alternate), removes them from the primary contigs to place them with the alternate contigs.
+Briefly, Purge Dups identifies heterozygous regions (mistakenly present in the primary contigs instead of the alternate), and removes them from the primary contigs to place them with the alternate contigs.
 
 In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **Scaffold 1 purge_dups** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
