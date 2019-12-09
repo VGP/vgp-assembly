@@ -538,6 +538,8 @@ fArcCen1
 In addition to the input files, you will need to know the restriction enzymes used to generate the data. For `fArcCen1`,
 the sequences are `GATC` since the restriction enzyme employed was MboI. This infomation is reported in the `re_bases.txt` file in the folder with the HiC reads.  
 
+Before starting with the Salsa step, if more that one pair of reads are present in the HiC folder (like in this example), all the _R1_ reads must be concatenated in one file, while the _R2_ reads must be concatenated in other. To do this, click the green button `Start Analysis` in your working project, and search and select the **File Concatenator** applet. The input of the applet are all the _R1_ files in the `phase` folder. Next, under `Workflow Actions`, select `Set Output Folder`, and specify the `phase` folder as output folder. Click `Run as Analysis...` to launch the applet. Finally, you need to **repeat this proceeding for the _R2_ reads** (please be sure of selecting the _R2_ reads **in the same order** the _R1_ reads were selected).
+
 Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into your project as explained before. The workflow performs the following steps:
 
 1. Align the _HiC reads_ using the Arima mapping pipeline
@@ -548,7 +550,7 @@ Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into
 
 The inputs for the workflow are:
 * For the `BWA FASTA Indexer` stage: the scaffolds file `fArcCen1_s2.fasta.gz` for the `Genome` input
-* For the `Arima mapping` stage: the HiC reads from the `phase` folder, _R1_ reads for the `Forward Reads` input and _R2_ reads for the `Reverse Reads` input
+* For the `Arima mapping` stage: the HiC reads from the `phase` folder, (concatenated) _R1_ reads file for the `Forward Reads` input and (concatenated) _R2_ reads file for the `Reverse Reads` input.
 * For the `Salsa` stage: select the gear icon and specify the HiC restriction enzyme (`GATC`) as the "Restriction enzyme bases" input
 * For the `concat s3+q2+mito` stage: the **Alternate combined** haplotigs contained in the file `fArcCen1_q2.fasta.gz` for `q2 input`. If a mitogenome is available for this species, it should be incorporated as input in this stage.
 
