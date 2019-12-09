@@ -331,6 +331,7 @@ In your working project, click the menu "TOOLS" and select "Tool Library", next 
 
 ### 2. Purge Dups
 
+Briefly, Purge Dups identifies heterozygous regions (mistakenly present in the primary contigs instead of the alternate), removes them from the primary contigs to place them with the alternate contigs.
 In your working project, click the green button `+ Add Data` and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **Scaffold 1 purge_dups** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
 Click the workflow to open it in _Run_ mode and create an editable copy of it in case anything is misconfigured or needs to be re-run.
@@ -516,7 +517,8 @@ Remember to move the **s2** file `fArcCen1_s2.fasta.gz` to the `intermediates` f
 
 ### 3. Salsa
 
-Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano. Take a look at the HiC input data: It will be located under the `genomic_data` folder with the name of the HiC provider who generated it, such as `phase`, `arima` or `dovetail`.
+Salsa scaffolding uses Hi-C data to scaffold the hybrid assembly from Bionano.
+Take a look at the HiC input data: It will be located under the `genomic_data` folder with the name of the HiC provider who generated it, such as `phase`, `arima` or `dovetail`.
 
 ```
 fArcCen1
@@ -538,7 +540,7 @@ fArcCen1
 In addition to the input files, you will need to know the restriction enzymes used to generate the data. For `fArcCen1`,
 the sequences are `GATC` since the restriction enzyme employed was MboI. This infomation is reported in the `re_bases.txt` file in the folder with the HiC reads.  
 
-Before starting with the Salsa step, if more that one pair of reads are present in the HiC folder (like in this example), all the _R1_ reads must be concatenated in one file, while the _R2_ reads must be concatenated in other. To do this, click the green button `Start Analysis` in your working project, and search and select the **File Concatenator** applet. The input of the applet are all the _R1_ files in the `phase` folder. Next, under `Workflow Actions`, select `Set Output Folder`, and specify the `phase` folder as output folder. Click `Run as Analysis...` to launch the applet. Finally, you need to **repeat this proceeding for the _R2_ reads** (please be sure of selecting the _R2_ reads **in the same order** the _R1_ reads were selected).
+Before starting with the Salsa step, if more than one pair of reads are present in the HiC folder (like in this example), all the _R1_ reads must be concatenated in one file, while the _R2_ reads must be concatenated in other. To do this, click the green button `Start Analysis` in your working project, and search and select the **File Concatenator** applet. The input of the applet are all the _R1_ files in the `phase` folder. Next, under `Workflow Actions`, select `Set Output Folder`, and specify the `phase` folder as output folder. Click `Run as Analysis...` to launch the applet. Finally, you need to **repeat this proceeding for the _R2_ reads** (please be sure of selecting the _R2_ reads **in the same order** the _R1_ reads were selected).
 
 Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into your project as explained before. The workflow performs the following steps:
 
