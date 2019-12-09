@@ -1,4 +1,4 @@
-Genomescope plots overview
+GenomeScope plots overview
 ==========================
 Based on [Interpreting GenomeScope profiles for VGP genome assemblies](https://hackmd.io/@tlama/Sk1HmluTH) by Tanya Lama.
 
