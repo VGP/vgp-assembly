@@ -131,7 +131,7 @@ fArcCen1
     └── ...
 ```
 
-**!)** In addition to the genome size, it is useful to take a look to other values in the GenomeScope results plot (e.g. heterozygosity percentage).
+**!)** In addition to the genome size, it is useful to take a look to other values in the GenomeScope results plot (e.g. heterozygosity percentage). To further details about the GenomeScope plots and its interpretation, click [here](https://github.com/VGP/vgp-assembly/blob/master/tutorials/docs_1.6/Genomescope_overview_1.6.md#genomescope-plots-overview).
 
 <br/>
 
