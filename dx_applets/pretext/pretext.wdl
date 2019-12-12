@@ -4,19 +4,28 @@ task pretext{
     input {
         File mapbam
     }
+#    Int disk_space = ceil(2.0 * sum(size(mapbam, "G")))
     command <<<
-        PretextSnapshot -m map.pretext --sequences ~{mapbam} "=full"
+        set -e -x -o pipefail
+        cat ~{mapbam} | samtools view -h - | PretextMap -o map.pretext
+        PretextSnapshot -m map.pretext --sequences "=full"
     >>>
     output {
         Array[File] pretext_output = glob("*")
     }
     runtime {
-        docker: "quay.io/biocontainers/pretext-suite:0.0.1--0"
+        docker: "quay.io/chai/pretext:0.0.1"
+        cpu: 4
+        memory: "50 GB"
+#        disk: "/tmp ${disk_space} SSD"
+        disk: "/tmp 50 SSD"
     }
     parameter_meta {
     mapbam: {
         description: "mapped BAM from Arima",
-        extension: ".bam"
+        extension: ".bam",
+        stream: true,
+        localization_optional: true
     }
     }
 }
