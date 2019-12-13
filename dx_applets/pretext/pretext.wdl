@@ -9,9 +9,10 @@ task pretext{
         set -e -x -o pipefail
         cat ~{mapbam} | samtools view -h - | PretextMap -o map.pretext
         PretextSnapshot -m map.pretext --sequences "=full"
+        ls
     >>>
     output {
-        Array[File] pretext_output = glob("*")
+        Array[File] pretext_output = glob("map_snapshots/map_FullMap.png")
     }
     runtime {
         docker: "quay.io/chai/pretext:0.0.1"
