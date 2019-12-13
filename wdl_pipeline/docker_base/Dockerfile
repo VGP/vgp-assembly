@@ -86,6 +86,21 @@ RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9
     echo "#%Module" >>/root/modules/samtools/.modulerc && \
     echo "module-version /1.9 default" >>/root/modules/samtools/.modulerc 
 
+ # 1.4.1
+ WORKDIR /opt/samtools
+ RUN wget https://github.com/samtools/samtools/releases/download/1.4.1/samtools-1.4.1.tar.bz2 && \
+     tar xvf samtools-1.4.1.tar.bz2 && \
+     rm -r /opt/samtools/samtools-1.4.1.tar.bz2 && \
+     cd samtools-1.4.1/ && \
+     autoheader && \
+     autoconf -Wno-header && \
+     ./configure --without-curses && \
+     make && \
+     mkdir /root/bin/samtools_1.4.1 && \
+     cp samtools /root/bin/samtools_1.4.1 && \
+     echo "#%Module" >>/root/modules/samtools/1.4.1 && \
+     echo "prepend-path PATH /root/bin/samtools_1.4.1" >>/root/modules/samtools/1.4.1
+
 ### bedtools
 ## 1.9
 WORKDIR /opt/bedtools
@@ -211,6 +226,33 @@ RUN wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz && \
     echo "#%Module" >>/root/modules/python/.modulerc && \
     echo "module-version /3.6 default" >>/root/modules/python/.modulerc
 
+ # 3.5.0
+ WORKDIR /opt/python3
+ RUN wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz && \
+     tar xvf Python-3.5.0.tgz && \
+     rm -r /opt/python3/Python-3.5.0.tgz && \
+     cd Python-3.5.0 && \
+    ./configure && \
+     make && \
+     mkdir /root/bin/python_3.5.0 && \
+     cp python /root/bin/python_3.5.0 && \
+     echo "#%Module" >>/root/modules/python/3.5 && \
+     echo "prepend-path PATH /root/bin/python_3.5.0" >>/root/modules/python/3.5
+
+
+ # 2.7
+ WORKDIR /opt/python
+ RUN wget https://www.python.org/ftp/python/2.7/Python-2.7.tgz && \
+     tar xvf Python-2.7.tgz && \
+     rm -r /opt/python/Python-2.7.tgz && \
+     cd Python-2.7 && \
+     ./configure && \
+     make && \
+     mkdir /root/bin/python_2.7 && \
+     cp python /root/bin/python_2.7 && \
+     echo "#%Module" >>/root/modules/python/2.7 && \
+     echo "prepend-path P
+
 ### htslib
 # 1.9
 WORKDIR /opt/htslib
@@ -236,6 +278,20 @@ RUN wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.17.tar.bz2 && \
     echo "append-path PATH /root/bin/bwa_0.7.17" >>/root/modules/bwa/0.7.17 && \
     echo "#%Module" >>/root/modules/bwa/.modulerc && \
     echo "module-version /0.7.17 default" >>/root/modules/bwa/.modulerc
+
+ # 0.7.13
+ WORKDIR /opt/bwa
+ RUN wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.13.tar.bz2 && \
+    tar xvf bwa-0.7.13.tar.bz2 && \
+    rm bwa-0.7.13.tar.bz2 && \
+    cd bwa-0.7.13 && \
+    make && \
+    mkdir /root/bin/bwa_0.7.13  && \
+    cp bwa qualfa2fq.pl xa2multi.pl bwakit/* /root/bin/bwa_0.7.13 && \
+    echo "#%Module" >>/root/modules/bwa/0.7.13 && \
+     echo "prepend-path PATH /root/bin/bwa_0.7.13" >>/root/modules/bwa/0.7.13 && \
+     echo "#%Module" >>/root/modules/bwa/.modulerc
+
 
 ### mash
 # 2.2
