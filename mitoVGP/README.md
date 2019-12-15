@@ -50,18 +50,17 @@ For additional options and specifications you can type:
 ```
 
 Please note that depending on your Pacbio chemistry you will need to define a different polishing tool.
-For chemistry lower than 2.0 add:
-```
-./mitoVGP -b variantCaller
-```
 For chemistry 2.0 (default):
 ```
 ./mitoVGP -b gcpp
 ```
-
-For very old RSII chemistries you may want to align reads using blasr:
+For chemistry lower than 2.0 add:
 ```
-./mitoVGP -m blasr
+./mitoVGP -b variantCaller
+```
+For very old RSII chemistries you may also want to align reads using blasr:
+```
+./mitoVGP -b variantCaller -m blasr
 ```
 
 
