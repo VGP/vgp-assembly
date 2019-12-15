@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -25,7 +25,7 @@ elif [ $1 == "-h" ]; then
 	It requires the following software (and their dependencies) installed:
 	bowtie2/2.3.5, samtools/1.7, freebayes/1.1.0-46-g8d2b3a0-dirty, bcftools/1.9
 
-	Reads are aligned to the reference, Similarly to script map10x1, a final round of
+	Reads are aligned to the reference, Similarly to script map10x1.sh, a final round of
 	freebayes and bcftools consensus is required to obtain the polished contig using the 
 	aligned outcome of the script (this step is currently not included in the script).
 
@@ -95,7 +95,7 @@ fi
 W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
-FNAME="${ID}.${CONTIG}_polish2_10x1_trim1"
+FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1"
 
 if [[ -e "${W_URL}/freebayes_round2/${FNAME}_10x2.fasta" ]]; then
 

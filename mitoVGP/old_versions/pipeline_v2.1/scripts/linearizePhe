@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -15,7 +15,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 
-	This script (linearizePhe) is used to allow the final sequence generated to start with the Phenylalanine tRNA sequence.
+	This script (linearizePhe) is used to allow the final sequence generated to start with Glutammine.
 
 	It requires the following software (and their dependencies) installed:
 	samtools/1.9, pbmm2/1.0.0, variantCaller/2.2.2, picard/2.18.22
@@ -90,7 +90,7 @@ printf "\n"
 W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
-FNAME="${ID}.${CONTIG}_polish2_10x1_trim1_10x2"
+FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1_10x2"
 
 if ! [[ -e "${W_URL}/linearizeGln" ]]; then
 

@@ -36,6 +36,7 @@ elif [ $1 == "-h" ]; then
 		-t the number of threads
 
 	Optional arguments are:
+		-b use gcpp or variantCaller during arrow polishing for 2.0 or earlier chemistry respectively (gcpp/variantCaller default: gcpp)
 		-c if run on cluster. Supported options are:
 			SLURM
 			None (Default)
@@ -50,7 +51,7 @@ printf "\n\n++++ running: ArrowPolish ++++\n\n"
 
 #set options
 
-while getopts ":s:i:c:n:t:v:" opt; do
+while getopts ":s:i:c:n:t:v:b:" opt; do
 
 	case $opt in
 		s)
@@ -77,6 +78,10 @@ while getopts ":s:i:c:n:t:v:" opt; do
 			VAL=$OPTARG
 			echo "SAM validation stringency: -v $OPTARG" >&2
             ;;
+		b)
+			CAL=$OPTARG
+			echo "Pacbio variant caller: -b $OPTARG" >&2
+            ;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -100,6 +105,13 @@ if [[ -z  ${VAL} ]]; then
 	VAL="STRICT"
 
 fi
+
+if [[ -z  ${POL} ]]; then
+
+	CAL="gcpp"
+
+fi
+
 
 printf "\n"
 
@@ -173,8 +185,10 @@ if ! [[ -e "${W_URL}/arrow/arrow_round1" ]]; then
 	rm ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}.bam  
 
 	pbindex ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam
-
-	variantCaller ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam -r ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}.fasta -o ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta --algorithm=arrow --numWorkers ${NPROC}
+	
+	samtools index ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam
+	
+	${CAL} ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_sorted.bam -r ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}.fasta -o ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta --algorithm=arrow -j ${NPROC}
 
 fi
 
@@ -197,9 +211,11 @@ if ! [[ -e "${W_URL}/arrow/arrow_round2" ]]; then
 
 	pbindex ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_pl_sorted.bam
 
+	samtools index ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_pl_sorted.bam
+
 	mkdir -p ${W_URL}/arrow/arrow_round2
 
-	variantCaller ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_pl_sorted.bam -r ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta -o ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta --algorithm=arrow --numWorkers ${NPROC}
+	${CAL} ${W_URL}/arrow/arrow_round1/picard/${ID}.realigned_raw_reads_rh_${CONTIG}_pl_sorted.bam -r ${W_URL}/arrow/arrow_round1/${ID}.${CONTIG}_arrow.fasta -o ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta --algorithm=arrow -j ${NPROC}
 
 fi
 
