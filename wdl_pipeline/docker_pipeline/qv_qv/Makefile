@@ -1,7 +1,9 @@
 # Definitions
-name = tpesout/vgp_qv
+repository = tpesout
+identifier = vgp_qv
 version = 0.0.0
 git_commit ?= $(shell git log --pretty=oneline -n 1 | cut -f1 -d " ")
+name = ${repository}/${identifier}
 tag = ${version}--${git_commit}
 
 # Steps

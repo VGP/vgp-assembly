@@ -1,4 +1,4 @@
-workflow helloMarginPolish {
+workflow runMarginPolish {
 	call marginPolish
 }
 
@@ -8,9 +8,11 @@ task marginPolish {
     File alignmentBamIdx
     File referenceFasta
     File parameters
-    String featureType
+    String featureType=""
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -51,6 +53,6 @@ task marginPolish {
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: "tpesout/vgp_marginpolish"
+        docker: dockerRepository+"/vgp_marginpolish:"+dockerTag
     }
 }

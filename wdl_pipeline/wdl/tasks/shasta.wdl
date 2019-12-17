@@ -1,4 +1,4 @@
-workflow helloShasta {
+workflow runShasta {
 	call shasta
 }
 
@@ -7,6 +7,8 @@ task shasta {
     String sampleName
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -23,7 +25,7 @@ task shasta {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        module load shasta
+        module load shasta/0.3.0_bf757a3
         shasta --input ${sep=" --input " readFilesONT} --threads ${threadCount}
         mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
         mv ShastaRun ${sampleName}
@@ -36,6 +38,6 @@ task shasta {
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: "tpesout/vgp_shasta"
+        docker: dockerRepository+"/vgp_shasta:"+dockerTag
     }
 }

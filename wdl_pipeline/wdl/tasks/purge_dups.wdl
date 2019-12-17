@@ -1,4 +1,4 @@
-workflow helloPurgeDups {
+workflow runPurgeDups {
 	call purge_dups
 }
 
@@ -9,6 +9,8 @@ task purge_dups {
     String sampleName
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -61,12 +63,12 @@ task purge_dups {
 
 	>>>
 	output {
-		File purged = sampleName + ".purged.fa"
-		File hap = sampleName + ".hap.fa"
+		File primary = sampleName + ".purged.fa"
+		File alternate = sampleName + ".hap.fa"
 	}
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: "tpesout/vgp_purge_dups"
+        docker: dockerRepository+"/vgp_purge_dups:"+dockerTag
     }
 }

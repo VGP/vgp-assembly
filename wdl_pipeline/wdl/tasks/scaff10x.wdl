@@ -1,14 +1,15 @@
-workflow helloPurgeDups {
-	call purge_dups
+workflow runScaff10x {
+	call scaff10x
 }
 
-task purge_dups {
+task scaff10x {
     File assemblyFasta
     Array[File] readFiles10x
-    String minimapPreset
     String sampleName
     Int threadCount
     Int memoryGigabyte
+    String dockerRepository="tpesout"
+    String dockerTag="latest"
 
 	command <<<
         # initialize modules
@@ -25,8 +26,8 @@ task purge_dups {
         # to turn off echo do 'set +o xtrace'
         set -o xtrace
 
-        # get name of output file
-        REF=`basename ${assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
+        # link assembly
+        ln -s ${assemblyFasta} asm.fasta
 
         # link input files
         mkdir input
@@ -35,16 +36,16 @@ task purge_dups {
         done
 
         # make and validate input.dat
-        ls input/*_R[1-2]_001.fastq.gz | awk '{if (NR%2==1) {print "q1="$0} else {print "q2="$0}}' > input.dat
+        ls input/*_R[1-2]_001.fastq.gz | awk '{if (NR%2==1) {print "q1="pwd"/"$0} else {print "q2="pwd"/"$0}}' pwd=$PWD > input.dat
         if [[ ! -s input.dat ]] ; then
             echo "Check input.dat"
             exit -1
         fi
 
         # run script
-        bash /root/scripts/scaff10x/scaff10x_v4.1.sh
-
-        mv $REF.scaff10x.fasta ${sampleName}.scaff10x.fasta
+        export tools=/root/tools
+        export SLURM_CPUS_PER_TASK=${threadCount}
+        bash /root/scripts/scaff10x/scaff10x_v4.1.sh ${sampleName}
 	>>>
 	output {
 		File scaffoldedFasta = sampleName + ".scaff10x.fasta"
@@ -52,6 +53,6 @@ task purge_dups {
     runtime {
         cpu: 32
         memory: "72 GB"
-        docker: "tpesout/vgp_purge_dups"
+        docker: dockerRepository+"/vgp_scaff10x:"+dockerTag
     }
 }
