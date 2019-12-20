@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -16,7 +16,7 @@ elif [ $1 == "-h" ]; then
 	cat << EOF
 
 	This script (map10x1) is used for short read polishing of the long-read assembly 
-	resulting from Canu (mtDNApipe) and polishing (mitoPolish).
+	resulting from Canu (mtDNApipe) and Arrow polishing (ArrowPolish).
 	In the VGP pipeline it uses 10x data (currently with random barcodes) but it can be used
 	with any short read data containing mitogenomic reads using information from Canu
 	intermediate files.
@@ -108,7 +108,7 @@ fi
 W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
-if [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_polish2_10x1.fasta" ]]; then
+if [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta" ]]; then
 
 	printf "\n\noutput already present: skipping.\n\n"
 	exit 0
@@ -148,7 +148,7 @@ fi
 
 if ! [[ -e "${W_URL}/bowtie2_round1/${ID}.1.bt2" ]]; then
 
-	bowtie2-build --threads ${NPROC} ${W_URL}/polish/polish_round2/${ID}.${CONTIG}_polish2.fasta ${W_URL}/bowtie2_round1/${ID} -q
+	bowtie2-build --threads ${NPROC} ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta ${W_URL}/bowtie2_round1/${ID} -q
 
 fi
 
@@ -295,7 +295,7 @@ if ! [[ -e "${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf" ]] && ! [[ -
 	
 	printf "\nVariant calling...\n\n"
 	
-	freebayes -f ${W_URL}/polish/polish_round2/${ID}.${CONTIG}_polish2.fasta -b ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam -v ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf
+	freebayes -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -b ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam -v ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf
 
 fi
 
@@ -305,17 +305,17 @@ if ! [[ -e "${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz" ]]; then
 
 fi
 
-if ! [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_polish2_10x1.fasta" ]]; then
+if ! [[ -e "${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta" ]]; then
 	
 	printf "\nPolishing...\n\n"
 	
 	tabix -p vcf ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz
 	
-	bcftools view --threads=${NPROC} ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ou | bcftools norm -Ob -f ${W_URL}/polish/polish_round2/${ID}.${CONTIG}_polish2.fasta -o ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf --threads ${NPROC}
+	bcftools view --threads=${NPROC} ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.vcf.gz -i 'QUAL>1 && (GT="AA" || GT="Aa")' -Ou | bcftools norm -Ob -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -o ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf --threads ${NPROC}
 	
 	bcftools index ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf
 	
-	bcftools consensus -Hla ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf -f ${W_URL}/polish/polish_round2/${ID}.${CONTIG}_polish2.fasta -o ${W_URL}/freebayes_round1/${ID}.${CONTIG}_polish2_10x1.fasta
+	bcftools consensus -Hla ${W_URL}/freebayes_round1/aligned_${ID}_all_sorted.bcf -f ${W_URL}/arrow/arrow_round2/${ID}.${CONTIG}_arrow2.fasta -o ${W_URL}/freebayes_round1/${ID}.${CONTIG}_arrow2_10x1.fasta
 
 	printf "\n--Variant calling and polishing completed.\n"
 

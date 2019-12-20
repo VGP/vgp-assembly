@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -17,7 +17,7 @@ elif [ $1 == "-h" ]; then
 
 	Usage: '$0 -a assembly -r reference -o output_prefix'
 
-	blastMT is used to identify the mitocontig in the Canu assembly.
+	blastgenomes.sh is used to test for the presence of a mitocontig in Canu genome assembly.
 
 	Required arguments are:
 	-s the species name (e.g. Calypte_anna)

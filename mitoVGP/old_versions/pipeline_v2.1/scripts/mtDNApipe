@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -17,7 +17,7 @@ elif [ $1 == "-h" ]; then
 
 	Usage: '$0 -s species -i species_ID -r reference -g genome_size -t threads -m mapper (optional) -1 filelist (optional) -c cluster (optional)'
 
-	mtDNApipe is used to retrieve mitochondrial-like sequences from the raw Pacbio data
+	mtDNApipe.sh is used to retrieve mitochondrial-like sequences from the raw Pacbio data
 	generated in the framework of the Vertebrate Genomes Project and assemble them using Canu.
 
 	It requires the following software (and their dependencies) installed:
@@ -41,7 +41,6 @@ elif [ $1 == "-h" ]; then
 	by Canu to identify the putative mitocontig.
 
 	Required arguments are:
-	-a long read sequencing platform (pacbio/ONT)
 	-s the species name (e.g. Calypte_anna)
 	-i the VGP species ID (e.g. bCalAnn1)
 	-r the reference sequence fasta file
@@ -52,7 +51,7 @@ elif [ $1 == "-h" ]; then
 	Optional arguments are:
 	-d multithreaded download of files (true/false default: false) !! caution: true may require considerable amount of space.
 	-1 use pacbio/nanopore files from list of files, requires absolute path (default looks into aws)
-	-m the aligner for mitoread identification (blasr|minimap2|pbmm2). Default is pbmm2
+	-m the aligner for mitoread identification (blasr|pbmm2). Default is pbmm2
 	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
 	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
 	-o the options for Canu
@@ -70,13 +69,9 @@ printf "\n\n++++ running: mtDNApipe ++++\n\n"
 
 #set options
 
-while getopts ":a:s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
+while getopts ":s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
 
 	case $opt in
-		a)
-			PLATFORM=$OPTARG
-			echo "Long read platform: -a $OPTARG"
-			;;
 		s)
 			SPECIES=$OPTARG
 			echo "Species: -s $OPTARG"
@@ -122,7 +117,7 @@ while getopts ":a:s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
 			echo "Percent coverage of reads: -p > $OPTARG"
             ;;
 		1)
-			READ1=$OPTARG
+			PB=$OPTARG
 			echo "Local long read data: -1 $OPTARG"
 			;;
 		\?)
@@ -157,7 +152,7 @@ fi
 
 dw_date=`date "+%Y%m%d-%H%M%S"`;
 
-if ! [[ -e ${W_URL}/log/long_reads_file_list_$dw_date.txt ]] && [[ -z ${READ1} ]]; then
+if ! [[ -e ${W_URL}/log/long_reads_file_list_$dw_date.txt ]] && [[ -z ${PB} ]]; then
 
 	#record Pacbio raw data files available in the cloud at the time of the analysis
 	printf "Collecting data using: aws s3 ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/\n\n"
@@ -165,24 +160,18 @@ if ! [[ -e ${W_URL}/log/long_reads_file_list_$dw_date.txt ]] && [[ -z ${READ1} ]
 
 else
 
-	cat ${READ1} > ${W_URL}/log/long_reads_file_list_$dw_date.txt
+	cat ${PB} > ${W_URL}/log/long_reads_file_list_$dw_date.txt
 
 fi
 
-if ! [[ -e "${W_URL}/tgs_bam" ]]; then
+if ! [[ -e "${W_URL}/pacbio_bam" ]]; then
 
-mkdir ${W_URL}/tgs_bam
+mkdir ${W_URL}/pacbio_bam
 
 fi
 
-if [[ ${PLATFORM} == "ONT" ]]; then
-
-	ALN="minimap2"
-
-elif [[ -z  ${ALN} ]] && [[ ${PLATFORM} == "pacbio" ]]; then
-
+if [[ -z  ${ALN} ]]; then
 	ALN="pbmm2"
-
 fi
 
 if [[  ${ALN} == "pbmm2" ]] && ! [[ -e ${W_URL}/reference/${REF%.*}.fasta.mmi ]]; then   
@@ -192,7 +181,7 @@ if [[  ${ALN} == "pbmm2" ]] && ! [[ -e ${W_URL}/reference/${REF%.*}.fasta.mmi ]]
 fi
 
 #if vgp mode download
-if [[ -z ${READ1} ]] && [[ ${DOWNL} == true ]] && ! [[ "$(ls -A ${W_URL}/tgs_bam)" ]] ; then
+if [[ ${DOWNL} == true ]] && ! [[ "$(ls -A ${W_URL}/pacbio_bam)" ]] ; then
 
 	aws s3 --no-sign-request cp --recursive --exclude="*scrap*" --exclude="*xml*" --exclude="*bai*" --exclude="*pbi*" --include="*.subreads.bam" s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ ${W_URL}/
 
@@ -211,9 +200,9 @@ printf "\n"
 #for each Pacbio raw data file do
 while read p; do
 
-if ! [[ -e "${W_URL}/tgs_bam/aligned_$(basename -- "${p%.*}").bam" ]] && ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && ([[ $p == *.bam ]] || [[ $p == *.fastq ]] || [[ $p == *.fasta ]] || [[ $p == *.fa ]] || [[ $p == *.fq ]]); then
+if ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && [[ $p == *.bam ]] && ! [[ -e "${W_URL}/pacbio_bam/aligned_$(basename -- "$p")" ]]; then
 	
-	if [[ -z ${READ1} ]]; then
+	if [[ -z ${PB} ]]; then
 
 		if [[ -z ${DOWNL} ]] || ! [[  ${DOWNL} == true ]]; then
 
@@ -231,16 +220,11 @@ if ! [[ -e "${W_URL}/tgs_bam/aligned_$(basename -- "${p%.*}").bam" ]] && ! [[ $p
 	
 	if [[  ${ALN} == "blasr" ]]; then
 
-		blasr --bestn 1 ${W_URL}/$p ${W_URL}/reference/${REF%.*}.fasta --bam --out ${W_URL}/tgs_bam/aligned_${p%.*}.bam --nproc ${NPROC}
+		blasr --bestn 1 ${W_URL}/$p ${W_URL}/reference/${REF%.*}.fasta --bam --out ${W_URL}/pacbio_bam/aligned_${p%.*}.bam --nproc ${NPROC}
 
 	elif [[  ${ALN} == "pbmm2" ]]; then
 	
-		pbmm2 align --best-n 1 --min-concordance-perc 0 ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/$p ${W_URL}/tgs_bam/aligned_${p%.*}.bam -j ${NPROC}
-
-	elif [[  ${ALN} == "minimap2" ]]; then
-		
-		minimap2 -d ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/reference/${REF%.*}.fasta
-		minimap2 -x map-ont ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/${p} -t ${NPROC} -a --secondary=no | samtools view -S -b -F 4 -F 0x800 > ${W_URL}/tgs_bam/aligned_${p%.*}.bam
+		pbmm2 align --best-n 1 --min-concordance-perc 0 ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/$p ${W_URL}/pacbio_bam/aligned_${p%.*}.bam -j ${NPROC}
 		
 	else
 
@@ -248,7 +232,7 @@ if ! [[ -e "${W_URL}/tgs_bam/aligned_$(basename -- "${p%.*}").bam" ]] && ! [[ $p
 
 	fi
 #remove
-rm -f ${W_URL}/${p}
+rm ${W_URL}/${p%.*}.bam
 
 fi
 
@@ -257,49 +241,39 @@ done < ${W_URL}/log/long_reads_file_list_$dw_date.txt
 #organize the files
 
 #convert to fastq
-if ! [[ -e "${W_URL}/tgs_MT_extracted_reads" ]]; then
+if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads" ]]; then
 
-	mkdir ${W_URL}/tgs_MT_extracted_reads
+	mkdir ${W_URL}/pacbio_MT_extracted_reads
 
-	for f in ${W_URL}/tgs_bam/aligned_*.bam; do
+	for f in ${W_URL}/pacbio_bam/aligned_*.bam; do
 		
 		filename=$(basename -- "$f")
 		filename="${filename%.*}"
 		
-		if ! [[ -e "${f}.pbi" ]] && [[ ${PLATFORM} == "pacbio" ]]; then
+		if ! [[ -e "${f}.pbi" ]]; then
 
 			pbindex ${f}
 
 		fi
 		
-		if ! [[ -e "{W_URL}/tgs_MT_extracted_reads/${filename}.fastq.gz" ]] && ! [[ $(samtools view -c ${f}) -eq 0 ]]; then
+		if ! [[ -e "{W_URL}/pacbio_MT_extracted_reads/${filename}.fastq.gz" ]] && ! [[ $(samtools view -c ${f}) -eq 0 ]]; then
 	
 			printf "convert: ${f} to fastq\n"
-			
-			bam2fastq ${f} -o "${W_URL}/tgs_MT_extracted_reads/${filename}"
-			
-			if [[ ${PLATFORM} == "pacbio" ]]; then
-			
-				mv ${W_URL}/tgs_MT_extracted_reads/${filename} ${W_URL}/tgs_MT_extracted_reads/${filename}.int.fastq
-			
-			elif [[ ${PLATFORM} == "ONT" ]]; then
-			
-				mv ${W_URL}/tgs_MT_extracted_reads/${filename} ${W_URL}/tgs_MT_extracted_reads/${filename}.int.fastq					
-			
-			fi
+
+			bam2fastq ${f} -o "${W_URL}/pacbio_MT_extracted_reads/${filename}"
 
 		fi
 		
 	done
 
 	#merge into a single read file
-	if ! [[ -e "${W_URL}/tgs_MT_extracted_reads/${ID}.fastq" ]]; then
+	if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq" ]]; then
 	
-		if ! [[ $(cat ${W_URL}/tgs_MT_extracted_reads/*.int.fastq) == "" ]]; then
+		if ! [[ $(cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads) == "" ]]; then
 
-			cat ${W_URL}/tgs_MT_extracted_reads/*.int.fastq > ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq
+			cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 			
-			N_READS_EX=$(grep "@" -c ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq)
+			N_READS_EX=$(grep "@" -c ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq)
 			
 			printf "\nextracted ${N_READS_EX} reads\n"
 			
@@ -312,61 +286,61 @@ if ! [[ -e "${W_URL}/tgs_MT_extracted_reads" ]]; then
 		
 	fi
 
-	rm -f ${W_URL}/tgs_MT_extracted_reads/*.int.fastq
+	rm -f ${W_URL}/pacbio_MT_extracted_reads/*.subreads
 
 fi
 
-if ! [[ -z ${FL} ]] && ! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq.gz ]]; then
+if ! [[ -z ${FL} ]] && ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]]; then
 
-	awk 'BEGIN {FS = "\t" ; OFS = "\n"} {header = $0 ; getline seq ; getline qheader ; getline qseq ; if (length(seq) <= '${FL}') {print header, seq, qheader, qseq}}' < ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq > ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq
+	awk 'BEGIN {FS = "\t" ; OFS = "\n"} {header = $0 ; getline seq ; getline qheader ; getline qseq ; if (length(seq) <= '${FL}') {print header, seq, qheader, qseq}}' < ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq > ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
 	
 fi
 
-if ! [[ -z ${PER} ]] && (! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq.gz ]] || ! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq.gz ]]); then
+if ! [[ -z ${PER} ]] && (! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]] || ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz ]]); then
 
-	if ! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+	if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
 	
-		readset=${W_URL}/tgs_MT_extracted_reads/${ID}.fastq
+		readset=${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 	
 	else
 
-		readset=${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq	
+		readset=${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq	
 	
 	fi
 
-	cat ${readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/tgs_MT_extracted_reads/${ID}.fasta
+	cat ${readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta
 
-	makeblastdb -in ${W_URL}/tgs_MT_extracted_reads/${ID}.fasta -parse_seqids -dbtype nucl -out ${W_URL}/tgs_MT_extracted_reads/${ID}.db
+	makeblastdb -in ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta -parse_seqids -dbtype nucl -out ${W_URL}/pacbio_MT_extracted_reads/${ID}.db
 
-	blastn -outfmt "6 sseqid qcovs slen" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/tgs_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v per="${PER}" '{if($2>per) printf $0 "\n"}' > ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
+	blastn -outfmt "6 sseqid qcovs slen" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/pacbio_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v per="${PER}" '{if($2>per) printf $0 "\n"}' > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
 	
 	printf "\n\nExtracting following read by coverage:\n\n"
 	
-	cat ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
+	cat ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
 	
 	printf "\n\n"
 
-	awk '{printf $1 "\n"}' ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out > ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.ls
+	awk '{printf $1 "\n"}' ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls
 
-	cat ${readset} | grep -f ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq
-
-fi
-
-if ! [[ -e ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq.gz ]]; then
-
-	gzip ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq
+	cat ${readset} | grep -f ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
 
 fi
 
-if [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq.gz ]]; then
 
-	gzip ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq
+	gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
 
 fi
 
-if [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq ]]; then
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
 
-	gzip ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
+
+fi
+
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
 
 fi
 
@@ -387,15 +361,15 @@ if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
 
 	if ! [[ -z ${FL} ]] && ! [[ -z ${PER} ]]; then
 
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq.gz"
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz"
 	
 	elif ! [[ -z ${FL} ]]; then
 	
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq.gz"
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz"
 	
 	else
 	
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq.gz"
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq.gz"
 	
 	fi
 	

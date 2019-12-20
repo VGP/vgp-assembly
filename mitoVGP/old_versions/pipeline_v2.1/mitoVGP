@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -21,7 +21,7 @@ elif [ $1 == "-h" ]; then
 	
 	An existing reference from closely to distantly related species is used to identify mito-like reads in pacbio WGS data,
 	which are then employed in de novo genome assembly. The assembly is further polished using both long and short read data,
-	and linearized to start with the conventional Phenylalanine tRNA sequence.
+	and linearized to start with the conventional Phenylalanine tRNA.
 	
 	Check the github page https://github.com/GiulioF1/mitoVGP for a description of the pipeline.
 	A complete Conda environment with all dependencies is available to run the pipeline in the same github page.
@@ -30,7 +30,6 @@ elif [ $1 == "-h" ]; then
 	on each step in the help (-h) of each script.
 
 	Required arguments are:
-		-a long read sequencing platform (Pacbio/ONT)
 		-s the species name (e.g. Calypte_anna)
 		-i the VGP species ID (e.g. bCalAnn1)
 		-r the reference sequence fasta file
@@ -58,12 +57,9 @@ fi
 
 #set options
 
-while getopts ":a:s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:b:" opt; do
+while getopts ":s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:b:" opt; do
 
 	case $opt in
-		a)
-			PLATFORM=$OPTARG
-			;;
 		s)
 			SPECIES=$OPTARG
 			;;
@@ -83,7 +79,7 @@ while getopts ":a:s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:b:" opt; do
 			DOWNL=$OPTARG
             ;;
 		1)
-			READ1=$OPTARG
+			PB=$OPTARG
 			;;
 		2)
 			IL=$OPTARG
@@ -166,12 +162,6 @@ if [[ -z  ${GSIZE} ]]; then
 	
 fi
 
-if ! [[ -z  ${PLATFORM} ]]; then
-
-	SCRIPT1_OPTS="${SCRIPT1_OPTS}-a ${PLATFORM} "
-
-fi
-
 if ! [[ -z  ${DOWNL} ]]; then
 
 	SCRIPT1_OPTS="${SCRIPT1_OPTS}-d ${DOWNL} "
@@ -202,9 +192,9 @@ if ! [[ -z  ${PER} ]]; then
 
 fi
 
-if ! [[ -z  ${READ1} ]]; then
+if ! [[ -z  ${PB} ]]; then
 
-	SCRIPT1_OPTS="${SCRIPT1_OPTS}-1 ${READ1} "
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-1 ${PB} "
 
 fi
 
@@ -226,12 +216,6 @@ else
 
 fi
 
-if ! [[ -z  ${PLATFORM} ]]; then
-
-	SCRIPT3_OPTS="${SCRIPT3_OPTS}-a ${PLATFORM} "
-
-fi
-
 if ! [[ -z  ${VAL} ]]; then
 
 	SCRIPT3_OPTS="${SCRIPT3_OPTS}-v ${VAL} "
@@ -245,8 +229,8 @@ if ! [[ -z  ${CAL} ]]; then
 fi
 
 #polish the mitocontig with long reads
-printf "\nCommand: sh -e scripts/mitoPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mitoPolish_$(date "+%Y%m%d-%H%M%S").out\n"
-sh -e scripts/mitoPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mitoPolish_$(date "+%Y%m%d-%H%M%S").out &&
+printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
 
 if ! [[ -z  ${IL} ]]; then
 

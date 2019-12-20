@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -16,7 +16,7 @@ elif [ $1 == "-h" ]; then
 	cat << EOF
 
 	This script allows to generate a trimmed version of the Canu mitocontig after short read
-	polishing (map10x1). The resulting contig has 100 bp overlapping ends on both sides.
+	polishing (map10x1.sh). The resulting contig has 100 bp overlapping ends on both sides.
 	The script is still experimental.
 
 	It requires the following software (and their dependencies) installed:
@@ -94,7 +94,7 @@ printf "\n"
 W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
-FNAME="${ID}.${CONTIG}_polish2_10x1"
+FNAME="${ID}.${CONTIG}_arrow2_10x1"
 
 if [[ -e "${W_URL}/trimmed/${FNAME}_trim1.fasta" ]]; then
 
@@ -120,10 +120,6 @@ if ! [[ -e "${W_URL}/trimmed" ]]; then
 	cp ${W_URL}/freebayes_round1/${FNAME}.fasta ${W_URL}/trimmed/intermediate.fasta
 
 	sed -i '2 s/^\(.\{4\}\)./\1/' ${W_URL}/trimmed/intermediate.fasta
-
-	sed -i 's/ /_/g' ${W_URL}/trimmed/intermediate.fasta
-	sed -i 's/:/_/g' ${W_URL}/trimmed/intermediate.fasta
-	sed -i 's/\./_/g' ${W_URL}/trimmed/intermediate.fasta
 	
 	samtools sort -@ ${NPROC} -n ${W_URL}/bowtie2_round1/aligned_${ID}_all_sorted.bam -o ${W_URL}/trimmed/aligned_${ID}_all_paired.bam
 	samtools fastq -@ ${NPROC} ${W_URL}/trimmed/aligned_${ID}_all_paired.bam -1 ${W_URL}/trimmed/aligned_${ID}_all_1.fq -2 ${W_URL}/trimmed/aligned_${ID}_all_2.fq -s ${W_URL}/trimmed/aligned_${ID}_all_s.fq
@@ -224,13 +220,9 @@ if ! [[ -z ${NUCMER_OUT} ]]; then
 
 	echo ">${FNAME}_begin_${BEGIN1}-${BEGIN2}" > "${W_URL}/trimmed/${FNAME}_ends.fasta" & grep -v ">" ${CONTIG_NEW} | tr -d '\n' | cut -c${BEGIN1}-${BEGIN2} >> "${W_URL}/trimmed/${FNAME}_ends.fasta"
 	echo ">${FNAME}_end_${END1}-${END2}" >> "${W_URL}/trimmed/${FNAME}_ends.fasta" & grep -v ">" ${CONTIG_NEW} | tr -d '\n' | cut -c${END1}-${END2} >> "${W_URL}/trimmed/${FNAME}_ends.fasta"
-	
-	CONTIG_NAME=${CONTIG_NAME// /_}
-	CONTIG_NAME=${CONTIG_NAME//:/_}
-	CONTIG_NAME=${CONTIG_NAME//./_}
 
-	arrCOV1=($(samtools depth -aa -r "${CONTIG_NAME}:${BEGIN1}-${BEGIN2}" --reference ${CONTIG_NEW} ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam | awk '{print $3}'))
-	arrCOV2=($(samtools depth -aa -r "${CONTIG_NAME}:${END1}-${END2}" --reference ${CONTIG_NEW} ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam | awk '{print $3}'))
+	arrCOV1=($(samtools depth -aa -r ${CONTIG_NAME}:${BEGIN1}-${BEGIN2} --reference ${CONTIG_NEW} ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam | awk '{print $3}'))
+	arrCOV2=($(samtools depth -aa -r ${CONTIG_NAME}:${END1}-${END2} --reference ${CONTIG_NEW} ${W_URL}/trimmed/realigned_${ID}_all_sorted.bam | awk '{print $3}'))
 
 	if ! [[ -e "${W_URL}/trimmed/${FNAME}_ends_aligned.fasta" ]]; then
 		

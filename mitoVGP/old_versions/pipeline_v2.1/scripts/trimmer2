@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.2                         ++++
+#++++                        mitoVGP v2.1                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -16,7 +16,7 @@ elif [ $1 == "-h" ]; then
 	cat << EOF
 
 	This script allows to generate a trimmed version of the Canu mitocontig after short read
-	polishing (map10x1). The resulting contig has 100 bp overlapping ends on both sides.
+	polishing (map10x1.sh). The resulting contig has 100 bp overlapping ends on both sides.
 	The script is still experimental.
 
 	It requires the following software (and their dependencies) installed:
@@ -95,7 +95,7 @@ if [[ -e "${W_URL}/trimmed2/${FNAME}_trim2.fasta" ]]; then
 
 fi
 
-FNAME="${ID}.${CONTIG}_polish2_10x1_trim1_10x2"
+FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1_10x2"
 
 CONTIG_NAME=$(cat ${W_URL}/freebayes_round2/${FNAME}.fasta | awk '$0 ~ ">" {print substr($0,2)}')
 
