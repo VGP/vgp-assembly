@@ -1,15 +1,19 @@
+version 1.0
+
 workflow runScaff10x {
 	call scaff10x
 }
 
 task scaff10x {
-    File assemblyFasta
-    Array[File] readFiles10x
-    String sampleName
-    Int threadCount
-    Int memoryGigabyte
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        File assemblyFasta
+        Array[File] readFiles10x
+        String sampleName
+        Int threadCount
+        Int memoryGigabyte
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

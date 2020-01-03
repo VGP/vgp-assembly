@@ -1,12 +1,16 @@
+version 1.0
+
 workflow runBusco {
 	call busco
 }
 
 task busco {
-    File assemblyFasta
-    Int threadCount
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        File assemblyFasta
+        Int threadCount
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

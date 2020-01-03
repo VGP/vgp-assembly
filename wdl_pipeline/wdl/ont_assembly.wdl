@@ -1,3 +1,5 @@
+version 1.0
+
 import "tasks/shasta.wdl" as shasta
 import "tasks/minimap2.wdl" as minimap2
 import "tasks/marginPolish.wdl" as marginPolish
@@ -7,15 +9,17 @@ import "tasks/busco.wdl" as busco
 import "tasks/stats.wdl" as stats
 
 workflow ONTAssembly {
-    Array[File] READ_FILES_ONT
-    Array[File] READ_FILES_10X
-    String SAMPLE_NAME
-    File MARGIN_POLISH_PARAMS
-    Int EXPECTED_GENOME_SIZE
-    Int THREAD_COUNT
-    Int MEMORY_GB=8
-    String DOCKER_REPOSITORY="tpesout"
-    String DOCKER_TAG="latest"
+    input {
+        Array[File] READ_FILES_ONT
+        Array[File] READ_FILES_10X
+        String SAMPLE_NAME
+        File MARGIN_POLISH_PARAMS
+        Int EXPECTED_GENOME_SIZE
+        Int THREAD_COUNT
+        Int MEMORY_GB=8
+        String DOCKER_REPOSITORY="tpesout"
+        String DOCKER_TAG="latest"
+    }
 
     # actual work
     call shasta.shasta as shastaAssemble {

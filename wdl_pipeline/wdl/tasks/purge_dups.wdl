@@ -1,16 +1,20 @@
+version 1.0
+
 workflow runPurgeDups {
 	call purge_dups
 }
 
 task purge_dups {
-    File assemblyFasta
-    Array[File] readFiles
-    String minimapPreset
-    String sampleName
-    Int threadCount
-    Int memoryGigabyte
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        File assemblyFasta
+        Array[File] readFiles
+        String minimapPreset
+        String sampleName
+        Int threadCount
+        Int memoryGigabyte
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

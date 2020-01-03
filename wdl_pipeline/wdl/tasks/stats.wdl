@@ -1,12 +1,16 @@
+version 1.0
+
 workflow runStats {
 	call stats
 }
 
 task stats {
-    File assemblyFasta
-    Int expectedGenomeSize
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        File assemblyFasta
+        Int expectedGenomeSize
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

@@ -1,14 +1,18 @@
+version 1.0
+
 workflow runShasta {
 	call shasta
 }
 
 task shasta {
-    Array[File] readFilesONT
-    String sampleName
-    Int threadCount
-    Int memoryGigabyte
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        Array[File] readFilesONT
+        String sampleName
+        Int threadCount
+        Int memoryGigabyte
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules

@@ -1,15 +1,19 @@
+version 1.0
+
 workflow runMinimap2 {
 	call minimap2 
 }
 
 task minimap2 {
-    File refFasta
-    Array[File] readFiles
-    Int threadCount
-    String minimapPreset=""
-    String samtoolsFilter=""
-    String dockerRepository="tpesout"
-    String dockerTag="latest"
+    input {
+        File refFasta
+        Array[File] readFiles
+        Int threadCount
+        String minimapPreset=""
+        String samtoolsFilter=""
+        String dockerRepository="tpesout"
+        String dockerTag="latest"
+    }
 
 	command <<<
         # initialize modules
