@@ -218,11 +218,9 @@ RUN wget https://www.python.org/ftp/python/2.7/Python-2.7.tgz && \
     cd Python-2.7 && \
     ./configure && \
     make && \
-    mkdir /root/bin/python_2.7 && \
-    cp python /root/bin/python_2.7 && \
     mkdir /root/modules/python && \
     echo "#%Module" >>/root/modules/python/2.7 && \
-    echo "prepend-path PATH /root/bin/python_2.7" >>/root/modules/python/2.7 && \
+    echo "prepend-path PATH /opt/python/Python-2.7" >>/root/modules/python/2.7 && \
     echo "#%Module" >>/root/modules/python/.modulerc && \
     echo "module-version /2.7 default" >>/root/modules/python/.modulerc
 # 3.6.0
@@ -233,10 +231,9 @@ RUN wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz && \
     cd Python-3.6.0 && \
     ./configure && \
     make && \
-    mkdir /root/bin/python_3.6.0 && \
     cp python /root/bin/python_3.6.0 && \
     echo "#%Module" >>/root/modules/python/3.6 && \
-    echo "prepend-path PATH /root/bin/python_3.6.0" >>/root/modules/python/3.6
+    echo "prepend-path PATH /opt/python/Python-3.6.0" >>/root/modules/python/3.6
 # 3.5.0
 WORKDIR /opt/python
 RUN wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz && \
@@ -245,10 +242,9 @@ RUN wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz && \
     cd Python-3.5.0 && \
     ./configure && \
     make && \
-    mkdir /root/bin/python_3.5.0 && \
     cp python /root/bin/python_3.5.0 && \
     echo "#%Module" >>/root/modules/python/3.5 && \
-    echo "prepend-path PATH /root/bin/python_3.5.0" >>/root/modules/python/3.5
+    echo "prepend-path PATH /opt/python/Python-3.5.0" >>/root/modules/python/3.5
 
 ### htslib
 # 1.9
@@ -376,8 +372,10 @@ RUN wget https://www.cpan.org/src/5.0/perl-5.18.2.tar.gz && \
 ### freebayes
 # 1.3.1
 WORKDIR /opt/freebayes
-RUN git clone --recursive git://github.com/ekg/freebayes.git && \
-    cd freebayes && \
+RUN git clone git://github.com/ekg/freebayes.git freebayes_1.3.1 && \
+    cd freebayes_1.3.1  && \
+    git checkout v1.3.1 && \
+    git submodule update --init --recursive && \
     make && \
     mkdir /root/bin/freebayes_1.3.1  && \
     cp bin/freebayes /root/bin/freebayes_1.3.1 && \
@@ -388,8 +386,10 @@ RUN git clone --recursive git://github.com/ekg/freebayes.git && \
      echo "module-version /1.3.1 default" >>/root/modules/freebayes/.modulerc
 # 1.2.0
 WORKDIR /opt/freebayes
-RUN cd freebayes && \
+RUN git clone git://github.com/ekg/freebayes.git freebayes_1.2.0 && \
+    cd freebayes_1.2.0  && \
     git checkout v1.2.0 && \
+    git submodule update --init --recursive && \
     make && \
     mkdir /root/bin/freebayes_1.2.0  && \
     cp bin/freebayes /root/bin/freebayes_1.2.0 && \
