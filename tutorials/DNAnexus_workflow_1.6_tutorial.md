@@ -789,7 +789,7 @@ fArcCen1
     └── ...
 ```
 
-This a typical example of how contig and scaffold N50 should behave during the assembly process:
+This is a typical example of how contig and scaffold N50 should behave during the assembly process:
 
 ![N50 plot](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/contig_scaffold_size_plot.png)
 
