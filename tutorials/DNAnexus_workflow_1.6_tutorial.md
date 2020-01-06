@@ -805,4 +805,4 @@ Once all is finished, please share your genome stats and plots in the [Slack cha
 
 --
 
-This document is being upgraded by D.N. De Panis during a postdoctoral stay at Camila Mazzoni group [Berlin Center for Genomics in Biodiversity Research](https://begendiv.de) with the valuable collaboration of VGP members.
+This document is being upgraded by D.N. De Panis during a postdoctoral stay at Camila Mazzoni group ([Berlin Center for Genomics in Biodiversity Research](https://begendiv.de)) with the valuable collaboration of VGP members.
