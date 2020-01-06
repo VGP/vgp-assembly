@@ -1,7 +1,8 @@
 version 1.0
 
+import "tasks/extract_reads.wdl" as extractReads
 import "tasks/shasta.wdl" as shasta
-import "tasks/minimap2.wdl" as minimap2
+import "tasks/minimap2_scatter_gather.wdl" as minimap2
 import "tasks/marginPolish.wdl" as marginPolish
 import "tasks/purge_dups.wdl" as purgeDups
 import "tasks/scaff10x.wdl" as scaff10x
@@ -22,19 +23,28 @@ workflow ONTAssembly {
     }
 
     # actual work
+    scatter (readFile in READ_FILES_ONT) {
+        call extractReads.extractReads as ontReads {
+            input:
+                readFile=readFile,
+                dockerRepository=DOCKER_REPOSITORY,
+                dockerTag=DOCKER_TAG
+        }
+    }
+
     call shasta.shasta as shastaAssemble {
         input:
-            readFilesONT=READ_FILES_ONT,
+            readFilesONT=ontReads.outputFile,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
             memoryGigabyte=MEMORY_GB,
             dockerRepository=DOCKER_REPOSITORY,
             dockerTag=DOCKER_TAG
     }
-	call minimap2.minimap2 as shastaAlign {
+	call minimap2.runMinimap2ScatterGather as shastaAlign {
 	    input:
             refFasta=shastaAssemble.assemblyFasta,
-            readFiles=READ_FILES_ONT,
+            readFiles=ontReads.outputFile,
             minimapPreset="map-ont",
             samtoolsFilter="-F 0x904",
             dockerRepository=DOCKER_REPOSITORY,
@@ -56,7 +66,7 @@ workflow ONTAssembly {
     call purgeDups.purge_dups as polishedPurgeDups {
         input:
             assemblyFasta=shastaMarginPolish.polishedFasta,
-            readFiles=READ_FILES_ONT,
+            readFiles=ontReads.outputFile,
             minimapPreset="map-ont",
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,

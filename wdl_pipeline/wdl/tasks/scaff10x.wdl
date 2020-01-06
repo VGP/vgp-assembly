@@ -31,11 +31,11 @@ task scaff10x {
         set -o xtrace
 
         # link assembly
-        ln -s ${assemblyFasta} asm.fasta
+        ln -s ~{assemblyFasta} asm.fasta
 
         # link input files
         mkdir input
-        for RF in ${sep=" " readFiles10x} ; do
+        for RF in ~{sep=" " readFiles10x} ; do
             ln -s $RF input/$(basename $RF)
         done
 
@@ -48,8 +48,8 @@ task scaff10x {
 
         # run script
         export tools=/root/tools
-        export SLURM_CPUS_PER_TASK=${threadCount}
-        bash /root/scripts/scaff10x/scaff10x_v4.1.sh ${sampleName}
+        export SLURM_CPUS_PER_TASK=~{threadCount}
+        bash /root/scripts/scaff10x/scaff10x_v4.1.sh ~{sampleName}
 	>>>
 	output {
 		File scaffoldedFasta = sampleName + ".scaff10x.fasta"

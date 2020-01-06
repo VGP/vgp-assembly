@@ -61,25 +61,10 @@ task extractReads {
       echo "Unsupported file type: ${suffix}"
       exit 1
     fi
-#    if [[ "$suffix" == "bam" ]] ; then
-#      export OUTPUT=`echo $NAME | sed 's/bam$/fastq/'`
-#      samtools fastq ~{readFile} >$OUTPUT
-#    elif [[ "$suffix" == "gz" ]] ; then
-#      export OUTPUT=`echo $NAME | sed 's/.gz$//'`
-#      gunzip -k -c ~{readFile} >$OUTPUT
-#    elif [[ "$suffix" == "fastq" ]] && [[ "$suffix" == "fq" ]] && [[ "$suffix" == "fasta" ]] && [[ "$suffix" == "fa" ]] ; then
-#      export OUTPUT=${readFile}
-#    else
-#      echo "Unsupported file type: $NAME"
-#      exit1
-#    fi
-#    echo $OUTPUT >output
 	>>>
 
 	output {
 	  File outputFile = flatten([glob("output/*"), [readFile]])[0]
-#     String outputFilename = read_string("output")
-#	  File outputFile = outputFilename
 	}
 
   runtime {

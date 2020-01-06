@@ -30,10 +30,10 @@ task shasta {
         set -o xtrace
 
         module load shasta/0.3.0_bf757a3
-        shasta --input ${sep=" --input " readFilesONT} --threads ${threadCount}
+        shasta --input ~{sep=" --input " readFilesONT} --threads ~{threadCount}
         mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
-        mv ShastaRun ${sampleName}
-        tar czvf ${sampleName}.shasta.tar.gz ${sampleName}/*
+        mv ShastaRun ~{sampleName}
+        tar czvf ~{sampleName}.shasta.tar.gz ${sampleName}/*
 	>>>
 	output {
 		File assemblyFasta = sampleName + ".shasta.fasta"
