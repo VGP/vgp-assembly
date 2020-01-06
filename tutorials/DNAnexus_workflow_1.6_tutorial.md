@@ -443,7 +443,7 @@ Before copying the workflow, we need to first take a look at the Bionano input d
 ```
 fArcCen1
 └── genomic_data
-    ├── 10x
+    ├── bionano
     │   ├── fArcCen1_Saphyr_DLE-1.cmap.gz
     │   ├── fArcCen1_Saphyr_DLE-1_1265239.bnx.gz
     │   └── fArcCen1_Saphyr_DLE-1_1265240.bnx.gz
@@ -789,8 +789,19 @@ fArcCen1
     └── ...
 ```
 
+This a typical example of how contig and scaffold N50 should behave during the assembly process:
+
+![N50 plot](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/contig_scaffold_size_plot.png)
+
+<br/>
+
 The required QV value can be obtained from `qv_report.txt` file in the `longranger_freebayes_round_2/QV` folder.
 
 Finally, it is requested a HiC heatmap before sending the genome to curation. Evaluation-Align HiC / Pretext / HiC heatmaps.
 
 Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
+
+<br/>
+
+--
+This document is being upgraded by D.N. De Panis during a postdoctoral stay at Camila Mazzoni group [Berlin Center for Genomics in Biodiversity Research](https://begendiv.de) with the valuable collaboration of VGP members.
