@@ -1,0 +1,3 @@
+#!/bin/bash
+dx-snapshot $1
+dx-set-timeout 0s

@@ -1,0 +1,2 @@
+#!/bin/bash
+python /usr/lib/python2.7/asset_builder_tools.py "$@" snapshot

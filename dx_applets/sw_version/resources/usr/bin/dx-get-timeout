@@ -1,0 +1,19 @@
+#!/usr/bin/python
+
+import dx_utils
+import argparse
+import datetime
+
+
+TIMEOUT_FILE = '/home/dnanexus/.dx.timeout'
+TIME_FORMAT = '%Y %m %d %H %M %S'
+
+if __name__ == '__main__':
+    with open(TIMEOUT_FILE) as fh:
+        timeout = fh.read().strip()
+    timeout = datetime.datetime.strptime(timeout, TIME_FORMAT)
+    timeleft = timeout - datetime.datetime.now()
+    days = timeleft.days
+    hours, seconds = divmod(timeleft.seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+    print '{0} days {1} hours {2} minutes {3} seconds'.format(days, hours, minutes, seconds)
