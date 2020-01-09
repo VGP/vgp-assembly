@@ -13,7 +13,6 @@
 
 import subprocess
 import datetime
-import asset_builder_tools
 
 import dxpy
 import dx_utils
@@ -21,13 +20,12 @@ import dx_utils
 
 @dxpy.entry_point('main')
 def main(**job_inputs):
-    #dx_utils.run_cmd('dx-su-contrib')
-    dx_utils.run_cmd('ls')
     dx_utils.run_cmd('python sw_version.py')
     dx_utils.run_cmd('python sw_version.py > version.txt')
+    uploaded_dxfile = dxpy.upload_local_file("version.txt")
 
     output = {}
-    output["logfile"] = dxpy.dxlink("version.txt")
+    output["logfile"] = dxpy.dxlink(uploaded_dxfile.get_id())
     return output
 
 dxpy.run()

@@ -21,13 +21,13 @@ app_id_hardcode_up_version={
 def latest_job(name_string):
 
     if '||' not in name_string:
-        job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --project {1} --brief'.format(name_string, PROJECT),shell=True)
+        job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --brief --project {1}'.format(name_string,dxpy.PROJECT_CONTEXT_ID),shell=True)
         if job_id.strip() != '':
             return job_id.strip()
     else:
         name_list = name_string.split('||')
         for name_list_member in name_list:
-            job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --project {1}  --brief'.format(name_list_member, PROJECT), shell=True)
+            job_id = subprocess.check_output('dx find jobs --name {0} --all-jobs --state done -n 1 --brief --project {1}'.format(name_list_member,dxpy.PROJECT_CONTEXT_ID), shell=True)
             if job_id.strip() != '':
                 return job_id.strip()
     return 'job_not_found'
@@ -71,7 +71,6 @@ def start_time(job_id):
     startedRunning = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_time/1000.0))
     return startedRunning
 
-PROJECT=subprocess.check_output('echo $DX_PROJECT_CONTEXT_ID')
 falcon_job_id=latest_job("*alcon*aligner*")
 falcon_unzip_job_id=latest_job("*nzip*olish*||*Unzip*Haplotype*Arrow")
 purge_job_id=latest_job("*purge*")
