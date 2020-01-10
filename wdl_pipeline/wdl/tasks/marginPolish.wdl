@@ -32,7 +32,11 @@ task marginPolish {
     # to turn off echo do 'set +o xtrace'
     set -o xtrace
 
-    export FEATURE_PARAM="-F ~{default="" featureType}"
+
+    export FEATURE_PARAM=""
+    if [[ ! -z "~{defaultFeatureType}" ]] ; then
+        export FEATURE_PARAM="-F ~{defaultFeatureType}"
+    fi
 
     mkdir output
     ln -s ~{alignmentBam}
@@ -49,7 +53,7 @@ task marginPolish {
 	>>>
 
 	output {
-		File polishedFasta = "output/${sampleName}.marginPolish"
+		File polishedFasta = "output/${sampleName}.marginPolish.fa"
 		Array[File] helenImages = glob("output/*.h5")
 	}
 

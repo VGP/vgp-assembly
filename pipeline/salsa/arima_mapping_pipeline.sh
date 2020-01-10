@@ -19,6 +19,11 @@
 fastq_map=$1	# fastq path file: /path/to/R1.fastq /path/to/R2.fastq
 PREFIX=$2	# prefix for out files
 REF=$3	# ref fasta file with indexes
+SCRATCH=$4 # scratch directory, default to /lscratch
+if [ -z $4 ]; then
+    SCRATCH="/lscratch"
+fi
+
 THREADS=$SLURM_CPUS_PER_TASK	# num. threads to run
 
 FASTQ1=`awk '{print $1}' $fastq_map`
@@ -33,9 +38,9 @@ SAMTOOLS='samtools'
 FILTER="$VGP_PIPELINE/salsa/filter_five_end.pl"
 COMBINER="$VGP_PIPELINE/salsa/two_read_bam_combiner.pl"
 
-RAW_DIR="/lscratch/$SLURM_JOBID/raw"
-FILT_DIR="/lscratch/$SLURM_JOBID/filtered"
-COMB_DIR="/lscratch/$SLURM_JOBID/combined"
+RAW_DIR="$SCRATCH/$SLURM_JOBID/raw"
+FILT_DIR="$SCRATCH/$SLURM_JOBID/filtered"
+COMB_DIR="$SCRATCH/$SLURM_JOBID/combined"
 
 mkdir -p $RAW_DIR
 mkdir -p $FILT_DIR

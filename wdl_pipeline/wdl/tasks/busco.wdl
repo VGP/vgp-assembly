@@ -28,15 +28,15 @@ task busco {
         set -o xtrace
 
         # get name of output file
-        ASSEMBLY=`basename ${assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' `
+        ASSEMBLY=`basename ~{assemblyFasta} | sed 's/.fasta$//g' | sed 's/.fa$//g' `
         echo $ASSEMBLY >outputBase
 
-        ln -s ${assemblyFasta}
+        ln -s ~{assemblyFasta}
 
-        export SLURM_CPUS_PER_TASK=${threadCount}
+        export SLURM_CPUS_PER_TASK=~{threadCount}
         export tools=/root/tools
 
-        bash /root/scripts/busco/busco.sh `basename ${assemblyFasta}`
+        bash /root/scripts/busco/busco.sh `basename ~{assemblyFasta}`
 
         tar czvf $ASSEMBLY.busco.tar.gz run_$ASSEMBLY
 

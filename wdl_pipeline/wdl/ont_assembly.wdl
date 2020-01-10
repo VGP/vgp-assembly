@@ -1,167 +1,202 @@
 version 1.0
 
-import "tasks/extract_reads.wdl" as extractReads
-import "tasks/shasta.wdl" as shasta
-import "tasks/minimap2_scatter_gather.wdl" as minimap2
-import "tasks/marginPolish.wdl" as marginPolish
-import "tasks/purge_dups.wdl" as purgeDups
-import "tasks/scaff10x.wdl" as scaff10x
-import "tasks/busco.wdl" as busco
-import "tasks/stats.wdl" as stats
+import "tasks/extract_reads.wdl" as extractReads_t
+import "tasks/shasta.wdl" as shasta_t
+import "tasks/minimap2_scatter_gather.wdl" as minimap2_t
+import "tasks/marginPolish.wdl" as marginPolish_t
+import "tasks/purge_dups.wdl" as purgeDups_t
+import "tasks/scaff10x.wdl" as scaff10x_t
+import "tasks/salsa.wdl" as salsa_t
+import "tasks/busco.wdl" as busco_t
+import "tasks/stats.wdl" as stats_t
 
 workflow ONTAssembly {
     input {
         Array[File] READ_FILES_ONT
         Array[File] READ_FILES_10X
+        Array[File] READ_FILES_HIC
         String SAMPLE_NAME
         File MARGIN_POLISH_PARAMS
+        File SHASTA_PARAMS
         Int EXPECTED_GENOME_SIZE
         Int THREAD_COUNT
-        Int MEMORY_GB=8
-        String DOCKER_REPOSITORY="tpesout"
-        String DOCKER_TAG="latest"
+        Int? MEMORY_GB=8
+        String? DOCKER_REPOSITORY="tpesout"
+        String? DOCKER_TAG="latest"
     }
+
+    Int default_MEMORY_GB = select_first([MEMORY_GB, 32])
+    String default_DOCKER_REPOSITORY = select_first([DOCKER_REPOSITORY, "tpesout"])
+    String default_DOCKER_TAG = select_first([DOCKER_TAG, "latest"])
 
     # actual work
     scatter (readFile in READ_FILES_ONT) {
-        call extractReads.extractReads as ontReads {
+        call extractReads_t.extractReads as ontReads {
             input:
                 readFile=readFile,
-                dockerRepository=DOCKER_REPOSITORY,
-                dockerTag=DOCKER_TAG
+                dockerRepository=default_DOCKER_REPOSITORY,
+                dockerTag=default_DOCKER_TAG
         }
     }
 
-    call shasta.shasta as shastaAssemble {
+    call shasta_t.shasta as shastaAssemble {
         input:
             readFilesONT=ontReads.outputFile,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            shastaParameters=SHASTA_PARAMS,
+            memoryGigabyte=default_MEMORY_GB,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
     }
-	call minimap2.runMinimap2ScatterGather as shastaAlign {
+	call minimap2_t.runMinimap2ScatterGather as assemblyAlign {
 	    input:
             refFasta=shastaAssemble.assemblyFasta,
             readFiles=ontReads.outputFile,
             minimapPreset="map-ont",
             samtoolsFilter="-F 0x904",
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            threadCount=THREAD_COUNT,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call marginPolish.marginPolish as shastaMarginPolish {
+	call marginPolish_t.marginPolish as marginPolish {
 	    input:
             sampleName=SAMPLE_NAME,
-            alignmentBam=shastaAlign.minimap2Bam,
-            alignmentBamIdx=shastaAlign.minimap2BamIdx,
+            alignmentBam=assemblyAlign.alignment,
+            alignmentBamIdx=assemblyAlign.alignmentIdx,
             referenceFasta=shastaAssemble.assemblyFasta,
             parameters=MARGIN_POLISH_PARAMS,
             featureType="",
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            memoryGigabyte=default_MEMORY_GB,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-    call purgeDups.purge_dups as polishedPurgeDups {
+    call purgeDups_t.purge_dups as purgeDups {
         input:
-            assemblyFasta=shastaMarginPolish.polishedFasta,
+            assemblyFasta=marginPolish.polishedFasta,
             readFiles=ontReads.outputFile,
             minimapPreset="map-ont",
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            memoryGigabyte=default_MEMORY_GB,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
     }
-    call scaff10x.scaff10x as scaff10xPolishedPurged {
+    call scaff10x_t.scaff10x as scaff10x {
         input:
-            assemblyFasta=polishedPurgeDups.primary,
+            assemblyFasta=purgeDups.primary,
             readFiles10x=READ_FILES_10X,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=MEMORY_GB,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            memoryGigabyte=default_MEMORY_GB,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
+    }
+    call salsa_t.salsa as salsa {
+        input:
+            refFasta=scaff10x.scaffoldedFasta,
+            readFilesHiC=READ_FILES_HIC,
+            sampleName=SAMPLE_NAME,
+            threadCount=THREAD_COUNT,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
     }
     
 
 	### stats and validation
 	# asm stats
-	call stats.stats as shastaStats {
+	call stats_t.stats as shasta_stats {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call stats.stats as marginPolishStats {
+	call stats_t.stats as marginPolish_stats {
 	    input:
-	        assemblyFasta=shastaMarginPolish.polishedFasta,
+	        assemblyFasta=marginPolish.polishedFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call stats.stats as purgedPolishedPriStats {
+	call stats_t.stats as purgeDupsPri_stats {
 	    input:
-	        assemblyFasta=polishedPurgeDups.primary,
+	        assemblyFasta=purgeDups.primary,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call stats.stats as purgedPolishedAltStats {
+	call stats_t.stats as purgeDupsAlt_stats {
 	    input:
-	        assemblyFasta=polishedPurgeDups.alternate,
+	        assemblyFasta=purgeDups.alternate,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call stats.stats as scaffoldedPurgedPolishedStats {
+	call stats_t.stats as scaff10x_stats {
 	    input:
-	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta,
+	        assemblyFasta=scaff10x.scaffoldedFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
+	}
+	call stats_t.stats as salsa_stats {
+	    input:
+	        assemblyFasta=salsa.scaffoldedFasta,
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
 	# busco stats
-	call busco.busco as shastaBusco {
+	call busco_t.busco as shasta_busco {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call busco.busco as marginPolishBusco {
+	call busco_t.busco as marginPolish_busco {
 	    input:
-	        assemblyFasta=shastaMarginPolish.polishedFasta,
+	        assemblyFasta=marginPolish.polishedFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
-	call busco.busco as scaffoldedPolishedPurgedBusco {
+	call busco_t.busco as scaff10x_busco {
 	    input:
-	        assemblyFasta=scaff10xPolishedPurged.scaffoldedFasta,
+	        assemblyFasta=scaff10x.scaffoldedFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=DOCKER_REPOSITORY,
-            dockerTag=DOCKER_TAG
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
+	}
+	call busco_t.busco as salsa_busco {
+	    input:
+	        assemblyFasta=salsa.scaffoldedFasta,
+            threadCount=THREAD_COUNT,
+            dockerRepository=default_DOCKER_REPOSITORY,
+            dockerTag=default_DOCKER_TAG
 	}
 
 	output {
-		File shastaAssembly = shastaAssemble.assemblyFasta
-		File marginPolishAssembly = shastaMarginPolish.polishedFasta
-		File polishedPurgedHaplotype = polishedPurgeDups.primary
-		File polishedPurgedAlternate = polishedPurgeDups.alternate
-		File scaffoldedPolishedPurgedFasta = scaff10xPolishedPurged.scaffoldedFasta
+		File shastaFasta = shastaAssemble.assemblyFasta
+		File marginPolishFasta = marginPolish.polishedFasta
+		File purgedHaplotypeFasta = purgeDups.primary
+		File purgedAlternateFasta = purgeDups.alternate
+		File scaff10xFasta = scaff10x.scaffoldedFasta
+		File salsaFasta = salsa.scaffoldedFasta
 
         # validation
-		File shastaBuscoResult = shastaBusco.outputTarball
-		File polishedBuscoResult = marginPolishBusco.outputTarball
-		File polishedPurgedScaffoldedBuscoResult = scaffoldedPolishedPurgedBusco.outputTarball
+		File shastaBuscoResult = shasta_busco.outputTarball
+		File marginPolishBuscoResult = marginPolish_busco.outputTarball
+		File scaff10xBuscoResult = scaff10x_busco.outputTarball
+		File salsaBuscoResult = salsa_busco.outputTarball
 
-		File shastaStatsResult = shastaStats.statsTarball
-		File marginPolishStatsResult = marginPolishStats.statsTarball
-		File purgedPolishedHaplotypeStatsResult = purgedPolishedPriStats.statsTarball
-		File purgedPolishedAlternateStatsResult = purgedPolishedAltStats.statsTarball
-		File scaffoldedPurgedPolishedStatsResult = scaffoldedPurgedPolishedStats.statsTarball
+		File shastaStatsResult = shasta_stats.statsTarball
+		File marginPolishStatsResult = marginPolish_stats.statsTarball
+		File purgedPrimaryStatsResult = purgeDupsPri_stats.statsTarball
+		File purgedAlternateStatsResult = purgeDupsAlt_stats.statsTarball
+		File scaff10xStatsResult = scaff10x_stats.statsTarball
+		File salsaStatsResult = salsa_stats.statsTarball
 	}
 }

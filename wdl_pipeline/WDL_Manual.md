@@ -4,18 +4,14 @@ An implementation of the VGP Assembly is currently under development.
 
 ## Quick Start
 
-To run WDL workflows, we recommend using 
-[wdltool](https://github.com/broadinstitute/wdltool)
+To run WDL workflows, we recommend using `womtool`
 to generate JSON describing workflow inputs, and 
-[Cromwell](https://github.com/broadinstitute/cromwell)
-for workflow exectution.  Both require Java to run.  This Quick Start
+`Cromwell` for workflow exectution.  They can be downloaded
+[here](https://github.com/broadinstitute/cromwell/releases).
+Both require Java to run.  This Quick Start
 guide assumes running on a single machine.
 
 ```
-# link import directory (wdltool needs task imports to be local)
-cd /your/work/directory
-ln -s /path/to/vgp-assembly/wdl_pipeline/wdl/tasks
-
 # generate inputs
 java -jar /path/to/wdltool-0.14.jar \
     inputs \

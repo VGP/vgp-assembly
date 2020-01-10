@@ -29,11 +29,11 @@ task stats {
 
         export VGP_PIPELINE=/root/scripts
 
-        ln -s ${assemblyFasta}
-        export REF=`basename ${assemblyFasta}`
+        ln -s ~{assemblyFasta}
+        export REF=`basename ~{assemblyFasta}`
         echo $REF | sed 's/.fasta//' | sed 's/.fa//' >outputBase
 
-        bash /root/scripts/stats/asm_stats.sh $REF ${expectedGenomeSize}
+        bash /root/scripts/stats/asm_stats.sh $REF ~{expectedGenomeSize}
 
         tar czvf $(cat outputBase).stats.tar.gz *.stats
 	>>>

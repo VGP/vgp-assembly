@@ -32,26 +32,26 @@ task purge_dups {
         set -o xtrace
 
         # link ref and get name of output file
-        ASM=`basename ${assemblyFasta}`
-        ln -s ${assemblyFasta}
+        ASM=`basename ~{assemblyFasta}`
+        ln -s ~{assemblyFasta}
 
         # link read files and generate input.fofn
-        for RF in ${sep=" " readFiles} ; do
+        for RF in ~{sep=" " readFiles} ; do
             ln -s $RF
             echo `basename $RF` >>input.fofn
         done
 
         # environment variables for scripts
-        export SLURM_CPUS_PER_TASK=${threadCount}
+        export SLURM_CPUS_PER_TASK=~{threadCount}
         export tools="/root/tools"
 
         # index ref (if not present)
-        bash /root/scripts/purge_dups/minimap2_idx.sh $ASM ${minimapPreset}
+        bash /root/scripts/purge_dups/minimap2_idx.sh $ASM ~{minimapPreset}
 
         # get read PAFs
         IDX=1
-        for RF in ${sep=" " readFiles} ; do
-            bash /root/scripts/purge_dups/minimap2.sh $ASM $IDX ${minimapPreset}
+        for RF in ~{sep=" " readFiles} ; do
+            bash /root/scripts/purge_dups/minimap2.sh $ASM $IDX ~{minimapPreset}
             IDX=$(($IDX + 1))
         done
 
@@ -62,8 +62,8 @@ task purge_dups {
         bash /root/scripts/purge_dups/purge_dups.sh $ASM
 
         # cleanup
-        mv purged.fa ${sampleName}.purged.fa
-        mv hap.fa ${sampleName}.hap.fa
+        mv purged.fa ~{sampleName}.purged.fa
+        mv hap.fa ~{sampleName}.hap.fa
 
 	>>>
 	output {

@@ -7,6 +7,7 @@ workflow runShasta {
 task shasta {
     input {
         Array[File] readFilesONT
+        File shastaParameters
         String sampleName
         Int threadCount
         Int memoryGigabyte
@@ -30,10 +31,10 @@ task shasta {
         set -o xtrace
 
         module load shasta/0.3.0_bf757a3
-        shasta --input ~{sep=" --input " readFilesONT} --threads ~{threadCount}
-        mv ShastaRun/Assembly.fasta ${sampleName}.shasta.fasta
+        shasta --input ~{sep=" --input " readFilesONT} --threads ~{threadCount} --config ~{shastaParameters}
+        mv ShastaRun/Assembly.fasta ~{sampleName}.shasta.fasta
         mv ShastaRun ~{sampleName}
-        tar czvf ~{sampleName}.shasta.tar.gz ${sampleName}/*
+        tar czvf ~{sampleName}.shasta.tar.gz ~{sampleName}/*
 	>>>
 	output {
 		File assemblyFasta = sampleName + ".shasta.fasta"

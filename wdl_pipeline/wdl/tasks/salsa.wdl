@@ -8,14 +8,12 @@ task salsa {
     input {
         File refFasta
         Array[File] readFilesHiC
-        String? enzymeBases
         String sampleName
         Int threadCount
+        String? enzymeBases="GATC,GANTC"
         String dockerRepository="tpesout"
         String dockerTag="latest"
     }
-
-    String defaultEnzymeBases = select_first([enzymeBases, "GATC,GANTC"])
 
 	command <<<
         # initialize modules
@@ -33,7 +31,7 @@ task salsa {
         set -o xtrace
 
         # input reference
-        REF=`basename ${refFasta}`
+        REF=`basename ~{refFasta}`
         ln -s ~{refFasta}
 
         # prepare input read files
@@ -41,9 +39,9 @@ task salsa {
         touch R2.fastq.gz
         for RF in ~{sep=" " readFilesHiC} ; do
             # should not happen, but just in case
-            if [[ $RF == *gz ]] ; then
+            if [[ ! $RF == *gz ]] ; then
                 echo "HiC files expected to be in .gz format, zipping: $RF"
-                gzip $RF
+                gzip -k $RF
                 RF="$RF.gz"
             fi
 
@@ -66,12 +64,9 @@ task salsa {
         fi
         echo "R1.fastq.gz R2.fastq.gz" >>fastq.map
 
-        # prepare bases
-        echo "~{defaultEnzymeBases}" >> re_bases.txt
-
         # run preparation scripts
         export SLURM_CPUS_PER_TASK=~{threadCount}
-        export VGP_ASSEMBLY="/root/scripts"
+        export VGP_PIPELINE="/root/scripts"
         export SLURM_JOBID="tmp"
         bash /root/scripts/salsa/index.sh $REF
         bash /root/scripts/salsa/arima_mapping_pipeline.sh fastq.map ~{sampleName} $REF `pwd`
@@ -81,15 +76,15 @@ task salsa {
         # run salsa pipeline
         module load python/2.7
         mkdir out
-        python /root/tools/salsa/SALSA-2.2/run_pipeline.py -a $REF -l $REF.fai -e ~{defaultEnzymeBases} -b ~{sampleName}.bed -o out -m yes -p yes
-        mv $out/scaffolds_FINAL.fasta ~{sampleName}.salsa.fasta
+        python /root/tools/salsa/SALSA-2.2/run_pipeline.py -a $REF -l $REF.fai -e ~{enzymeBases} -b ~{sampleName}.bed -o out -m yes -p yes
+        mv out/scaffolds_FINAL.fasta ~{sampleName}.salsa.fasta
 
         # cleanup
-        rm -r tmp out R1.fastq.gz R2.fastq.gz
+        rm -r tmp R1.fastq.gz R2.fastq.gz
 
 	>>>
 	output {
-		File scaffoldedAssembly = sampleName + ".salsa.fasta"
+		File scaffoldedFasta = sampleName + ".salsa.fasta"
 	}
     runtime {
         cpu: threadCount

@@ -75,16 +75,18 @@ task minimap2_idx {
     set -o xtrace
 
     # get name of output file
+    ln -s ~{refFasta}
     filename=$(basename -- "~{refFasta}")
     prefix="${filename%.*}"
     suffix="${filename##*.}"
     if [[ "${suffix}" == "gz" ]]; then
       prefix="${prefix##*.}"
     fi
+    echo $prefix >outputBase
 
     # index ref
     export SLURM_CPUS_PER_TASK=~{threadCount}
-    bash /root/scripts/minimap2/minimap2_idx.sh ~{refFasta} ~{defaultMinimapPreset}
+    bash /root/scripts/minimap2/minimap2_idx.sh $filename ~{defaultMinimapPreset}
 
     mkdir output
     mv ${prefix}.idx output
@@ -140,7 +142,7 @@ task minimap2_align {
     set -o xtrace
 
     # get name of output file
-    filename=$(basename -- "~{readFile}")
+    filename=$(basename -- "~{refFasta}")
     prefix="${filename%.*}"
     suffix="${filename##*.}"
     if [[ "${suffix}" == "gz" ]]; then
