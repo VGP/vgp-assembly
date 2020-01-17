@@ -21,7 +21,7 @@ workflow PolishAssembly {
     String defaultDockerRepository = select_first([DOCKER_REPOSITORY, "tpesout"])
     String defaultDockerTag = select_first([DOCKER_TAG, "latest"])
 
-    String mm2DockerImage = "${dockerRepository}/vgp_minimap2:${dockerTag}"
+    String mm2DockerImage = "${defaultDockerRepository}/vgp_minimap2:${defaultDockerTag}"
 
   scatter (file in READ_FILES) {
     call extractReads as xtract {
