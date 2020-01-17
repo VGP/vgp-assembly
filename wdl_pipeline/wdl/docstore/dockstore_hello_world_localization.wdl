@@ -20,7 +20,7 @@ workflow HelloWorldLocalization {
     }
 
     output {
-        File fileOut = scatter_h.myHead
+        File fileOut = single_h.myHead
         Array[File] filesOut = scatter_h.myHead
     }
 }
@@ -35,7 +35,7 @@ task head {
         head mySymlinkFile >>output
     >>>
     output {
-        File myHead = read_file("output")
+        File myHead = read_string("output")
     }
     runtime {
         docker: "tpesout/vgp_minimap2:latest"
