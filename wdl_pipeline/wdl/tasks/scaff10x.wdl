@@ -36,11 +36,30 @@ task scaff10x {
         # link input files
         mkdir input
         for RF in ~{sep=" " readFiles10x} ; do
+            if [[ ! $RF == *.fastq.gz ]] ; then
+                echo "10x read files expected to be in .fastq.gz format: $RF"
+                exit 1
+            fi
             ln -s $RF input/$(basename $RF)
         done
 
-        # make and validate input.dat
-        ls input/*_R[1-2]_001.fastq.gz | awk '{if (NR%2==1) {print "q1="pwd"/"$0} else {print "q2="pwd"/"$0}}' pwd=$PWD > input.dat
+        # make input.dat
+        for RF in $(ls input/) ; do
+            # sort into R1 and R2
+            if [[ $RF == *R1* ]] && [[ $RF == *R2* ]] ; then
+                echo "Cannot determine R1 or R2 from filename (found both): $RF"
+                exit 1
+            elif [[ $RF == *R1* ]] ; then
+                echo "q1=$(pwd)/$RF" >>input.dat
+            elif [[ $RF == *R2* ]] ; then
+                echo "q2=$(pwd)/$RF" >>input.dat
+            else
+                echo "Cannot determine R1 or R2 from filename (found neither): $RF"
+                exit 1
+            fi
+        done
+
+        # validate input.dat
         if [[ ! -s input.dat ]] ; then
             echo "Check input.dat"
             exit -1
