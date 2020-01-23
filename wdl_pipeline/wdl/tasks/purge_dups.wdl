@@ -8,7 +8,7 @@ task purge_dups {
     input {
         File assemblyFasta
         Array[File] readFiles
-        String minimapPreset
+        String minimapPreset="map-pb"
         String sampleName
         Int threadCount
         Int memoryGigabyte
