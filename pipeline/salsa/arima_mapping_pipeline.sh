@@ -23,6 +23,10 @@ SCRATCH=$4 # scratch directory, default to /lscratch
 if [ -z $4 ]; then
     SCRATCH="/lscratch"
 fi
+BWA_OPTS=$5
+if [ -z $5 ]; then
+    BWA_OPTS="-B8"
+fi
 
 THREADS=$SLURM_CPUS_PER_TASK	# num. threads to run
 
@@ -48,8 +52,8 @@ mkdir -p $COMB_DIR
 
 echo "### Step 1.A: FASTQ to BAM (1st)"
 echo "\
-$BWA mem -t$THREADS -B8 $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam"
-$BWA mem -t$THREADS -B8 $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam"
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam
 echo ""
 
 echo "### Step 2.A: Filter 5' end (1st)"
@@ -66,8 +70,8 @@ echo
 
 echo "### Step 1.B: FASTQ to BAM (2nd)"
 echo "\
-$BWA mem -t$THREADS -B8 $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam"
-$BWA mem -t$THREADS -B8 $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam"
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam
 echo ""
 
 echo "### Step 2.B: Filter 5' end (2nd)"

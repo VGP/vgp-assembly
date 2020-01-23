@@ -11,6 +11,7 @@ task salsa {
         String sampleName
         Int threadCount
         String? enzymeBases="GATC,GANTC"
+        String? bwaMemOpts="-B8"
         String dockerRepository="tpesout"
         String dockerTag="latest"
     }
@@ -69,7 +70,7 @@ task salsa {
         export VGP_PIPELINE="/root/scripts"
         export SLURM_JOBID="tmp"
         bash /root/scripts/salsa/index.sh $REF
-        bash /root/scripts/salsa/arima_mapping_pipeline.sh fastq.map ~{sampleName} $REF `pwd`
+        bash /root/scripts/salsa/arima_mapping_pipeline.sh fastq.map ~{sampleName} $REF `pwd` "~{bwaMemOpts}"
         module load bedtools
         bedtools bamtobed -i ~{sampleName}.bam > ~{sampleName}.bed
 
