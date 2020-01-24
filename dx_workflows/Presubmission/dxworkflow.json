@@ -1,0 +1,92 @@
+{
+  "name": "Presubmission 2020-Jan-24",
+  "title": "Presubmission 2020-Jan-24",
+  "stages": [
+    {
+      "id": "stage-FjbYG7j0j3b9BV417VJfqbj2",
+      "executable": "app-bwa_fasta_indexer/2.0.2"
+    },
+    {
+      "id": "stage-FjbYGG80j3b2zYfbFz63QkQf",
+      "executable": "applet-F5vk0zj0ZV6xFGV37P45VxQY",
+      "input": {
+        "ref_genome": {
+          "$dnanexus_link": {
+            "outputField": "genomeindex_targz",
+            "stage": "stage-FjbYG7j0j3b9BV417VJfqbj2"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FjbYGXQ0j3bBx2BY9qYPk47V",
+      "executable": "applet-Fgp18P0085kx65vv7fzFQ806",
+      "input": {
+        "mapbam": {
+          "$dnanexus_link": {
+            "outputField": "output_bam",
+            "stage": "stage-FjbYGG80j3b2zYfbFz63QkQf"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FfbY6p00j3b0J4k9GYpF46Bb",
+      "executable": "applet-FZpq9zj061QBvfz685JK8pxy"
+    },
+    {
+      "id": "stage-Ffg1zV80j3b7J6xX3p6q0X0P",
+      "executable": "app-file_concatenator/1.4.1"
+    },
+    {
+      "id": "stage-FfbY6Vj0j3b0X825777F4JjZ",
+      "executable": "app-file_concatenator/1.4.1",
+      "input": {
+        "files": [
+          {
+            "$dnanexus_link": {
+              "outputField": "output_fastq",
+              "stage": "stage-FfbY6p00j3b0J4k9GYpF46Bb"
+            }
+          }
+        ],
+        "output_filename": "concat_R1_R2.fastq.gz"
+      }
+    },
+    {
+      "id": "stage-FfbY5pj0j3b0X825777F4JjV",
+      "executable": "applet-Ff25qb00FBygkk9bFK5bj93G",
+      "input": {
+        "kmer_len": 21,
+        "fasta": {
+          "$dnanexus_link": {
+            "outputField": "file",
+            "stage": "stage-FfbY6Vj0j3b0X825777F4JjZ"
+          }
+        },
+        "assembly": {
+          "$dnanexus_link": {
+            "outputField": "file",
+            "stage": "stage-Ffg1zV80j3b7J6xX3p6q0X0P"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FjbYGZ00j3b8q34xGyQJyVpz",
+      "executable": "applet-Fg29Q0Q0j3b1QP3V0Q9K4vQg",
+      "input": {
+        "assembly_fasta": {
+          "$dnanexus_link": {
+            "inputField": "genome_fastagz",
+            "stage": "stage-FjbYG7j0j3b9BV417VJfqbj2"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FjbYBkj0j3b1Fbx28gy90g26",
+      "executable": "applet-FjFpFP80j3b7K9fY2bY0Gq08"
+    }
+  ]
+}
