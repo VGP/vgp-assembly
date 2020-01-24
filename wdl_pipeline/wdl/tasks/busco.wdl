@@ -8,8 +8,7 @@ task busco {
     input {
         File assemblyFasta
         Int threadCount
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        String dockerImage
     }
 
 	command <<<
@@ -48,6 +47,7 @@ task busco {
     runtime {
         cpu: threadCount
         memory: "42 GB"
-        docker: dockerRepository+"/vgp_busco:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_busco:"+dockerTag
     }
 }

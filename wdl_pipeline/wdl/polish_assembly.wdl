@@ -1,7 +1,7 @@
 version 1.0
 
 import "tasks/extract_reads.wdl" as extractReads
-import "tasks/minimap2_scatter_gather.wdl" as minimap2
+import "tasks/minimap2.wdl" as minimap2
 import "tasks/marginPolish.wdl" as marginPolish
 
 workflow PolishAssembly {
@@ -10,36 +10,28 @@ workflow PolishAssembly {
         Array[File] READ_FILES
         String SAMPLE_NAME
         File MARGIN_POLISH_PARAMS
-        String? MINIMAP_PRESET
-        String? SAMTOOLS_FILTER
+        String? MINIMAP_PRESET="map-ont"
+        String? SAMTOOLS_FILTER="-F 0x904"
         Int THREAD_COUNT
-        Int? MARGINPOLISH_MEMORY_GB
-        String? DOCKER_REPOSITORY
-        String? DOCKER_TAG
+        Int? MARGINPOLISH_MEMORY_GB=32
+        String? DOCKER_REPOSITORY="tpesout"
+        String? DOCKER_TAG="latest"
     }
-
-    String defaultMinimapPreset = select_first([MINIMAP_PRESET, "map-ont"])
-    String defaultSamtoolsFilter = select_first([SAMTOOLS_FILTER, "-F 0x904"])
-    Int defaultMarginPolishMemoryGB = select_first([MARGINPOLISH_MEMORY_GB, 8])
-    String defaultDockerRepository = select_first([DOCKER_REPOSITORY, "tpesout"])
-    String defaultDockerTag = select_first([DOCKER_TAG, "latest"])
 
     call extractReads.runExtractReads as extract {
         input:
             inputFiles=READ_FILES,
-            dockerRepository=defaultDockerRepository,
-            dockerTag=defaultDockerTag
+            dockerImage=DOCKER_REPOSITORY+"/vgp_base:"+DOCKER_TAG
     }
 
     call minimap2.runMinimap2ScatterGather as align {
         input:
             refFasta=ASSEMBLY_FILE,
             readFiles=extract.reads,
-            minimapPreset=defaultMinimapPreset,
-            samtoolsFilter=defaultSamtoolsFilter,
+            minimapPreset=MINIMAP_PRESET,
+            samtoolsFilter=SAMTOOLS_FILTER,
             threadCount=THREAD_COUNT,
-            dockerRepository=defaultDockerRepository,
-            dockerTag=defaultDockerTag
+            dockerImage=DOCKER_REPOSITORY+"/vgp_minimap2:"+DOCKER_TAG
     }
 
     call marginPolish.marginPolish as polish {
@@ -51,9 +43,8 @@ workflow PolishAssembly {
             parameters=MARGIN_POLISH_PARAMS,
             featureType="",
             threadCount=THREAD_COUNT,
-            memoryGigabyte=defaultMarginPolishMemoryGB,
-            dockerRepository=defaultDockerRepository,
-            dockerTag=defaultDockerTag
+            memoryGigabyte=MARGINPOLISH_MEMORY_GB,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_marginpolish:"+DOCKER_TAG
     }
 
     output {

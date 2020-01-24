@@ -6,8 +6,7 @@ task bionano_solve {
         File assemblyFasta
         String sampleName
         Int threadCount
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        String dockerImage
     }
 
 	command <<<
@@ -104,6 +103,7 @@ task bionano_solve {
     runtime {
         cpu: threadCount
         memory: "980 GB"
-        docker: dockerRepository+"/vgp_bionano:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_bionano:"+dockerTag
     }
 }

@@ -10,9 +10,8 @@ task scaff10x {
         Array[File] readFiles10x
         String sampleName
         Int threadCount
-        Int memoryGigabyte
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        Int? memoryGigabyte=32
+        String dockerImage
     }
 
 	command <<<
@@ -76,6 +75,7 @@ task scaff10x {
     runtime {
         cpu: 32
         memory: "72 GB"
-        docker: dockerRepository+"/vgp_scaff10x:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_scaff10x:"+dockerTag
     }
 }

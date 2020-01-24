@@ -2,7 +2,7 @@ version 1.0
 
 import "tasks/extract_reads.wdl" as extractReads_t
 import "tasks/shasta.wdl" as shasta_t
-import "tasks/minimap2_scatter_gather.wdl" as minimap2_t
+import "tasks/minimap2.wdl" as minimap2_t
 import "tasks/marginPolish.wdl" as marginPolish_t
 import "tasks/purge_dups.wdl" as purgeDups_t
 import "tasks/scaff10x.wdl" as scaff10x_t
@@ -10,7 +10,7 @@ import "tasks/salsa.wdl" as salsa_t
 import "tasks/busco.wdl" as busco_t
 import "tasks/stats.wdl" as stats_t
 
-workflow ONTAssembly {
+workflow ShastaAssembly {
     input {
         Array[File] READ_FILES_ONT
         Array[File] READ_FILES_10X
@@ -20,22 +20,17 @@ workflow ONTAssembly {
         File SHASTA_PARAMS
         Float EXPECTED_GENOME_SIZE
         Int THREAD_COUNT
-        Int? MEMORY_GB=8
-        String? DOCKER_REPOSITORY="tpesout"
-        String? DOCKER_TAG="latest"
+        Int MEMORY_GB=32
+        String DOCKER_REPOSITORY="tpesout"
+        String DOCKER_TAG="latest"
     }
-
-    Int default_MEMORY_GB = select_first([MEMORY_GB, 32])
-    String default_DOCKER_REPOSITORY = select_first([DOCKER_REPOSITORY, "tpesout"])
-    String default_DOCKER_TAG = select_first([DOCKER_TAG, "latest"])
 
     # actual work
     scatter (readFile in READ_FILES_ONT) {
         call extractReads_t.extractReads as ontReads {
             input:
                 readFile=readFile,
-                dockerRepository=default_DOCKER_REPOSITORY,
-                dockerTag=default_DOCKER_TAG
+                dockerImage=DOCKER_REPOSITORY+"/vgp_base:"+DOCKER_TAG
         }
     }
 
@@ -45,9 +40,8 @@ workflow ONTAssembly {
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
             shastaParameters=SHASTA_PARAMS,
-            memoryGigabyte=default_MEMORY_GB,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            memoryGigabyte=MEMORY_GB,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_shasta:"+DOCKER_TAG
     }
 	call minimap2_t.runMinimap2ScatterGather as assemblyAlign {
 	    input:
@@ -56,8 +50,7 @@ workflow ONTAssembly {
             minimapPreset="map-ont",
             samtoolsFilter="-F 0x904",
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_minimap2:"+DOCKER_TAG
 	}
 	call marginPolish_t.marginPolish as marginPolish {
 	    input:
@@ -68,9 +61,8 @@ workflow ONTAssembly {
             parameters=MARGIN_POLISH_PARAMS,
             featureType="",
             threadCount=THREAD_COUNT,
-            memoryGigabyte=default_MEMORY_GB,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            memoryGigabyte=MEMORY_GB,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_marginpolish:"+DOCKER_TAG
 	}
     call purgeDups_t.purge_dups as purgeDups {
         input:
@@ -79,9 +71,8 @@ workflow ONTAssembly {
             minimapPreset="map-ont",
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=default_MEMORY_GB,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            memoryGigabyte=MEMORY_GB,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_purge_dups:"+DOCKER_TAG
     }
     call scaff10x_t.scaff10x as scaff10x {
         input:
@@ -89,9 +80,8 @@ workflow ONTAssembly {
             readFiles10x=READ_FILES_10X,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            memoryGigabyte=default_MEMORY_GB,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            memoryGigabyte=MEMORY_GB,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_scaff10x:"+DOCKER_TAG
     }
     call salsa_t.salsa as salsa {
         input:
@@ -99,8 +89,7 @@ workflow ONTAssembly {
             readFilesHiC=READ_FILES_HIC,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_salsa:"+DOCKER_TAG
     }
     
 
@@ -110,72 +99,62 @@ workflow ONTAssembly {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	call stats_t.stats as marginPolish_stats {
 	    input:
 	        assemblyFasta=marginPolish.polishedFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	call stats_t.stats as purgeDupsPri_stats {
 	    input:
 	        assemblyFasta=purgeDups.primary,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	call stats_t.stats as purgeDupsAlt_stats {
 	    input:
 	        assemblyFasta=purgeDups.alternate,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	call stats_t.stats as scaff10x_stats {
 	    input:
 	        assemblyFasta=scaff10x.scaffoldedFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	call stats_t.stats as salsa_stats {
 	    input:
 	        assemblyFasta=salsa.scaffoldedFasta,
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
 	# busco stats
 	call busco_t.busco as shasta_busco {
 	    input:
 	        assemblyFasta=shastaAssemble.assemblyFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
 	}
 	call busco_t.busco as marginPolish_busco {
 	    input:
 	        assemblyFasta=marginPolish.polishedFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
 	}
 	call busco_t.busco as scaff10x_busco {
 	    input:
 	        assemblyFasta=scaff10x.scaffoldedFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
 	}
 	call busco_t.busco as salsa_busco {
 	    input:
 	        assemblyFasta=salsa.scaffoldedFasta,
             threadCount=THREAD_COUNT,
-            dockerRepository=default_DOCKER_REPOSITORY,
-            dockerTag=default_DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
 	}
 
 	output {

@@ -11,8 +11,7 @@ task shasta {
         String sampleName
         Int threadCount
         Int memoryGigabyte
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        String dockerImage
     }
 
 	command <<<
@@ -43,6 +42,7 @@ task shasta {
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: dockerRepository+"/vgp_shasta:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_shasta:"+dockerTag
     }
 }

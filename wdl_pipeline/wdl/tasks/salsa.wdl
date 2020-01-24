@@ -12,8 +12,7 @@ task salsa {
         Int threadCount
         String? enzymeBases="GATC,GANTC"
         String? bwaMemOpts="-B8"
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        String dockerImage
     }
 
 	command <<<
@@ -90,6 +89,7 @@ task salsa {
     runtime {
         cpu: threadCount
         memory: "40 GB"
-        docker: dockerRepository+"/vgp_salsa:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_salsa:"+dockerTag
     }
 }

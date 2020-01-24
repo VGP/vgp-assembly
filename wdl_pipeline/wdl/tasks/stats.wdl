@@ -8,8 +8,7 @@ task stats {
     input {
         File assemblyFasta
         Float expectedGenomeSize
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        String dockerImage
     }
 
 	command <<<
@@ -44,6 +43,7 @@ task stats {
     runtime {
         cpu: 1
         memory: 1 + " GB"
-        docker: dockerRepository+"/vgp_stats:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_stats:"+dockerTag
     }
 }

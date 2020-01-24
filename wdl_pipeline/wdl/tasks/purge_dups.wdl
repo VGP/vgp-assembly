@@ -11,9 +11,8 @@ task purge_dups {
         String minimapPreset="map-pb"
         String sampleName
         Int threadCount
-        Int memoryGigabyte
-        String dockerRepository="tpesout"
-        String dockerTag="latest"
+        Int? memoryGigabyte=32
+        String dockerImage
     }
 
 	command <<<
@@ -73,6 +72,7 @@ task purge_dups {
     runtime {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
-        docker: dockerRepository+"/vgp_purge_dups:"+dockerTag
+        docker: dockerImage
+#        docker: dockerRepository+"/vgp_purge_dups:"+dockerTag
     }
 }
