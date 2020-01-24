@@ -17,7 +17,7 @@ workflow ScaffoldAssembly {
         Array[File] READ_FILES_10X
         Array[File] READ_FILES_HIC
         String SAMPLE_NAME
-        Int EXPECTED_GENOME_SIZE
+        Float EXPECTED_GENOME_SIZE
         Int THREAD_COUNT
         Int? MEMORY_GB=8
         String? DOCKER_REPOSITORY="tpesout"

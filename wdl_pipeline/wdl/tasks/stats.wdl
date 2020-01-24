@@ -7,7 +7,7 @@ workflow runStats {
 task stats {
     input {
         File assemblyFasta
-        Int expectedGenomeSize
+        Float expectedGenomeSize
         String dockerRepository="tpesout"
         String dockerTag="latest"
     }

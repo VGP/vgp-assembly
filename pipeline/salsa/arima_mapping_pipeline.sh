@@ -24,7 +24,7 @@ if [ -z $4 ]; then
     SCRATCH="/lscratch"
 fi
 BWA_OPTS=$5
-if [ -z $5 ]; then
+if [ -z "$5" ]; then
     BWA_OPTS="-B8"
 fi
 

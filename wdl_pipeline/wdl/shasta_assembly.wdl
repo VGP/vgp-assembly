@@ -18,7 +18,7 @@ workflow ONTAssembly {
         String SAMPLE_NAME
         File MARGIN_POLISH_PARAMS
         File SHASTA_PARAMS
-        Int EXPECTED_GENOME_SIZE
+        Float EXPECTED_GENOME_SIZE
         Int THREAD_COUNT
         Int? MEMORY_GB=8
         String? DOCKER_REPOSITORY="tpesout"
