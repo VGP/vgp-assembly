@@ -65,13 +65,13 @@
       "help": "if set to haploid the genome is processed with the -d1 option (only for trios), otherwise default is diploid"
     },
         {
-      "name": "OVLP",
-      "label": "Remove only overlaps",
+      "name": "LABEL",
+      "label": "Remove only overlaps, junks, repeats but no haplotigs",
       "class": "string",
       "choices": ["true","false"],
       "optional": true,
       "default": "false",
-      "help": "if set purges only the overlaps between contigs (no repeat, junk, or haplotigs)"
+      "help": "if set purges only the overlaps, junks and repeats found in contigs (no haplotigs)"
     }
   ],
   "outputSpec": [
