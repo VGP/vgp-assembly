@@ -324,7 +324,7 @@ fArcCen1
     └── ...
 ```
 
-**Transfering to S3:** After being sure that each step finished correctly, the stats were checked and the files placed in their respective correct folders, it is a good practice to move the data to the VGP storage in AWS. The data will transfer and a symbolic link will be created to keep files functional and accesible. 
+**Transferring to S3:** After being sure that each step finished correctly, the stats were checked and the files placed in their respective correct folders, it is a good practice to move the data to the VGP storage in AWS. The data will transfer and a symbolic link will be created to keep files functional and accesible. 
 In your working project, click the menu "TOOLS" and select "Tool Library", next search and select the applet **DNAnexus to VGP S3 Exporter**. Select the files generated in the finished step in order to transfer them.
 
 <br/>
@@ -826,7 +826,7 @@ All the stages of the workflow should now be in the "Runnable" state. Click `Run
 
 <br/>
 
-If everything went well, you should send a mail to the curation team following a specific template with links and attachments. For this example the mail should look like this:
+If everything went well, and after transferring the generated files to S3 with the **DNAnexus to VGP S3 Exporter** applet, you should send a mail to the curation team following a specific template with links and attachments. For this example the mail should look like this:
 
 * Subject:
 ```
