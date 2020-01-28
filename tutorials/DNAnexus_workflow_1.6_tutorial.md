@@ -801,6 +801,8 @@ Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO
 
 Copy the latest version of the **Presubmission** workflow from **VGP tools** into your project as explained before. Click the workflow to open it in _Run_ mode and under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `Presubmission` inside the `evalutaion` folder and select it as the output folder for the **Presubmission** workflow.
 
+![Presubmission workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/presubmission_workflow.png)
+
 The inputs for the workflow are:
 
 * In the `BWA FASTA Indexer` stage: the **pri.asm** file `fArcCen1_pri.asm.20191231.fasta.gz` for the `Genome` input
