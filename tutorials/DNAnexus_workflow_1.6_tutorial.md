@@ -820,12 +820,17 @@ Under the stages `Remove gembarcodes from 10x read`, `File Concatenator`, and `k
 * For the `sw_version` stage, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `version`
 
 
-All the stages of the workflow should now be in the "Runnable" state. Finally, click `Run as Analysis...` to launch the workflow.
+All the stages of the workflow should now be in the "Runnable" state. Click `Run as Analysis...` to launch the workflow.
 
-
-
+<br/>
 
 Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
+
+<br/>
+
+If everything went well, you should send a mail to the curation team following a specific template...
+
+<br/>
 
 <br/>
 
