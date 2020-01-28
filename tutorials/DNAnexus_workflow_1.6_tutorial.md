@@ -797,7 +797,7 @@ This is a typical example of how contig and scaffold N50 should behave during th
 
 The required QV value can be obtained from `qv_report.txt` file in the `longranger_freebayes_round_2/QV` folder.
 
-Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO search_ in the final assembly before sending the genome to curation. In addition, it is also requested to record relevant pipeline information that is required when the genome assembly is submitted to the NCBI and EBI archives. Luckily all this tasks can be done in a single workflow!
+Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO search_ in the final assembly before sending the genome to curation. In addition, it is also requested to record relevant pipeline information that is required when the genome assembly is submitted to the NCBI and EBI archives. Luckily, all this tasks can be done in a single workflow!
 
 Copy the latest version of the **Presubmission** workflow from **VGP tools** into your project as explained before. Click the workflow to open it in _Run_ mode and under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `Presubmission` inside the `evalutaion` folder and select it as the output folder for the **Presubmission** workflow.
 
