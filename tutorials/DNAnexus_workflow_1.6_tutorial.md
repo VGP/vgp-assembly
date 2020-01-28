@@ -826,7 +826,7 @@ Once all is finished, please share your genome stats and plots in the [Slack cha
 
 <br/>
 
-If everything went well, you should send a mail to the curation team following a specific template with links and attachments. For this example the mail shoud look like this:
+If everything went well, you should send a mail to the curation team following a specific template with links and attachments. For this example the mail should look like this:
 
 * Subject:
 ```
