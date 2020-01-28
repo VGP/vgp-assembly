@@ -822,7 +822,7 @@ All the stages of the workflow should now be in the "Runnable" state. Click `Run
 
 <br/>
 
-Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
+**!)** Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
 
 <br/>
 
