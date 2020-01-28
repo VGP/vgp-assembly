@@ -1,9 +1,9 @@
 # _fArcCen1_ Assembly Tutorial
 
 This tutorial covers the assembly of the fish species [Flier Cyclid](https://vgp.github.io/genomeark/Archocentrus_centrarchus) (_Archocentrus centrarchus_) using the [DNAnexus platform](https://platform.dnanexus.com/).
-The overall assembly pipeline can be depicted in the following simplified diagram (for a more general diagram, click [here](https://github.com/lunfardista/VGP1.6_tutorial/blob/master/updated_workflow/images/VGP_1.6_general.md)):
+The overall assembly pipeline can be depicted in the following simplified diagram:
 
-![DNAnexus assembly diagram 1.6](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNAnexus_VGP_1.6_diagram_03122019.png)
+![DNAnexus assembly diagram 1.6](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/DNAnexus_VGP_1.6_diagram_28012020.png)
 
 
 **Index:**
@@ -295,7 +295,7 @@ You should check for an improvement in the assembly metrics with the progress of
 To obtain a measure of the completeness of the assembly it is necessary to run **busco** using as input the respective assembly to be evaluated. In addition, click the gear icon and complete the "Augustus species search" filed with the closest species available to your working species, in this example `zebrafish`. Finally, under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `busco` inside the `evalutaion/c1` folder and select it as the output folder for the **busco** applet.
 You should check for an improvement in the metrics with the progress of the pipeline.
 
-To run the **Evaluation KAT Plot** workflow, select the files in the `10x` folder as input for the `Remove gembarcodes from 10x reads` stage, and the **c1** and **c2** assemblies as input for the `File Concatenator` stage. For setting the output, create a folder named `KAT_c1c2` inside the `evaluation` folder. Finally, click `Run as Analysis...` to launch the workflow.
+To run the **Evaluation KAT Plot** workflow, select the `_R1_` and `_R2_` files in the `10x` folder as input for the `Remove gembarcodes from 10x reads` stage, and the **c1** and **c2** assemblies as input for the `File Concatenator` stage. For setting the output, create a folder named `KAT_c1c2` inside the `evaluation` folder. Finally, click `Run as Analysis...` to launch the workflow.
 You will compare the obtained plot with subsequent steps of the pipeline.
 
 
@@ -669,7 +669,7 @@ Remember to move the **t1** file to the `intermediates` folder by "drag and drop
 
 ### 2. Freebayes
 
-Copy the latest version of the **Scaffold 6 Longranger Freebayes Polish** workflow from VGP tools into your project as explained before.
+Copy the latest version of the **Scaffold 6 Longranger Freebayes Polish** workflow from **VGP tools** into your project as explained before.
 
 ![Longranger Freebayes workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/longranger_freebayes_workflow.png)
 
@@ -778,9 +778,9 @@ fArcCen1
 │       ├── fArcCen1_t2.fasta.gz
 │       ├── fArcCen1_t3.fasta.gz
 │       ├── longranger_freebayes_round_1
-│       │   └── ..
+│       │   └── ...
 │       ├── longranger_freebayes_round_2
-│       │   └── ..
+│       │   └── ...
 │       ├── purge_dups
 │       │   └── ...
 │       └── scaff10x
@@ -797,7 +797,31 @@ This is a typical example of how contig and scaffold N50 should behave during th
 
 The required QV value can be obtained from `qv_report.txt` file in the `longranger_freebayes_round_2/QV` folder.
 
-Finally, it is requested a HiC heatmap before sending the genome to curation. Evaluation-Align HiC / Pretext / HiC heatmaps.
+Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO search_ in the final assembly before sending the genome to curation. In addition, it is also requested to record relevant pipeline information that is required when the genome assembly is submitted to the NCBI and EBI archives. Luckily all this tasks can be done in a single workflow!
+
+Copy the latest version of the **Presubmission** workflow from **VGP tools** into your project as explained before. Click the workflow to open it in _Run_ mode and under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `Presubmission` inside the `evalutaion` folder and select it as the output folder for the **Presubmission** workflow.
+
+The inputs for the workflow are:
+
+* In the `BWA FASTA Indexer` stage: the **pri.asm** file `fArcCen1_pri.asm.20191231.fasta.gz` for the `Genome` input
+* In the `Arima mapping` stage: the HiC reads from the `phase` folder, (concatenated) _R1_ reads file for the `Forward Reads` input and (concatenated) _R2_ reads file for the `Reverse Reads` input (remember that concatenation was necessary if more than one pair of reads were present in the HiC folder, check again the [Salsa step](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#3-salsa) for clarification).
+
+Under the stages `BWA FASTA Indexer`, `Arima mapping`, and `pretext`, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `pretext`
+
+* For the `Remove gembarcodes from 10x reads` stage: the `_R1_` and `_R2_` files in the `10x` folder
+* For the `File Concatenator` stage: the **pri.asm** file `fArcCen1_pri.asm.20191231.fasta.gz`, and the **alt.asm** file `fArcCen1_alt.asm.20191231.fasta.gz`
+
+Under the stages `Remove gembarcodes from 10x read`, `File Concatenator`, and `kat`, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `kat`
+
+* For the `BUSCO genome assembly quality assessment` stage, click the gear icon and complete the "Augustus species search" filed with the closest species available to your working species, in this example `zebrafish`. In addition, fill the "Output Folder" parameter with `busco`
+
+* For the `sw_version` stage, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `version`
+
+
+All the stages of the workflow should now be in the "Runnable" state. Finally, click `Run as Analysis...` to launch the workflow.
+
+
+
 
 Once all is finished, please share your genome stats and plots in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
 
