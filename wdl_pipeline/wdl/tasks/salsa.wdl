@@ -76,7 +76,7 @@ task salsa {
         # run salsa pipeline
         module load python/2.7
         mkdir out
-        python /root/tools/salsa/SALSA-2.2/run_pipeline.py -a $REF -l $REF.fai -e ~{enzymeBases} -b ~{sampleName}.bed -o out -m yes -p yes
+        python /root/tools/salsa/SALSA-2.2-974589/run_pipeline.py -a $REF -l $REF.fai -e ~{enzymeBases} -b ~{sampleName}.bed -o out -m yes -p yes
         mv out/scaffolds_FINAL.fasta ~{sampleName}.salsa.fasta
 
         # cleanup
@@ -90,6 +90,10 @@ task salsa {
         cpu: threadCount
         memory: "40 GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_salsa:"+dockerTag
+    }
+
+    parameter_meta {
+        enzymeBases: {description: "Comma-separated list of RE cut sites, or 'DNASE' if there are no cut sites"}
+        enzymeBases: {description: "Comma-separated list of RE cut sites, or 'DNASE' if there are no cut sites"}
     }
 }

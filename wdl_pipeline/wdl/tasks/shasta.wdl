@@ -43,6 +43,5 @@ task shasta {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_shasta:"+dockerTag
     }
 }

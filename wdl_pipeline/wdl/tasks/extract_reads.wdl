@@ -64,7 +64,6 @@ task extractReads {
     }
 
     runtime {
-#    String dockerImage = "${dockerRepository}/vgp_base:${dockerTag}"
         docker: dockerImage
         cpu: 1
     }

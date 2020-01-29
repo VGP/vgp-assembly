@@ -76,6 +76,5 @@ task scaff10x {
         cpu: 32
         memory: "72 GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_scaff10x:"+dockerTag
     }
 }

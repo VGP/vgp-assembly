@@ -1,6 +1,8 @@
 FROM tpesout/vgp_base:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
+ENV SALSA_COMMIT=974589f3302b773dcf0f20c3332fe9daf009fb93
+ENV SALSA_DIR=SALSA-2.2-974589
 
 ### python
 # 2.7
@@ -16,12 +18,11 @@ RUN wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz && \
     echo "prepend-path PATH /root/bin/python_2.7.13/bin" >>/root/modules/python/2.7
 
 ### Salsa
-# 3.0.2
 WORKDIR /root/tools/salsa
-RUN wget https://github.com/machinegun/SALSA/archive/v2.2.tar.gz && \
-    tar -zxf v2.2.tar.gz && \
-    rm v2.2.tar.gz && \
-    cd SALSA-2.2 && \
+RUN git clone https://github.com/marbl/SALSA.git $SALSA_DIR && \
+    cd $SALSA_DIR && \
+    git fetch && \
+    git checkout $SALSA_COMMIT && \
     make
 
 RUN bash -i -c "module load python/2.7 && \

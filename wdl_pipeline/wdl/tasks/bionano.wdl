@@ -104,6 +104,5 @@ task bionano_solve {
         cpu: threadCount
         memory: "980 GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_bionano:"+dockerTag
     }
 }

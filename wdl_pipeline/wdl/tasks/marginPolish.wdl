@@ -54,7 +54,6 @@ task marginPolish {
     }
 
     runtime {
-#    String dockerImage = "${dockerRepository}/vgp_marginpolish:${dockerTag}"
         docker: dockerImage
         cpu: threadCount
         memory: "${memoryGigabyte} GB"

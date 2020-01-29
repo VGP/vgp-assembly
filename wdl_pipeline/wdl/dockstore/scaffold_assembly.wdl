@@ -1,12 +1,12 @@
 version 1.0
 
-import "tasks/extract_reads.wdl" as extractReads_t
-import "tasks/shasta.wdl" as shasta_t
-import "tasks/purge_dups.wdl" as purgeDups_t
-import "tasks/scaff10x.wdl" as scaff10x_t
-import "tasks/salsa.wdl" as salsa_t
-import "tasks/busco.wdl" as busco_t
-import "tasks/stats.wdl" as stats_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/extract_reads.wdl" as extractReads_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/shasta.wdl" as shasta_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/purge_dups.wdl" as purgeDups_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/scaff10x.wdl" as scaff10x_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/salsa.wdl" as salsa_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/busco.wdl" as busco_t
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/stats.wdl" as stats_t
 
 workflow ScaffoldAssembly {
     input {

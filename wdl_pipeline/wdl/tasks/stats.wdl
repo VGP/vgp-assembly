@@ -44,6 +44,5 @@ task stats {
         cpu: 1
         memory: 1 + " GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_stats:"+dockerTag
     }
 }

@@ -73,6 +73,5 @@ task purge_dups {
         cpu: threadCount
         memory: memoryGigabyte + " GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_purge_dups:"+dockerTag
     }
 }

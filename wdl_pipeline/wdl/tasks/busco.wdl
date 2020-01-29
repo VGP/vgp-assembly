@@ -48,6 +48,5 @@ task busco {
         cpu: threadCount
         memory: "42 GB"
         docker: dockerImage
-#        docker: dockerRepository+"/vgp_busco:"+dockerTag
     }
 }
