@@ -14,3 +14,7 @@ The main result is the genome size estimation, which in this example can be abbr
 
 The log plot allows to represent those 31bp long kmers that are highly repeated and therefore have high coverage (e.g. repetitive regions). 
 ![Plot genomescope 2](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/genomescope_log_plot.png)
+
+<br/>
+
+Remember that you can always comment your results and ask your doubts in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC)
