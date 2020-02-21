@@ -55,20 +55,18 @@ main() {
 
     /purge_dups/bin/purge_dups -2 -T cutoffs -c PB.base.cov pri_asm.split.self.paf.gz > dups.bed 2> purge_dups.log
 
-    if [[ "$OVLP" == true ]]; then
+    if [[ "$LABEL" == true ]]; then
     
-    	grep OVLP dups.bed > dups.OVLP.bed
-    	/purge_dups/bin/get_seqs dups.OVLP.bed ref.fa > purged.fa 2> hap.fa 
-    	OVLP_bed="dups.OVLP.bed"
+    	grep -v HAPLOTIG dups.bed > dups.LABEL.bed
+    	
+    	/purge_dups/bin/get_seqs dups.LABEL.bed ref.fa > purged.fa 2> hap.fa 
+    	LABEL_bed="dups.LABEL.bed"
     
     else
 
 		/purge_dups/bin/get_seqs dups.bed ref.fa > purged.fa 2> hap.fa 
 		
     fi
-
-    
-
 
     basename="$ref_fastagz_prefix"
     basename=${basename//.renamed}
@@ -87,7 +85,7 @@ main() {
     dx-jobutil-add-output primary_fastagz "$primary_fastagz" --class=file
     dx-jobutil-add-output dup_fastagz "$dup_fastagz" --class=file
     mkdir auxillary_files
-    mv ${OVLP_bed} purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs PB.stat auxillary_files
+    mv ${LABEL_bed} purge_dups.log calcults.log *.paf.gz dups.bed PB.base.cov PB.cov.wig pri_asm.split cutoffs PB.stat auxillary_files
     cd auxillary_files/
     for i in $(ls); do 
         auxillary_file=$(dx upload $i --brief)

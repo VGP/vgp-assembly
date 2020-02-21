@@ -1,0 +1,380 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+#++++                  This script is part of:                    ++++
+#++++                        mitoVGP v2.1                         ++++
+#++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
+#++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
+
+if [ -z $1 ]; then
+
+	echo "use $0 -h for help"
+	exit 0
+elif [ $1 == "-h" ]; then
+
+	cat << EOF
+
+	Usage: '$0 -s species -i species_ID -r reference -g genome_size -t threads -m mapper (optional) -1 filelist (optional) -c cluster (optional)'
+
+	mtDNApipe.sh is used to retrieve mitochondrial-like sequences from the raw Pacbio data
+	generated in the framework of the Vertebrate Genomes Project and assemble them using Canu.
+
+	It requires the following software (and their dependencies) installed:
+	aws-cli/1.16.101, blasr/5.3.2-06c9543 | pbmm2/1.0.0, bam2fastx, Canu/1.8, blastn/2.7.1+, pbindex
+
+	Sequence retrieval is based on a search by similarity using a long read aligner.
+	Pacbio raw data files are individually downloaded from the Genomeark
+	and aligned to a reference genome provided by the user.
+
+	The reference genome can be from the same species if available, or from a
+	closely-to-distantly related species.
+
+	The approach is similar to that of Organelle_PBA described in:
+	Soorni et al. BMC Genomics (2017) DOI 10.1186/s12864-016-3412-9
+
+	In the second steps reads are used to generate assemblies using Canu assembler,
+	usually with default parameters.
+	(for rGopEvg1 and mRhiFer1 minOverlapLength=300 correctedErrorRate=0.105 were used, respectively)
+
+	The reference genome provided by the user is then blasted to the contigs generated
+	by Canu to identify the putative mitocontig.
+
+	Required arguments are:
+	-s the species name (e.g. Calypte_anna)
+	-i the VGP species ID (e.g. bCalAnn1)
+	-r the reference sequence fasta file
+	-g the putative mitogenome size (potentially, that of the reference genome). It does not
+	need to be precise. Accepts Canu formatting.
+	-t the number of threads
+	
+	Optional arguments are:
+	-d multithreaded download of files (true/false default: false) !! caution: true may require considerable amount of space.
+	-1 use pacbio/nanopore files from list of files, requires absolute path (default looks into aws)
+	-m the aligner for mitoread identification (blasr|pbmm2). Default is pbmm2
+	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
+	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
+	-o the options for Canu
+	-c if run on cluster. Supported options are:
+		SLURM
+		None (Default)
+
+EOF
+
+exit 0
+
+fi
+
+printf "\n\n++++ running: mtDNApipe ++++\n\n"
+
+#set options
+
+while getopts ":s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
+
+	case $opt in
+		s)
+			SPECIES=$OPTARG
+			echo "Species: -s $OPTARG"
+			;;
+        i)
+        	ID=$OPTARG
+        	echo "Species ID: -i $OPTARG"
+            ;;
+        r)
+			REF=$OPTARG
+			echo "Reference: -r $OPTARG"
+			;;
+		g)
+			GSIZE=$OPTARG
+			echo "Genome size: -g $OPTARG"
+            ;;
+		c)
+            GRID=$OPTARG
+			echo "Cluster: -c $OPTARG"
+			;;
+		f)
+            FL=$OPTARG
+			echo "Read length filter: -f $OPTARG"
+			;;
+		o)
+            OPTS=$OPTARG
+			echo "Canu options: -o $OPTARG"
+			;;
+		m)
+			ALN=$OPTARG
+			echo "Aligner: -m $OPTARG"
+			;;
+		t)
+			NPROC=$OPTARG
+			echo "Number of threads: -t $OPTARG"
+            ;;
+		d)
+			DOWNL=$OPTARG
+			echo "Multithreaded download: -d $OPTARG"
+            ;;
+		p)
+			PER=$OPTARG
+			echo "Percent coverage of reads: -p > $OPTARG"
+            ;;
+		1)
+			PB=$OPTARG
+			echo "Local long read data: -1 $OPTARG"
+			;;
+		\?)
+			echo "ERROR - Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+
+printf "\n"
+
+done
+
+if [[  ${GRID} == "SLURM" ]]; then
+
+echo Starting at `date`
+echo This is job $SLURM_JOB_ID
+echo Running on `hostname`
+printf "\n"
+
+fi
+
+#define working directory
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
+printf "Working directory: $W_URL\n\n"
+
+if [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
+
+	printf "\n\noutput already present: skipping.\n\n"
+	exit 0
+
+fi
+
+dw_date=`date "+%Y%m%d-%H%M%S"`;
+
+if ! [[ -e ${W_URL}/log/long_reads_file_list_$dw_date.txt ]] && [[ -z ${PB} ]]; then
+
+	#record Pacbio raw data files available in the cloud at the time of the analysis
+	printf "Collecting data using: aws s3 ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/\n\n"
+	aws s3 --no-sign-request ls s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ | grep -oP "m.*.subreads.bam" | uniq > ${W_URL}/log/long_reads_file_list_$dw_date.txt
+
+else
+
+	cat ${PB} > ${W_URL}/log/long_reads_file_list_$dw_date.txt
+
+fi
+
+if ! [[ -e "${W_URL}/pacbio_bam" ]]; then
+
+mkdir ${W_URL}/pacbio_bam
+
+fi
+
+if [[ -z  ${ALN} ]]; then
+	ALN="pbmm2"
+fi
+
+if [[  ${ALN} == "pbmm2" ]] && ! [[ -e ${W_URL}/reference/${REF%.*}.fasta.mmi ]]; then   
+                                                                                                   
+	pbmm2 index ${W_URL}/reference/${REF%.*}.fasta ${W_URL}/reference/${REF%.*}.fasta.mmi 
+
+fi
+
+#if vgp mode download
+if [[ ${DOWNL} == true ]] && ! [[ "$(ls -A ${W_URL}/pacbio_bam)" ]] ; then
+
+	aws s3 --no-sign-request cp --recursive --exclude="*scrap*" --exclude="*xml*" --exclude="*bai*" --exclude="*pbi*" --include="*.subreads.bam" s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/ ${W_URL}/
+
+fi
+
+printf "\n--Following long read files found:\n"
+
+while read p; do
+
+echo ${p}
+
+done < ${W_URL}/log/long_reads_file_list_$dw_date.txt
+
+printf "\n"
+
+#for each Pacbio raw data file do
+while read p; do
+
+if ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && [[ $p == *.bam ]] && ! [[ -e "${W_URL}/pacbio_bam/aligned_$(basename -- "$p")" ]]; then
+	
+	if [[ -z ${PB} ]]; then
+
+		if [[ -z ${DOWNL} ]] || ! [[  ${DOWNL} == true ]]; then
+
+			#if vgp mode download
+			aws s3 --no-sign-request cp s3://genomeark/species/${SPECIES}/${ID}/genomic_data/pacbio/$p ${W_URL}/
+			#align
+			
+		fi
+
+	else
+		
+		ln -s $p ${W_URL}/$(basename -- "$p")
+		p=$(basename -- "$p")
+	fi
+	
+	if [[  ${ALN} == "blasr" ]]; then
+
+		blasr --bestn 1 ${W_URL}/$p ${W_URL}/reference/${REF%.*}.fasta --bam --out ${W_URL}/pacbio_bam/aligned_${p%.*}.bam --nproc ${NPROC}
+
+	elif [[  ${ALN} == "pbmm2" ]]; then
+	
+		pbmm2 align --best-n 1 --min-concordance-perc 0 ${W_URL}/reference/${REF%.*}.fasta.mmi ${W_URL}/$p ${W_URL}/pacbio_bam/aligned_${p%.*}.bam -j ${NPROC}
+		
+	else
+
+		printf "mapper unset or unidentified.\n"
+
+	fi
+#remove
+rm ${W_URL}/${p%.*}.bam
+
+fi
+
+done < ${W_URL}/log/long_reads_file_list_$dw_date.txt
+
+#organize the files
+
+#convert to fastq
+if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads" ]]; then
+
+	mkdir ${W_URL}/pacbio_MT_extracted_reads
+
+	for f in ${W_URL}/pacbio_bam/aligned_*.bam; do
+		
+		filename=$(basename -- "$f")
+		filename="${filename%.*}"
+		
+		if ! [[ -e "${f}.pbi" ]]; then
+
+			pbindex ${f}
+
+		fi
+		
+		if ! [[ -e "{W_URL}/pacbio_MT_extracted_reads/${filename}.fastq.gz" ]] && ! [[ $(samtools view -c ${f}) -eq 0 ]]; then
+	
+			printf "convert: ${f} to fastq\n"
+
+			bam2fastq ${f} -o "${W_URL}/pacbio_MT_extracted_reads/${filename}"
+
+		fi
+		
+	done
+
+	#merge into a single read file
+	if ! [[ -e "${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq" ]]; then
+	
+		if ! [[ $(cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads) == "" ]]; then
+
+			cat ${W_URL}/pacbio_MT_extracted_reads/*.subreads > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+			
+			N_READS_EX=$(grep "@" -c ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq)
+			
+			printf "\nextracted ${N_READS_EX} reads\n"
+			
+		else
+		
+			printf "\nno reads extracted.\n"
+			exit 1
+		
+		fi
+		
+	fi
+
+	rm -f ${W_URL}/pacbio_MT_extracted_reads/*.subreads
+
+fi
+
+if ! [[ -z ${FL} ]] && ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]]; then
+
+	awk 'BEGIN {FS = "\t" ; OFS = "\n"} {header = $0 ; getline seq ; getline qheader ; getline qseq ; if (length(seq) <= '${FL}') {print header, seq, qheader, qseq}}' < ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq > ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
+	
+fi
+
+if ! [[ -z ${PER} ]] && (! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz ]] || ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz ]]); then
+
+	if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+	
+		readset=${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+	
+	else
+
+		readset=${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq	
+	
+	fi
+
+	cat ${readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta
+
+	makeblastdb -in ${W_URL}/pacbio_MT_extracted_reads/${ID}.fasta -parse_seqids -dbtype nucl -out ${W_URL}/pacbio_MT_extracted_reads/${ID}.db
+
+	blastn -outfmt "6 sseqid qcovs slen" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/pacbio_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v per="${PER}" '{if($2>per) printf $0 "\n"}' > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
+	
+	printf "\n\nExtracting following read by coverage:\n\n"
+	
+	cat ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out
+	
+	printf "\n\n"
+
+	awk '{printf $1 "\n"}' ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.out > ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls
+
+	cat ${readset} | grep -f ${W_URL}/pacbio_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
+
+fi
+
+if ! [[ -e ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq.gz ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq
+
+fi
+
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq
+
+fi
+
+if [[ -e ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq ]]; then
+
+	gzip ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq
+
+fi
+
+#assemble mtDNA reads with canu
+if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
+
+	CANU=canu-1.8/Linux-amd64/bin/canu
+
+	if ! [[ -z  ${OPTS} ]]; then
+
+		CANU="${CANU} ${OPTS}"
+
+	fi
+	
+	CANU="${CANU} -p ${ID} -d ${W_URL}/canu useGrid=false"
+	CANU="${CANU} genomeSize=${GSIZE}"
+#	CANU="${CANU} -gridEngineResourceOption=\"-R\\\"select[mem>${LSF_MEM}] rusage[mem=${LSF_MEM}]\\\" -M${LSF_MEM} -n ${NPROC}\""
+
+	if ! [[ -z ${FL} ]] && ! [[ -z ${PER} ]]; then
+
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered2_${ID}.fastq.gz"
+	
+	elif ! [[ -z ${FL} ]]; then
+	
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/filtered_${ID}.fastq.gz"
+	
+	else
+	
+		CANU="${CANU} -pacbio-raw ${W_URL}/pacbio_MT_extracted_reads/${ID}.fastq.gz"
+	
+	fi
+	
+	printf "\n${CANU}\n"
+	eval ${CANU}
+fi
+
+wait

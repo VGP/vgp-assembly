@@ -1,0 +1,274 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+#++++                  This script is part of:                    ++++
+#++++                        mitoVGP v2.1                         ++++
+#++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
+#++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
+
+if [ -z $1 ]; then
+
+	echo "use $0 -h for help"
+	exit 0
+elif [ $1 == "-h" ]; then
+
+	cat << EOF
+
+	Usage: '$0 -s species -i species_ID -r reference -t threads'
+
+	mitoVGP is used for reference-guided de novo mitogenome assembly using a combination of long and short read data.
+	
+	An existing reference from closely to distantly related species is used to identify mito-like reads in pacbio WGS data,
+	which are then employed in de novo genome assembly. The assembly is further polished using both long and short read data,
+	and linearized to start with the conventional Phenylalanine tRNA.
+	
+	Check the github page https://github.com/GiulioF1/mitoVGP for a description of the pipeline.
+	A complete Conda environment with all dependencies is available to run the pipeline in the same github page.
+	
+	This script a simple wrapper of the scripts found in the scripts/ folder. You can find more information
+	on each step in the help (-h) of each script.
+
+	Required arguments are:
+		-s the species name (e.g. Calypte_anna)
+		-i the VGP species ID (e.g. bCalAnn1)
+		-r the reference sequence fasta file
+		-t the number of threads
+	
+	Optional arguments are:
+		-g the putative mitogenome size (potentially, that of the reference genome). If not provided, length of reference is used.
+		   It does not need to be precise. Accepts Canu formatting.
+		-d multithreaded download of files (true/false default: false) !! caution: true may require considerable amount of space.
+		-1 use pacbio/nanopore reads from list of files, requires absolute path (default looks into aws)
+		-2 use PE illumina reads from list of files (with fw and rv reads including R1/R2 in their names), requires absolute path (default looks into aws)
+		-m the aligner (blasr|minimap2|pbmm2). Default is pbmm2
+		-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
+		-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
+		-o the options for Canu
+		-v picard validation stringency (STRICT/LENIENT default: STRICT)
+		-z increase sensitivity of mummer overlap detection
+		-b use gcpp or variantCaller during arrow polishing for 2.0 or earlier chemistry respectively (gcpp/variantCaller default: gcpp)
+
+EOF
+
+exit 0
+
+fi
+
+#set options
+
+while getopts ":s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:b:" opt; do
+
+	case $opt in
+		s)
+			SPECIES=$OPTARG
+			;;
+        i)
+        	ID=$OPTARG
+            ;;
+        r)
+			REF=$OPTARG
+			;;
+		g)
+			GSIZE=$OPTARG
+            ;;
+		t)
+			NPROC=$OPTARG
+            ;;
+		d)
+			DOWNL=$OPTARG
+            ;;
+		1)
+			PB=$OPTARG
+			;;
+		2)
+			IL=$OPTARG
+			;;
+		m)
+			ALN=$OPTARG
+			;;
+		f)
+            FL=$OPTARG
+			;;
+		o)
+            OPTS=$OPTARG
+			;;
+		n)
+            CONTIG=$OPTARG
+			;;
+		v)
+            VAL=$OPTARG
+			;;
+		p)
+            PER=$OPTARG
+			;;
+		z)
+            SEN=$OPTARG
+			;;
+		b)
+			CAL=$OPTARG
+            ;;
+		\?)
+			echo "ERROR - Invalid option: -$OPTARG" >&2
+			exit 1
+			;;
+	esac
+
+done
+
+printf "\n\n++++                        mitoVGP v2.0                         ++++\n"
+printf "++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++\n"
+printf "++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++\n\n"
+
+printf "\nStarted at at: $(date "+%Y-%m-%d %H-%M-%S")\n"
+printf "\nWith command:\n"
+printf "\n${0}\n"
+
+#define working directory
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
+
+if ! [[ -e "${W_URL}" ]]; then
+
+	mkdir -p ${W_URL}
+
+fi
+
+#create log folder
+if ! [[ -e "${W_URL}/log" ]]; then
+
+	mkdir ${W_URL}/log
+
+fi
+
+#create reference folder
+if ! [[ -e "${W_URL}/reference" ]]; then
+	
+	mkdir ${W_URL}/reference
+
+fi
+
+#copy the user-provided reference mitogenome to the reference folder
+filename=$(basename -- "${REF}")
+filename="${filename%.*}"
+
+printf "\nUsing '${REF}' as reference\n"
+cp ${REF} ${W_URL}/reference/${filename}.fasta
+
+if [[ -z  ${GSIZE} ]]; then
+	
+	GSIZE=$(awk 'BEGIN {FS="\t"} $0 !~ ">" {sum+=length($0)} END {print sum}' ${W_URL}/reference/${filename}.fasta)
+	
+	printf "\nGenome size not provided, using reference genome size: ${GSIZE} bp\n"
+	
+fi
+
+if ! [[ -z  ${DOWNL} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-d ${DOWNL} "
+
+fi
+
+if ! [[ -z  ${FL} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-f ${FL} "
+
+fi
+
+if ! [[ -z  ${OPTS} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-o ${OPTS} "
+
+fi
+
+if ! [[ -z  ${ALN} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-m ${ALN} "
+
+fi
+
+if ! [[ -z  ${PER} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-p ${PER} "
+
+fi
+
+if ! [[ -z  ${PB} ]]; then
+
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-1 ${PB} "
+
+fi
+
+#retrieve mito-like reads and assemble
+printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
+
+#identify the mitocontig
+printf "\nCommand: sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/blastMT -s ${SPECIES} -i ${ID} -r ${filename}.fasta 2>&1 | tee ${W_URL}/log/${ID}_blastMT_$(date "+%Y%m%d-%H%M%S").out
+
+if [[ -z  ${CONTIG} ]]; then
+
+	CONTIG_ID=$(cat ${W_URL}/blast/${ID%.*.*}_candidate_mitocontig.txt)
+
+else
+
+	CONTIG_ID=${CONTIG}
+
+fi
+
+if ! [[ -z  ${VAL} ]]; then
+
+	SCRIPT3_OPTS="${SCRIPT3_OPTS}-v ${VAL} "
+
+fi
+
+if ! [[ -z  ${CAL} ]]; then
+
+	SCRIPT3_OPTS="${SCRIPT3_OPTS}-b ${CAL} "
+
+fi
+
+#polish the mitocontig with long reads
+printf "\nCommand: sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/ArrowPolish -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT3_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_ArrowPolish_$(date "+%Y%m%d-%H%M%S").out &&
+
+if ! [[ -z  ${IL} ]]; then
+
+	SCRIPT4_OPTS="${SCRIPT4_OPTS}-2 ${IL} "
+
+fi
+
+if ! [[ -z  ${DOWNL} ]]; then
+
+	SCRIPT4_OPTS="${SCRIPT4_OPTS}-d ${DOWNL} "
+
+fi
+
+#polish the mitocontig with short reads
+printf "\nCommand: sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT4_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/map10x1 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT4_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_map10x1_$(date "+%Y%m%d-%H%M%S").out &&
+
+if ! [[ -z  ${SEN} ]]; then
+
+	SCRIPT5_OPTS="${SCRIPT5_OPTS}-z ${SEN} "
+
+fi
+
+#trim the mitocontig
+printf "\nCommand: sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT5_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/trimmer -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} ${SCRIPT5_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_trimmer_$(date "+%Y%m%d-%H%M%S").out &&
+
+#polish the trimmed mitocontig with short reads
+printf "\nCommand: sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/map10x2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_map10x2._$(date "+%Y%m%d-%H%M%S").out &&
+
+#perform final end trimming
+printf "\nCommand: sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/trimmer2 -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out &&
+
+#allow the final sequence to start with Phenylalanine
+printf "\nCommand: sh -e scripts/linearizePhe -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_trimmer2_$(date "+%Y%m%d-%H%M%S").out\n"
+sh -e scripts/linearizePhe -s ${SPECIES} -i ${ID} -n ${CONTIG_ID} -t ${NPROC} 2>&1 | tee ${W_URL}/log/${ID}_linearizePhe_$(date "+%Y%m%d-%H%M%S").out &&
+
+printf "\n\nDone!" &&
+printf "\n\nCompleted at: $(date "+%Y-%m-%d %H-%M-%S")\n\n"

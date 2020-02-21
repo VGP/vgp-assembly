@@ -26,6 +26,16 @@
       "help": "The prefix of q2 input will be used as basename"
     },
     {
+      "name": "mito_asm",
+      "label": "mitochondrial assembly (fasta)",
+      "class": "file",
+      "optional": true,
+      "patterns": [
+        "*.fasta","*.fa","*.fasta.gz","*.fa.gz"
+      ],
+      "help": ""
+    },
+    {
       "name": "output_extension",
       "class": "string",
       "optional": false,

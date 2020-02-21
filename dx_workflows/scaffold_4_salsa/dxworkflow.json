@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_4_salsa 2019-Oct-3",
+  "name": "scaffold_4_salsa 2019-Oct-24",
   "title": "Scaffold 4 Salsa Scaffolding",
   "stages": [
     {
@@ -40,8 +40,8 @@
     },
     {
       "id": "concat",
-      "executable": "applet-FZvXxG80j3b7XfxPJgGQ9Kq6",
-      "name": "concat s3+q2",
+      "executable": "applet-Ffjxp880j3b8yY84FQJVvKFg",
+      "name": "concat s3+q2+mito(opt)",
       "input": {
         "input1": {
             "$dnanexus_link": {

@@ -1,0 +1,46 @@
+{
+  "name": "sw_version",
+  "title": "sw_version",
+  "summary": "get version of genome assembly pipeline",
+  "version": "1.6",
+  "dxapi": "1.0.0",
+  "inputSpec": [
+  ],
+  "outputSpec": [
+    {
+      "label": "log file",
+      "optional": true,
+      "name": "logfile",
+      "class": "file",
+      "help": "log file"
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 1
+      }
+    },
+    "file": "src/code.py",
+    "interpreter": "python2.7",
+    "execDepends": [{"name": "ipython"}],
+    "distribution": "Ubuntu",
+    "release": "16.04"
+  },
+  "regionalOptions": {
+    "azure:westus": {"systemRequirements": {"*": {"instanceType": "azure:mem2_ssd1_x4"}}},
+    "aws:us-east-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}}},
+    "aws:eu-central-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}}},
+    "aws:ap-southeast-2": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}}},
+    "aws:cn-north-1": {"systemRequirements": {"*": {"instanceType": "mem1_ssd1_x4"}}}
+  },
+  "developers": ["org-dnanexus"],
+  "access": {
+    "project": "CONTRIBUTE",
+    "allProjects": "VIEW",
+    "network": [
+      "*"
+    ]
+  },
+  "openSource": true
+}
