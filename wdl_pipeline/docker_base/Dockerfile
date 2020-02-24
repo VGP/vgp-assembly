@@ -212,15 +212,16 @@ RUN wget https://cran.r-project.org/src/base/R-3/R-3.2.1.tar.gz && \
 ### python
 # 2.7
 WORKDIR /opt/python
-RUN wget https://www.python.org/ftp/python/2.7/Python-2.7.tgz && \
-    tar xvf Python-2.7.tgz && \
-    rm /opt/python/Python-2.7.tgz && \
-    cd Python-2.7 && \
-    ./configure && \
-    make && \
+RUN wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz && \
+    tar xvf Python-2.7.13.tgz && \
+    rm /opt/python/Python-2.7.13.tgz && \
+    cd Python-2.7.13 && \
+    mkdir -p /root/bin/python_2.7.13 && \
+    ./configure --with-ensurepip=install --prefix=/root/bin/python_2.7.13 && \
+    make install && \
     mkdir /root/modules/python && \
-    echo "#%Module" >>/root/modules/python/2.7 && \
-    echo "prepend-path PATH /opt/python/Python-2.7" >>/root/modules/python/2.7 && \
+    echo "#%Module" >/root/modules/python/2.7 && \
+    echo "prepend-path PATH /root/bin/python_2.7.13/bin" >>/root/modules/python/2.7 && \
     echo "#%Module" >>/root/modules/python/.modulerc && \
     echo "module-version /2.7 default" >>/root/modules/python/.modulerc
 # 3.6.0
