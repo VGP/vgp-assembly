@@ -1,6 +1,6 @@
 {
-  "name": "Presubmission 2020-Jan-24",
-  "title": "Presubmission 2020-Jan-24",
+  "name": "Presubmission 2020-Mar-4",
+  "title": "Presubmission 2020-Mar-4",
   "stages": [
     {
       "id": "stage-FjbYG7j0j3b9BV417VJfqbj2",
@@ -73,8 +73,8 @@
       }
     },
     {
-      "id": "stage-FjbYGZ00j3b8q34xGyQJyVpz",
-      "executable": "applet-Fg29Q0Q0j3b1QP3V0Q9K4vQg",
+      "id": "stage-FkQ29v80j3bPbYXY8BGkQQqG",
+      "executable": "applet-FkK6Fp80Pkpvgz5J8fg9fQ47",
       "input": {
         "assembly_fasta": {
           "$dnanexus_link": {
@@ -85,8 +85,8 @@
       }
     },
     {
-      "id": "stage-FjbYBkj0j3b1Fbx28gy90g26",
-      "executable": "applet-FjFpFP80j3b7K9fY2bY0Gq08"
+      "id": "stage-FkQ29z00j3b1F9Gq73ZXkqvB",
+      "executable": "applet-FkPb49j0j3b9KP6xPpYFpQ3f"
     }
   ]
 }
