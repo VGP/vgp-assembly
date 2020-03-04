@@ -621,7 +621,7 @@ The inputs for the workflow are:
 * `Reads`: the _PacBio Sequel Reads_ (`subreads.bam`) from the `pacbio` folder
 * `Reference genome`: the scaffolds file `fArcCen1_s4.fasta.gz`
 
-Remember to configure `intermediates` as the output folder and save the workflow copy before launch the analysis.
+Remember to configure `intermediates/arrow` as the output folder and save the workflow copy before launch the analysis.
 
 The final output should look like this:
 
