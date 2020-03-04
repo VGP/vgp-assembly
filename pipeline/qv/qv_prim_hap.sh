@@ -30,17 +30,17 @@ if [ ! -e $genome.changes.vcf.gz ]; then
 	echo
 fi
 
-if [ ! -e $fa_primary.len ]; then
-	echo "$fa_primary.len not found. Generateing..."
-	java -jar -Xmx1g $VGP_PIPELINE/stats/fastaContigSize.jar $fa_primary
+if [ ! -e $fa_primary.fai ]; then
+	echo "$fa_primary.fai not found. Generating..."
+	samtools faidx $fa_primary
 fi
-awk '{print $1"\t0\t"$2}' $fa_primary.len > prim.bed
+awk '{print $1"\t0\t"$2}' $fa_primary.fai > prim.bed
 
-if [ ! -e $fa_alt.len ]; then
-	echo "$fa_alt.len not found. Generating..."
-	java -jar -Xmx1g $VGP_PIPELINE/stats/fastaContigSize.jar $fa_alt
+if [ ! -e $fa_alt.fai ]; then
+	echo "$fa_alt.fai not found. Generating..."
+	samtools faidx $fa_alt
 fi
-awk '{print $1"\t0\t"$2}' $fa_alt.len > alts.bed
+awk '{print $1"\t0\t"$2}' $fa_alt.fai > alts.bed
 
 for hap in prim alts
 do
@@ -53,9 +53,17 @@ do
 	cut -f1 $hap.bed > $hap.list
 	echo
 
+	if [[ -e summary.txt ]]; then
+		mean_cov=`tail -n1 summary.csv | awk -F "," '{printf "%.0f\n", $17}'`   # parse out the mean_cov from summary.csv
+		h=$((mean_cov*12))
+	else
+		h=600
+		echo "No summary.txt found. Set h to $h for filtering out high coverage regions"
+	fi
+
 	echo "\
-	java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk '{if (\$2>3) {numbp+=\$3}} END {print numbp}' - > $genome.$hap.numbp"
-	java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk '{if ($2>3) {numbp+=$3}} END {print numbp}' - > $genome.$hap.numbp
+	java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h'{if (\$2>3 && \$2<h) {numbp+=\$3}} END {print numbp}' - > $genome.$hap.numbp"
+	java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h '{if ($2>3 && $2<h) {numbp+=$3}} END {print numbp}' - > $genome.$hap.numbp
 
 	NUM_BP=`cat $genome.$hap.numbp`
 	echo "Total bases > 3x: in $hap: $NUM_BP"

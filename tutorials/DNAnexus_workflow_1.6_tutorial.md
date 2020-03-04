@@ -561,7 +561,7 @@ The inputs for the workflow are:
 IMPORTANT: You should check for the mitogenome availability in the [VGP GenomeArk website](https://vgp.github.io/genomeark). If it is present, you need to download to your computer, and upload to your DNAnexus project. To do this, click the green button `+ Add Data` and select the file from your computer. If the mitogenome is not available, please ask in in the ["training" channel of the VGP Slack](https://genomeark.slack.com/archives/CE7FU8YAC).
 
 
-In addition, click the gear icon next to the File Concatenator app to specify the output name: `fArcCen1_s4.fasta.gz`. Remember to configure `intermediates` as the output folder and save the workflow copy before launch the analysis.
+In addition, click the gear icon next to the File Concatenator app to specify the output name: `fArcCen1_s4.fasta.gz`. Remember to configure `intermediates/hic` as the output folder and save the workflow copy before launch the analysis.
 
 The final output should look like this:
 
@@ -830,7 +830,7 @@ If everything went well, and after transferring the generated files to S3 with t
 
 * Subject:
 ```
-VGP ArcCen1 ready for curation
+VGP fArcCen1 ready for curation
 ```
 * Body:
 ```
