@@ -12,8 +12,8 @@ fi
 
 module load samtools
 
-bams=`cat bam.list | sed 's/\n/ /g'`
-bais=`cat bam.list | sed 's/\n/.bai /g'`
+bams=`cat bam.list | tr '\n' ' '`
+bais=`echo $bams | sed 's/.bam/.bam.bai/g'`
 
 num_bams=`wc -l bam.list | awk '{print $1}'`
 if [[ "$num_bams" -eq 1 ]]; then
