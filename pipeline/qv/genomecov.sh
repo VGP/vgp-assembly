@@ -1,14 +1,14 @@
 #!/bin/bash
 
+if [ -z $1 ]; then
+	echo "Usage: ./genomecov.sh <genome_id> [bam]"
+	echo "Requires summary.csv and <genome_id>.changes.vcf.gz"
+	exit -1
+fi
+
 module load bedtools
 module load samtools
 module load bcftools
-
-if [ -z $1 ]; then
-	echo "Usage: ./genomecov.sh <genome_id> [bam]"
-	echo "Requires summary.csv, aligned.genomecov, and <genome_id>.changes.vcf.gz"
-	exit -1
-fi
 
 bam=aligned.bam		#aligned, pos-sorted
 genome=$1
@@ -30,6 +30,10 @@ echo
 
 mean_cov=`tail -n1 summary.csv | awk -F "," '{printf "%.0f\n", $17}'`	# parse out the mean_cov from summary.csv
 h_filter=$((mean_cov*12))	# exclude any sites >12x
+if [[ "$h_filter" -eq "" ]]; then
+	echo "No summary.csv found. Default to ignore >600x."
+	h_filter=600
+fi
 l_filter=3			# exclude any sites <3x
 echo "Get numbp between $l_filter ~ $h_filter x"
 
