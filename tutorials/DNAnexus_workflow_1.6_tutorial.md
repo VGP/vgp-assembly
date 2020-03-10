@@ -379,7 +379,7 @@ fArcCen1
 The **Purged primary** contigs should be contained in the file `fArcCen1_p1.fasta.gz`, and the **Alternate combined** haplotigs should be contained in the `fArcCen1_q2.fasta.gz` file.
 Remember to move the `p1` and `q2` files to the `intermediates` folder by "drag and drop".
 
-**!)** Remember to run the required assembly metrics for this stage. You should see an improvement that reflects the performance of the haplotigs purging step when comparing the **KAT** plot obtained for _c1c2_ and for _p1q2_. In addition, check for differences in the **busco** metrics between `c1` and `p1`.
+**!)** Remember to run the required assembly metrics for this stage. You should see an improvement that reflects the performance of the haplotigs purging step when comparing the **KAT** plot obtained for _c1c2_ and for _p1q2_. In addition, check for differences in the **BUSCO** metrics between _c1_ and _p1_. You are always welcome to share your doubts about the obtained results in the Slack channel before continuing with the pipeline, especially if the results are different from expected.
 
 Note: if the _Falcon and Unzip_ step was already run and the **c1** and **c2** are present in the `intermediates` folder but the `bam_to_fasta` folder is not present, you should run the applet **PacBio BAM to FASTA** which can be found by clicking the green button `Start Analysis`. The input of this applet are the _PacBio Sequel Reads_ from the `pacbio` folder and you should set up an output folder named `bam_to_fasta` inside the `intermediates` folder.
 
