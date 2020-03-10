@@ -661,7 +661,7 @@ fArcCen1
     └── ...
 ```
 
-**!)** At this point, you  should check for an increase in the _contig N50_ when compared with **s3**, as a sign of the gap-filling efficiency.
+**!)** At this point, you should check for an increase in the contig N50 when compared with **s3**, as a sign of the gap-filling efficiency. In addition, the BUSCO score should not suffer a decrease. If results deviate from expected, seek for advice in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC) before continuing with the pipeline.
 
 Remember to move the **t1** file to the `intermediates` folder by "drag and drop".
 
