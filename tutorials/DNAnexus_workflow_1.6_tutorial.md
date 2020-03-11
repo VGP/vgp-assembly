@@ -740,7 +740,9 @@ fArcCen1
 
 Remember to move the **t2** and **t3** files to the `intermediates` folder by "drag and drop".
 
-Move the **final primary and alternative assembly** files to the `assembly_vgp_standard_1.6` folder by "drag and drop".
+The file `output.stat` in the `longranger_freebayes_round_2/stats` folder corresponds to the assembly stats for **t3** (contains the same result that running **asm_stats** with "scaff & contig + haplotype" option).
+
+Move the **final primary and alternative assembly** files in the `longranger_freebayes_round_2/stats` folder to the `assembly_vgp_standard_1.6` folder by "drag and drop".
 
 <br/>
 
