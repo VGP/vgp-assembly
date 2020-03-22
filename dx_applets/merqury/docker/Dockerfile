@@ -78,10 +78,12 @@ RUN apt-get update && \
 # Setup JAVA_HOME -- useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
-RUN apt-get install -y git && git clone https://github.com/marbl/merqury.git
+RUN apt-get install -y git && git clone https://github.com/marbl/merqury.git && cd merqury
 ENV PATH="$PWD:${PATH}"
-ENV MERQURY="/merqury/merqury.sh"
+ENV MERQURY="/merqury"
 
+# install nano for debug
+RUN apt-get install nano
 
 # gcc 4.8 or higher
 # already install
