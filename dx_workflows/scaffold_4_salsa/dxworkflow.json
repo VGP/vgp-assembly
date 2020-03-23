@@ -1,14 +1,14 @@
 {
-  "name": "scaffold_4_salsa 2019-Jul-24",
+  "name": "scaffold_4_salsa 2019-Oct-24",
   "title": "Scaffold 4 Salsa Scaffolding",
   "stages": [
     {
       "id": "bwa_fasta_index",
-      "executable": "app-bwa_fasta_indexer/2.0.1"
+      "executable": "app-bwa_fasta_indexer/2.0.2"
     },
     {
       "id": "arima_mapping",
-      "executable": "app-arima_mapping/0.0.1",
+      "executable": "app-arima_mapping/0.1.0",
       "input": {
         "ref_genome": {
           "$dnanexus_link": {
@@ -40,8 +40,8 @@
     },
     {
       "id": "concat",
-      "executable": "applet-FZvXxG80j3b7XfxPJgGQ9Kq6",
-      "name": "concat s3+q2",
+      "executable": "applet-Ffjxp880j3b8yY84FQJVvKFg",
+      "name": "concat s3+q2+mito(opt)",
       "input": {
         "input1": {
             "$dnanexus_link": {

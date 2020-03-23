@@ -3,7 +3,7 @@
 set -e -o pipefail
 
 #++++                  This script is part of:                    ++++
-#++++                        mitoVGP v2.0                         ++++
+#++++                        mitoVGP v2.2                         ++++
 #++++ The Vertebrate Genomes Project Mitogenome Assembly Pipeline ++++
 #++++     Credit: Giulio Formenti gformenti@rockefeller.edu       ++++
 
@@ -15,7 +15,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 
-	This script (linearizePhe) is used to allow the final sequence generated to start with Glutammine.
+	This script (linearizePhe) is used to allow the final sequence generated to start with the Phenylalanine tRNA sequence.
 
 	It requires the following software (and their dependencies) installed:
 	samtools/1.9, pbmm2/1.0.0, variantCaller/2.2.2, picard/2.18.22
@@ -87,10 +87,10 @@ fi
 printf "\n"
 
 #define working directory
-W_URL=${SPECIES}/assembly_MT_rockefeller/intermediates
+W_URL=${SPECIES}/${ID}/assembly_MT_rockefeller/intermediates
 printf "Working directory: $W_URL\n\n"
 
-FNAME="${ID}.${CONTIG}_arrow2_10x1_trim1_10x2"
+FNAME="${ID}.${CONTIG}_polish2_10x1_trim1_10x2"
 
 if ! [[ -e "${W_URL}/linearizeGln" ]]; then
 
@@ -131,11 +131,11 @@ if (( ${GLN_START} > ${GLN_END} )); then
 	GLN_START=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE_rv.out | awk '{print $3}')
 	GLN_END=$(grep "Phe" ${W_URL}/linearizeGln/tRNAscan-SE_rv.out | awk '{print $4}')
 	
-	printf "$(sed -n 1p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta)\n$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+	printf "$(sed -n 1p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta)\n$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/linearizeGln/${FNAME}_trim2_rv.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
 
 else
 
-	printf "$(sed -n 1p ${W_URL}/trimmed2/${FNAME}_trim2.fasta)\n$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+	printf "$(sed -n 1p ${W_URL}/trimmed2/${FNAME}_trim2.fasta)\n$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c${GLN_START}-${G_SIZE})$(sed -n 2p ${W_URL}/trimmed2/${FNAME}_trim2.fasta | cut -c1-$((${GLN_START} - 1)))" > ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
 
 fi
 
@@ -144,9 +144,9 @@ printf "\nGln start:${GLN_START}\n"
 printf "Gln end:${GLN_END}\n"
 
 printf "\nFinal sequence:\n\n"
-cat ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+cat ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
 	
 printf "\n\nMitogenome size: ${GSIZE} bp\n"
 
-gzip -f ${SPECIES}/assembly_MT_rockefeller/${ID}.MT.*.fasta
+gzip -f ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.*.fasta
 

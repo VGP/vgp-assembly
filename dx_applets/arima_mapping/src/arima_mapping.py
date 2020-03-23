@@ -27,7 +27,7 @@ def run_bwa(reads, ref_genome):
     reads = dx_utils.download_and_gunzip_file(reads, skip_decompress=True, create_named_pipe=True)
     ofn = re.sub('.fastq[.gz]*$', '.bam', reads)   
 
-    cmd = 'bwa mem -t {0} -B 8 {1} {2} '.format(multiprocessing.cpu_count(), genome_prefix, reads)
+    cmd = 'set -e -o pipefail; bwa mem -t {0} -B 8 {1} {2} '.format(multiprocessing.cpu_count(), genome_prefix, reads)
     cmd += '| perl ./filter_five_end.pl | samtools view -@{0} -Sb - > {1} '.format(multiprocessing.cpu_count(), ofn)
     dx_utils.run_cmd(cmd)
 
@@ -41,7 +41,7 @@ def combine_bams(fwd_bam, rev_bam):
     ofn = re.sub('.bam$', '.combined.bam', fwd_bam)
 
     #cmd = 'perl two_read_bam_combiner.pl {0} {1} | samtools view -@{2} -Sb - | samtools sort -o {3} - '
-    cmd = 'perl two_read_bam_combiner.pl {0} {1} | /opt/biobambam2/bin/bamsormadup inputformat=sam indexfilename={2}.bai > {2} '
+    cmd = 'set -e -o pipefail; perl two_read_bam_combiner.pl {0} {1} | /opt/biobambam2/bin/bamsormadup inputformat=sam indexfilename={2}.bai > {2} '
     cmd = cmd.format(fwd_bam, rev_bam, ofn)
     dx_utils.run_cmd(cmd)
 

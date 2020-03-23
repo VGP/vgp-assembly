@@ -1,6 +1,9 @@
 # Salsa scaffolding Workflow
 ## Update note
 
+**2019-Oct-3 update**
+- update Arima and bwa index version
+
 **2019-Jul-24 update**
 - use s3+q2 instead of s3+c2+p2 due to recent change with purge_haplotig to purge_dups
 

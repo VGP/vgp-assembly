@@ -1,0 +1,51 @@
+{
+  "name": "repeat_mito",
+  "title": "Repeat mitochondrial sequence for polishing",
+  "summary": "This apps duplicates an existing mitochondrial sequence, mimicking a circular sequence, and allowing it to map reads also at the edges of the original sequence.",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "mito_asm",
+      "label": "mitochondrial assembly (fasta)",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*.fasta","*.fa","*.fasta.gz","*.fa.gz"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "repeated_mito_asm",
+      "label": "Repeated mitochondrial assembly",
+      "class": "file",
+      "help": ""
+    }
+  ],
+   "runSpec": {
+      "execDepends": [
+      ],
+      "file": "src/repeat_mito.sh",
+      "release": "14.04",
+      "interpreter": "bash",
+      "distribution": "Ubuntu"      
+   },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    },
+    "azure:westus": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "azure:mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}

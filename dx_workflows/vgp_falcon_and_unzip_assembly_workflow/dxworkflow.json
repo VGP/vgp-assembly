@@ -1,5 +1,5 @@
 {
-  "name": "vgp_falcon_and_unzip_assembly_workflow 2019-Sep-22",
+  "name": "vgp_falcon_and_unzip_assembly_workflow 2019-Dec-19",
   "title": "Falcon and Falcon Unzip Assembly Workflow",
   "summary": "VGP1.6 Falcon and Falcon-Unzip workflow",
   "stages": [
@@ -585,7 +585,7 @@
     {
       "id": "unzip_4_haplotype_polish",
       "name": "Unzip Haplotype Polish",
-      "executable": "app-unzip_4_haplotype_polish/1.2.2",
+      "executable": "app-unzip_4_haplotype_polish/8.0.1",
       "folder": "unzip_stage_5",
       "input": {
         "all_p_ctg": {

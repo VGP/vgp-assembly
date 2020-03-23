@@ -37,9 +37,9 @@ main() {
 	
 	cat fw_def.ls | grep -oe "S[0-9]_[A-Z][0-9]*" > prefix.ls
 	
-	paste fw_def.ls rv_def.ls prefix.ls | awk '{print "python /opt/proc10xG/process_10xReads.py -1 "$1" -2 "$2" -o trimmed_"$3}' #| parallel --gnu -j $(nproc)
+	paste fw_def.ls rv_def.ls prefix.ls | awk '{print "python /opt/proc10xG/process_10xReads.py -a -1 "$1" -2 "$2" -o trimmed_"$3}' #| parallel --gnu -j $(nproc)
 
-	paste fw_def.ls rv_def.ls prefix.ls | awk '{print "python /opt/proc10xG/process_10xReads.py -1 "$1" -2 "$2" -o trimmed_"$3}' | parallel --gnu -j $(nproc)
+	paste fw_def.ls rv_def.ls prefix.ls | awk '{print "python /opt/proc10xG/process_10xReads.py -a -1 "$1" -2 "$2" -o trimmed_"$3}' | parallel --gnu -j $(nproc)
 	
 	mkdir -p ~/out/output_fastq
 	mv trimmed_*.fastq.gz ~/out/output_fastq

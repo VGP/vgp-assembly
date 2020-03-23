@@ -1,0 +1,129 @@
+{
+  "name": "meryl_and_genomescope",
+  "title": "Meryl and GenomeScope",
+  "summary": "K-mer counting with Meryl and associated histogram construction with GenomeScope",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "sequences_fastx",
+      "label": "Sequence Reads",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.fa.gz", "*.fasta.gz", "*.fq.gz", "*.fastq.gz"
+      ],
+      "help": "need 3G of fasta.gz file or 12GB of fasta file"
+    },
+    {
+      "name": "k_mer_size",
+      "label": "K-mer Size",
+      "class": "int",
+      "optional": false,
+      "default": 18,
+      "help": ""
+    },
+    {
+      "name": "is10x",
+      "label": "is it untrimmed 10x",
+      "class": "boolean",
+      "optional": false,
+      "default": false,
+      "help": "trimmed 10x or non-10x should use false"
+    },
+    {
+      "name": "output_prefix",
+      "label": "Output prefix",
+      "class": "string",
+      "default": "mer_counts",
+      "optional": true,
+      "help": "(Optional) Prefix for output file names."
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "histogram",
+      "label": "Histogram",
+      "class": "file",
+      "help": "A TSV file providing k-mer histogram information generated from Jellyfish.",
+      "patterns": ["*.tsv"]
+    },
+    {
+      "name": "genomescope_figures",
+      "label": "GenomeScope Figures",
+      "class": "array:file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "genomescope_files",
+      "label": "GenomeScope Files",
+      "class": "array:file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "genomescope_heterozygosity_estimate",
+      "label": "GenomeScope Heterozygosity Estimate",
+      "class": "string",
+      "help": ""
+    },
+    {
+      "name": "genomescope_haploid_length_estimate",
+      "label": "GenomeScope haploid length estimate",
+      "class": "string",
+      "help": ""
+    },
+    {
+      "name": "genomescope_repeat_length_estimate",
+      "label": "GenomeScope Repeat Length Estimate",
+      "class": "string",
+      "help": ""
+    },
+    {
+      "name": "genomescope_unique_length_estimate",
+      "label": "GenomeScope Unique Length Estimate",
+      "class": "string",
+      "help": ""
+    },
+    {
+      "name": "genomescope_model_fit",
+      "label": "GenomeScope Model Fit",
+      "class": "string",
+      "help": ""
+    },
+    {
+      "name": "genomescope_read_error_rate",
+      "label": "GenomeScope Read Error Rate",
+      "class": "string",
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 120
+      }
+    },
+    "interpreter": "python2.7",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/code.py"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x32"
+        }
+      },
+      "bundledDepends": [{"name": "jellyfish_2.23_genomescope_1.0.0.tar.gz", "id": {"$dnanexus_link": "file-FBKg7bv2J35fY0g9Pxb7VyPG"}}],
+      "assetDepends": [{"name": "canu_asset", "id": "record-FV14Zq80KzJ1zxXv5ZY64kJV"},
+                        {"id": "record-FBJ6k8j07fp8ZFbg6jjp8xQ7"}]
+    }
+  }
+}

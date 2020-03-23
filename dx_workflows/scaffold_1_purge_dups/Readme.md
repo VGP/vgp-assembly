@@ -8,6 +8,10 @@ p1 and q2 will be used for next step
 
 # Update Logs
 
+20202-03-01
+
+* Update to 1.0.1 version
+
 2019-07-29
 
 * Add more auxillary outputs

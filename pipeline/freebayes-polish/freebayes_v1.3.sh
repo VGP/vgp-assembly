@@ -53,6 +53,10 @@ do
     # Skip if bcf is not empty
     if ! [ -s bcf/$contig_no_pipe.bcf ]; then
 	mean_cov=`tail -n1 summary.csv | awk -F "," '{printf "%.0f\n", $17}'`
+	if [[ "$mean_cov" -eq "" ]]; then
+		echo "No mean cov found. Set to 50. Regions with >600x (50 x 12) depth of coverage will be ignored."
+		mean_cov=50
+	fi
 	echo "Using $mean_cov for mean coverage"
 	echo "\
 	freebayes --bam $bam --region=$contig:1-$end --skip-coverage $((mean_cov*12)) -f $fasta | bcftools view --no-version -Ou > bcf/$contig_no_pipe.bcf"
