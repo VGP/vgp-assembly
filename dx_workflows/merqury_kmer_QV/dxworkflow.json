@@ -10,7 +10,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x8"
+          "instanceType": "mem3_ssd2_v2_x8"
         }
       }
     },
@@ -27,7 +27,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x8"
+          "instanceType": "mem1_ssd2_v2_x8"
         }
       }
     }
