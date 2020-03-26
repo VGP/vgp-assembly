@@ -94,6 +94,5 @@ task salsa {
 
     parameter_meta {
         enzymeBases: {description: "Comma-separated list of RE cut sites, or 'DNASE' if there are no cut sites"}
-        enzymeBases: {description: "Comma-separated list of RE cut sites, or 'DNASE' if there are no cut sites"}
     }
 }
