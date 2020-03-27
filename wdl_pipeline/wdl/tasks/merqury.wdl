@@ -36,12 +36,12 @@ task merqury {
 
         # get kmers
         tar xvf ~{kmerTarball}
-        cmd+=($(basename ~{kmerTarball} | sed 's/.gz$//' | sed 's/.tar$//))
+        cmd+=($(basename ~{kmerTarball} | sed 's/.gz$//' | sed 's/.tar$//'))
         if [[ -f "~{matKmerTarball}" && -f "~{patKmerTarball}" ]]; then
             tar xvf ~{matKmerTarball}
             tar xvf ~{patKmerTarball}
-            cmd+=($(basename ~{matKmerTarball} | sed 's/.gz$//' | sed 's/.tar$//))
-            cmd+=($(basename ~{patKmerTarball} | sed 's/.gz$//' | sed 's/.tar$//))
+            cmd+=($(basename ~{matKmerTarball} | sed 's/.gz$//' | sed 's/.tar$//'))
+            cmd+=($(basename ~{patKmerTarball} | sed 's/.gz$//' | sed 's/.tar$//'))
         fi
 
         # link input files
@@ -53,15 +53,14 @@ task merqury {
         fi
 
         # prep output
-        mkdir ~{sampleName}.merqury
-        cmd+=(~{sampleName}.merqury/~{sampleName}.merqury)
+        cmd+=(~{sampleName}.merqury)
 
         # run command
         echo "${cmd[@]}"
         ${cmd[@]}
 
         # get output
-        tar czvf ~{sampleName}.merqury.tar.gz ~{sampleName}.merqury/
+        tar czvf ~{sampleName}.merqury.tar.gz ~{sampleName}.merqury*
 
 	>>>
 	output {
