@@ -119,12 +119,12 @@ In your working project, click the green button `+ Add Data` and search and sele
 
 <br/>
 
-Click the workflow to open it in _Run_ mode. The workflow only needs to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `assembly_vgp_standard_1.6`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
+Click the workflow to open it in _Run_ mode. The workflow only needs to be configured for input files in the `Remove gembarcodes from 10x reads` stage. To add the input files, select all the `fastq.gz` in the `10x` folder (only _R1_ or _R2_ files). Next, to specify an output folder for the workflow, under `Workflow Actions`, select `Set Output Folder`, and create a folder named `evaluation`. Inside that new folder, create a folder named `meryl_genomescope`. Finally, click `Run as Analysis...` to launch the workflow.
 
 At this stage, the final folder structure should look in general like this:
 ```
 fArcCen1
-├── assembly_vgp_standard_1.6
+├── evaluation
 │   └── meryl_genomescope
 │       └── ...
 └── genomic_data
@@ -164,7 +164,7 @@ Under the `Create Raw Reads Dazzler DB` stage, click the gear icon to open the p
 
 <br/>
 
-In addition to selecting parameters, you should specify an output folder for the workflow. Under `Workflow Actions`, select `Set Output Folder`. Navigate to the folder `assembly_vgp_standard_1.6` and create a new folder named `intermediates`. Inside that new folder, create a folder named `falcon_unzip`. Select `falcon_unzip` as the output folder for the **vgp_falcon_and_unzip_assembly_workflow**. All of the output folders for the individual stages should already be configured. When the analysis is complete, there will be a total of 10 subfolders in your specified output folder, one for each stage of the workflow:
+In addition to selecting parameters, you should specify an output folder for the workflow. Under `Workflow Actions`, select `Set Output Folder`. Create a new folder named `assembly_vgp_standard_1.6` and inside that folder, create another named `intermediates`. Inside that new folder, create a folder named `falcon_unzip`. Select `falcon_unzip` as the output folder for the **vgp_falcon_and_unzip_assembly_workflow**. All of the output folders for the individual stages should already be configured. When the analysis is complete, there will be a total of 10 subfolders in your specified output folder, one for each stage of the workflow:
 
 1. BAM to FASTA (bam_to_fasta)
 2. FALCON stage 0 (stage_0)
@@ -188,8 +188,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       └── falcon_unzip
 │           ├── bam_to_fasta
@@ -275,6 +273,8 @@ fArcCen1
 │               ├── cns_h_ctg.fastq.gz
 │               ├── cns_p_ctg.fasta.gz
 │               └── cns_p_ctg.fastq.gz
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -287,7 +287,7 @@ Next, it is required that every intermediate assembly produced during the pipeli
 
 <br/>
 
-**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflow named **Evaluation KAT Plot**.
+**!)** At this point of the pipeline it is important to run several assembly metrics to check that all is going well so far, a practice that is repeated after finalizing each step (see the green dots in the [DNAnexus workflow diagram](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md#farccen1-assembly-tutorial) at the beginning of the tutorial). To do this, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the applets named **asm_stats** and **busco**, and the workflows named **Evaluation KAT Plot** and **merqury_kmer_QV**.
 
 To obtain the standard assembly statistics run the **asm_stats** applet using as input the respective assembly to be evaluated. In addition, click the gear icon and complete the "Genome size (bp)" field with the size of the genome in base pairs, and `fArcCen1` in the "species code" field. Inside the `assembly_vgp_standard_1.6` folder, create a new folder with the name `evaluation`. Create a folder inside `evaluation` with the name of the assembly stage to be evaluated (for example, `c1`) and select it as the output folder. Finally, click `Run as Analysis...` to launch the applet.
 You should check for an improvement in the assembly metrics with the progress of the pipeline.
@@ -295,8 +295,12 @@ You should check for an improvement in the assembly metrics with the progress of
 To obtain a measure of the completeness of the assembly it is necessary to run **busco** using as input the respective assembly to be evaluated. In addition, click the gear icon and complete the "Augustus species search" filed with the closest species available to your working species, in this example `zebrafish`. Finally, under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `busco` inside the `evalutaion/c1` folder and select it as the output folder for the **busco** applet.
 You should check for an improvement in the metrics with the progress of the pipeline.
 
-To run the **Evaluation KAT Plot** workflow, select the `_R1_` and `_R2_` files in the `10x` folder as input for the `Remove gembarcodes from 10x reads` stage, and the **c1** and **c2** assemblies as input for the `File Concatenator` stage. For setting the output, create a folder named `KAT_c1c2` inside the `evaluation` folder. Finally, click `Run as Analysis...` to launch the workflow.
+To run the **Evaluation KAT Plot** workflow, select the `_R1_` and `_R2_` files in the `10x` folder as input for the `Remove gembarcodes from 10x reads` stage, and the **c1** and **c2** assemblies as input for the `File Concatenator` stage. For setting the output, create the folders `c1c2/KAT` inside the `evaluation` folder. Finally, click `Run as Analysis...` to launch the workflow.
 You will compare the obtained plot with subsequent steps of the pipeline.
+
+To run the **merqury_kmer_QV** workflow, select the barcode-trimmed _10x_ files inside the `meryl_genomescope` folder that were generated during the **meryl+genomescope_10x** workflow as input for the `Meryl and Genomescope` stage. In addition, click the gear icon of that stage and complete the "kmer length" field with `19`, `20` or `21` depending if the size of your working genome is _< 600 Mbp_, _600 Mbp to ~2.2 Gbp_ or _>= 2.3 Gbp_, respectively (in this case the genome is 0.99 Gbp, therefore the kmer length needs to be set to 20). Next, select the **c1** and **c2** assembly files for the `asm1_fasta` and `asm2_fasta` inputs for the `qv_assessment` stage. For setting the output, create the folder `QV` inside the `evaluation/c1c2` folder.
+You should be alerted to see a drop in the quality values (QV) with the progress of the pipeline.
+
 
 
 At this stage, the folder structure should look like this:
@@ -304,28 +308,31 @@ At this stage, the folder structure should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   ├── c1
-│   │   │   ├── ...
-│   │   │   └── busco
-│   │   │       └── ...
-│   │   ├── c2
-│   │   │   └── ...
-│   │   └── KAT_c1c2
-│   │       └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
 │       │   └── ...
 │       ├── fArcCen1_c1.fasta.gz
 │       └── fArcCen1_c2.fasta.gz
+├── evaluation
+│   ├── c1
+│   │   ├── ...
+│   │   └── busco
+│   │       └── ...
+│   ├── c2
+│   │   └── ...
+│   ├── c1c2
+│   │   ├── KAT
+│   │   │   └── ...
+│   │   └── QV
+│   │       └── ...
+│   └── meryl_genomescope
+│       └── ...
 └── genomic_data
     └── ...
 ```
 
 **Transferring to S3:** After being sure that each step finished correctly, the stats were checked and the files placed in their respective correct folders, it is a good practice to move the data to the VGP storage in AWS. The data will transfer and a symbolic link will be created to keep files functional and accesible. 
-In your working project, click the menu "TOOLS" and select "Tool Library", next search and select the applet **DNAnexus to VGP S3 Exporter**. Select the files generated in the finished step in order to transfer them.
+In your working project, click the menu "TOOLS" and select "Tool Library", next search and select the applet **DNAnexus to VGP S3 Exporter**. Select all the files generated in the finished step inside the folder `assembly_vgp_standard_1.6` and the respective subfolders in order to transfer them. DO NOT select the files inside the `evaluation` folder.
 
 <br/>
 
@@ -351,10 +358,6 @@ Once finished, the final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
 │       │   └── ...
@@ -372,6 +375,8 @@ fArcCen1
 │           ├── ...
 │           ├── read_length_distribution.pdf
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -379,7 +384,9 @@ fArcCen1
 The **Purged primary** contigs should be contained in the file `fArcCen1_p1.fasta.gz`, and the **Alternate combined** haplotigs should be contained in the `fArcCen1_q2.fasta.gz` file.
 Remember to move the `p1` and `q2` files to the `intermediates` folder by "drag and drop".
 
-**!)** Remember to run the required assembly metrics for this stage. You should see an improvement that reflects the performance of the haplotigs purging step when comparing the **KAT** plot obtained for _c1c2_ and for _p1q2_. In addition, check for differences in the **BUSCO** metrics between _c1_ and _p1_. You are always welcome to share your doubts about the obtained results in the Slack channel before continuing with the pipeline, especially if the results are different from expected.
+**!)** Remember to run the required assembly metrics for this stage. IMPORTANT: In the DNAnexus plataform we can reuse previous workflow runs as long as the results were not transfer to S3. To do this, navigate to the "Monitor" tab of the project and select the prior analysis you want to run again, click the green button `Launch as new analysis` and change the input of the corresponding stage and set a new output folder accordingly. For instance, in the "Monitor" tab of the project select the prior analysis of **merqury_kmer_QV** workflow and click the green button `Launch as new analysis`. Keep the inputs and parameters of the `Meryl and genomescope` stage unchanged and only modify the inputs of the `qv_assessment` stage with the **p1** and **q2** assembly files. Also, enter a new output folder (`evaluation/p1q2/QV`). For the **Evaluation KAT Plot** workflow you can keep the `Remove gembarcodes from 10x reads` stage inputs and change the rest of the stages inputs according to the current assembly step as explained before. The output folder should be set as `evaluation/p1q2/KAT`.
+
+You should see an improvement that reflects the performance of the haplotigs purging step when comparing the **KAT** plot obtained for _c1c2_ and for _p1q2_. In addition, check for differences in the **BUSCO** metrics between _c1_ and _p1_. You are always welcome to share your doubts about the obtained results in the Slack channel before continuing with the pipeline, especially if the results are different from expected.
 
 Note: if the _Falcon and Unzip_ step was already run and the **c1** and **c2** are present in the `intermediates` folder but the `bam_to_fasta` folder is not present, you should run the applet **PacBio BAM to FASTA** which can be found by clicking the green button `Start Analysis`. The input of this applet are the _PacBio Sequel Reads_ from the `pacbio` folder and you should set up an output folder named `bam_to_fasta` inside the `intermediates` folder.
 
@@ -404,10 +411,6 @@ The final output of scaff10x should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── falcon_unzip
 │       │   └── ...
@@ -426,6 +429,8 @@ fArcCen1
 │               ├── read-BC_1.fastq.gz
 │               ├── read-BC_2.fastq.gz
 │               └── scaffolds.fasta.gz
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -468,10 +473,6 @@ Once the app completes, the output should look smilar as follows:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── bionano
 │       │   ├── bn_pre_cut_projected_ngs_coord_annotations.bed
@@ -506,6 +507,8 @@ fArcCen1
 │       │   └── ...
 │       └── scaff10x
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -568,10 +571,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── bionano
 │       │   └── ...
@@ -597,6 +596,8 @@ fArcCen1
 │       │   └── ...
 │       └── scaff10x
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -628,10 +629,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── arrow
 │       │   ├── mapped_reads
@@ -657,11 +654,13 @@ fArcCen1
 │       │   └── ...
 │       └── scaff10x
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
 
-**!)** At this point, you should check for an increase in the contig N50 when compared with **s3**, as a sign of the gap-filling efficiency. In addition, the BUSCO score should not suffer a decrease. If results deviate from expected, seek for advice in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC) before continuing with the pipeline.
+**!)** At this point, you should check for an increase in the contig N50 when compared with **s3**, as a sign of the gap-filling efficiency. In addition, the QV value should not suffer a decrease when compared to **s4**. If results deviate from expected, seek for advice in the ["training" channel of Slack](https://genomeark.slack.com/archives/CE7FU8YAC) before continuing with the pipeline.
 
 Remember to move the **t1** file to the `intermediates` folder by "drag and drop".
 
@@ -685,10 +684,6 @@ The final output should look like this:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── arrow
 │       │   └── ..
@@ -732,6 +727,8 @@ fArcCen1
 │       │   └── ...
 │       └── scaff10x
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -755,10 +752,6 @@ fArcCen1
 ├── assembly_vgp_standard_1.6
 │   ├── fArcCen1_alt.asm.20191231.fasta.gz
 │   ├── fArcCen1_pri.asm.20191231.fasta.gz
-│   ├── evaluation
-│   │   └── ...
-│   ├── meryl_genomescope
-│   │   └── ...
 │   └── intermediates
 │       ├── arrow
 │       │   └── ..
@@ -787,6 +780,8 @@ fArcCen1
 │       │   └── ...
 │       └── scaff10x
 │           └── ...
+├── evaluation
+│   └── ...
 └── genomic_data
     └── ...
 ```
@@ -813,7 +808,7 @@ Under the stages `BWA FASTA Indexer`, `Arima mapping`, and `pretext`, click the 
 * For the `Remove gembarcodes from 10x reads` stage: the `_R1_` and `_R2_` files in the `10x` folder
 * For the `File Concatenator` stage: the **pri.asm** file `fArcCen1_pri.asm.20191231.fasta.gz`, and the **alt.asm** file `fArcCen1_alt.asm.20191231.fasta.gz`
 
-Under the stages `Remove gembarcodes from 10x read`, `File Concatenator`, and `kat`, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `kat`
+Under the stages `Remove gembarcodes from 10x reads`, `File Concatenator`, and `kat`, click the gear icon to open the parameters panel and fill the "Output Folder" parameter with `kat`
 
 * For the `BUSCO genome assembly quality assessment` stage, click the gear icon and complete the "Augustus species search" filed with the closest species available to your working species, in this example `zebrafish`. In addition, fill the "Output Folder" parameter with `busco`
 
