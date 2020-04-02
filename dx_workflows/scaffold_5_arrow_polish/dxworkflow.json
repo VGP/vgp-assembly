@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2019-Sep-14",
+  "name": "Scaffold 5 Arrow Polish 2020-Apr-01",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
@@ -10,7 +10,7 @@
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/7.0.1.5",
+      "executable": "app-run_polish/pbgcpp1.9.0",
       "folder": "polished output",
       "input": {
         "min_coverage": 5,
