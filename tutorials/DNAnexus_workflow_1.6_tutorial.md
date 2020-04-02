@@ -396,7 +396,7 @@ Note: if the _Falcon and Unzip_ step was already run and the **c1** and **c2** a
 
 ### 1. 10X
 
-The next step of the pipeline consist in two rounds of scaffolding using the 10X Genomics raw reads. To start, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **scaffold_2_scaff10X** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
+The next step of the pipeline consists of two rounds of scaffolding using the 10X Genomics raw reads. To start, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **scaffold_2_scaff10X** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
 The inputs for the workflow are:
 * `assemble_genome_fastagz`: the _Purged primary_ contigs file **p1** from Purge Dups (`fArcCen1_p1.fasta.gz`)
@@ -456,7 +456,7 @@ fArcCen1
     └── ...  
 ```
 
-From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore, copy the **scaffold_3_bionano_1enzyme** workflow from VGP tools as explained before. In some cases you may see two `*.cmap.gz` files in your input data corresponding to two enzymes used for the Bionano data, and therefore you will need to use the _2 enzyme_ workflow.
+From the input data, we can see that there is a single `*.cmap.gz` file generated using the `DLE-1` enzyme. Therefore, copy the **scaffold_3_bionano_1enzyme** workflow from VGP tools as explained before. In some cases, you may see two `*.cmap.gz` files in your input data corresponding to two enzymes used for the Bionano data, and therefore you will need to use the _2 enzyme_ workflow.
 
 ![Bionano workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/bionano_workflow.png)
 
@@ -469,7 +469,7 @@ As before, specify the workflow output folder to `intermediates`. A `bionano` fo
 The Bionano tool is prone to hanging if the memory requirements are not met. Therefore, make sure it is running on a large memory instance, such as the `mem3_ssd1_x32` instance. The app is configured to aggressively time out if it does not complete in under 6 hours. If this happens, rerun the analysis on a larger memory instance. Remember that you can always ask your doubts in the [Slack channel](https://genomeark.slack.com/archives/CE7FU8YAC).
 
 
-Once the app completes, the output should look smilar as follows:
+Once the app completes, the output should look similar as follows:
 ```
 fArcCen1
 ├── assembly_vgp_standard_1.6
@@ -515,7 +515,7 @@ fArcCen1
 
 Remember to move the **s2** file `fArcCen1_s2.fasta.gz` to the `intermediates` folder by "drag and drop".
 
-**!)** During the scaffolding steps like this, besides an improvement in the assembly metrics, it is expectable a decrease in the _contig N50_ due to contig break down.
+**!)** During the scaffolding steps like this, besides improvement in the assembly metrics, it is expectable a decrease in the _contig N50_ due to contig break down.
 
 <br/>
 
@@ -543,9 +543,9 @@ fArcCen1
 ```
 
 In addition to the input files, you will need to know the restriction enzymes used to generate the data. For `fArcCen1`,
-the sequences are `GATC` since the restriction enzyme employed was MboI. This infomation is reported in the `re_bases.txt` file in the folder with the HiC reads.  
+the sequences are `GATC` since the restriction enzyme employed was MboI. This information is reported in the `re_bases.txt` file in the folder with the HiC reads.  
 
-Before starting with the Salsa step, if more than one pair of reads are present in the HiC folder (like in this example), all the _R1_ reads must be concatenated in one file, while the _R2_ reads must be concatenated in other. To do this, click the green button `Start Analysis` in your working project, and search and select the **File Concatenator** applet. The input of the applet are all the _R1_ files in the `phase` folder. Next, under `Workflow Actions`, select `Set Output Folder`, and specify the `phase` folder as output folder. Click `Run as Analysis...` to launch the applet. Finally, you need to **repeat this proceeding for the _R2_ reads** (please be sure of selecting the _R2_ reads **in the same order** the _R1_ reads were selected).
+Before starting with the Salsa step, if more than one pair of reads are present in the HiC folder (like in this example), all the _R1_ reads must be concatenated in one file, while the _R2_ reads must be concatenated in other. To do this, click the green button `Start Analysis` in your working project, and search and select the **File Concatenator** applet. The inputs of the applet are all the _R1_ files in the `phase` folder. Next, under `Workflow Actions`, select `Set Output Folder`, and specify the `phase` folder as output folder. Click `Run as Analysis...` to launch the applet. Finally, you need to **repeat this proceeding for the _R2_ reads** (please be sure of selecting the _R2_ reads **in the same order** the _R1_ reads were selected).
 
 Copy the latest version of the **scaffold_4_salsa** workflow from VGP tools into your project as explained before. The workflow performs the following steps:
 
@@ -561,7 +561,7 @@ The inputs for the workflow are:
 * For the `Salsa` stage: select the gear icon and specify the HiC restriction enzyme (`GATC`) as the "Restriction enzyme bases" input
 * For the `concat s3+q2+mito` stage: the **Alternate combined** haplotigs contained in the file `fArcCen1_q2.fasta.gz` for `q2 input`. If a mitogenome is available for this species, it should be incorporated as input in this stage.
 
-IMPORTANT: You should check for the mitogenome availability in the [VGP GenomeArk website](https://vgp.github.io/genomeark). If it is present, you need to download to your computer, and upload to your DNAnexus project. To do this, click the green button `+ Add Data` and select the file from your computer. If the mitogenome is not available, please ask in in the ["training" channel of the VGP Slack](https://genomeark.slack.com/archives/CE7FU8YAC).
+IMPORTANT: You should check for the mitogenome availability in the [VGP GenomeArk website](https://vgp.github.io/genomeark). If it is present, you need to download to your computer and upload to your DNAnexus project. To do this, click the green button `+ Add Data` and select the file from your computer. If the mitogenome is not available, please ask in in the ["training" channel of the VGP Slack](https://genomeark.slack.com/archives/CE7FU8YAC).
 
 
 In addition, click the gear icon next to the File Concatenator app to specify the output name: `fArcCen1_s4.fasta.gz`. Remember to configure `intermediates/hic` as the output folder and save the workflow copy before launch the analysis.
@@ -610,7 +610,7 @@ Remember to move the **s3** and **s4** files to the `intermediates` folder by "d
 
 ### 1. Arrow
 
-The next step of the pipeline consist in a polishing of the scaffolds using PacBio data. To start, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **Scaffold 5 Arrow Polish** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
+The next step of the pipeline consists of polishing and gap-filling the scaffolds using PacBio data. To start, click the green button `+ Add Data` in your working project and search and select **VGP Tools** in the "Other Project" tab. Search and select the latest version of the **Scaffold 5 Arrow Polish** workflow and click the green button `Add Data`, after which a dialogue box will pop up with a progress bar indicating that the workflow has been copied to the current location of your working project.
 
 The workflow performs the following steps:
 1. Align the _PacBio reads_ to the assembly using _Minimap2_
@@ -733,7 +733,7 @@ fArcCen1
     └── ...
 ```
 
-**!)** You should check for an increase in the QV value after each round, when comparing the `qv_report.txt` file from the folders `longranger_freebayes_round_1/QV` and `longranger_freebayes_round_2/QV`.
+**!)** You should check for an increase in the QV value after each round when comparing the `qv_report.txt` file from the folders `longranger_freebayes_round_1/QV` and `longranger_freebayes_round_2/QV`.
 
 Remember to move the **t2** and **t3** files to the `intermediates` folder by "drag and drop".
 
@@ -792,9 +792,9 @@ This is a typical example of how contig and scaffold N50 should behave during th
 
 <br/>
 
-Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO search_ in the final assembly before sending the genome to curation. In addition, it is also requested to record relevant pipeline information that is required when the genome assembly is submitted to the NCBI and EBI archives. Luckily, all this tasks can be done in a single workflow!
+Finally, it is requested to generate a _HiC heatmap_, a _KAT plot_, and a _BUSCO search_ in the final assembly before sending the genome to curation. In addition, it is also requested to record relevant pipeline information that is required when the genome assembly is submitted to the NCBI and EBI archives. Luckily, all these tasks can be done in a single workflow!
 
-Copy the latest version of the **Presubmission** workflow from **VGP tools** into your project as explained before. Click the workflow to open it in _Run_ mode and under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `Presubmission` inside the `evalutaion` folder and select it as the output folder for the **Presubmission** workflow.
+Copy the latest version of the **Presubmission** workflow from **VGP tools** into your project as explained before. Click the workflow to open it in _Run_ mode and under `Workflow Actions`, select `Set Output Folder`. Create a new folder with the name `Presubmission` inside the `evaluation` folder and select it as the output folder for the **Presubmission** workflow.
 
 ![Presubmission workflow](https://github.com/VGP/vgp-assembly/blob/master/tutorials/images_1.6/presubmission_workflow.png)
 
