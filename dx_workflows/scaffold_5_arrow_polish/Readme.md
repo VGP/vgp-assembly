@@ -2,7 +2,7 @@
 ## Update note
 
 **2020-Apr-01 update**
-- change default instance type for polishing
+- update to pbgcpp1.9.0
 
 **2019-Sep-14 update**
 - change default instance type for polishing
