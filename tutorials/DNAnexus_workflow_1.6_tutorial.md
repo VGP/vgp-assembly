@@ -823,7 +823,7 @@ All the stages of the workflow should now be in the "Runnable" state. Click `Run
 
 <br/>
 
-If everything went well, and after transferring the generated files to S3 with the **DNAnexus to VGP S3 Exporter** applet, you should send a mail to the curation team following a specific template with links and attachments. For this example the mail should look like this:
+If everything went well, and after transferring the generated files to S3 with the **DNAnexus to VGP S3 Exporter** applet (that is, all the files in the folders `assembly_vgp_standard_1.6` and `evaluation` as well their respective subfolders), you should send a mail to the curation team following a specific template with links and attachments. For this example the mail should look like this:
 
 * Subject:
 ```
