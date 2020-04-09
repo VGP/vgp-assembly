@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2020-Apr-01",
+  "name": "Scaffold 5 Arrow Polish 2020-Apr-09",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
@@ -10,17 +10,17 @@
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/pbgcpp1.9.0",
+      "executable": "app-run_polish/pbgcpp1.9.0.1",
       "folder": "polished output",
       "input": {
-        "min_coverage": 5,
+        "min_coverage": 10,
         "input_bams": {
           "$dnanexus_link": {
             "outputField": "bam_files",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "min_confidence": 40,
+        "min_confidence": 20,
         "input_bais": {
           "$dnanexus_link": {
             "outputField": "bai_files",
