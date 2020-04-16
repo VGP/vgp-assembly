@@ -833,9 +833,28 @@ VGP fArcCen1 ready for curation
 ```
 * Body:
 ```
+Dear curators,
+
+Primary & Alternative assembly paths for fArcCen1:
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/assembly_vgp_standard_1.6/fArcCen1_pri.asm.20191231.fasta.gz
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/assembly_vgp_standard_1.6/fArcCen1_alt.asm.20191231.fasta.gz
+
+HiC alignment & heatmap paths:
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/evaluation/Presubmission/pretext/fArcCen1_###.bam
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/evaluation/Presubmission/pretext/map_FullMap.png
+
+KAT plot path:
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/evaluation/Presubmission/kat/###-main.mx.spectra-cn.png
+
+Detailed pipeline version (SW_VERSION) path:
+s3://genomeark/species/Archocentrus_centrarchus/fArcCen1/evaluation/Presubmission/version/version.txt
+
+Assembly stats, BUSCOs & QVs are attached as file.
+
+Cheers,
 ```
 
-The required QV value can be obtained from `qv_report.txt` file in the `longranger_freebayes_round_2/QV` folder.
+The attached file should contain the assembly stats (TotalBP, Num, Max, N50) of the scaffolds (c1, p1, s1, s2, s3, t1.pri, t2.pri, pri.asm) and contigs (s3.pri, t1.pri, pri.asm), BUSCOs (c1, p1, pri.asm) and QVs (c1/c2/both, p1/q2/both, s4, t1, pri.asm/alt.asm/both).
 
 
 <br/>
