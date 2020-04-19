@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2019-Oct-7",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2020_Apr_18",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -31,15 +31,21 @@
       "executable": "applet-FZY5j400j3bP4b62GxKB057v",
       "folder": "longranger_freebayes_round_1/freebayes",
       "input": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "first_map"
+          }
+        },
         "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "first_map"
           }
         },
-        "bai": {
+        "csv_10x": {
           "$dnanexus_link": {
-            "outputField": "sorted_bam_index",
+            "outputField": "summary",
             "stage": "first_map"
           }
         },
@@ -49,16 +55,10 @@
             "stage": "first_refprep"
           }
         },
-        "csv_10x": {
-          "$dnanexus_link": {
-            "outputField": "summary",
-            "stage": "first_map"
-          }
-        },
         "new_vgp_extension": "_t2"
       }
     },
-     {
+    {
       "id": "first_qv",
       "executable": "applet-FZY5kG00j3bKz7vY8p8G670X",
       "folder": "longranger_freebayes_round_1/QV",
@@ -75,10 +75,29 @@
             "stage": "first_map"
           }
         },
-         "CSV": {
+        "CSV": {
           "$dnanexus_link": {
             "outputField": "summary",
             "stage": "first_map"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd2_x16"
+        }
+      }
+    },
+    {
+      "id": "stage-FpJqbkj0j3bJzqfb5v4QQJPG",
+      "name": "merqury_qv",
+      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "folder": "longranger_freebayes_round_1/QV_merqury",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "pl_fasta",
+            "stage": "first_freebayes"
           }
         }
       },
@@ -133,15 +152,21 @@
       "executable": "applet-FZY5j400j3bP4b62GxKB057v",
       "folder": "longranger_freebayes_round_2/freebayes",
       "input": {
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "second_map"
+          }
+        },
         "bam": {
           "$dnanexus_link": {
             "outputField": "sorted_bam",
             "stage": "second_map"
           }
         },
-        "bai": {
+        "csv_10x": {
           "$dnanexus_link": {
-            "outputField": "sorted_bam_index",
+            "outputField": "summary",
             "stage": "second_map"
           }
         },
@@ -149,12 +174,6 @@
           "$dnanexus_link": {
             "outputField": "pl_fasta",
             "stage": "first_freebayes"
-          }
-        },
-        "csv_10x": {
-          "$dnanexus_link": {
-            "outputField": "summary",
-            "stage": "second_map"
           }
         },
         "new_vgp_extension": "_t3"
@@ -165,6 +184,7 @@
       "executable": "applet-FZBQzfj0j3b0xgqP4vpKFJ91",
       "folder": "longranger_freebayes_round_2/stats",
       "input": {
+        "extract": true,
         "out_name": "output",
         "asm": {
           "$dnanexus_link": {
@@ -172,8 +192,7 @@
             "stage": "second_freebayes"
           }
         },
-        "mode": "scaffold&contigs+haplotypes",
-        "extract": true
+        "mode": "scaffold&contigs+haplotypes"
       },
       "systemRequirements": {
         "*": {
@@ -198,10 +217,35 @@
             "stage": "second_map"
           }
         },
-         "CSV": {
+        "CSV": {
           "$dnanexus_link": {
             "outputField": "summary",
             "stage": "second_map"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd2_x16"
+        }
+      }
+    },
+    {
+      "id": "stage-FpJqbp80j3bJ93v20Bqyj69y",
+      "name": "merqury_qv",
+      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "folder": "longranger_freebayes_round_2/QV_merqury",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "pl_fasta",
+            "stage": "second_freebayes"
+          }
+        },
+        "readdb_meryl": {
+          "$dnanexus_link": {
+            "inputField": "readdb_meryl",
+            "stage": "stage-FpJqbkj0j3bJzqfb5v4QQJPG"
           }
         }
       },
