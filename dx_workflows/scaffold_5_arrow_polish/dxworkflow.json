@@ -1,11 +1,11 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2020-Apr-09",
+  "name": "Scaffold 5 Arrow Polish 2020-Apr-18",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "applet-FbvgJg00j3b44GP3GKzGGKvj",
       "name": "subreads.bam Minimap2",
+      "executable": "applet-FbvgJg00j3b44GP3GKzGGKvj",
       "folder": "mapped_reads"
     },
     {
@@ -13,7 +13,14 @@
       "executable": "app-run_polish/pbgcpp1.9.0.1",
       "folder": "polished output",
       "input": {
+        "input_fasta": {
+          "$dnanexus_link": {
+            "inputField": "genome_fastagz",
+            "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
+          }
+        },
         "min_coverage": 10,
+        "polish_instance_tpye": "mem3_ssd1_v2_x16",
         "input_bams": {
           "$dnanexus_link": {
             "outputField": "bam_files",
@@ -27,22 +34,24 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "input_fasta": {
-          "$dnanexus_link": {
-            "inputField": "genome_fastagz",
-            "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-          }
-        },
         "output_prefix": {
           "$dnanexus_link": {
             "inputField": "output_prefix",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem3_ssd1_v2_x16",
-        "slicer_instance_type": "mem1_ssd2_v2_x36",
         "polishing_algorithm": "arrow",
+        "slicer_instance_type": "mem1_ssd2_v2_x36",
         "skip_slicer": false
+      }
+    },
+    {
+      "id": "stage-FpJqQpj0j3bJVXffB3x4ZK6G",
+      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd2_x16"
+        }
       }
     }
   ]
