@@ -48,6 +48,14 @@
     {
       "id": "stage-FpJqQpj0j3bJVXffB3x4ZK6G",
       "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "polished_fasta",
+            "stage": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy"
+          }
+        }
+      },
       "systemRequirements": {
         "*": {
           "instanceType": "mem1_ssd2_x16"
