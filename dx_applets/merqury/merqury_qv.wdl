@@ -28,7 +28,7 @@ task qv_assessment{
         File qv = "${output_prefix}.qv"
     }
     runtime {
-        docker: "quay.io/chai/merqury:0.0.1"
+        docker: "quay.io/chai/merqury:0.0.2"
         cpu: 4
         memory: "32 GB"
         disk: "/tmp 1000 SSD"
