@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 6 Longranger Freebayes Polish 2020_Apr_18",
+  "name": "Scaffold 6 Longranger Freebayes Polish 2020_Apr_21",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -91,7 +91,7 @@
     {
       "id": "stage-FpJqbkj0j3bJzqfb5v4QQJPG",
       "name": "merqury_qv",
-      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "executable": "applet-FpPpZFj085kb9qK23bj146zY",
       "folder": "longranger_freebayes_round_1/QV_merqury",
       "input": {
         "asm1_fasta": {
@@ -233,7 +233,7 @@
     {
       "id": "stage-FpJqbp80j3bJ93v20Bqyj69y",
       "name": "merqury_qv",
-      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "executable": "applet-FpPpZFj085kb9qK23bj146zY",
       "folder": "longranger_freebayes_round_2/QV_merqury",
       "input": {
         "asm1_fasta": {
@@ -251,7 +251,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_x16"
+          "instanceType": "mem1_ssd2_v2_x16"
         }
       }
     }

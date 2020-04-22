@@ -1,6 +1,6 @@
   {
-  "name": "merqury_kmer_QV 2020-Apr-18",
-  "title": "merqury_kmer_QV 2020-Apr-18",
+  "name": "merqury_kmer_QV 2020-Apr-21",
+  "title": "merqury_kmer_QV 2020-Apr-21",
   "stages": [
     {
       "id": "stage-FkvZxJj0j3b4Gx2vBZqg0JPF",
@@ -16,7 +16,7 @@
     },
     {
       "id": "stage-FkvZxYQ0j3b0ybZ3Fbf8Xpg7",
-      "executable": "applet-FpJq6Pj085kxvX376JyX1z5b",
+      "executable": "applet-FpPpZFj085kb9qK23bj146zY",
       "input": {
         "readdb_meryl": {
           "$dnanexus_link": {
