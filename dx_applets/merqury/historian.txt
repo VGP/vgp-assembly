@@ -1,0 +1,117 @@
+    1  mkdir docker
+    2  cd docker/
+    3  cd ..
+    4  ls
+    5  dx download file-FkjJvjj0Bp6yxP7X3jQQfp5f &
+    6  mkdir docker 
+    7  ls
+    8  cd docker
+    9  ls
+   10  touch Dockerfile
+   11  nano Dockerfile
+   12  ls
+   13  rm Dockerfile 
+   14  nano Dockerfile
+   15  docker imagge build -t merqury --tag 2020mar17 .
+   16  sudo docker imagge build -t merqury --tag 2020mar17 .
+   17  sudo docker image build -t merqury --tag 2020mar17 .
+   18  ls
+   19  cd ..
+   20  ls
+   21  sudo docker image ls
+   22  sudo docker image tag 52b3728f93db merqury:2020mar17
+   23  sudo docker image ls
+   24  ls
+
+   dx download file-FkY4jz80y6Px0K6G2KQ6YbP6
+
+   sudo docker run -it -v /home/dnanexus/all_count:/all_count --entrypoint "/bin/bash" merqury:latest
+
+ln -s $MERQURY/merqury.sh
+
+ merqury/merqury.sh all_count/union.meryl all_count/bCicMag1.pri.asm.20200306.fasta foobar
+
+    less logs/foobar.spectra-cn.log
+
+
+
+
+
+sh /merqury/eval/spectra-cn.sh all_count/union_meryl foobar foobar
+
+
+
+/merqury/eval/spectra-cn.sh: 13: /merqury/eval/spectra-cn.sh: [[: not found
+Enabling 36 threads.
+/merqury/eval/spectra-cn.sh: 39: /merqury/eval/spectra-cn.sh: module: not found
+/merqury/eval/spectra-cn.sh: 47: /merqury/eval/spectra-cn.sh: Bad substitution
+t
+-e      <out-prefix>: output prefix. Required.
+-e              When only <asm1.fasta> is given, results will be generated in haploid mode.
+-e              When <asm2.fasta> is given, results will be generated for each asm1 asm2 haploid assembly and asm1+asm2 diploid assembly.
+
+Detected k-mer size 20
+
+Load R
+
+# Get solid k-mers
+
+
+
+
+
+
+
++ echo 'No haplotype dbs provided.'
+No haplotype dbs provided.
++ echo 'Running Merqury in non-trio mode...'
+Running Merqury in non-trio mode...
++ asm1=foobar
++ [[ 3 -eq 3 ]]
++ out=foobar
++ '[' -e foobar ']'
++ mkdir -p logs
++ echo '
+Get spectra-cn plots and QV stats'
+
+Get spectra-cn plots and QV stats
++ name=foobar.spectra-cn
++ log=logs/foobar.spectra-cn.log
++ sh /merqury/eval/spectra-cn.sh all_count/union_meryl foobar foobar
++ '[' -z ']'
++ exit 0
+
+
+
+
+
+bash /merqury/eval/spectra-cn.sh all_count/union_meryl bCicMag1.pri.asm.20200306.fasta foobar
+Usage: spectra-cn.sh <read.meryl> <asm1.fasta> [asm2.fasta] out-prefix
+-e      <read.meryl>    : Generated with meryl count from i.e. illumina wgs reads
+-e      <asm1.fasta>    : haplotype 1 assembly. gzipped or not
+-e      [asm2.fasta]    : haplotype 2 assembly. gzipped or not
+-e      <out-prefix>: output prefix. Required.
+-e              When only <asm1.fasta> is given, results will be generated in haploid mode.
+-e              When <asm2.fasta> is given, results will be generated for each asm1 asm2 haploid assembly and asm1+asm2 diploid assembly.
+
+/merqury/eval/spectra-cn.sh: 13: /merqury/eval/spectra-cn.sh: [[: not found
+Enabling 36 threads.
+Detected k-mer size 20
+
+Load R
+/merqury/eval/spectra-cn.sh: 39: /merqury/eval/spectra-cn.sh: module: not found
+
+# Get solid k-mers
+/merqury/eval/spectra-cn.sh: 47: /merqury/eval/spectra-cn.sh: Bad substitution
+
+
+
+
+bash /merqury/eval/spectra-cn.sh all_count/union_meryl bCicMag1.pri.asm.20200306.fasta foobar
+
+
+ sudo docker run -it -v /home/dnanexus/all_count:/all_count --entrypoint "/bin/bash" merqury:latest
+
+mv all_count/union_meryl all_count/union.meryl
+bash /merqury/eval/qv.sh all_count/union.meryl all_count/bCicMag1.pri.asm.20200306.fasta foobar
+
