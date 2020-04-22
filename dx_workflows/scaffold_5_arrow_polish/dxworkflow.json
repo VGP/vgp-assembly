@@ -1,35 +1,36 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2019-Sep-14",
+  "name": "Scaffold 5 Arrow Polish 2020-Apr-21",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
       "id": "stage-FJqP1X80j3bP5B8GBfzPZXk4",
-      "executable": "applet-FbvgJg00j3b44GP3GKzGGKvj",
       "name": "subreads.bam Minimap2",
+      "executable": "applet-FbvgJg00j3b44GP3GKzGGKvj",
       "folder": "mapped_reads"
     },
     {
       "id": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy",
-      "executable": "app-run_polish/7.0.1.5",
+      "executable": "app-run_polish/pbgcpp1.9.0.1",
       "folder": "polished output",
       "input": {
-        "min_coverage": 5,
+        "input_fasta": {
+          "$dnanexus_link": {
+            "inputField": "genome_fastagz",
+            "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
+          }
+        },
+        "min_coverage": 10,
+        "polish_instance_tpye": "mem3_ssd1_v2_x16",
         "input_bams": {
           "$dnanexus_link": {
             "outputField": "bam_files",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "min_confidence": 40,
+        "min_confidence": 20,
         "input_bais": {
           "$dnanexus_link": {
             "outputField": "bai_files",
-            "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
-          }
-        },
-        "input_fasta": {
-          "$dnanexus_link": {
-            "inputField": "genome_fastagz",
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
@@ -39,10 +40,26 @@
             "stage": "stage-FJqP1X80j3bP5B8GBfzPZXk4"
           }
         },
-        "polish_instance_tpye": "mem3_ssd1_v2_x16",
-        "slicer_instance_type": "mem1_ssd2_v2_x36",
         "polishing_algorithm": "arrow",
+        "slicer_instance_type": "mem1_ssd2_v2_x36",
         "skip_slicer": false
+      }
+    },
+    {
+      "id": "stage-FpJqQpj0j3bJVXffB3x4ZK6G",
+      "executable": "applet-FpPpZFj085kb9qK23bj146zY",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "polished_fasta",
+            "stage": "stage-FJqP1XQ0j3bJYf7KBzKvKgXy"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd2_v2_x16"
+        }
       }
     }
   ]

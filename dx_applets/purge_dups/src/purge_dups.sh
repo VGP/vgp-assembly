@@ -6,6 +6,7 @@ main() {
 
     echo "Value of ref_fastagz: '$ref_fastagz'"
     echo "Value of raw_reads_pacbio_fastagz: '${raw_reads_pacbio_fastagz[@]}'"
+    echo "Value of custom_cut_off: '$custom_cut_off'"
     echo "Value of max_genomesize: '$max_genomesize'"
     echo "Value of core_per_job: '$core_per_job'"
     echo "Value of suffix_primary: '$suffix_primary'"
@@ -49,6 +50,10 @@ main() {
     
     /purge_dups/bin/calcuts ${calcuts_opts} PB.stat > cutoffs 2>calcults.log
     #ls  $PWD/* > ~/pb_input
+    if [ -n "$custom_cut_off" ]; then
+        rm cutoffs
+        dx download "$custom_cut_off" -o cutoffs
+    fi
     /purge_dups/bin/split_fa ref.fa > pri_asm.split
     /minimap2-2.17_x64-linux/minimap2 -xasm5 -DP pri_asm.split pri_asm.split | gzip -c - > pri_asm.split.self.paf.gz
 

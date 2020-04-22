@@ -3,7 +3,7 @@
   "title": "purge_dups",
   "summary": "purge_dups",
   "dxapi": "1.0.0",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "inputSpec": [
     {
       "name": "ref_fastagz",
@@ -22,6 +22,13 @@
         "*.fasta.gz","*.fa.gz", "*.fastq.gz","*.fq.gz"
       ],
       "help": ""
+    },
+    {
+      "name": "custom_cut_off",
+      "class": "file",
+      "optional": true,
+      "label": "custom cut_off file",
+      "help": "(Optional) if provide, the custom cut_off file will be used instead"
     },
     {
       "name": "max_genomesize",
@@ -124,7 +131,7 @@
   },
   "details": {
     "upstreamVersion": "1.0.1",
-    "whatsNew": "* 1.0.1 use 1.0.1 tag version"
+    "whatsNew": "* 1.0.2 allow custom cut_off file\n* 1.0.1 use 1.0.1 tag version"
   }
 
 }

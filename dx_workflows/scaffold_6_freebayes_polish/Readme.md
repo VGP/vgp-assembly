@@ -1,6 +1,12 @@
 # Freebayes polish
 ## Update note
 
+**2020-Apr-21 update**
+- update to merqury Docker 0.0.2 (the Apr 18 was mistakenly use old docker)
+
+**2020-Apr-18 update**
+- add merqury QV 0.0.2
+
 **2019-Oct-07 update**
 - use mem3_ssd1_v2_x48 for 10x align instance
 

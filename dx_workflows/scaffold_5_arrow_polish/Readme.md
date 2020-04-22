@@ -1,6 +1,18 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2020-Apr-21 update**
+- update to merqury Docker 0.0.2 (the Apr 18 was mistakenly use old docker)
+
+**2020-Apr-18 update**
+- add QV measurement 0.0.2
+
+**2020-Apr-09 update**
+- update to app run_polish and app_polish version pbgcpp1.9.0.1 (internal version correspond to pbgcpp1.9.0) which has proper parameter passing to Docker image and have default for minCov10 maxCov120 confidence20
+
+**2020-Apr-01 update**
+- update to pbgcpp1.9.0
+
 **2019-Sep-14 update**
 - change default instance type for polishing
 

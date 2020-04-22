@@ -1,11 +1,11 @@
 {
-  "name": "Scaffold 1 purge_dups 2020-Mar-3",
+  "name": "Scaffold 1 purge_dups 2020-Apr-18",
   "title": "Scaffold 1 purge_Dups",
   "version": "1.7.0",
   "stages": [
     {
       "id": "purge_dups_primary",
-      "executable": "applet-FkPZK480j3b02GGf8V5X5FxK",
+      "executable": "applet-FpJk13j085kyYYJp228f98Z8",
       "folder": "purge_dups/primary_purged"
     },
     {
@@ -24,7 +24,7 @@
     },
     {
       "id": "purge_dups_haplotig",
-      "executable": "applet-FkPZK480j3b02GGf8V5X5FxK",
+      "executable": "applet-FpJk13j085kyYYJp228f98Z8",
       "folder": "purge_dups/haplotig_purged",
       "input": {
         "ref_fastagz": {
