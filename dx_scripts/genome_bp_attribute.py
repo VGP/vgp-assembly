@@ -1,4 +1,3 @@
-from __future__ import print_function
 import dxpy
 import subprocess
 import time
