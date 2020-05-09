@@ -54,6 +54,7 @@ if __name__ == "__main__":
                                                                            repeat=repeat,
                                                                            haploid=haploid))
             else:
+                print(project_name)
                 summary_files=subprocess.check_output('dx find data --name summary.txt --brief', shell=True)
                 summary_files = summary_files.strip().split('\n')
                 summary_files = filter(None, summary_files)
