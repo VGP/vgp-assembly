@@ -13,14 +13,14 @@ guide assumes running on a single machine.
 
 ```
 # generate inputs
-java -jar /path/to/wdltool-0.14.jar \
+java -jar /path/to/womtool-0.50.jar \
     inputs \
     /path/to/vgp-assembly/wdl_pipeline/wdl/workflow.wdl \
     >input.json
 vimacs input.json # edit file
 
 # run workflow
-java -jar /path/to/cromwell-44.jar \
+java -jar /path/to/cromwell-50.jar \
     -i input.json \
      /path/to/vgp-assembly/wdl_pipeline/wdl/workflow.wdl
 ```
