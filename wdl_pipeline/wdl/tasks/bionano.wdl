@@ -83,25 +83,25 @@ task bionano_solve {
         # prepare to run script
         export OMP_NUM_THREADS=~{threadCount}
         export SLURM_CPUS_PER_TASK=~{threadCount}
-        export ARGS="~{sampleName} $ARGS /root/config/bionano/ $CONFIGURATION_XML"
+        export ARGS="~{sampleName} $ARGS /root/config/bionano/$CONFIGURATION_XML"
         export tools="/opt"
+        export VGP_PIPELINE="/root/scripts"
         ln -s ~{assemblyFasta} asm.fasta
 
         # run script bionano script
         bash /root/scripts/bionano/$SUBMISSION_SCRIPT $ARGS
 
         # get assembly data
-        cd ~{sampleName}
-        tar xvf hybridScaffold_archive.tar.gz
-        cat hybridScaffold_archive/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NCBI.fasta hybridScaffold_archive/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta > ../scaffolded_asm.fasta
-        cd ..
+        cat ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NCBI.fasta ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta > ../scaffolded_asm.fasta
 
         # finalize and trim N's
-        bash /root/scripts/bionano/trimNs/trimNs.sh
+        bash /root/scripts/bionano/trimNs/trimNs.sh scaffolded_asm.fasta
+        mv scaffolded_asm.trimmed.fasta ~{sampleName}.bionano.fasta
 
 	>>>
 	output {
 	    File bionanoTarball = sampleName + "/hybridScaffold_archive.tar.gz"
+	    File scaffoldedNTrimmedAsm = sampleName + ".bionano.fasta"
 	}
     runtime {
         cpu: threadCount

@@ -5,7 +5,8 @@ ENV SOLVE_CODE_FILENAME=Solve3.3_10252018.tar.gz
 
 RUN yum update -y && \
     yum install -y perl perl-Data-Dumper epel-release R python3 && \
-    echo -e "#!/bin/bash\necho \"All prereqs are installed in PATH. Skipping 'module' call: '\$0 \$@'\"\n" >>/usr/bin/module && \
+    pip3 install biopython && \
+    echo -e "#!/bin/bash\necho \"Prereqs are installed in docker image PATH. Skipping 'module' call: '\$0 \$@'\"\n" >>/usr/bin/module && \
     chmod +x /usr/bin/module
 
 WORKDIR /opt/bionano/
