@@ -4,6 +4,7 @@ import "tasks/extract_reads.wdl" as extractReads_t
 import "tasks/shasta.wdl" as shasta_t
 import "tasks/purge_dups.wdl" as purgeDups_t
 import "tasks/scaff10x.wdl" as scaff10x_t
+import "tasks/bionano.wdl" as bionano_t
 import "tasks/salsa.wdl" as salsa_t
 import "tasks/busco.wdl" as busco_t
 import "tasks/stats.wdl" as stats_t
@@ -13,6 +14,7 @@ workflow ScaffoldAssembly {
         File ASSEMBLY_FASTA
         Array[File] READ_FILES
         Array[File] READ_FILES_10X
+        Array[File] CMAPS_FILES_ARIMA
         Array[File] READ_FILES_HIC
         String SAMPLE_NAME
         Float EXPECTED_GENOME_SIZE
@@ -48,9 +50,18 @@ workflow ScaffoldAssembly {
             memoryGigabyte=MEMORY_GB,
             dockerImage=DOCKER_REPOSITORY+"/vgp_scaff10x:"+DOCKER_TAG
     }
+    call bionano_t.bionano as bionano {
+        input:
+            assemblyFasta=scaff10x.scaffoldedFasta,
+            bionanoFiles=CMAPS_FILES_ARIMA,
+            sampleName=SAMPLE_NAME,
+            threadCount=THREAD_COUNT,
+            memoryGigabyte=MEMORY_GB,
+            dockerImage="gcr.io/nanopore_dev/vgp_bionano:"+DOCKER_TAG
+    }
     call salsa_t.salsa as salsa {
         input:
-            refFasta=scaff10x.scaffoldedFasta,
+            refFasta=bionano.scaffoldedNTrimmedAsm,
             readFilesHiC=READ_FILES_HIC,
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
@@ -84,6 +95,12 @@ workflow ScaffoldAssembly {
 	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
             dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
 	}
+	call stats_t.stats as bionano_stats {
+	    input:
+	        assemblyFasta=bionano.scaffoldedNTrimmedAsm,
+	        expectedGenomeSize=EXPECTED_GENOME_SIZE,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_stats:"+DOCKER_TAG
+	}
 	call stats_t.stats as salsa_stats {
 	    input:
 	        assemblyFasta=salsa.scaffoldedFasta,
@@ -109,6 +126,12 @@ workflow ScaffoldAssembly {
             threadCount=THREAD_COUNT,
             dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
 	}
+	call busco_t.busco as bionano_busco {
+	    input:
+	        assemblyFasta=bionano.scaffoldedNTrimmedAsm,
+            threadCount=THREAD_COUNT,
+            dockerImage=DOCKER_REPOSITORY+"/vgp_busco:"+DOCKER_TAG
+	}
 	call busco_t.busco as salsa_busco {
 	    input:
 	        assemblyFasta=salsa.scaffoldedFasta,
@@ -126,12 +149,14 @@ workflow ScaffoldAssembly {
 		File assemblyBuscoResult = assembly_busco.outputTarball
 		File purgeDupsPrimaryBuscoResult = purgeDupsPrimary_busco.outputTarball
 		File scaff10xBuscoResult = scaff10x_busco.outputTarball
+		File bionanoBuscoResult = bionano_busco.outputTarball
 		File salsaBuscoResult = salsa_busco.outputTarball
 
 		File assemblyStatsResult = assembly_stats.statsTarball
 		File purgedPrimaryStatsResult = purgeDupsPri_stats.statsTarball
 		File purgedAlternateStatsResult = purgeDupsAlt_stats.statsTarball
 		File scaff10xStatsResult = scaff10x_stats.statsTarball
+		File bionanoStatsResult = bionano_stats.statsTarball
 		File salsaStatsResult = salsa_stats.statsTarball
 	}
 }

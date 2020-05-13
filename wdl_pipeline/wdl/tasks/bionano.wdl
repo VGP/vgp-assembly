@@ -92,7 +92,7 @@ task bionano_solve {
         bash /root/scripts/bionano/$SUBMISSION_SCRIPT $ARGS
 
         # get assembly data
-        cat ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NCBI.fasta ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta > ../scaffolded_asm.fasta
+        cat ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NCBI.fasta ~{sampleName}/hybrid_scaffolds/*_HYBRID_SCAFFOLD_NOT_SCAFFOLDED.fasta > scaffolded_asm.fasta
 
         # finalize and trim N's
         bash /root/scripts/bionano/trimNs/trimNs.sh scaffolded_asm.fasta
