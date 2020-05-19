@@ -1,15 +1,14 @@
 # WDL VGP Assembly
 
-This directory contains a WDL implementation of the scaffolding portion of VGP Assembly.
-Also included are WDL implementations for some of the QC steps, as well as
-two other tools: Shasta and MarginPolish.  Falcon assembly and Arrow polishing
-have not been implemented in WDL.
+This directory contains a WDL implementation of the scaffolding portion 
+of VGP Assembly, as well as some of the QC steps.  Falcon assembly and 
+Arrow polishing have not been implemented in WDL.
 
 ## Quick Start
 
 To run WDL workflows, we recommend using `womtool`
 to generate JSON describing workflow inputs, and 
-`Cromwell` for workflow exectution.  They can be downloaded
+`cromwell` for workflow exectution.  They can be downloaded
 [here](https://github.com/broadinstitute/cromwell/releases).
 Both require Java to run.  This Quick Start
 guide assumes running on a single machine.
@@ -18,14 +17,14 @@ guide assumes running on a single machine.
 # generate inputs
 java -jar /path/to/womtool-0.50.jar \
     inputs \
-    /path/to/vgp-assembly/wdl_pipeline/wdl/workflow.wdl \
+    /path/to/vgp-assembly/wdl_pipeline/wdl/scaffold_assembly.wdl \
     >input.json
 vimacs input.json # edit file
 
 # run workflow
 java -jar /path/to/cromwell-50.jar \
     -i input.json \
-     /path/to/vgp-assembly/wdl_pipeline/wdl/workflow.wdl
+     /path/to/vgp-assembly/wdl_pipeline/wdl/scaffold_assembly.wdl
 ```
 
 ### Configuration
@@ -33,6 +32,27 @@ java -jar /path/to/cromwell-50.jar \
 To configure the workflow, edit the `input.json` file with absolute paths
 to your input data files, and specify the thread count you wish to use
 on the server.  For optional fields, the default values should be suitable.
+
+The current release version is `0.1.0`.  It is recommended that you
+use this instead of the default value "latest" for the `DOCKER_TAG`
+parameter.
+
+### Workflows
+
+The top-level workflows are as follows:
+
+* *scaffold_assembly*:  the simplest scaffolding workflow
+and is the recommended point of entry.
+* *scaffold_assembly_qc*:  the same scaffolding process, but with BUSCO 
+and length stats performed after each step.
+* *polish_assembly*: runs [MarginPolish](https://github.com/UCSC-nanopore-cgl/MarginPolish)
+on an assembly.  This is not part of the VGP assembly pipeline.
+* *shasta_assembly_with_scaffold*: runs [Shasta](https://github.com/chanzuckerberg/shasta)
+for assembly, then runs the standard scaffolding workflow.  This is
+not part of the VGP assembly pipeline.
+
+Each task is configured with its own workflow.  They can be
+configured and run in the same way the top-level workflows are.
 
 ## Workflow Design
 
@@ -52,11 +72,6 @@ requirements, and the steps required to organize files and invoke the
 operative scripts.  Each task has a task-specific workflow for testing. 
 WDL workflows are the intended entrypoint for users; they import tasks 
 individually, enabling modularity and task reuse.
-
-### Conventions
-
-By convention, task-level variables are specified in camelCase and 
-workflow variables are in CAPS_CASE.
 
 
 ## Repository Structure
@@ -122,7 +137,7 @@ git hash, but could be modified to produce a tag with only the version.
 ```
 
 One caveat is that the Bionano Docker image requires a tarball of code
-which must already be downloaded on the computer building the images. 
+which must already be downloaded on the computer before building the images. 
 This must be a specific version of the code, which may be difficult for
 some users to acquire for manual compilation.  As such, the bionano 
 image image is excluded from this build script, and must be built manually
@@ -137,17 +152,4 @@ version, may not have the most recent security patches and may be
 configured in a way unsupported by Bionano. The VGP fully assumes the 
 maintenance and support of this VGP pipeline. Please reach out to 
 tpesout@ucsc.edu with issues. For the latest supported Bionano software, 
-visit Bionano Support.
-
-### Workflows
-
-When running `wdltool` to generate inputs, only parameters without 
-default values are included.  However, there are sometimes task and 
-workflow variables that can be used.  Notably, the DOCKER_REPOSITORY
-parameter can be used if Docker images have been pushed to a different
-repository, and DOCKER_TAG can be specified to use a specific version
-(as opposed to "latest", which may be be from code under development).
-
-Note that when running `cromwell` on a single machine, resource 
-specifications in the `runtime` section of a task are ignored.  They
-are used when configuring tasks to use a certain number of threads.
+visit [Bionano Support](https://bionanogenomics.com/support/) .

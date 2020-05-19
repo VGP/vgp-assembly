@@ -1,8 +1,8 @@
 version 1.0
 
-import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/extract_reads.wdl" as extractReads
-import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/minimap2.wdl" as minimap2
-import "https://raw.githubusercontent.com/tpesout/vgp-assembly/ded32297bc31b7f676ff0c5d510c3ea8606594b0/wdl_pipeline/wdl/tasks/marginPolish.wdl" as marginPolish
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/b18a054e614d8bbfdf4d34936fc36b5174356a47/wdl_pipeline/wdl/tasks/extract_reads.wdl" as extractReads
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/b18a054e614d8bbfdf4d34936fc36b5174356a47/wdl_pipeline/wdl/tasks/minimap2.wdl" as minimap2
+import "https://raw.githubusercontent.com/tpesout/vgp-assembly/b18a054e614d8bbfdf4d34936fc36b5174356a47/wdl_pipeline/wdl/tasks/marginPolish.wdl" as marginPolish
 
 workflow PolishAssembly {
     input {
