@@ -1,15 +1,16 @@
 version 1.0
 
-workflow runBionanoSolve {
-	call bionano_solve
+workflow runBionano {
+	call bionano
 }
 
-task bionano_solve {
+task bionano {
     input {
         Array[File] bionanoFiles
         File assemblyFasta
         String sampleName
         Int threadCount
+        Int? memoryGigabyte=128
         String dockerImage
     }
 
@@ -105,7 +106,7 @@ task bionano_solve {
 	}
     runtime {
         cpu: threadCount
-        memory: "980 GB"
+        memory: memoryGigabyte + " GB"
         docker: dockerImage
     }
 }

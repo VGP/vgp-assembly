@@ -7,7 +7,7 @@ workflow runStats {
 task stats {
     input {
         File assemblyFasta
-        Float expectedGenomeSize
+        String expectedGenomeSize
         String dockerImage
     }
 

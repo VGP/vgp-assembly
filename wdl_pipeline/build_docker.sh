@@ -23,7 +23,7 @@ cd ..
 
 # build scripts
 cd docker_pipeline
-for DIR in `ls` ; do
+for DIR in `ls | grep --invert-match bionano` ; do
     cd $DIR
     make repository=$REPOSITORY version=$VERSION
     cd ..
@@ -33,7 +33,7 @@ done
 cd ../docker_base
 make push repository=$REPOSITORY version=$VERSION
 cd ../docker_pipeline
-for DIR in `ls` ; do
+for DIR in `ls | grep --invert-match bionano` ; do
     cd $DIR
     make push repository=$REPOSITORY version=$VERSION
     cd ..

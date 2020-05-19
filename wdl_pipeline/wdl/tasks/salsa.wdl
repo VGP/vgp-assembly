@@ -32,7 +32,7 @@ task salsa {
 
         # input reference
         REF=`basename ~{refFasta}`
-        ln -s ~{refFasta}
+        cat ~{refFasta} | sed 's/:/_/g' >$REF
 
         # prepare input read files
         touch R1.fastq.gz

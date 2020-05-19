@@ -49,9 +49,9 @@ task scaff10x {
                 echo "Cannot determine R1 or R2 from filename (found both): $RF"
                 exit 1
             elif [[ $RF == *R1* ]] ; then
-                echo "q1=$(pwd)/$RF" >>input.dat
+                echo "q1=$(pwd)/input/$RF" >>input.dat
             elif [[ $RF == *R2* ]] ; then
-                echo "q2=$(pwd)/$RF" >>input.dat
+                echo "q2=$(pwd)/input/$RF" >>input.dat
             else
                 echo "Cannot determine R1 or R2 from filename (found neither): $RF"
                 exit 1
