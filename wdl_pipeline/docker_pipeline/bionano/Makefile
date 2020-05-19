@@ -1,5 +1,5 @@
 # Definitions
-repository = gcr.io/nanopore_dev
+repository = tpesout
 identifier = vgp_bionano
 version = 0.0.0
 git_commit ?= $(shell git log --pretty=oneline -n 1 | cut -f1 -d " ")

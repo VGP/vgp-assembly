@@ -125,7 +125,10 @@ One caveat is that the Bionano Docker image requires a tarball of code
 which must already be downloaded on the computer building the images. 
 This must be a specific version of the code, which may be difficult for
 some users to acquire for manual compilation.  As such, the bionano 
-image must be built manually.
+image image is excluded from this build script, and must be built manually
+by entering the image's directory and manually running `make`.
+
+#### Bionano Genomics Statement
 
 Bionano Genomics has agreed to provide the licensed Bionano Solve software 
 to enable the VGP consortium to package the VGP pipeline in a container. 

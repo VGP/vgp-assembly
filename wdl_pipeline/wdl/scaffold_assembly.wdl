@@ -56,7 +56,7 @@ workflow ScaffoldAssembly {
             sampleName=SAMPLE_NAME,
             threadCount=THREAD_COUNT,
             memoryGigabyte=MEMORY_GB,
-            dockerImage="gcr.io/nanopore_dev/vgp_bionano:"+DOCKER_TAG
+            dockerImage=DOCKER_REPOSITORY+"/vgp_bionano:"+DOCKER_TAG
     }
     call salsa_t.salsa as salsa {
         input:

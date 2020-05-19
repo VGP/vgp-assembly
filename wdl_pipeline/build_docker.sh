@@ -6,7 +6,7 @@ if [[ ! -z "$1" ]] ; then
     export REPOSITORY="$1"
 fi
 
-export VERSION="0.0.1"
+export VERSION="0.0.2"
 if [[ ! -z "$2" ]] ; then
     export VERSION="$2"
 fi

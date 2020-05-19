@@ -1,7 +1,8 @@
 FROM tpesout/vgp_base:latest
 MAINTAINER Trevor Pesout, tpesout@ucsc.edu
 
-RUN apt-get install -y ncbi-blast+ python3 python3-pip && \
+RUN apt-get update -y && \
+    apt-get install -y ncbi-blast+ python3 python3-pip && \
     pip3 install pybind11
 
 WORKDIR /opt/shasta/
