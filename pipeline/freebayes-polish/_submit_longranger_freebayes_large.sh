@@ -21,7 +21,7 @@ name=$sample.longrgr
 script=$VGP_PIPELINE/longranger/longranger_4G.sh
 args=$sample
 walltime=4-0
-log=$PWD/logs/$name.%A_%a.log
+log=$PWD/logs/$name.%A.log
 
 # launch longranger align
 if ! [ -e $sample/outs/possorted_bam.bam 2> /dev/null ]; then
@@ -62,7 +62,7 @@ name=$1.consensus
 script=$VGP_PIPELINE/freebayes-polish/consensus.sh
 args=$sample
 walltime=2-0
-log=logs/$name.%A_%a.log
+log=logs/$name.%A.log
 
 echo "\
 sbatch --partition=norm -D $PWD $wait_for --cpus-per-task=$cpus --job-name=$name --mem=$mem --time=$walltime --error=$log --output=$log $script $args"
@@ -75,7 +75,7 @@ name=$sample.genomecov
 script=$VGP_PIPELINE/qv/genomecov.sh
 args=$sample
 walltime=3-0
-log=logs/$name.%A_%a.log
+log=logs/$name.%A.log
 
 if ! [ -z $3 ]; then
         wait_for="--dependency=afterok:$3"
