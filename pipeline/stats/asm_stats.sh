@@ -2,11 +2,14 @@
 
 if [ -z $1 ]; then
     echo "Usage: ./asm_stats.sh <asm.fasta> <exp_genome_size (bp)> [p/s/c]"
-    echo "[p]: set for getting primary / alt haplotig stats, assuming the primary begins with scaffold_ in its name"
-    echo "[s]: set for getting scaffolds (direct stats) only."
+    echo "[ ]: By default, stats for scaffold / contig / gaps will be generated."
+    echo "[p]: set for getting primary / alt haplotig stats, in addition to default, assuming the primary begins with scaffold_ in its name"
+    echo "[s]: set for getting scaffold stats (direct stats) only."
     echo "[c]: set for getting contig (direct stats) as well."
     exit -1
 fi
+
+#module load samtools
 
 fasta=$1
 gsize=$2
@@ -14,47 +17,61 @@ opt=$3
 
 script=$VGP_PIPELINE/stats/
 
-asm=${fasta/.fasta/}
+#asm=${fasta/.fasta/}
+asm_name=${fasta/.fasta/}
+asm_name=`basename $asm_name`
+asm=$asm_name
 
-if ! [ -e $fasta.len ]; then
-	java -jar -Xmx2g $script/fastaContigSize.jar $fasta
+if ! [ -e $fasta.fai ]; then
+	samtools faidx $fasta
 fi
-echo "Scaffolds"
-java -jar -Xmx2g $script/lenCalcNGStats.jar $fasta.len $gsize > $asm.stats
-cat $asm.stats
+awk '{print $1"\t"$2}' $fasta.fai > $fasta.len
+
+echo
+echo "=== Scaffolds ==="
+java -jar -Xmx2g $script/lenCalcNGStats.jar $fasta.len $gsize 1 >> $asm.stats
+#cat $asm.stats
+echo "" >> $asm.stats
 
 
 if [[ "$opt" == "s" ]]; then
         exit 0
 fi
 
-N_BASES=`awk '{sum+=$2; sumN+=$3} END {print (sum-sumN)}' $fasta.len`
-echo "N bases: $N_BASES"
-echo
-
 if [ ! -e $asm.contigs.len ]; then
-	java -jar -Xmx2g $script/fastaGetGaps.jar $fasta $asm.gaps
-	awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' $asm.gaps > $asm.gaps.bed
-	awk '{print $1"\t0\t"$(NF-1)}' $fasta.len > $fasta.len.bed
-
-	module load bedtools
-	bedtools subtract -a $fasta.len.bed -b $asm.gaps.bed | awk '{print $1"\t"$NF-$(NF-1)}' > $asm.contigs.len
+	if [ ! -e $asm_name.gaps ]; then
+		java -jar -Xmx4g $script/fastaGetGaps.jar $fasta $asm_name.gaps
+	fi
+	awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' $asm_name.gaps > $asm_name.gaps.bed
+	awk '{print $1"\t0\t"$2}' $fasta.fai > $fasta.len.bed
+	num_gaps=`wc -l $asm_name.gaps.bed | awk '{print $1}'`
+	if [[ $num_gaps -gt 0 ]]; then
+		echo "$num_gaps gaps found. Compute contig stats..."
+		module load bedtools
+		bedtools subtract -a $fasta.len.bed -b $asm_name.gaps.bed | awk '{print $1"\t"$NF-$(NF-1)}' > $asm_name.contigs.len
+	fi
+	rm $asm_name.gaps.bed
 fi
 
-echo "Contigs"
-#if [ ! -e $asm.contigs.stats ]; then
-	java -jar -Xmx2g $script/lenCalcNGStats.jar $asm.contigs.len $gsize 1 > $asm.contigs.stats
-#fi
-cat $asm.contigs.stats
+if [[ $num_gaps -gt 0 ]]; then
+	echo
+	echo "=== Contigs ==="
+	#if [ ! -e $asm.contigs.stats ]; then
+		java -jar -Xmx2g $script/lenCalcNGStats.jar $asm_name.contigs.len $gsize 1 > $asm.contigs.stats
+	#fi
+	#cat $asm.contigs.stats
+	echo "" >> $asm.contigs.stats
 
-echo "Gaps"
-#if [ ! -e $asm.gaps.stats ]; then
-	java -jar -Xmx2g $script/lenCalcNGStats.jar $asm.gaps $gsize 3 > $asm.gaps.stats
-#fi
-cat $asm.gaps.stats
-
-#rm $fasta.len.bed
-#rm $asm.gaps.bed
+	echo
+	echo "=== Gaps ==="
+	#if [ ! -e $asm.gaps.stats ]; then
+		java -jar -Xmx2g $script/lenCalcNGStats.jar $asm_name.gaps $gsize 3 > $asm.gaps.stats
+	#fi
+	#cat $asm.gaps.stats
+	echo "" >> $asm.gaps.stats
+	rm $asm_name.contigs.len
+fi
+rm $asm_name.gaps
 
 if [[ "$opt" != "p" ]]; then
 	exit 0
