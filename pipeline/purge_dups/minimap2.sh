@@ -12,6 +12,11 @@ module load samtools
 ref=$1
 ref=`echo $ref | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
 
+preset="$3"
+if [ -z $3 ]; then
+    preset="map-pb"
+fi
+
 cpus=$((SLURM_CPUS_PER_TASK-1))
 
 # Unless specified, use slurm array task id for input line num.
@@ -32,7 +37,7 @@ else
 	echo "Start aligning $qry to $ref.idx"
 
 	echo "\
-	minimap2 -x map-pb -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz"
-	minimap2 -x map-pb -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz
+	minimap2 -x $preset -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz"
+	minimap2 -x $preset -t $cpus $ref.idx $qry | gzip -c - > $out.read.paf.gz
 fi
 

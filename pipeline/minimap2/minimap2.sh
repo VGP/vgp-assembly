@@ -12,6 +12,16 @@ module load samtools
 ref=$1
 ref=`echo $ref | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
 
+preset="$3"
+if [ -z $3 ]; then
+    preset="map-pb"
+fi
+
+samtools_filter="$4"
+if [ -z $4 ]; then
+    samtools_filter=""
+fi
+
 cpus=$SLURM_CPUS_PER_TASK
 
 # Unless specified, use slurm array task id for input line num.
@@ -24,7 +34,8 @@ fi
 qry=`sed -n ${i}p input.fofn`
 
 out=`basename $qry`
-out=`echo $out | sed 's/.fasta.$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
+out=`echo $out | sed 's/.fasta.$//g' | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g'`
+out=`echo $out | sed 's/.fastq.$//g' | sed 's/.fastq$//g' | sed 's/.fq$//g' | sed 's/.fastq.gz$//g' | sed 's/.fq.gz$//g'`
 
 
 if [ -e $out.sort.bam ]; then
@@ -38,8 +49,8 @@ else
 	echo "Start aligning $qry to $ref.idx"
 
 	echo "\
-	minimap2 -x map-pb -a -t $cpus $ref.idx $qry | samtools view -hb - > $out.bam"
-	minimap2 -x map-pb -a -t $cpus $ref.idx $qry | samtools view -hb - > $out.bam
+	minimap2 -x $preset -a -t $cpus $ref.idx $qry | samtools view -hb $samtools_filter - > $out.bam"
+	minimap2 -x $preset -a -t $cpus $ref.idx $qry | samtools view -hb $samtools_filter - > $out.bam
 fi
 
 echo "Sort $out.bam"

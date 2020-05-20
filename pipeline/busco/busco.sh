@@ -6,7 +6,7 @@ if [ -z $1 ]; then
 fi
 
 asm=$1
-out=${asm/.fasta/}
+out=`echo $asm | sed 's/.fasta//' | sed 's/.fa//'`
 cpus=$SLURM_CPUS_PER_TASK
 
 #source $tools/conda/etc/profile.d/conda.sh

@@ -19,6 +19,15 @@
 fastq_map=$1	# fastq path file: /path/to/R1.fastq /path/to/R2.fastq
 PREFIX=$2	# prefix for out files
 REF=$3	# ref fasta file with indexes
+SCRATCH=$4 # scratch directory, default to /lscratch
+if [ -z $4 ]; then
+    SCRATCH="/lscratch"
+fi
+BWA_OPTS=$5
+if [ -z "$5" ]; then
+    BWA_OPTS="-B8"
+fi
+
 THREADS=$SLURM_CPUS_PER_TASK	# num. threads to run
 
 FASTQ1=`awk '{print $1}' $fastq_map`
@@ -33,9 +42,9 @@ SAMTOOLS='samtools'
 FILTER="$VGP_PIPELINE/salsa/filter_five_end.pl"
 COMBINER="$VGP_PIPELINE/salsa/two_read_bam_combiner.pl"
 
-RAW_DIR="/lscratch/$SLURM_JOBID/raw"
-FILT_DIR="/lscratch/$SLURM_JOBID/filtered"
-COMB_DIR="/lscratch/$SLURM_JOBID/combined"
+RAW_DIR="$SCRATCH/$SLURM_JOBID/raw"
+FILT_DIR="$SCRATCH/$SLURM_JOBID/filtered"
+COMB_DIR="$SCRATCH/$SLURM_JOBID/combined"
 
 mkdir -p $RAW_DIR
 mkdir -p $FILT_DIR
@@ -43,8 +52,8 @@ mkdir -p $COMB_DIR
 
 echo "### Step 1.A: FASTQ to BAM (1st)"
 echo "\
-$BWA mem -t$THREADS -B8 $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam"
-$BWA mem -t$THREADS -B8 $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam"
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ1 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_1.bam
 echo ""
 
 echo "### Step 2.A: Filter 5' end (1st)"
@@ -61,8 +70,8 @@ echo
 
 echo "### Step 1.B: FASTQ to BAM (2nd)"
 echo "\
-$BWA mem -t$THREADS -B8 $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam"
-$BWA mem -t$THREADS -B8 $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam"
+$BWA mem -t$THREADS $BWA_OPTS $REF $FASTQ2 | $SAMTOOLS view -Sb - > $RAW_DIR/${PREFIX}_2.bam
 echo ""
 
 echo "### Step 2.B: Filter 5' end (2nd)"
