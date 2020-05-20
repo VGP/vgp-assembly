@@ -21,8 +21,10 @@ public class FindTelomereWindows {
    }
 
    public static void printUsage() {
+      System.err.println("Usage: java -jar FindTelomereWindows.jar <in> <identity> <threshold>");
       System.err.println("This program sizes a fasta or fastq file. Multiple fasta files can be supplied by using a comma-separated list.");
       System.err.println("Example usage: getHist fasta1.fasta,fasta2.fasta");
+      System.err.println("");
    }
    public static void processScaffold(String name, BitSet b) {
       if (b == null) { return; }
@@ -37,6 +39,10 @@ public class FindTelomereWindows {
    public static void main(String[] args) throws Exception {     
       if (args.length < 1) { printUsage(); System.exit(1);}
 
+      if (args.length == 3) {
+          THRESHOLD = Double.parseDouble(args[2]);
+      }
+
       // initialize sizes
       BitSet scaffold = null;
       String name = null;
@@ -50,11 +56,11 @@ public class FindTelomereWindows {
           String[] split = line.trim().split("\\s+");
           if (scaffold == null || !split[0].equalsIgnoreCase(name)) {
              processScaffold(name, scaffold);
-             scaffold = new BitSet(Integer.parseInt(split[1]));
+             scaffold = new BitSet(Integer.parseInt(split[split.length-5]));
              name = split[0];
           }
           //ignoring strandedness for now
-          scaffold.set(Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+          scaffold.set(Integer.parseInt(split[split.length-3]), Integer.parseInt(split[split.length-2]));
       }
       processScaffold(name, scaffold);
       bf.close();
