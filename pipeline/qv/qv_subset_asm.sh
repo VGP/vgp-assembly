@@ -36,9 +36,10 @@ awk '{print $1"\t0\t"$2}' $fai > $hap.bed
 
 
 echo "Collect $genome.$hap.numvar"
-bcftools view -H -R $hap.bed $genome.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $genome.$hap.numvar
-echo "Num. bases affected: `cat $genome.$hap.numvar`"
+bcftools view -H -R $hap.bed $genome.changes.vcf.gz | awk -F "\t" '{print $4"\t"$5}' | awk '{lenA=length($1); lenB=length($2); if (lenA < lenB ) {sum+=lenB-lenA} else if ( lenA > lenB ) { sum+=lenA-lenB } else {sum+=lenA}} END {print sum}' > $hap.numvar
+echo "Num. bases affected: `cat $hap.numvar`"
 echo
+
 
 echo "Collect $hap contigs/scaffold names"
 cut -f1 $hap.bed > $hap.list
@@ -53,15 +54,16 @@ else
 fi
 
 echo "\
-java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h'{if (\$2>3 && \$2<h) {numbp+=\$3}} END {print numbp}' - > $genome.$hap.numbp"
-java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h '{if ($2>3 && $2<h) {numbp+=$3}} END {print numbp}' - > $genome.$hap.numbp
+java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h'{if (\$2>3 && \$2<h) {numbp+=\$3}} END {print numbp}' - > $hap.numbp"
+java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h '{if ($2>3 && $2<h) {numbp+=$3}} END {print numbp}' - > $hap.numbp
 
-NUM_BP=`cat $genome.$hap.numbp`
+
+NUM_BP=`cat $hap.numbp`
 echo "Total bases > 3x: in $hap: $NUM_BP"
-NUM_VAR=`cat $genome.$hap.numvar`
+NUM_VAR=`cat $hap.numvar`
 echo "Total num. bases subject to change in $hap: $NUM_VAR"
 QV=`echo "$NUM_VAR $NUM_BP" | awk '{print (-10*log($1/$2)/log(10))}'`
-echo $QV > $genome.$hap.qv
+echo $QV > $hap.qv
 echo "QV of this genome $genome $hap: $QV"
 echo
 
