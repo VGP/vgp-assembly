@@ -31,7 +31,7 @@ done
 
 # push all
 cd ../docker_base
-make push repository=$REPOSITORY version=$VERSION
+make push repository=$REPOSITORY $TAG_KEY=$VERSION
 cd ../docker_pipeline
 for DIR in `ls | grep --invert-match bionano` ; do
     cd $DIR
