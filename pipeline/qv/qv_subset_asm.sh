@@ -54,8 +54,8 @@ else
 fi
 
 echo "\
-java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h'{if (\$2>3 && \$2<h) {numbp+=\$3}} END {print numbp}' - > $hap.numbp"
-java -jar -Xmx1g $VGP_PIPELINE/qv/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h '{if ($2>3 && $2<h) {numbp+=$3}} END {print numbp}' - > $hap.numbp
+java -jar -Xmx1g $VGP_PIPELINE/utils/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h'{if (\$2>3 && \$2<h) {numbp+=\$3}} END {print numbp}' - > $hap.numbp"
+java -jar -Xmx1g $VGP_PIPELINE/utils/txtContains.jar aligned.genomecov $hap.list 1 | awk -v h=$h '{if ($2>3 && $2<h) {numbp+=$3}} END {print numbp}' - > $hap.numbp
 
 
 NUM_BP=`cat $hap.numbp`
