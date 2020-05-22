@@ -42,7 +42,7 @@ if [ ! -e $asm.contigs.len ]; then
 	if [ ! -e $asm_name.gaps ]; then
 		java -jar -Xmx4g $script/fastaGetGaps.jar $fasta $asm_name.gaps
 	fi
-	awk -F "\t" '$4>3 {print $1"\t"$2"\t"$3}' $asm_name.gaps > $asm_name.gaps.bed
+	awk -F "\t" '{print $1"\t"$2"\t"$3}' $asm_name.gaps > $asm_name.gaps.bed
 	awk '{print $1"\t0\t"$2}' $fasta.fai > $fasta.len.bed
 	num_gaps=`wc -l $asm_name.gaps.bed | awk '{print $1}'`
 	if [[ $num_gaps -gt 0 ]]; then
