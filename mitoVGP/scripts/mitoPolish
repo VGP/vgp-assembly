@@ -55,35 +55,35 @@ while getopts ":a:s:i:c:n:t:v:b:" opt; do
 
 	case $opt in
 		a)
-			PLATFORM=$OPTARG
+			PLATFORM="$OPTARG"
 			echo "Long read platform: -a $OPTARG"
 			;;
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		n)
-            CONTIG=$OPTARG
+            CONTIG="$OPTARG"
 			echo "Contig number: -n $OPTARG"
 			;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
 			echo "Number of threads: -t $OPTARG" >&2
             ;;
 		v)
-			VAL=$OPTARG
+			VAL="$OPTARG"
 			echo "SAM validation stringency: -v $OPTARG" >&2
             ;;
 		b)
-			CAL=$OPTARG
+			CAL="$OPTARG"
 			echo "Pacbio variant caller: -b $OPTARG" >&2
             ;;
 		\?)

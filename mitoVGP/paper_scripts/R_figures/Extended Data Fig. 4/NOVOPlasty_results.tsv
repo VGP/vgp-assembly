@@ -1,0 +1,126 @@
+ID	status	length	assembled_reads	notes
+aBufBuf1	Out of memory!
+aDenEbr1	contigs	16250	80528
+aGeoSer1	Cannot allocate memory
+aMicUni1	Cannot allocate memory
+aRanTem1	Out of memory!
+aRhiBiv1	Cannot allocate memory
+bAcaChl1	circular	16941	15864
+bAlcTor1	contigs	16679	1072744
+bAquChr1	Out of memory!
+bAytFul2	Out of memory!
+bBalReg1	Out of memory!
+bBucAby1	contigs	15479	10170
+bCalAnn1	contigs	2168	139340
+bCarCri1	Out of memory!
+bCatUst1	Out of memory!
+bChiLan1	contigs	4996	733350
+bCicMag1	Out of memory!
+bCorMon1	Out of memory!
+bCucCan1	Out of memory!
+bCygOlo1	circular	16732	809740
+bDryPub1	Out of memory!
+bEriRub2	contigs	226	30	
+bFalNau1	Out of memory!
+bFalRus1	Killed
+bGalGal1	contigs	4328	3320
+bGeoTri1	circular	16813	1079786
+bHemCom1	contigs	22001	1958580
+bHirRus1	contigs	16195	1641700
+bMelUnd1	contigs	11152	1763682
+bMerNub1	Killed
+bNycGra1	Killed
+bPhoRub1	contigs	11721	7024
+bPluApr1	contigs	15840	4354306
+bPogPus1	contigs	11334	6988
+bPteGut1	Killed
+bSteHir1	Killed
+bStrHab1	Killed
+bStrTur1	contigs	3062	22732
+bSylAtr1	Killed
+bSylBor1	contigs	13322	183980
+bTaeGut1	contigs	19362	1935204
+bTaeGut2	circular	16854	4155698
+bTauEry1	contigs	16825	10724
+eAstRub1	circular	16418	140746
+fAciRut3	Cannot allocate memory
+fAnaAna1	circular	16511	14980
+fAnaTes1	contigs	17111	52866
+fAngAng1	contigs	16689	346666
+fAntMac1	contigs	14861	231326
+fAplTae1	circular	16475	286562
+fArcCen1	contigs	9713	13778
+fAstCal1	circular	16582	539710
+fChaCha1	contigs	1610	142
+fCheRos1	circular	16523	809110
+fCotGob3	contigs	4850	3446
+fCycLum1	circular	17293	64972	not labelled as circular
+fDenClu1	circular	16881
+fDreSAT1	Cannot allocate memory
+fEcheNa1	circular	16610	160318
+fEleEle1	contigs	16395	368514
+fErpCal1	Cannot allocate memory
+fEsoLuc1	circular	22003	121522	not labelled as circular
+fGadMor1	circular	16655	50202
+fGouWil2	contigs	9335	645888	
+fHipHip1	circular	17180	180084
+fMalNig1	Cannot allocate memory
+fMasArm1	circular	16490	285938
+fMegCyp1	contigs	17308	200108
+fMelBoe1	circular	22081	240296	not labelled as circular
+fMyrMur1	Killed
+fNotCel1	circular	16525	203642
+fParRan2	circular	17703	44636	not labelled as circular
+fPerMag1	circular	16496	48510
+fPygNat1	circular	16708	94090
+fSalaFa1	circular	16496	305260
+fSalTru1	Cannot allocate memory
+fScaArg1	circular	22031	111800	not labelled as circular
+fSclFor1	circular	17090	131914
+fSebUmb1	contigs	17498	48018
+fSpaAur1	circular	16650	695358
+fSphaOr1	circular	22020	222960	not labelled as circular
+fSynAcu1	circular	16454	1501492
+fTakRub1	circular	16448	265624
+fThaAma1	Cannot allocate memory
+fTraTra1	circular	16561	537744
+fXenCan1	circular	16451	52294
+fZeuFab1	circular	16723	5936
+kPetMar1	contigs	16503	140810
+mArvAmp1	Cannot allocate memory
+mArvNil1	Cannot allocate memory
+mBalMus1	Cannot allocate memory
+mBosTau1	Cannot allocate memory
+mCalJac1	Cannot allocate memory
+mChoDid1	Cannot allocate memory
+mHomSap3	Cannot allocate memory
+mLemCat1	Cannot allocate memory
+mLutLut1	Cannot allocate memory
+mLynCan4	Memory issue
+mMusErm1	Cannot allocate memory
+mMyoMyo1	contigs	7672	3778
+mOrnAna1	Cannot allocate memory
+mPanTro1	Memory issue
+mPhoSin1	Cannot allocate memory
+mPhyDis1	Cannot allocate memory
+mPipKuh1	contigs	16292	511214
+mPipPip1	Killed
+mRatNor1	Cannot allocate memory
+mRhiFer1	circular	22022	22763966	not labelled as circular
+mSciCar1	Cannot allocate memory
+mSciVul1	Cannot allocate memory
+mTacAcu1	Cannot allocate memory
+mTamTet1	Cannot allocate memory
+mTriVul1	Cannot allocate memory
+mTurTru1	Cannot allocate memory
+mZalCal1	Cannot allocate memory
+rCheMyd1	Killed
+rDerCor1	Cannot allocate memory
+rGopEvg1	Cannot allocate memory
+rGopFla2	Cannot allocate memory
+rLacAgi1	circular	16988	45074
+rThaEle1	Cannot allocate memory
+sAmbRad1	Cannot allocate memory
+sCarCar2	Cannot allocate memory
+sPriPec2	Killed
+sScyCan1	Killed

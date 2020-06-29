@@ -1,0 +1,10 @@
+bStrHab1	0	1140	gene	cob	0	+
+bStrHab1	1140	1212	tRNA	trnT	0	+
+bStrHab1	1212	1284	tRNA	trnP	0	-
+bStrHab1	1284	1811	gene	nad6	0	-
+bStrHab1	1811	1881	tRNA	trnE	0	-
+bStrHab1	1881	4181	rep_origin	OH	0	+
+bStrHab1	4181	4246	tRNA	trnF	0	+
+bStrHab1	4246	5214	rRNA	rrnS	0	+
+bStrHab1	5214	5286	tRNA	trnV	0	+
+bStrHab1	5286	6339	rRNA	rrnL	0	+

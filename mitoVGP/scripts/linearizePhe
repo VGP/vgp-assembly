@@ -47,23 +47,23 @@ while getopts ":s:i:c:n:t:" opt; do
 
 	case $opt in
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		n)
-            CONTIG=$OPTARG
+            CONTIG="$OPTARG"
 			echo "Contig number: -n $OPTARG"
 			;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
 			echo "Number of threads: -t $OPTARG" >&2
             ;;
 		\?)
@@ -139,6 +139,8 @@ else
 
 fi
 
+printf "\n" >> ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
+
 printf "\nFinal coordinates are:\n"
 printf "\nGln start:${GLN_START}\n"
 printf "Gln end:${GLN_END}\n"
@@ -146,7 +148,7 @@ printf "Gln end:${GLN_END}\n"
 printf "\nFinal sequence:\n\n"
 cat ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.$(date "+%Y%m%d").fasta
 	
-printf "\n\nMitogenome size: ${GSIZE} bp\n"
+printf "\nMitogenome size: ${GSIZE} bp\n"
 
 gzip -f ${SPECIES}/${ID}/assembly_MT_rockefeller/${ID}.MT.*.fasta
 

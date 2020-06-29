@@ -57,31 +57,31 @@ while getopts ":s:i:n:c:t:2:d:" opt; do
 
 	case $opt in
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
 		n)
-            CONTIG=$OPTARG
+            CONTIG="$OPTARG"
 			echo "Contig number: -n $OPTARG"
 			;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
 			echo "Number of threads: -t $OPTARG"
             ;;
 		2)
-			IL=$OPTARG
+			IL="$OPTARG"
 			echo "Local short read data: -2 $OPTARG"
 			;;
 		d)
-			DOWNL=$OPTARG
+			DOWNL="$OPTARG"
 			echo "Multithreaded download: -d $OPTARG"
             ;;           
 		\?)

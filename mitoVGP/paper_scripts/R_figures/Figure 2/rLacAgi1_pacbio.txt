@@ -1,0 +1,11 @@
+rLacAgi1_pacbio	0	72	tRNA	trnE	-
+rLacAgi1_pacbio	72	1236	gene	cob_0	+
+rLacAgi1_pacbio	1236	1308	tRNA	trnT_0	+
+rLacAgi1_pacbio	1308	1379	tRNA	trnP_0	-
+rLacAgi1_pacbio	1379	3027	rep_origin	OH_0	+
+rLacAgi1_pacbio	3027	3234	gene	cob_1	+
+rLacAgi1_pacbio	3234	3306	tRNA	trnT_1	+
+rLacAgi1_pacbio	3306	3378	tRNA	trnP_1	-
+rLacAgi1_pacbio	3378	5062	rep_origin	OH_1	+
+rLacAgi1_pacbio	5062	5135	tRNA	trnF	+
+rLacAgi1_pacbio	5135	6081	rRNA	rrnS	+
