@@ -20,12 +20,13 @@ elif [ $1 == "-h" ]; then
 	The script is still experimental.
 
 	It requires the following software (and their dependencies) installed:
-	bowtie2/2.1.0, samtools/1.7, mummer/3.23
+	bowtie2/2.1.0, samtools/1.7, mummer/3.23, muscle/3.8
 
 	Required arguments are:
 		-s the species name (e.g. Calypte_anna)
 		-i the VGP species ID (e.g. bCalAnn1)
 		-n the contig ID identified from the BLAST search by the script blastMT.sh
+		-z increase sensitivity of mummer overlap detection
 		-t the number of threads
 
 	Optional arguments are:	
@@ -47,27 +48,27 @@ while getopts ":s:i:n:c:t:s:z:" opt; do
 
 	case $opt in
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
 		n)
-            CONTIG=$OPTARG
+            CONTIG="$OPTARG"
 			echo "Contig number: -n $OPTARG"
 			;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
 			echo "Number of threads: -t $OPTARG" >&2
             ;;
 		z)
-			SEN=$OPTARG
+			SEN="$OPTARG"
 			echo "Mummer sensitivity: -z $OPTARG" >&2
             ;;
 		\?)
@@ -111,8 +112,6 @@ fi
 
 CONTIG_NAME=$(cat ${W_URL}/freebayes_round1/${FNAME}.fasta | awk '$0 ~ ">" {print substr($0,2)}')
 
-
-
 if ! [[ -e "${W_URL}/trimmed" ]]; then
 
 	mkdir ${W_URL}/trimmed
@@ -141,7 +140,7 @@ if ! [[ -e "${W_URL}/trimmed/${FNAME}.delta" ]]; then
 
 fi
 
-NUCMER_OUT=$(show-coords "${W_URL}/trimmed/${FNAME}.delta" -lrcTHo | grep "BEGIN" | head -1)
+NUCMER_OUT=$(show-coords ${W_URL}/trimmed/${FNAME}.delta -lrcTHo | grep "BEGIN" | awk 'NR==1 {print}')
 
 if ! [[ -z ${NUCMER_OUT} ]]; then
 

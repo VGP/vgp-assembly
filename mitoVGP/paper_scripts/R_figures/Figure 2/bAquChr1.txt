@@ -1,0 +1,11 @@
+bAquChr1	0	269	gene	cob	0	+
+bAquChr1	269	338	tRNA	trnT	0	+
+bAquChr1	338	1497	rep_origin	OH_0	0	+
+bAquChr1	1497	1567	tRNA	trnP	0	-
+bAquChr1	1567	2102	gene	nad6	0	-
+bAquChr1	2102	2173	tRNA	trnE	0	-
+bAquChr1	2173	3733	rep_origin	OH_0	0	+
+bAquChr1	3733	3801	tRNA	trnF	0	+
+bAquChr1	3801	4771	rRNA	rrnS	0	+
+bAquChr1	4771	4843	tRNA	trnV	0	+
+bAquChr1	4843	6339	rRNA	rrnL	0	+

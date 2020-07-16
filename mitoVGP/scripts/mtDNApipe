@@ -54,7 +54,7 @@ elif [ $1 == "-h" ]; then
 	-1 use pacbio/nanopore files from list of files, requires absolute path (default looks into aws)
 	-m the aligner for mitoread identification (blasr|minimap2|pbmm2). Default is pbmm2
 	-f filter reads by size prior to assembly (reduces the number of NUMT reads and helps the assembly)
-	-p filter reads by percent coverage of the reference over their length (avoid noise in the assembly when low coverage)
+	-p filter reads by percent cover of the reference over their length (avoid noise in the assembly when low coverage)
 	-o the options for Canu
 	-c if run on cluster. Supported options are:
 		SLURM
@@ -74,47 +74,43 @@ while getopts ":a:s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
 
 	case $opt in
 		a)
-			PLATFORM=$OPTARG
+			PLATFORM="$OPTARG"
 			echo "Long read platform: -a $OPTARG"
 			;;
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
         r)
-			REF=$OPTARG
+			REF="$OPTARG"
 			echo "Reference: -r $OPTARG"
 			;;
 		g)
-			GSIZE=$OPTARG
+			GSIZE="$OPTARG"
 			echo "Genome size: -g $OPTARG"
             ;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		f)
-            FL=$OPTARG
+            FL="$OPTARG"
 			echo "Read length filter: -f $OPTARG"
 			;;
-		o)
-            OPTS=$OPTARG
-			echo "Canu options: -o $OPTARG"
-			;;
 		m)
-			ALN=$OPTARG
+			ALN="$OPTARG"
 			echo "Aligner: -m $OPTARG"
 			;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
 			echo "Number of threads: -t $OPTARG"
             ;;
 		d)
-			DOWNL=$OPTARG
+			DOWNL="$OPTARG"
 			echo "Multithreaded download: -d $OPTARG"
             ;;
 		p)
@@ -122,8 +118,12 @@ while getopts ":a:s:i:r:g:c:f:o:m:t:d:p:1:" opt; do
 			echo "Percent coverage of reads: -p > $OPTARG"
             ;;
 		1)
-			READ1=$OPTARG
+			READ1="$OPTARG"
 			echo "Local long read data: -1 $OPTARG"
+			;;
+		o)
+            OPTS="$OPTARG"
+			echo "Canu options: -o ${OPTARG//_/ }"
 			;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
@@ -326,29 +326,33 @@ if ! [[ -z ${PER} ]] && (! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.
 
 	if ! [[ -e ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq ]]; then
 	
-		readset=${W_URL}/tgs_MT_extracted_reads/${ID}.fastq
+		old_readset=${W_URL}/tgs_MT_extracted_reads/${ID}.fastq
+		new_readset=${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq
 	
 	else
 
-		readset=${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq	
+		old_readset=${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq
+		new_readset=${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq
 	
 	fi
 
-	cat ${readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/tgs_MT_extracted_reads/${ID}.fasta
+	cat ${old_readset} | sed -n '1~4s/^@/>/p;2~4p' > ${W_URL}/tgs_MT_extracted_reads/${ID}.fasta
 
 	makeblastdb -in ${W_URL}/tgs_MT_extracted_reads/${ID}.fasta -parse_seqids -dbtype nucl -out ${W_URL}/tgs_MT_extracted_reads/${ID}.db
 
-	blastn -outfmt "6 sseqid qcovs slen" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/tgs_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v per="${PER}" '{if($2>per) printf $0 "\n"}' > ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
+	blastn -outfmt "6 sseqid slen qcovs" -query ${W_URL}/reference/${REF%.*}.fasta -db ${W_URL}/tgs_MT_extracted_reads/${ID}.db | sort -k2 -nr | uniq | awk -v gsize="${GSIZE}" '{printf $0 "\t" gsize/$2*$3 "\n"}' | awk -v per="${PER}" '{if($4>per) printf $0 "\n"}' > ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
 	
-	printf "\n\nExtracting following read by coverage:\n\n"
+	printf "\n\nExtracting the following $(wc -l  ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out | awk '{print $1}') reads by reference cover:\n\n"
 	
-	cat ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
+	sed -i 'Read ID\tRead length\tQry cover\tCorrected Qry cover' ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out
+	
+	cat ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out | column -t
 	
 	printf "\n\n"
 
 	awk '{printf $1 "\n"}' ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.out > ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.ls
 
-	cat ${readset} | grep -f ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq
+	cat ${old_readset} | grep -f ${W_URL}/tgs_MT_extracted_reads/${ID}_filtered.ls -A3 --no-group-separator > ${new_readset}
 
 fi
 
@@ -375,9 +379,19 @@ if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
 
 	CANU=canu-1.8/Linux-amd64/bin/canu
 
+	if [[ ${PLATFORM} == "ONT" ]]; then
+
+		PT="-nanopore-raw"
+
+	else
+
+		PT="-pacbio-raw"
+
+	fi
+
 	if ! [[ -z  ${OPTS} ]]; then
 
-		CANU="${CANU} ${OPTS}"
+		CANU="${CANU} ${OPTS//_/ }"
 
 	fi
 	
@@ -387,15 +401,15 @@ if ! [[ -e "${W_URL}/canu/${ID}.contigs.fasta" ]]; then
 
 	if ! [[ -z ${FL} ]] && ! [[ -z ${PER} ]]; then
 
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq.gz"
+		CANU="${CANU} ${PT} ${W_URL}/tgs_MT_extracted_reads/filtered2_${ID}.fastq.gz"
 	
-	elif ! [[ -z ${FL} ]]; then
+	elif ! [[ -z ${FL} ]] || ! [[ -z ${PER} ]]; then
 	
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq.gz"
+		CANU="${CANU} ${PT} ${W_URL}/tgs_MT_extracted_reads/filtered_${ID}.fastq.gz"
 	
 	else
 	
-		CANU="${CANU} -pacbio-raw ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq.gz"
+		CANU="${CANU} ${PT} ${W_URL}/tgs_MT_extracted_reads/${ID}.fastq.gz"
 	
 	fi
 	

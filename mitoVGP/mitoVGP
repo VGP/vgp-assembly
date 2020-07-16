@@ -62,56 +62,56 @@ while getopts ":a:s:i:r:g:t:d:1:2:m:f:o:n:v:p:z:b:" opt; do
 
 	case $opt in
 		a)
-			PLATFORM=$OPTARG
+			PLATFORM="$OPTARG"
 			;;
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
             ;;
         r)
-			REF=$OPTARG
+			REF="$OPTARG"
 			;;
 		g)
-			GSIZE=$OPTARG
+			GSIZE="$OPTARG"
             ;;
 		t)
-			NPROC=$OPTARG
+			NPROC="$OPTARG"
             ;;
 		d)
-			DOWNL=$OPTARG
+			DOWNL="$OPTARG"
             ;;
 		1)
-			READ1=$OPTARG
+			READ1="$OPTARG"
 			;;
 		2)
-			IL=$OPTARG
+			IL="$OPTARG"
 			;;
 		m)
-			ALN=$OPTARG
+			ALN="$OPTARG"
 			;;
 		f)
-            FL=$OPTARG
-			;;
-		o)
-            OPTS=$OPTARG
+            FL="$OPTARG"
 			;;
 		n)
-            CONTIG=$OPTARG
+            CONTIG="$OPTARG"
 			;;
 		v)
-            VAL=$OPTARG
+            VAL="$OPTARG"
 			;;
 		p)
-            PER=$OPTARG
+            PER="$OPTARG"
 			;;
 		z)
-            SEN=$OPTARG
+            SEN="$OPTARG"
 			;;
 		b)
-			CAL=$OPTARG
+			CAL="$OPTARG"
             ;;
+		o)
+            OPTS="$OPTARG"
+			;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -184,12 +184,6 @@ if ! [[ -z  ${FL} ]]; then
 
 fi
 
-if ! [[ -z  ${OPTS} ]]; then
-
-	SCRIPT1_OPTS="${SCRIPT1_OPTS}-o ${OPTS} "
-
-fi
-
 if ! [[ -z  ${ALN} ]]; then
 
 	SCRIPT1_OPTS="${SCRIPT1_OPTS}-m ${ALN} "
@@ -208,8 +202,16 @@ if ! [[ -z  ${READ1} ]]; then
 
 fi
 
+if ! [[ -z  ${OPTS} ]]; then
+	
+	OPTS="${OPTS//\ /_}"
+	
+	SCRIPT1_OPTS="${SCRIPT1_OPTS}-o ${OPTS} "
+
+fi
+
 #retrieve mito-like reads and assemble
-printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS} 2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
+printf "\nCommand: sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out\n"
 sh -e scripts/mtDNApipe -s ${SPECIES} -i ${ID} -r ${filename}.fasta -g ${GSIZE} -t ${NPROC} ${SCRIPT1_OPTS}2>&1 | tee ${W_URL}/log/${ID}_mtDNApipe_$(date "+%Y%m%d-%H%M%S").out &&
 
 #identify the mitocontig

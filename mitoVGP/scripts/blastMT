@@ -44,19 +44,19 @@ while getopts "s:i:c:a:r:o:" opt; do
 	case $opt in
 	
 		s)
-			SPECIES=$OPTARG
+			SPECIES="$OPTARG"
 			echo "Species: -s $OPTARG"
 			;;
         i)
-        	ID=$OPTARG
+        	ID="$OPTARG"
         	echo "Species ID: -i $OPTARG"
             ;;
 		c)
-            GRID=$OPTARG
+            GRID="$OPTARG"
 			echo "Cluster: -c $OPTARG"
 			;;
 		r)
-			REF=$OPTARG
+			REF="$OPTARG"
 			echo "Reference mitocontig: -r $OPTARG"
 			;;
 		\?)
