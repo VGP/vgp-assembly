@@ -4,7 +4,7 @@ genome=$1
 
 if [[ -z $genome ]]; then
     echo "Usage: ./telomere.sh <genome_id> <threshold> <ends> <asm.fa> [asm.csv]"
-    echo "    <threshold>: threshold to define telomere window. Define from 0.0 to 1.0"
+    echo "    <threshold>: threshold to define telomere window. Define from 0.0 to 1.0. Recommended: 0.4"
     echo "    <ends>    : report ends.bed only if a window is found within <ends> bp of scaffold ends"
     echo "    <asm.fa>  : assembly fasta file. .fa or .fasta"
     echo "    <asm.csv> : chromosome assignment, if available. OPTIONAL."
