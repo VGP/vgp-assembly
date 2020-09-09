@@ -26,13 +26,18 @@ public class FindTelomereWindows {
       System.err.println("Example usage: getHist fasta1.fasta,fasta2.fasta");
       System.err.println("");
    }
-   public static void processScaffold(String name, BitSet b) {
+   public static void processScaffold(String name, BitSet b, int length) {
       if (b == null) { return; }
-      for (int i = MIN_OFFSET; i <= b.size()-MIN_OFFSET-WINDOW_SIZE; i+=WINDOW_SIZE/5) {
-        int car = b.get(i, i+WINDOW_SIZE).cardinality();
-        if ((double)car / WINDOW_SIZE >= THRESHOLD) {
-           System.out.println("Window\t" + name + "\t" + b.size() + "\t" + i + "\t" + (i+WINDOW_SIZE) + "\t" + ((double)car / WINDOW_SIZE));
-        }
+
+
+       for (int i = MIN_OFFSET; i <= length; i+=WINDOW_SIZE/5) {
+         int car = b.get(i, Math.min(length, i+WINDOW_SIZE)).cardinality();
+         int den = Math.min(WINDOW_SIZE, length-i);
+         if ((double)car / den >= THRESHOLD)
+            System.out.println("Window\t" + name + "\t" + length + "\t" + i + "\t" + (i+den) + "\t" + ((double)car / den));
+
+         if (i+WINDOW_SIZE >= length)
+            break;
      }
    }
    
@@ -46,6 +51,7 @@ public class FindTelomereWindows {
       // initialize sizes
       BitSet scaffold = null;
       String name = null;
+      int length = 0;
       Double identity = Double.parseDouble(args[1]) / 100;
       THRESHOLD = THRESHOLD * Math.pow(identity, 6);
       System.err.println("Given error rate of " + identity + " running with adjusted threshold of " + THRESHOLD + " due to survival prob " + Math.pow(identity, 6));
@@ -55,14 +61,15 @@ public class FindTelomereWindows {
       while ((line = bf.readLine()) != null) {
           String[] split = line.trim().split("\\s+");
           if (scaffold == null || !split[0].equalsIgnoreCase(name)) {
-             processScaffold(name, scaffold);
-             scaffold = new BitSet(Integer.parseInt(split[split.length-5]));
+             processScaffold(name, scaffold, length);
+             length = Integer.parseInt(split[split.length-5]);
+             scaffold = new BitSet(length);
              name = split[0];
           }
           //ignoring strandedness for now
           scaffold.set(Integer.parseInt(split[split.length-3]), Integer.parseInt(split[split.length-2]));
       }
-      processScaffold(name, scaffold);
+      processScaffold(name, scaffold, length);
       bf.close();
    }
 }

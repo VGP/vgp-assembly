@@ -29,6 +29,7 @@ public class FindTelomereBreaks {
       // initialize sizes
       HashMap<String, BitSet> scaffolds = new HashMap<String, BitSet>();
       HashMap<String, BitSet> finalScaffolds = new HashMap<String, BitSet>();
+      HashMap<String, Integer> lengths = new HashMap<String, Integer>();
       BufferedReader bf = Utils.getFile(args[0], "lens");
       String line = null;
       while ((line = bf.readLine()) != null) {
@@ -36,6 +37,7 @@ public class FindTelomereBreaks {
          if (!scaffolds.containsKey(split[0])) {
             scaffolds.put(split[0], new BitSet(Integer.parseInt(split[1])));
             finalScaffolds.put(split[0], new BitSet(Integer.parseInt(split[1])));
+            lengths.put(split[0], Integer.parseInt(split[1]));
          }
       }
       bf.close();
@@ -59,7 +61,7 @@ public class FindTelomereBreaks {
           BitSet b = scaffolds.get(split[0]);
           if (Integer.parseInt(split[5]) >= MIN_TEL) {
              int start = Math.max(0, Integer.parseInt(split[3])-100);
-             int end = Math.min(b.size(), Integer.parseInt(split[4])+100);
+             int end = Math.min(lengths.get(split[0]), Integer.parseInt(split[4])+100);
              if (b.get(start, end).cardinality() >= (end - start)) {
                 int rStart = (b.previousClearBit(start) < 0 ? 0 : b.previousClearBit(start));
                 finalScaffolds.get(split[0]).set(rStart, b.nextClearBit(end));
@@ -73,7 +75,7 @@ public class FindTelomereBreaks {
 
          for(int i = b.nextSetBit(0); i >= 0; i = b.nextSetBit(i+1)) {
             int end = b.nextClearBit(i) - 1;
-            System.out.println("Found telomere positiosn " + i + " to " + end + " is a telomere in " + scf + " of length " + scaffolds.get(scf).size());
+            System.out.println("Found telomere positiosn " + i + " to " + end + " is a telomere in " + scf + " of length " + lengths.get(scf));
             i = end;
          }
       }
