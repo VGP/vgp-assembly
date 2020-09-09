@@ -2,6 +2,7 @@
 
 if [ -z $1 ]; then
 	echo "Usage: ./_submit_telomere.sh <in.fasta>"
+        echo "\tThis script will submit telomere_analysis.sh genome 0.4 50000 <in.fasta>"
 	exit -1
 fi
 
@@ -9,13 +10,15 @@ fasta=$1
 ln -s $fasta
 
 fasta=`basename $fasta`
-fasta_prefix=`echo $fasta | sed 's/.fasta$//g' | sed 's/.fa$//g'`
+genome=`echo $fasta | sed 's/.fasta$//g' | sed 's/.fa$//g'`
 
 cpus=12
 mem=8g
-name=$fasta_prefix.telomere
-script=$VGP_PIPELINE/telomere/find_telomere.sh
-args=$fasta
+name=$genome.telomere
+#script=$VGP_PIPELINE/telomere/find_telomere.sh
+script=$VGP_PIPELINE/telomere/telomere_analysis.sh
+#args=$fasta
+args="$genome 0.4 50000 $fasta"
 
 mkdir -p logs
 log=logs/$name.%A.log
