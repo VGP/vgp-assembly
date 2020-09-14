@@ -25,11 +25,11 @@ RUN apt update \
   && cd samtools \
   && ./configure \
   && make \
-  && make install
-
-RUN apt-get -y upgrade && \
-	apt-get install -y python3-pip python3-dev build-essential wget bzip2 libz-dev && \
-	ln -s /usr/bin/python3 /usr/bin/python
+  && make install \
+  && apt-get install nano \
+  && apt-get -y upgrade \
+	&& apt-get install -y python3-pip python3-dev build-essential wget bzip2 libz-dev \
+	&& ln -s /usr/bin/python3 /usr/bin/python
 
 RUN wget https://github.com/arq5x/bedtools2/releases/download/v2.29.2/bedtools-2.29.2.tar.gz -O /tmp/bedtools.tar.gz && \
 	tar zxvf /tmp/bedtools.tar.gz -C /opt/ && rm /tmp/bedtools.tar.gz && \
@@ -63,29 +63,20 @@ RUN wget https://github.com/marbl/meryl/releases/download/v1.0/meryl-1.0.Linux-a
 ENV PATH="/opt/meryl-1.0/Linux-amd64/bin:${PATH}"
 
 
-# Install OpenJDK-8
-RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk && \
+# Install OpenJDK-8 & Fix certificate issues
+RUN apt-get install -y openjdk-8-jdk && \
     apt-get install -y ant && \
-    apt-get clean;
-
-# Fix certificate issues
-RUN apt-get update && \
     apt-get install ca-certificates-java && \
     apt-get clean && \
     update-ca-certificates -f;
 
+
 # Setup JAVA_HOME -- useful for docker commandline
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
-RUN apt-get install -y git && git clone https://github.com/marbl/merqury.git && cd merqury
+RUN apt-get install -y git && git clone https://github.com/marbl/merqury.git && cd merqury && git checkout tags/v1.1
 ENV PATH="$PWD:${PATH}"
 ENV MERQURY="/merqury"
 
-# install nano for debug
-RUN apt-get install nano
-
-# gcc 4.8 or higher
-# already install
 
 ENTRYPOINT ["/bin/bash", "-c"]
