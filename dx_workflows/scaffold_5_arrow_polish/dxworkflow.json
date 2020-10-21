@@ -1,5 +1,5 @@
 {
-  "name": "Scaffold 5 Arrow Polish 2020-Apr-21",
+  "name": "Scaffold 5 Arrow Polish 2020-Oct-21",
   "title": "PacBio BAM Resequencing Workflow",
   "stages": [
     {
@@ -47,7 +47,7 @@
     },
     {
       "id": "stage-FpJqQpj0j3bJVXffB3x4ZK6G",
-      "executable": "applet-FpPpZFj085kb9qK23bj146zY",
+      "executable": "applet-Fy88J5Q0j3bF76159y2j175q",
       "input": {
         "asm1_fasta": {
           "$dnanexus_link": {
