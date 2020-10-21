@@ -54,20 +54,3 @@ task qv_assessment{
     }
     }
 }
-
-workflow qv_workflow{
-    input {
-        File readdb_meryl
-        File asm1_fasta
-        File? asm2_fasta
-    }
-    call qv_assessment {
-        input:
-            readdb_meryl = readdb_meryl,
-            asm1_fasta = asm1_fasta,
-            asm2_fasta = asm2_fasta
-    }
-    output {
-        File qv = qv_assessment.qv
-    }
-}
