@@ -1,0 +1,77 @@
+{
+  "name": "meryl",
+  "title": "Meryl",
+  "summary": "Meryl only",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "fastq",
+      "label": "reads or ref",
+      "class": "array:file",
+      "optional": false,
+      "patterns": [
+        "*.fastq","*.fastq.gz","*.fasta","*.fasta.gz","*.fq","*.fq.gz","*.fa","*.fa.gz"
+      ],
+      "help": ""
+    },
+    {
+      "name": "kmer",
+      "label": "kmer length",
+      "class": "string",
+      "optional": false,
+      "default": "31",
+      "help": ""
+    },
+    {
+      "name": "read_length",
+      "label": "read length",
+      "class": "string",
+      "optional": false,
+      "default": "150",
+      "help": ""
+    },
+    {
+      "name": "kmer_max",
+      "label": "kmer max",
+      "class": "string",
+      "optional": false,
+      "default": "-1",
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+  {
+      "name": "meryl_intermediate_file",
+      "class": "file",
+      "label": "meryl intermediate files",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+  }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "release": "16.04",
+    "distribution": "Ubuntu",
+    "file": "src/meryl_genomescope.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x8"
+        }
+      }
+    }
+  },
+ "details": {
+    "upstreamVersion": "https://github.com/marbl/meryl f2d4fb98d2614681f1ab4e45c86d4cef442c962f"
+  }
+}
