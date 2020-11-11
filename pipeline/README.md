@@ -12,12 +12,13 @@ This folder contains wrappers to run individual tools in each assembly / evaluat
 * FALCON-Unzip: FALCON-Unzip was run on DNAnexus. See [this page](https://github.com/VGP/vgp-assembly/tree/master/dx_workflows/vgp_falcon_and_unzip_assembly_workflow) for more details.
 * [TrioCanu](https://github.com/VGP/vgp-assembly/tree/master/pipeline/triocanu)
 
-## Purging
+### Purging
 * [Minimap2 + purge_dups](https://github.com/VGP/vgp-assembly/tree/master/pipeline/purge_dups)
 * [NGMLR](https://github.com/VGP/vgp-assembly/tree/master/pipeline/ngmlr) + [purge_haplotigs](https://github.com/VGP/vgp-assembly/tree/master/pipeline/purge_haplotigs) _retired_
 
 ### Scaffolding
 * [Scaff10x](https://github.com/VGP/vgp-assembly/tree/master/pipeline/scaff10x)
+
 ### Polishing
 * [Bionano](https://github.com/VGP/vgp-assembly/tree/master/pipeline/bionano): Hybrid Scaffolding and other scripts to run bionano software
 * Hi-C
@@ -25,13 +26,13 @@ This folder contains wrappers to run individual tools in each assembly / evaluat
   * Visualizing Hi-C map with [PretextMap and PretextView](https://github.com/VGP/vgp-assembly/tree/master/pipeline/pretext)
   * Visualizing Hi-C map with [Juicer](https://github.com/VGP/vgp-assembly/tree/master/pipeline/pretext) _retired_
 
-## Polishing
+### Polishing
 * [Arrow polishing on Grid](https://github.com/skoren/ArrowGrid): Note this is an external repository
 * [Longranger](https://github.com/VGP/vgp-assembly/tree/master/pipeline/longranger) + [Freebayes](https://github.com/VGP/vgp-assembly/tree/master/pipeline/freebayes-polish)
 * [Bwa mem + FreeBayes](https://github.com/VGP/vgp-assembly/tree/master/pipeline/bwa): for polishing with no 10XG data
 * [Mapping-based QV](https://github.com/VGP/vgp-assembly/tree/master/pipeline/qv): Get mappable regions and compute QV based on variant calls
 
-## Post evaluation
+### Post evaluation
 * [Stats](https://github.com/VGP/vgp-assembly/tree/master/pipeline/stats): Basic assembly continuity - N-xx or NG-xx
 * [Asset](https://github.com/VGP/vgp-assembly/tree/master/pipeline/asset): Reliable blocks
 * [Telomere](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere): Find telomere motives
@@ -42,7 +43,7 @@ This folder contains wrappers to run individual tools in each assembly / evaluat
 * [MashMap2 alignment](https://github.com/VGP/vgp-assembly/tree/master/pipeline/mashmap): For quick and approximate genome-to-genome alignment
 * [MUMMER nucmer alignment](https://github.com/VGP/vgp-assembly/tree/master/pipeline/nucmer): For exact genome-to-genome alignment
 
-## Setting environments
+## Environments setting
 Each script was written and tested to run on a slurm scheduler.
 To begin, two environment variables are assumed:
 * $VGP_PIPELINE=/path/to/this/git/vgp-assembly/pipeline
