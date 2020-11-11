@@ -1,10 +1,9 @@
 #!/bin/bash
 
-if [[ -z $1 ]] || [[ ! -e re_bases.txt ]]  ; then
+if [[ -z $1 ]] ; then
     echo "Usage: ./_submit_pretext.sh <fasta> <fastq.map> [jobid]"
     echo -e "\t<fastq.map> : <R1.fastq.gz path> <R2.fastq.gz path>"
     echo -e "\tSymlink <fasta> : reference .fasta file to align"
-    echo -e "\tSymlink re_bases.txt : Restriction enzyme site bases. ex. GATC,GANTC"
     exit -1
 fi
 
@@ -56,7 +55,7 @@ walltime=3-0
 log=logs/${name}.%A.log
 script=$VGP_PIPELINE/salsa/arima_mapping_pipeline.sh
 args="$fastq_map $ref_name $ref"
-if ! [ -e $ref_name.bed ]; then
+if ! [ -e $ref_name.bam ]; then
 	echo "\
 	sbatch -J $name --mem=$mem --partition=$partition --cpus-per-task=$cpus -D $path $extra --gres=lscratch:600 --time=$walltime --error=$log --output=$log $script $args"
 	sbatch -J $name --mem=$mem --partition=$partition --cpus-per-task=$cpus -D $path $extra --gres=lscratch:600 --time=$walltime --error=$log --output=$log $script $args > mapping_jid
