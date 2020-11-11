@@ -12,7 +12,8 @@ For installing and running `longranger`, see [this page](https://github.com/VGP/
 This folder contains workflows for
 * `_submit_longranger_freebayes.sh` : Longranger + FreeBayes + Consensus + QV
 * `_submit_longranger_freebayes_large.sh` : Longranger + FreeBayes + Consensus + QV for large genomes (Recommended for genomes > 4Gbp)
-* `_submit_freebayes.sh`: FreeBayes + Consensus + QV, for running directly on a bam file
+* `_submit_freebayes.sh` : FreeBayes + Consensus + QV, for running directly on a bam file
+* `_submit_bwa_freebayes.sh`: BWA + FreeBayes + Consensus + QV, for regular Illumina WGS data
 
 ### FreeBayes
 Assuming `longranger align` finished with no issues, we will have `$sample/outs/possorted_bam.bam` where `$sample` is the longranger output directory.
