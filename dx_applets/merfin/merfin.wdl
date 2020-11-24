@@ -21,7 +21,7 @@ task merfin{
         /merfin/build/bin/merfin -vmer -memory1 2 -memory2 16 -sequence sequence.fasta -seqmers seqdbmeryl/all_count/union.meryl -readmers readdbmeryl/all_count/union.meryl -peak ~{peak} -vcf vcf.vcf -output out.dump.gz
     >>>
     output {
-        File qv = "out.dump.gz"
+        File merfin_output = "out.dump.gz"
     }
     runtime {
         docker: "quay.io/chai/merfin:latest"
@@ -53,9 +53,6 @@ task merfin{
         patterns: ["*.vcf.gz"],
         stream: true,
         localization_optional: true
-    }
-    peak: {
-        description: "peak value"
     }
     }
 }
