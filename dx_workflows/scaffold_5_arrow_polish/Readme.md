@@ -1,6 +1,9 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2020-Nov-25 update**
+- use only QV function for merqury due to unknown bug for using full calculation
+
 **2020-Oct-21 update**
 - update merqury Docker 1.1 which fix trio calculation and give full report
 
