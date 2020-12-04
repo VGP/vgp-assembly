@@ -20,23 +20,7 @@
       "label": "kmer length",
       "class": "string",
       "optional": false,
-      "default": "31",
-      "help": ""
-    },
-    {
-      "name": "read_length",
-      "label": "read length",
-      "class": "string",
-      "optional": false,
-      "default": "150",
-      "help": ""
-    },
-    {
-      "name": "kmer_max",
-      "label": "kmer max",
-      "class": "string",
-      "optional": false,
-      "default": "-1",
+      "default": "21",
       "help": ""
     }
   ],
@@ -60,7 +44,7 @@
     "interpreter": "bash",
     "release": "16.04",
     "distribution": "Ubuntu",
-    "file": "src/meryl_genomescope.sh"
+    "file": "src/code.sh"
   },
   "regionalOptions": {
     "aws:us-east-1": {

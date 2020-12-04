@@ -11,8 +11,6 @@ main() {
 
     echo "Value of fastq: '${fastq[@]}'"
 	echo "Value of kmer: '$kmer'"
-	echo "Value of read_length: '$read_length'"
-	echo "Value of kmer_max: '$kmer_max'"
 
     for i in ${!fastq[@]}
     do
@@ -30,7 +28,7 @@ main() {
         merge_fastq_args+=(-icount_kmer="$one_fastq_jobs":fastq_meryl)
     done
 
-    merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" -ikmer="$kmer" -iread_length="$read_length" -ikmer_max="$kmer_max" union_meryl)
+    merge_job=$(dx-jobutil-new-job "${merge_fastq_args[@]}" -ikmer="$kmer"  union_meryl)
     dx-jobutil-add-output meryl_intermediate_file "$merge_job":meryl_intermediate_file --class=jobref
 
 }
