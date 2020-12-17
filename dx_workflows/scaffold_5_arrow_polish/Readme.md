@@ -1,6 +1,9 @@
 # PacBio BAM Resequencing Workflow
 ## Update note
 
+**2020-Dec-16 update**
+- found that issue on 2020-Nov-25 is AWS bad connection, so change instance type to mem1_ssd1_v2_x36 to fix issue. This would speed up running time and lower cost as well. Still keep only QV function to save money. 
+
 **2020-Nov-25 update**
 - use only QV function for merqury due to unknown bug for using full calculation
 
