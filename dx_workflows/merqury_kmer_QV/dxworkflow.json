@@ -1,10 +1,10 @@
-  {
-  "name": "merqury_kmer_QV 2020-Nov-25",
+{
+  "name": "merqury_kmer_QV 2020-Dec-18",
   "title": "merqury_kmer_QV 2020-Nov-25",
   "stages": [
     {
       "id": "stage-FkvZxJj0j3b4Gx2vBZqg0JPF",
-      "executable": "applet-Fk07FJQ0j3b7BgJ6KvyZf3y5",
+      "executable": "applet-FzGb6780j3bJ451B8pzbvGx1",
       "input": {
         "kmer": "20"
       },
@@ -15,8 +15,8 @@
       }
     },
     {
-      "id": "stage-FkvZxYQ0j3b0ybZ3Fbf8Xpg7",
-      "executable": "applet-FyzJggj0j3b2P1gQ3j7v6F7x",
+      "id": "stage-FzKg1yj0j3b33yzKFjkv16XF",
+      "executable": "applet-FzGb6Y80j3b3zJqGP23ZX40P",
       "input": {
         "readdb_meryl": {
           "$dnanexus_link": {
@@ -27,7 +27,7 @@
       },
       "systemRequirements": {
         "*": {
-          "instanceType": "mem1_ssd2_v2_x16"
+          "instanceType": "mem1_ssd1_v2_x36"
         }
       }
     }
