@@ -56,9 +56,13 @@ union_meryl(){
     echo union_meryl.hist
     
     cd ~
-    tar -cvf meryl_files.tar all_count/
+    mv all_count temp_all_count
+    mkdir all_count
+    mv temp_all_count/union_meryl all_count
+    rm -r temp_all_count
+    tar -cvf seq_meryl_files.tar all_count/
     mkdir -p ~/out/meryl_intermediate_file
-    mv meryl_files.tar ~/out/meryl_intermediate_file
+    mv seq_meryl_files.tar ~/out/meryl_intermediate_file
     dx-upload-all-outputs --parallel
 
 }
