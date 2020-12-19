@@ -1,0 +1,37 @@
+{
+  "name": "scaffold5_part2_merfin",
+  "title": "scaffold5_part2_merfin",
+  "stages": [
+    {
+      "id": "stage-FzKgx3Q0j3b5fyFq4vYjvyzp",
+      "name": "meryl ref",
+      "executable": "applet-FzGb6500j3bG7qj0Gyj1G9v9"
+    },
+    {
+      "id": "stage-FzKgx6j0j3b4Z0Qj41jjFpG1",
+      "name": "meryl genomescope reads",
+      "executable": "applet-FzGb6780j3bJ451B8pzbvGx1",
+      "input": {
+        "kmer": "21"
+      }
+    },
+    {
+      "id": "stage-FzKgx9j0j3b5fyFq4vYjvyzq",
+      "executable": "applet-FzJGZPj0j3bKZ7GK4vGBP84J",
+      "input": {
+        "seq_meryl": {
+          "$dnanexus_link": {
+            "outputField": "meryl_intermediate_file",
+            "stage": "stage-FzKgx3Q0j3b5fyFq4vYjvyzp"
+          }
+        },
+        "readdb_meryl": {
+          "$dnanexus_link": {
+            "outputField": "meryl_intermediate_file",
+            "stage": "stage-FzKgx6j0j3b4Z0Qj41jjFpG1"
+          }
+        }
+      }
+    }
+  ]
+}
