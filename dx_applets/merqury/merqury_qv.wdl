@@ -37,20 +37,14 @@ task qv_assessment{
     readdb_meryl: {
         description: "meryl intermediate files tar ball",
         patterns: ["meryl_files.tar"],
-        stream: true,
-        localization_optional: true
     }
     asm1_fasta: {
         description: "first assembly",
         patterns: ["*.fasta.gz","*.fa.gz"],
-        stream: true,
-        localization_optional: true
     }
     asm2_fasta: {
         description: "second assembly",
         patterns: ["*.fasta.gz","*.fa.gz"],
-        stream: true,
-        localization_optional: true
     }
     }
 }
