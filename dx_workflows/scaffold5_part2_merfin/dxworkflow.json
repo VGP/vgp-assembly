@@ -1,6 +1,6 @@
 {
-  "name": "scaffold5_part2_merfin",
-  "title": "scaffold5_part2_merfin",
+  "name": "scaffold5_part2_merfin 2020-12-20",
+  "title": "scaffold5_part2_merfin 2020-12-20",
   "stages": [
     {
       "id": "stage-FzKgx3Q0j3b5fyFq4vYjvyzp",
@@ -30,6 +30,24 @@
             "outputField": "meryl_intermediate_file",
             "stage": "stage-FzKgx6j0j3b4Z0Qj41jjFpG1"
           }
+        }
+      }
+    },
+    {
+      "id": "stage-FzQ0Q780j3bPQjvJ2Qx1QXj8",
+      "executable": "applet-FzGb6Y80j3b3zJqGP23ZX40P",
+      "folder": "/",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzKgx9j0j3b5fyFq4vYjvyzq"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x36"
         }
       }
     }
