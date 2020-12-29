@@ -1,0 +1,304 @@
+{
+  "name": "scaffold_6_deepvariant_polish 2020-12-29",
+  "title": "Scaffold 6 Freebayes Polish",
+  "stages": [
+    {
+      "id": "first_refprep",
+      "executable": "app-10x_longranger_mkref/2.2.2",
+      "folder": "longranger_freebayes_round_1/10x_longranger"
+    },
+    {
+      "id": "first_map",
+      "executable": "app-10x_longranger_align/2.2.2.1",
+      "folder": "longranger_freebayes_round_1/10x_longranger",
+      "input": {
+        "output_prefix": "longranger_round1",
+        "ref": {
+          "$dnanexus_link": {
+            "outputField": "ref_targz",
+            "stage": "first_refprep"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x48"
+        }
+      }
+    },
+    {
+      "id": "stage-FzQ0FP00j3b5YxY5213Ffy9B",
+      "name": "Meryl_ref 1",
+      "executable": "applet-FzGb6500j3bG7qj0Gyj1G9v9",
+      "input": {
+        "fastq": [
+          {
+            "$dnanexus_link": {
+              "inputField": "ref_fasta",
+              "stage": "first_refprep"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage-Fzbk2kj0j3bBpPj867ZQ6qJp",
+      "executable": "applet-Fzbjzp00j3b0zVfVFyvKFpJ4",
+      "input": {
+        "ref": {
+          "$dnanexus_link": {
+            "inputField": "ref_fasta",
+            "stage": "first_refprep"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzz700j3b4Z0Qj41jjYZVx",
+      "executable": "applet-FzbjjQ00j3b879VXKkBkbPp3",
+      "input": {
+        "fai": {
+          "$dnanexus_link": {
+            "outputField": "fai",
+            "stage": "stage-Fzbk2kj0j3bBpPj867ZQ6qJp"
+          }
+        },
+        "bam": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam",
+            "stage": "first_map"
+          }
+        },
+        "ref": {
+          "$dnanexus_link": {
+            "inputField": "ref",
+            "stage": "stage-Fzbk2kj0j3bBpPj867ZQ6qJp"
+          }
+        },
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "first_map"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzzF00j3bPKpy122kbPxf6",
+      "executable": "applet-FzJJpy00j3bPz0659XFGfbJg",
+      "input": {
+        "seq_meryl": {
+          "$dnanexus_link": {
+            "outputField": "meryl_intermediate_file",
+            "stage": "stage-FzQ0FP00j3b5YxY5213Ffy9B"
+          }
+        },
+        "sequence_fasta": {
+          "$dnanexus_link": {
+            "inputField": "ref_fasta",
+            "stage": "first_refprep"
+          }
+        },
+        "vcf": {
+          "$dnanexus_link": {
+            "outputField": "vcf",
+            "stage": "stage-FzPzz700j3b4Z0Qj41jjYZVx"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzz3j0j3bPKpy122kbPxbj",
+      "executable": "applet-FzGb6Y80j3b3zJqGP23ZX40P",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x36"
+        }
+      }
+    },
+    {
+      "id": "second_refprep",
+      "executable": "app-10x_longranger_mkref/2.2.2",
+      "folder": "longranger_freebayes_round_2/10x_longranger",
+      "input": {
+        "ref_fasta": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+          }
+        }
+      }
+    },
+    {
+      "id": "second_map",
+      "executable": "app-10x_longranger_align/2.2.2.1",
+      "folder": "longranger_freebayes_round_2/10x_longranger",
+      "input": {
+        "ref": {
+          "$dnanexus_link": {
+            "outputField": "ref_targz",
+            "stage": "second_refprep"
+          }
+        },
+        "output_prefix": "longranger_round2",
+        "fastq_tars": [
+          {
+            "$dnanexus_link": {
+              "inputField": "fastq_tars",
+              "stage": "first_map"
+            }
+          }
+        ]
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x48"
+        }
+      }
+    },
+    {
+      "id": "stage-FzQ0FzQ0j3bJBqVv38qv59QV",
+      "name": "Meryl_ref 2",
+      "executable": "applet-FzGb6500j3bG7qj0Gyj1G9v9",
+      "input": {
+        "fastq": [
+          {
+            "$dnanexus_link": {
+              "inputField": "ref_fasta",
+              "stage": "second_refprep"
+            }
+          }
+        ]
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x8"
+        }
+      }
+    },
+    {
+      "id": "stage-Fzbk5Y80j3bFjgZq62k4bqbF",
+      "executable": "applet-Fzbjzp00j3b0zVfVFyvKFpJ4",
+      "input": {
+        "ref": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzz980j3bPQjvJ2Qx1QX6v",
+      "executable": "applet-FzbjjQ00j3b879VXKkBkbPp3",
+      "input": {
+        "fai": {
+          "$dnanexus_link": {
+            "outputField": "fai",
+            "stage": "stage-Fzbk5Y80j3bFjgZq62k4bqbF"
+          }
+        },
+        "bam": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam",
+            "stage": "second_map"
+          }
+        },
+        "ref": {
+          "$dnanexus_link": {
+            "inputField": "ref",
+            "stage": "stage-Fzbk5Y80j3bFjgZq62k4bqbF"
+          }
+        },
+        "bai": {
+          "$dnanexus_link": {
+            "outputField": "sorted_bam_index",
+            "stage": "second_map"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzzFj0j3b8kBZ59YjY4Qq4",
+      "executable": "applet-FzJJpy00j3bPz0659XFGfbJg",
+      "input": {
+        "seq_meryl": {
+          "$dnanexus_link": {
+            "outputField": "meryl_intermediate_file",
+            "stage": "stage-FzQ0FzQ0j3bJBqVv38qv59QV"
+          }
+        },
+        "sequence_fasta": {
+          "$dnanexus_link": {
+            "inputField": "sequence_fasta",
+            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+          }
+        },
+        "readdb_meryl": {
+          "$dnanexus_link": {
+            "inputField": "readdb_meryl",
+            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+          }
+        },
+        "vcf": {
+          "$dnanexus_link": {
+            "outputField": "vcf",
+            "stage": "stage-FzPzz980j3bPQjvJ2Qx1QX6v"
+          }
+        }
+      }
+    },
+    {
+      "id": "stage-FzPzz5Q0j3bBgbVF8q6z8Gfx",
+      "executable": "applet-FzGb6Y80j3b3zJqGP23ZX40P",
+      "input": {
+        "asm1_fasta": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzPzzFj0j3b8kBZ59YjY4Qq4"
+          }
+        },
+        "readdb_meryl": {
+          "$dnanexus_link": {
+            "inputField": "readdb_meryl",
+            "stage": "stage-FzPzz3j0j3bPKpy122kbPxbj"
+          }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x36"
+        }
+      }
+    },
+    {
+      "id": "stage-FYj6yBQ0j3b9VfPj4qF37KxG",
+      "executable": "applet-FZBQzfj0j3b0xgqP4vpKFJ91",
+      "folder": "longranger_freebayes_round_2/stats",
+      "input": {
+        "asm": {
+          "$dnanexus_link": {
+            "outputField": "merfin_genome",
+            "stage": "stage-FzPzzFj0j3b8kBZ59YjY4Qq4"
+          }
+        },
+        "extract": true,
+        "mode": "scaffold&contigs+haplotypes",
+        "out_name": "output"
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  ]
+}
