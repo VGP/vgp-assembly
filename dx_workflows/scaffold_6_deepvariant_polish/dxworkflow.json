@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_6_deepvariant_polish 2020-12-29",
+  "name": "scaffold_6_deepvariant_polish 2021-Feb-15",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -85,7 +85,7 @@
     },
     {
       "id": "stage-FzPzzF00j3bPKpy122kbPxf6",
-      "executable": "applet-FzJJpy00j3bPz0659XFGfbJg",
+      "executable": "applet-G0Z1zGQ0j3b1714j8K59KX6g",
       "input": {
         "seq_meryl": {
           "$dnanexus_link": {
@@ -228,7 +228,7 @@
     },
     {
       "id": "stage-FzPzzFj0j3b8kBZ59YjY4Qq4",
-      "executable": "applet-FzJJpy00j3bPz0659XFGfbJg",
+      "executable": "applet-G0Z1zGQ0j3b1714j8K59KX6g",
       "input": {
         "seq_meryl": {
           "$dnanexus_link": {
@@ -238,8 +238,8 @@
         },
         "sequence_fasta": {
           "$dnanexus_link": {
-            "inputField": "sequence_fasta",
-            "stage": "stage-FzPzzF00j3bPKpy122kbPxf6"
+            "inputField": "ref_fasta",
+            "stage": "second_refprep"
           }
         },
         "readdb_meryl": {
