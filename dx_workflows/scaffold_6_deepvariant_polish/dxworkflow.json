@@ -1,5 +1,5 @@
 {
-  "name": "scaffold_6_deepvariant_polish 2021-Feb-15",
+  "name": "scaffold_6_deepvariant_polish 2021-March-5",
   "title": "Scaffold 6 Freebayes Polish",
   "stages": [
     {
@@ -80,6 +80,11 @@
             "outputField": "sorted_bam_index",
             "stage": "first_map"
           }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x32"
         }
       }
     },
@@ -223,6 +228,11 @@
             "outputField": "sorted_bam_index",
             "stage": "second_map"
           }
+        }
+      },
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem3_ssd1_v2_x32"
         }
       }
     },
