@@ -1,6 +1,6 @@
 version 1.0
 
-task merfin{
+task merfin_no_header_correction{
     input {
         File readdb_meryl
         File seq_meryl
