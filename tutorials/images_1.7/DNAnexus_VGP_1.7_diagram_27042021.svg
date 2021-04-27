@@ -179,7 +179,7 @@
 				<text transform="matrix(1 0 0 1 -1084.9384 470.0426)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Polishing: </text>
 				<text transform="matrix(1 0 0 1 -946.5253 470.0426)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">t3</text>
 			</g>
-			<text transform="matrix(1 0 0 1 -1365.5791 28.4054)" style="font-family:'Arial-BoldMT'; font-size:40px;">DNAnexus VGP assembly pipeline 1.6</text>
+			<text transform="matrix(1 0 0 1 -1365.5791 28.4054)" style="font-family:'Arial-BoldMT'; font-size:40px;">DNAnexus VGP assembly pipeline 1.7</text>
 			<g id="g4768-5" transform="translate(469.62999,-856.8601)">
 				<rect id="rect971-5-3-3-78-0-1-1-9" x="-1929.9" y="1652.9" class="st15" width="169.5" height="56.1"/>
 				<text transform="matrix(1 0 0 1 -1908.9298 1689.2372)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">pri.asm</text>
@@ -198,8 +198,10 @@
 				<text transform="matrix(1 0 0 1 -1049.9543 359.7766)" style="font-family:'Helvetica-Oblique'; font-size:30px;">mitogenome</text>
 			</g>
 			<text transform="matrix(1 0 0 1 -545.5947 754.6407)" style="font-family:'Helvetica-Oblique'; font-size:26px;">arrow</text>
+			<text transform="matrix(1 0 0 1 -545.5947 785.8407)" style="font-family:'Helvetica-Oblique'; font-size:26px;">merfin</text>
 			<text transform="matrix(1 0 0 1 -831.127 815.2296)" style="font-family:'Helvetica-Oblique'; font-size:26px;">longranger</text>
 			<text transform="matrix(1 0 0 1 -831.127 840.7413)" style="font-family:'Helvetica-Oblique'; font-size:26px;">deepvariant</text>
+			<text transform="matrix(1 0 0 1 -831.127 871.9413)" style="font-family:'Helvetica-Oblique'; font-size:26px;">merfin</text>
 			<path d="M0,0"/>
 			<path id="path3583-6-2-0" inkscape:connector-curvature="0" class="st1" d="M-603.6,695.4l14.7-8.5v17L-603.6,695.4z"/>
 			<path id="path3579-2-7-6" inkscape:connector-curvature="0" class="st2" d="M-426,695.4"/>
