@@ -19,102 +19,107 @@
 		.st8{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#EDD400;fill-opacity:0.1961;stroke:#EDD400;stroke-width:2.126;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
 	.st9{fill-rule:evenodd;clip-rule:evenodd;stroke:#000000;stroke-width:0.6036;stroke-miterlimit:11.3386;}
 	.st10{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.9028;stroke-miterlimit:11.3386;}
-	.st11{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.696;stroke-miterlimit:11.3386;}
+	.st11{fill:#FFFFFF;}
+	.st12{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.696;stroke-miterlimit:11.3386;}
 	
-		.st12{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#F57900;fill-opacity:0.1961;stroke:#F57900;stroke-width:2.126;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
-	.st13{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.674;stroke-miterlimit:11.3386;}
-	.st14{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.6031;stroke-miterlimit:11.3386;}
+		.st13{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#F57900;fill-opacity:0.1961;stroke:#F57900;stroke-width:2.126;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
+	.st14{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.674;stroke-miterlimit:11.3386;}
+	.st15{fill-rule:evenodd;clip-rule:evenodd;fill:#204A87;stroke:#204A87;stroke-width:0.6031;stroke-miterlimit:11.3386;}
 	
-		.st15{fill:none;stroke:#000000;stroke-width:2.8346;stroke-miterlimit:11.3386;stroke-opacity:0.9804;stroke-dasharray:8.5039,8.5039;}
-	.st16{enable-background:new    ;}
-	.st17{fill-rule:evenodd;clip-rule:evenodd;fill:#333333;stroke:#333333;stroke-width:1.8416;stroke-miterlimit:7.3665;}
-	.st18{fill:#333333;stroke:#333333;stroke-width:2.1062;stroke-miterlimit:11.3386;}
+		.st16{fill:none;stroke:#000000;stroke-width:2.8346;stroke-miterlimit:11.3386;stroke-opacity:0.9804;stroke-dasharray:8.5039,8.5039;}
 	
-		.st19{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#EDD400;fill-opacity:0.1961;stroke:#EDD400;stroke-width:0.7595;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
+		.st17{fill-rule:evenodd;clip-rule:evenodd;fill:#75507B;fill-opacity:0.3902;stroke:#75507B;stroke-width:2.126;stroke-miterlimit:11.3386;stroke-opacity:0.3922;}
+	.st18{fill-rule:evenodd;clip-rule:evenodd;fill:#333333;stroke:#333333;stroke-width:1.8416;stroke-miterlimit:7.3665;}
+	.st19{fill:#333333;stroke:#333333;stroke-width:2.1062;stroke-miterlimit:11.3386;}
 	
-		.st20{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#F57900;fill-opacity:0.1961;stroke:#F57900;stroke-width:0.7592;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
+		.st20{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#EDD400;fill-opacity:0.1961;stroke:#EDD400;stroke-width:0.7595;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
 	
-		.st21{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#75507B;fill-opacity:0.3902;stroke:#75507B;stroke-width:0.7592;stroke-miterlimit:11.3386;stroke-opacity:0.3922;enable-background:new    ;}
-	.st22{fill:#333333;stroke:#333333;stroke-width:2.8462;stroke-miterlimit:11.3386;}
+		.st21{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#F57900;fill-opacity:0.1961;stroke:#F57900;stroke-width:0.7592;stroke-miterlimit:11.3386;stroke-opacity:0.1961;enable-background:new    ;}
 	
-		.st23{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#4E9A06;stroke:#4E9A06;stroke-width:1.5656;stroke-miterlimit:11.3386;enable-background:new    ;}
+		.st22{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#75507B;fill-opacity:0.3902;stroke:#75507B;stroke-width:0.7592;stroke-miterlimit:11.3386;stroke-opacity:0.3922;enable-background:new    ;}
+	.st23{fill:#333333;stroke:#333333;stroke-width:2.8462;stroke-miterlimit:11.3386;}
+	
+		.st24{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#4E9A06;stroke:#4E9A06;stroke-width:1.5656;stroke-miterlimit:11.3386;enable-background:new    ;}
+	
+		.st25{opacity:0.94;fill-rule:evenodd;clip-rule:evenodd;fill:#4E9A06;stroke:#4E9A06;stroke-width:1.5657;stroke-miterlimit:11.339;enable-background:new    ;}
+	.st26{fill:none;stroke:#333333;stroke-width:2.8346;stroke-miterlimit:11.3386;}
 </style>
 <sodipodi:namedview  bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="g1973" inkscape:cx="-782.29306" inkscape:cy="-98.047175" inkscape:document-units="mm" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="705" inkscape:window-maximized="1" inkscape:window-width="1366" inkscape:window-x="0" inkscape:window-y="30" inkscape:zoom="0.175" pagecolor="#ffffff" showgrid="false">
 	</sodipodi:namedview>
 <g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
 	<g id="g1973" inkscape:export-xdpi="200" inkscape:export-ydpi="200">
 		<g id="g2166">
-			<path class="st0" d=""/>
+			<path class="st0" d="M0,0"/>
 			<path id="path4197-6-2-2-7" inkscape:connector-curvature="0" class="st1" d="M-1772.4,269.1l-14.7,8.5v-17L-1772.4,269.1z"/>
 			<path id="path4195-7-3-7-06" inkscape:connector-curvature="0" class="st2" d="M-1782.2,269.1"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path1566-7-7-3" inkscape:connector-curvature="0" class="st1" d="M-1772.4,354.9l-14.7,8.5v-17L-1772.4,354.9z"/>
 			<path id="path1562-5-9-32" inkscape:connector-curvature="0" class="st2" d="M-1782.2,354.9"/>
 			<path id="path1225-7-0-4-0" inkscape:connector-curvature="0" class="st3" d="M-1816.6,114.6v240.1"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path4773-5-5-6" inkscape:connector-curvature="0" class="st1" d="M-1326.1,481.7l-8.5-14.7h17L-1326.1,481.7z"/>
 			<path id="path4771-8-9-6" inkscape:connector-curvature="0" class="st2" d="M-1326.1,471.9"/>
 			<path id="path943-4-8-1" inkscape:connector-curvature="0" class="st3" d="M-1114.6,412.8h-416.8"/>
 			<path id="path943-2-0-5-5" inkscape:connector-curvature="0" class="st3" d="M-416,326.9h-195"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path4429-5-1-9" inkscape:connector-curvature="0" class="st1" d="M-153.3,472.9l-8.5-14.7h17L-153.3,472.9z"/>
 			<path id="path4427-1-8-5" inkscape:connector-curvature="0" class="st2" d="M-153.3,463.1"/>
 			<path id="path943-2-3-4-1-4-4" inkscape:connector-curvature="0" class="st3" d="M-153.7,570.6h-263.7"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path4303-9-7-2" inkscape:connector-curvature="0" class="st1" d="M-908.4,695.4l14.7-8.5v17L-908.4,695.4z"/>
 			<path id="path4299-8-8-7" inkscape:connector-curvature="0" class="st2" d="M-818.4,695.4"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path4773-6-9-3-1-0" inkscape:connector-curvature="0" class="st1" d="M-1017.2,793.4l-8.5-14.7h17L-1017.2,793.4z"/>
 			<path id="path4771-1-1-9-1-65" inkscape:connector-curvature="0" class="st2" d="M-1017.2,783.6"/>
 			<rect id="rect4455-7-9-6" x="-1256.5" y="673.5" class="st4" width="419.7" height="171.6"/>
 			<rect id="rect969-2-3-9" x="-1709.2" y="71.8" class="st5" width="1670.1" height="83"/>
 			<g id="g2152-2-6-3" transform="translate(206.05714,177.6292)">
 				<rect id="rect1425-0-8-1-7" x="-1888.6" y="-92.4" class="st6" width="169.5" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -1853.1792 -53.1242)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Pacbio</text>
+				<text transform="matrix(1 0 0 1 -1853.1792 -53.1242)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Pacbio</text>
 			</g>
 			<g id="g5447-3-3-2" transform="translate(110.38225,167.0459)">
 				<rect id="rect971-6-2-5" x="-1880" y="74.1" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1842.9076 110.3253)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Primary contigs: </text>
-				<text transform="matrix(1 0 0 1 -1619.5179 110.3253)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">c1</text>
+				<text transform="matrix(1 0 0 1 -1842.9076 110.3253)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Primary contigs: </text>
+				<text transform="matrix(1 0 0 1 -1619.5179 110.3253)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">c1</text>
 			</g>
 			<g id="g5453-3-5-43" transform="translate(111.04887,167.0459)">
 				<rect id="rect971-8-1-5-0" x="-1880.6" y="160" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1867.8457 196.132)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Alternate haplotigs: </text>
-				<text transform="matrix(1 0 0 1 -1602.6797 196.132)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">c2</text>
+				<text transform="matrix(1 0 0 1 -1867.8457 196.132)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Alternate haplotigs: </text>
+				<text transform="matrix(1 0 0 1 -1602.6797 196.132)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">c2</text>
 			</g>
 			<rect id="rect1471-8-5-8" x="-1846.5" y="161.6" class="st8" width="51.2" height="214.2"/>
 			<g id="g2147-4-6-8" transform="translate(345.82307,222.0792)">
 				<rect id="rect1518-5-9-43" x="-1111.9" y="-137.1" class="st6" width="169.5" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -1057.6951 -98.1367)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">10X</text>
+				<text transform="matrix(1 0 0 1 -1057.6951 -98.1367)" class="st11" style="font-family:'Helvetica'; font-size:30px;">10X</text>
 			</g>
 			<g id="g2142-6-4-9" transform="translate(309.01259,213.3339)">
 				<rect id="rect1425-0-9-1-5-2" x="-811.1" y="-128.4" class="st9" width="169.8" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -787.8906 -89.1277)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Bionano</text>
+				<text transform="matrix(1 0 0 1 -787.8906 -89.1277)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Bionano</text>
 			</g>
 			<g id="g2137-3-4-89" transform="translate(270.85499,224.7002)">
 				<rect id="rect1425-0-97-2-7-2" x="-508.9" y="-139.7" class="st6" width="169.5" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -450.7671 -100.494)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">HiC</text>
+				<text transform="matrix(1 0 0 1 -450.7671 -100.494)" class="st11" style="font-family:'Helvetica'; font-size:30px;">HiC</text>
 			</g>
 			<g id="g1111-1-3-49" transform="translate(106.14897,168.6655)">
 				<rect id="rect971-8-4-5-0-5" x="-1623.1" y="316.2" class="st10" width="381.8" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1610.1313 352.4108)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Alternate combined: </text>
-				<text transform="matrix(1 0 0 1 -1334.9751 352.4108)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">q2</text>
+				<text transform="matrix(1 0 0 1 -1610.1313 352.4108)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Alternate combined: </text>
+				<text transform="matrix(1 0 0 1 -1334.9751 352.4108)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">q2</text>
 			</g>
 			<g id="g935-6-8-7" transform="translate(102.44474,167.0459)">
 				<rect id="rect971-5-5-8-1" x="-1339.8" y="74.1" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1309.3441 110.3253)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Curated primary: </text>
-				<text transform="matrix(1 0 0 1 -1077.6058 110.3253)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">p1</text>
+				<text transform="matrix(1 0 0 1 -1309.3441 110.3253)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Curated primary: </text>
+				<text transform="matrix(1 0 0 1 -1077.6058 110.3253)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">p1</text>
 			</g>
 			<g id="g941-7-4-2" transform="translate(102.44474,167.0459)">
 				<rect id="rect971-1-4-9-2" x="-1340" y="160" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1320.5355 196.132)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Curated haplotigs: </text>
-				<text transform="matrix(1 0 0 1 -1068.7142 196.132)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">p2</text>
+				<text transform="matrix(1 0 0 1 -1320.5355 196.132)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Curated haplotigs: </text>
+				<text transform="matrix(1 0 0 1 -1068.7142 196.132)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">p2</text>
 			</g>
-			<path class="st0" d=""/>
+			<path class="st11" d="M0,0"/>
 			<path id="path3231-6-6-3" inkscape:connector-curvature="0" class="st1" d="M-1240.5,269.1l-14.7,8.5v-17L-1240.5,269.1z"/>
 			<path id="path3229-4-8-6" inkscape:connector-curvature="0" class="st2" d="M-1250.3,269.1"/>
 			<path id="path3475-7-9-1" inkscape:connector-curvature="0" class="st3" d="M-1326.5,268.9v86.8"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path4197-5-5-0" inkscape:connector-curvature="0" class="st1" d="M-1240.7,354.9l-14.7,8.5v-17L-1240.7,354.9z"/>
 			<path id="path4195-4-2-5" inkscape:connector-curvature="0" class="st2" d="M-1250.5,354.9"/>
 			<path id="path4729-4-6-9" inkscape:connector-curvature="0" class="st3" d="M-1599.7,382.8V413"/>
@@ -122,97 +127,93 @@
 			<path id="path4763-07-4-9" inkscape:connector-curvature="0" class="st3" d="M-1053.7,382.8v29.4"/>
 			<text transform="matrix(1 0 0 1 -1389.1172 216.007)" style="font-family:'Helvetica-Oblique'; font-size:26px;">purge dups</text>
 			<g id="g1099-1-1-1" transform="translate(90.80308,167.5667)">
-				<rect id="rect971-5-3-4-7-7" x="-885.2" y="73.5" class="st11" width="226.1" height="56"/>
-				<text transform="matrix(1 0 0 1 -869.2894 112.7128)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
-				<text transform="matrix(1 0 0 1 -729.7484 112.7128)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">s1</text>
+				<rect id="rect971-5-3-4-7-7" x="-885.2" y="73.5" class="st12" width="226.1" height="56"/>
+				<text transform="matrix(1 0 0 1 -869.2894 112.7128)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
+				<text transform="matrix(1 0 0 1 -729.7484 112.7128)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">s1</text>
 			</g>
 			<path id="path1117-6-2-9" inkscape:connector-curvature="0" class="st3" d="M-884.4,196.1h203.2l0,0"/>
 			<path id="path1225-8-6-7" inkscape:connector-curvature="0" class="st3" d="M-1053.6,196.1v44.4"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path4773-1-1-1-2" inkscape:connector-curvature="0" class="st1" d="M-681.3,238.3l-8.5-14.7h17L-681.3,238.3z"/>
 			<path id="path4771-2-9-1-7" inkscape:connector-curvature="0" class="st2" d="M-681.3,228.5"/>
-			<rect id="rect1470-26-0-6" x="-774.8" y="161.4" class="st12" width="115.6" height="53.6"/>
+			<rect id="rect1470-26-0-6" x="-774.8" y="161.4" class="st13" width="115.6" height="53.6"/>
 			<text transform="matrix(1 0 0 1 -653.751 208.2414)" style="font-family:'Helvetica-Oblique'; font-size:26px;">scaff 10X</text>
 			<path id="path1117-0-4-9-6" inkscape:connector-curvature="0" class="st3" d="M-1817.3,113.3h134.2l0,0"/>
 			<text transform="matrix(1 0 0 1 -1791.4023 193.8683)" style="font-family:'Helvetica-Oblique'; font-size:26px;">falcon &amp;</text>
 			<text transform="matrix(1 0 0 1 -1791.4023 219.38)" style="font-family:'Helvetica-Oblique'; font-size:26px;">unzip</text>
 			<g id="g1099-9-7-7-9" transform="translate(142.35978,223.4375)">
-				<rect id="rect971-5-3-3-2-7-4" x="-790.6" y="176" class="st11" width="226.1" height="56"/>
-				<text transform="matrix(1 0 0 1 -774.7006 215.216)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
-				<text transform="matrix(1 0 0 1 -635.1596 215.216)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">s2</text>
+				<rect id="rect971-5-3-3-2-7-4" x="-790.6" y="176" class="st12" width="226.1" height="56"/>
+				<text transform="matrix(1 0 0 1 -774.7006 215.216)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
+				<text transform="matrix(1 0 0 1 -635.1596 215.216)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">s2</text>
 			</g>
-			<path class="st0" d=""/>
+			<path class="st11" d="M0,0"/>
 			<path id="path4773-6-9-3-18" inkscape:connector-curvature="0" class="st1" d="M-535.2,396.3l-8.5-14.7h17L-535.2,396.3z"/>
 			<path id="path4771-1-1-9-9" inkscape:connector-curvature="0" class="st2" d="M-535.2,386.5"/>
 			<path id="path2088-0-7-3" inkscape:connector-curvature="0" class="st3" d="M-417.2,236.2v90.2"/>
-			<text transform="matrix(1 0 0 1 -396.5811 315.2502)" style="font-family:'Helvetica-Oblique'; font-size:26px;">bionano</text>
-			<rect id="rect1470-2-4-3-8" x="-553.5" y="289.1" class="st12" width="152.4" height="83.4"/>
+			<text transform="matrix(1 0 0 1 -396.5811 315.2503)" style="font-family:'Helvetica-Oblique'; font-size:26px;">bionano</text>
+			<rect id="rect1470-2-4-3-8" x="-553.5" y="289.1" class="st13" width="152.4" height="83.4"/>
 			<path id="path4763-0-9-6-8" inkscape:connector-curvature="0" class="st3" d="M-681.3,297.5v29.4"/>
 			<path id="path2254-9-6-5" inkscape:connector-curvature="0" class="st3" d="M-153.3,471v224.7"/>
 			<g id="g1099-9-3-2-9-3-0" transform="translate(220.8757,317.9542)">
 				<g id="g2287-8-7-9-9">
 					<g id="g2327-7-4-6">
-						<rect id="rect971-5-3-3-7-9-6-8-3" x="-646.5" y="349.4" class="st11" width="226.1" height="56"/>
-						<text transform="matrix(1 0 0 1 -630.6521 388.6202)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
-						<text transform="matrix(1 0 0 1 -491.1111 388.6202)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">s4</text>
+						<rect id="rect971-5-3-3-7-9-6-8-3" x="-646.5" y="349.4" class="st12" width="226.1" height="56"/>
+						<text transform="matrix(1 0 0 1 -630.6521 388.6202)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
+						<text transform="matrix(1 0 0 1 -491.1111 388.6202)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">s4</text>
 					</g>
 				</g>
 			</g>
 			<path id="path943-2-3-4-0-5" inkscape:connector-curvature="0" class="st3" d="M-153,427.5h-198.4"/>
 			<g id="g2758-8-8-9" transform="translate(-26.73938,316.9285)">
-				<rect id="rect971-5-3-3-78-1-8-8" x="-1096.4" y="350.5" class="st13" width="211.9" height="56"/>
-				<text transform="matrix(1 0 0 1 -1084.9384 386.7386)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Polishing: </text>
-				<text transform="matrix(1 0 0 1 -946.5253 386.7386)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">t2</text>
+				<rect id="rect971-5-3-3-78-1-8-8" x="-1096.4" y="350.5" class="st14" width="211.9" height="56"/>
+				<text transform="matrix(1 0 0 1 -1084.9384 386.7386)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Polishing: </text>
+				<text transform="matrix(1 0 0 1 -946.5253 386.7386)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">t2</text>
 			</g>
 			<g id="g2758-7-9-6-0" transform="translate(80.99132,316.9285)">
-				<rect id="rect971-5-3-3-78-3-0-3-3" x="-898.8" y="350.5" class="st13" width="211.9" height="56"/>
-				<text transform="matrix(1 0 0 1 -887.2902 386.7386)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Polishing: </text>
-				<text transform="matrix(1 0 0 1 -748.8771 386.7386)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">t1</text>
+				<rect id="rect971-5-3-3-78-3-0-3-3" x="-898.8" y="350.5" class="st14" width="211.9" height="56"/>
+				<text transform="matrix(1 0 0 1 -887.2902 386.7386)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Polishing: </text>
+				<text transform="matrix(1 0 0 1 -748.8771 386.7386)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">t1</text>
 			</g>
 			<g id="g2758-2-0-1-4" transform="translate(-26.73938,362.3345)">
-				<rect id="rect971-5-3-3-78-31-9-1-4" x="-1096.4" y="433.8" class="st13" width="211.9" height="56"/>
-				<text transform="matrix(1 0 0 1 -1084.9384 470.0426)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Polishing: </text>
-				<text transform="matrix(1 0 0 1 -946.5253 470.0426)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">t3</text>
+				<rect id="rect971-5-3-3-78-31-9-1-4" x="-1096.4" y="433.8" class="st14" width="211.9" height="56"/>
+				<text transform="matrix(1 0 0 1 -1084.9384 470.0426)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Polishing: </text>
+				<text transform="matrix(1 0 0 1 -946.5253 470.0426)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">t3</text>
 			</g>
 			<text transform="matrix(1 0 0 1 -1365.5791 28.4054)" style="font-family:'Arial-BoldMT'; font-size:40px;">DNAnexus VGP assembly pipeline 1.6</text>
 			<g id="g4768-5" transform="translate(469.62999,-856.8601)">
-				<rect id="rect971-5-3-3-78-0-1-1-9" x="-1929.9" y="1652.9" class="st14" width="169.5" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -1908.9298 1689.2372)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">pri.asm</text>
+				<rect id="rect971-5-3-3-78-0-1-1-9" x="-1929.9" y="1652.9" class="st15" width="169.5" height="56.1"/>
+				<text transform="matrix(1 0 0 1 -1908.9298 1689.2372)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">pri.asm</text>
 			</g>
 			<g id="g3506-1" transform="translate(469.62999,-917.40158)">
-				<rect id="rect971-5-3-3-78-0-3-8-0-7" x="-1929.9" y="1627.7" class="st14" width="169.5" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -1907.465 1666.8793)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">alt.asm</text>
+				<rect id="rect971-5-3-3-78-0-3-8-0-7" x="-1929.9" y="1627.7" class="st15" width="169.5" height="56.1"/>
+				<text transform="matrix(1 0 0 1 -1907.465 1666.8793)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">alt.asm</text>
 			</g>
-			<path class="st0" d=""/>
+			<path class="st11" d="M0,0"/>
 			<path id="path3075-0-6-0-9" inkscape:connector-curvature="0" class="st1" d="M-198,695.4l14.7-8.5v17L-198,695.4z"/>
 			<path id="path4195-7-4-1-1-4-7" inkscape:connector-curvature="0" class="st2" d="M-153.7,695.4"/>
-			<rect id="rect1470-2-2-0-4-4" x="-329" y="389.5" class="st12" width="198.7" height="236.1"/>
+			<rect id="rect1470-2-2-0-4-4" x="-329" y="389.5" class="st13" width="198.7" height="236.1"/>
 			<text transform="matrix(1 0 0 1 -398.4033 535.089)" style="font-family:'Helvetica-Oblique'; font-size:26px;">salsa</text>
 			<g id="g4764-4-1-7" transform="translate(106.69854,161.2997)">
-				<rect id="rect1518-6-4-7-5" x="-1068.4" y="323.5" class="st15" width="210.2" height="56.1"/>
-				<text transform="matrix(1 0 0 1 -1059.9543 359.7766)" style="font-family:'Helvetica-Oblique'; font-size:30px;">mitogenome</text>
-				<g class="st16">
-					
-						<text transform="matrix(1 0 0 1 -1059.9543 359.7766)" style="fill:none;stroke:#75507B;stroke-width:0.75;stroke-miterlimit:11.3386; font-family:'Helvetica-Oblique'; font-size:30px;">mitogenome</text>
-				</g>
+				<rect id="rect1518-6-4-7-5" x="-1068.4" y="323.5" class="st16" width="210.2" height="56.1"/>
+				<text transform="matrix(1 0 0 1 -1049.9543 359.7766)" style="font-family:'Helvetica-Oblique'; font-size:30px;">mitogenome</text>
 			</g>
 			<text transform="matrix(1 0 0 1 -545.5947 754.6407)" style="font-family:'Helvetica-Oblique'; font-size:26px;">arrow</text>
 			<text transform="matrix(1 0 0 1 -831.127 815.2296)" style="font-family:'Helvetica-Oblique'; font-size:26px;">longranger</text>
 			<text transform="matrix(1 0 0 1 -831.127 840.7413)" style="font-family:'Helvetica-Oblique'; font-size:26px;">deepvariant</text>
-			<path class="st0" d=""/>
+			<path d="M0,0"/>
 			<path id="path3583-6-2-0" inkscape:connector-curvature="0" class="st1" d="M-603.6,695.4l14.7-8.5v17L-603.6,695.4z"/>
 			<path id="path3579-2-7-6" inkscape:connector-curvature="0" class="st2" d="M-426,695.4"/>
 			<rect id="rect1471-7-9-1-4-4" x="-579.2" y="673.2" class="st4" width="136.2" height="59.3"/>
-			<path class="st0" d=""/>
-			<path id="path4531-0-2-7" inkscape:connector-curvature="0" class="st17" d="M-1288,824.1l15.9-9.2v18.4L-1288,824.1z"/>
+			<path class="st17" d="M0,0"/>
+			<path id="path4531-0-2-7" inkscape:connector-curvature="0" class="st18" d="M-1288,824.1l15.9-9.2v18.4L-1288,824.1z"/>
 			<path id="path4527-1-5-3" inkscape:connector-curvature="0" class="st2" d="M-1124.8,824.1"/>
-			<path id="path4763-3-9-8-3-3" inkscape:connector-curvature="0" class="st18" d="M-1221,738.3v85.8"/>
-			<path class="st0" d=""/>
+			<path id="path4763-3-9-8-3-3" inkscape:connector-curvature="0" class="st19" d="M-1221,738.3v85.8"/>
+			<path class="st19" d="M0,0"/>
 			<path id="path4730-3-2-9" inkscape:connector-curvature="0" class="st1" d="M-1288.2,738.3l14.7-8.5v17L-1288.2,738.3z"/>
 			<path id="path4726-5-8-3" inkscape:connector-curvature="0" class="st2" d="M-1221,738.3"/>
-			<rect id="rect1471-0-3-3-8" x="-1828.9" y="583.2" class="st19" width="55.9" height="55.9"/>
-			<rect id="rect4731-2-8-1-6" x="-1828.9" y="654.1" class="st20" width="55.9" height="55.9"/>
-			<rect id="rect4455-2-8-8-0" x="-1828.9" y="725" class="st21" width="55.9" height="55.9"/>
+			<rect id="rect1471-0-3-3-8" x="-1828.9" y="583.2" class="st20" width="55.9" height="55.9"/>
+			<rect id="rect4731-2-8-1-6" x="-1828.9" y="654.1" class="st21" width="55.9" height="55.9"/>
+			<rect id="rect4455-2-8-8-0" x="-1828.9" y="725" class="st22" width="55.9" height="55.9"/>
 			<text transform="matrix(1 0 0 1 -1760.4248 608.0558)" style="font-family:'Helvetica-Oblique'; font-size:26px;">Assembly </text>
 			<text transform="matrix(1 0 0 1 -1760.4248 633.5675)" style="font-family:'Helvetica-Oblique'; font-size:26px;">workflow</text>
 			<text transform="matrix(1 0 0 1 -1762.1768 678.9884)" style="font-family:'Helvetica-Oblique'; font-size:26px;">Scaffolding</text>
@@ -231,64 +232,89 @@
 			<text transform="matrix(1 0 0 1 -876.2861 1018.8234)" style="font-family:'Helvetica'; font-size:26px;">: t1, t2</text>
 			<text transform="matrix(1 0 0 1 -1335.1777 982.6671)" style="font-family:'Helvetica-Oblique'; font-size:26px;">asm_stats (scaff &amp; contig)</text>
 			<text transform="matrix(1 0 0 1 -1036.5332 982.6671)" style="font-family:'Helvetica'; font-size:26px;">: s3</text>
-			<path id="path943-2-3-2-4-5-28" inkscape:connector-curvature="0" class="st22" d="M-62.5,898h-1760.3"/>
+			<path id="path943-2-3-2-4-5-28" inkscape:connector-curvature="0" class="st23" d="M-62.5,898h-1760.3"/>
 			<text transform="matrix(1 0 0 1 -1780.6689 927.8898)" style="font-family:'Helvetica'; font-size:26px;">CHECKPOINT STATS &amp; PLOTS</text>
 			<path id="path4763-0-9-4-6-6" inkscape:connector-curvature="0" class="st3" d="M-1326.1,541.3v29.4"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path2092-5-9-7-2" inkscape:connector-curvature="0" class="st1" d="M-884.2,196.1l-14.7,8.5v-17L-884.2,196.1z"/>
 			<path id="path2533-9-2-9-8" inkscape:connector-curvature="0" class="st2" d="M-894,196.1"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path2092-5-4-9-9" inkscape:connector-curvature="0" class="st1" d="M-611.2,326.9l-14.7,8.5v-17L-611.2,326.9z"/>
 			<path id="path2533-9-7-2-0" inkscape:connector-curvature="0" class="st2" d="M-621,326.9"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path4429-2-3" inkscape:connector-curvature="0" class="st1" d="M-417.2,238.3l-8.5-14.7h17L-417.2,238.3z"/>
 			<path id="path4427-2-2" inkscape:connector-curvature="0" class="st2" d="M-417.2,228.5"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path4795-9-1" inkscape:connector-curvature="0" class="st1" d="M-153.3,321.4l-8.5-14.7h17L-153.3,321.4z"/>
 			<path id="path4793-4-1" inkscape:connector-curvature="0" class="st2" d="M-153.3,311.6"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path2092-5-5-3-9" inkscape:connector-curvature="0" class="st1" d="M-1529.6,412.8l-14.7,8.5v-17L-1529.6,412.8z"/>
 			<path id="path2533-9-4-7-0" inkscape:connector-curvature="0" class="st2" d="M-1539.4,412.8"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path2092-5-3-1-1" inkscape:connector-curvature="0" class="st1" d="M-351.7,427.5l-14.7,8.5v-17L-351.7,427.5z"/>
 			<path id="path2533-9-6-7-5" inkscape:connector-curvature="0" class="st2" d="M-361.5,427.5"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path4730-3-0-9-7" inkscape:connector-curvature="0" class="st1" d="M-1117.1,412.8l14.7-8.5v17L-1117.1,412.8z"/>
 			<path id="path4726-5-2-5-1" inkscape:connector-curvature="0" class="st2" d="M-1053.7,412.8"/>
 			<path id="path1117-6-1-1-1" inkscape:connector-curvature="0" class="st3" d="M-751.5,512.8h89.7l0,0"/>
 			<g id="g1099-9-3-1-2-0" transform="translate(277.06114,253.5403)">
 				<g id="g2287-7-8-8">
-					<rect id="rect971-5-3-3-7-7-9-50" x="-543.4" y="231.3" class="st11" width="226.1" height="56"/>
-					<text transform="matrix(1 0 0 1 -527.5719 270.4442)" style="fill:#FFFFFF; font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
-					<text transform="matrix(1 0 0 1 -388.0309 270.4442)" style="fill:#FFFFFF; font-family:'Helvetica-Bold'; font-size:30px;">s3</text>
+					<rect id="rect971-5-3-3-7-7-9-50" x="-543.4" y="231.3" class="st12" width="226.1" height="56"/>
+					<text transform="matrix(1 0 0 1 -527.5719 270.4442)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Scaffolds: </text>
+					<text transform="matrix(1 0 0 1 -388.0309 270.4442)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">s3</text>
 				</g>
 			</g>
-			<path class="st0" d=""/>
+			<path class="st11" d="M0,0"/>
 			<path id="path4197-5-8-4-4" inkscape:connector-curvature="0" class="st1" d="M-1040.2,570.6l-14.7,8.5v-17L-1040.2,570.6z"/>
 			<path id="path4195-4-5-0-25" inkscape:connector-curvature="0" class="st2" d="M-1050,570.6"/>
-			<path class="st0" d=""/>
+			<path class="st2" d="M0,0"/>
 			<path id="path4773-6-9-6-8-0" inkscape:connector-curvature="0" class="st1" d="M-661.7,551.7l-8.5-14.7h17L-661.7,551.7z"/>
 			<path id="path4771-1-1-4-2-86" inkscape:connector-curvature="0" class="st2" d="M-661.7,541.9"/>
 			<path id="path4763-07-6-1-2" inkscape:connector-curvature="0" class="st3" d="M-661.7,541.9v29.4"/>
-			<path class="st0" d=""/>
+			<path class="st3" d="M0,0"/>
 			<path id="path2092-5-3-5-5-6" inkscape:connector-curvature="0" class="st1" d="M-415.9,570.6l-14.7,8.5v-17L-415.9,570.6z"/>
 			<path id="path2533-9-6-8-0-8" inkscape:connector-curvature="0" class="st2" d="M-425.7,570.6"/>
-			<circle id="path1343" class="st23" cx="-1799.4" cy="918.4" r="13.4"/>
-			<circle id="path1343-3" class="st23" cx="-1401.6" cy="240.8" r="13.4"/>
-			<circle id="path1343-6" class="st23" cx="-1401.7" cy="326.5" r="13.4"/>
-			<circle id="path1343-7" class="st23" cx="-869.4" cy="240.7" r="13.4"/>
-			<circle id="path1343-5" class="st23" cx="-1134.8" cy="484.4" r="13.4"/>
-			<circle id="path1343-35" class="st23" cx="-568.2" cy="240.8" r="13.4"/>
-			<circle id="path1343-62" class="st23" cx="-422" cy="398.8" r="13.4"/>
-			
-				<ellipse id="path1343-9" transform="matrix(2.172373e-02 -0.9998 0.9998 2.172373e-02 -523.293 434.079)" class="st23" cx="-39.8" cy="484.4" rx="13.4" ry="13.4"/>
-			<circle id="path1343-1" class="st23" cx="-605.6" cy="666.9" r="13.4"/>
-			<circle id="path1343-2" class="st23" cx="-911" cy="667" r="13.4"/>
-			<circle id="path1343-93" class="st23" cx="-1290.4" cy="795.7" r="13.4"/>
+			<circle id="path1343" class="st24" cx="-1799.4" cy="918.4" r="13.4"/>
+			<circle id="path1343-3" class="st24" cx="-1401.6" cy="240.8" r="13.4"/>
+			<circle id="path1343-6" class="st24" cx="-1401.7" cy="326.5" r="13.4"/>
+			<circle id="path1343-7" class="st24" cx="-869.4" cy="240.7" r="13.4"/>
+			<circle id="path1343-5" class="st24" cx="-1134.8" cy="484.4" r="13.4"/>
+			<circle id="path1343-35" class="st24" cx="-568.2" cy="240.8" r="13.4"/>
+			<circle id="path1343-62" class="st24" cx="-422" cy="398.8" r="13.4"/>
+			<ellipse id="path1343-9" class="st25" cx="-39.9" cy="484.4" rx="13.4" ry="13.4"/>
+			<circle id="path1343-1" class="st24" cx="-605.6" cy="666.9" r="13.4"/>
+			<circle id="path1343-2" class="st24" cx="-911" cy="667" r="13.4"/>
+			<circle id="path1343-93" class="st24" cx="-1290.4" cy="795.7" r="13.4"/>
 			<text transform="matrix(1 0 0 1 -639.4424 982.5421)" style="font-family:'Helvetica-Oblique'; font-size:26px;">merqury QV</text>
 			<text transform="matrix(1 0 0 1 -499.2988 982.5421)" style="font-family:'Helvetica'; font-size:26px;">: c1+c2, p1+q2, s4, t1</text>
-			<circle id="path1343-9-3" class="st23" cx="-199.4" cy="667" r="13.4"/>
+			<circle id="path1343-9-3" class="st24" cx="-199.4" cy="667" r="13.4"/>
 		</g>
 	</g>
 </g>
+<line class="st26" x1="-1789.1" y1="269" x2="-1816.6" y2="269"/>
+<line class="st26" x1="-1787.1" y1="354.7" x2="-1816.6" y2="354.7"/>
+<line class="st26" x1="-1599.7" y1="413" x2="-1544.3" y2="413"/>
+<line class="st26" x1="-153.3" y1="321.4" x2="-153.3" y2="463.1"/>
+<line class="st26" x1="-153.7" y1="695.4" x2="-183.3" y2="695.4"/>
+<line class="st26" x1="-426" y1="695.4" x2="-588.9" y2="695.4"/>
+<line class="st26" x1="-1221" y1="738.3" x2="-1273.5" y2="738.3"/>
+<line class="st26" x1="-1221" y1="824.1" x2="-1270.9" y2="824.1"/>
+<line class="st26" x1="-1017.2" y1="724.8" x2="-1017.2" y2="778.7"/>
+<line class="st26" x1="-818.4" y1="695.4" x2="-893.7" y2="695.4"/>
+<line class="st26" x1="-1326.1" y1="570.7" x2="-1054.9" y2="570.6"/>
+<line class="st26" x1="-1401.7" y1="269" x2="-1255.2" y2="269.1"/>
+<line class="st26" x1="-1326.5" y1="355.7" x2="-1255.4" y2="354.9"/>
+<line class="st26" x1="-1053.7" y1="412.2" x2="-1102.4" y2="412.8"/>
+<line class="st26" x1="-1053.6" y1="196.1" x2="-898.9" y2="196.1"/>
+<line class="st26" x1="-681.2" y1="196.1" x2="-681.2" y2="223.6"/>
+<line class="st26" x1="-681.3" y1="326.9" x2="-625.9" y2="326.9"/>
+<line class="st26" x1="-153.3" y1="141.1" x2="-153" y2="306.7"/>
+<line class="st26" x1="-417.2" y1="141.1" x2="-417.2" y2="223.6"/>
+<line class="st26" x1="-681.3" y1="141.1" x2="-681.2" y2="196.1"/>
+<line class="st26" x1="-535.2" y1="327" x2="-535.2" y2="381.6"/>
+<line class="st26" x1="-422" y1="427.5" x2="-366.4" y2="427.5"/>
+<line class="st26" x1="-661.8" y1="512.8" x2="-661.7" y2="541.9"/>
+<line class="st26" x1="-1040.2" y1="570.6" x2="-425.7" y2="570.6"/>
+<line class="st26" x1="-1221" y1="824.1" x2="-1124.8" y2="824.1"/>
+<line class="st26" x1="-1326.1" y1="471.9" x2="-1326.1" y2="413"/>
 </svg>
