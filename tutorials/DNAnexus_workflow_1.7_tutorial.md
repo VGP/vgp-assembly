@@ -662,7 +662,7 @@ fArcCen1
     └── ...
 ```
 
-We have noticed that running Arrow can sometimes lead to a significant reduction in QV. [Merfin] (https://github.com/arangrhie/merfin) was devised to fix this issue.
+We have noticed that running Arrow can sometimes lead to a significant reduction in QV. [Merfin](https://github.com/arangrhie/merfin) was devised to fix this issue.
 
 After you have run the **Scaffold 5 Arrow Polish** workflow, run **Scaffold5 part2 merfin**.
 
@@ -754,7 +754,7 @@ fArcCen1
     └── ...
 ```
 
-**!)** You should check for an increase in the QV value after each round when comparing the `qv_report.txt` file from the folders `longranger_freebayes_round_1/QV` and `longranger_freebayes_round_2/QV`.
+**!)** You should check for an increase in the QV value after each round when comparing the `*.qv` file from the folder `longranger_deepvariant_round_1/deepvariant/` with the QV of the previous step and with `longranger_deepvariant_round_2/deepvariant/`.
 
 Remember to move the **t2** and **t3** files to the `intermediates` folder by "drag and drop".
 
