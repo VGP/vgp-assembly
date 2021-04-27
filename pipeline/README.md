@@ -16,10 +16,10 @@ This folder contains wrappers to run individual tools in each assembly / evaluat
 * [Minimap2 + purge_dups](https://github.com/VGP/vgp-assembly/tree/master/pipeline/purge_dups)
 * [NGMLR](https://github.com/VGP/vgp-assembly/tree/master/pipeline/ngmlr) + [purge_haplotigs](https://github.com/VGP/vgp-assembly/tree/master/pipeline/purge_haplotigs) _retired_
 
-### Scaffolding
+### 10X Scaffolding
 * [Scaff10x](https://github.com/VGP/vgp-assembly/tree/master/pipeline/scaff10x)
 
-### Polishing
+### Hi-C Scaffolding
 * [Bionano](https://github.com/VGP/vgp-assembly/tree/master/pipeline/bionano): Hybrid Scaffolding and other scripts to run bionano software
 * Hi-C
   * [Arima mapping + SALSA](https://github.com/VGP/vgp-assembly/tree/master/pipeline/salsa)
