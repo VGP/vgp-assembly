@@ -681,7 +681,7 @@ Remember to move the **t1** file to the `intermediates` folder by "drag and drop
 
 <br/>
 
-### 2. Deepvariant+Merfin
+### 2. Deepvariant
 
 Copy the latest version of the **scaffold 6 deepvariant polish** workflow from **VGP tools** into your project as explained before.
 
