@@ -1,6 +1,9 @@
 # Deepvariant polish
 ## Update note
 
+**2021-Apr-27 update**
+- Renamed folder ouput to deepvariant
+
 **2021-Mar-5 update**
 - use mem3 for deepvariant
 
