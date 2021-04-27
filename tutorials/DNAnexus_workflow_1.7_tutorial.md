@@ -22,7 +22,7 @@ The overall assembly pipeline can be depicted in the following simplified diagra
 
 . [Arrow Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md#1-arrow)
 
-. [Freebayes Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md#2-freebayes)
+. [Deepvariant Polishing](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md#2-deepvariant)
 
 . [Final Checks](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md#final-checks)
 
@@ -758,9 +758,9 @@ fArcCen1
 
 Remember to move the **t2** and **t3** files to the `intermediates` folder by "drag and drop".
 
-The file `output.stat` in the `longranger_freebayes_round_2/stats` folder corresponds to the assembly stats for **t3** (contains the same result that running **asm_stats** with "scaff & contig + haplotype" option).
+The file `output.stat` in the `longranger_deepvariant_round_2/stats` folder corresponds to the assembly stats for **t3** (contains the same result that running **asm_stats** with "scaff & contig + haplotype" option).
 
-Move the **final primary and alternative assembly** files in the `longranger_freebayes_round_2/stats` folder to the `assembly_vgp_standard_1.7` folder by "drag and drop".
+Move the **final primary and alternative assembly** files in the `longranger_deepvariant_round_2/stats` folder to the `assembly_vgp_standard_1.7` folder by "drag and drop".
 
 <br/>
 
@@ -793,9 +793,9 @@ fArcCen1
 │       ├── fArcCen1_t1.fasta.gz
 │       ├── fArcCen1_t2.fasta.gz
 │       ├── fArcCen1_t3.fasta.gz
-│       ├── longranger_freebayes_round_1
+│       ├── longranger_deepvariant_round_1
 │       │   └── ...
-│       ├── longranger_freebayes_round_2
+│       ├── longranger_deepvariant_round_2
 │       │   └── ...
 │       ├── purge_dups
 │       │   └── ...
