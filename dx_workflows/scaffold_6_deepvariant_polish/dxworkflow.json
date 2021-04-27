@@ -1,16 +1,16 @@
 {
-  "name": "scaffold_6_deepvariant_polish 2021-March-5",
-  "title": "Scaffold 6 Freebayes Polish",
+  "name": "scaffold_6_deepvariant_polish 2021-April-27",
+  "title": "Scaffold 6 Deepvariant Polish",
   "stages": [
     {
       "id": "first_refprep",
       "executable": "app-10x_longranger_mkref/2.2.2",
-      "folder": "longranger_freebayes_round_1/10x_longranger"
+      "folder": "longranger_deepvariant_round_1/10x_longranger"
     },
     {
       "id": "first_map",
       "executable": "app-10x_longranger_align/2.2.2.1",
-      "folder": "longranger_freebayes_round_1/10x_longranger",
+      "folder": "longranger_deepvariant_round_1/10x_longranger",
       "input": {
         "output_prefix": "longranger_round1",
         "ref": {
@@ -132,7 +132,7 @@
     {
       "id": "second_refprep",
       "executable": "app-10x_longranger_mkref/2.2.2",
-      "folder": "longranger_freebayes_round_2/10x_longranger",
+      "folder": "longranger_deepvariant_round_2/10x_longranger",
       "input": {
         "ref_fasta": {
           "$dnanexus_link": {
@@ -145,7 +145,7 @@
     {
       "id": "second_map",
       "executable": "app-10x_longranger_align/2.2.2.1",
-      "folder": "longranger_freebayes_round_2/10x_longranger",
+      "folder": "longranger_deepvariant_round_2/10x_longranger",
       "input": {
         "ref": {
           "$dnanexus_link": {
@@ -292,7 +292,7 @@
     {
       "id": "stage-FYj6yBQ0j3b9VfPj4qF37KxG",
       "executable": "applet-FZBQzfj0j3b0xgqP4vpKFJ91",
-      "folder": "longranger_freebayes_round_2/stats",
+      "folder": "longranger_deepvariant_round_2/stats",
       "input": {
         "asm": {
           "$dnanexus_link": {
