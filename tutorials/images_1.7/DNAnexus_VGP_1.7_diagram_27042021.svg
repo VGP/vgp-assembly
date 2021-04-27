@@ -107,12 +107,12 @@
 			</g>
 			<g id="g935-6-8-7" transform="translate(102.44474,167.0459)">
 				<rect id="rect971-5-5-8-1" x="-1339.8" y="74.1" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1309.3441 110.3253)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Curated primary: </text>
+				<text transform="matrix(1 0 0 1 -1309.3441 110.3253)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Purged primary: </text>
 				<text transform="matrix(1 0 0 1 -1077.6058 110.3253)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">p1</text>
 			</g>
 			<g id="g941-7-4-2" transform="translate(102.44474,167.0459)">
 				<rect id="rect971-1-4-9-2" x="-1340" y="160" class="st7" width="367.6" height="55.8"/>
-				<text transform="matrix(1 0 0 1 -1320.5355 196.132)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Curated haplotigs: </text>
+				<text transform="matrix(1 0 0 1 -1320.5355 196.132)" class="st11" style="font-family:'Helvetica'; font-size:30px;">Purged haplotigs: </text>
 				<text transform="matrix(1 0 0 1 -1068.7142 196.132)" class="st11" style="font-family:'Helvetica-Bold'; font-size:30px;">p2</text>
 			</g>
 			<path class="st11" d="M0,0"/>
