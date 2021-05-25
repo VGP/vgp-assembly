@@ -9,23 +9,27 @@ task hifiasm{
     command <<<
         set -e -x -o pipefail
 
-        cmd=(/hifiasm-0.7/hifiasm -o ~{output_prefix} -t $(nproc))
+        cmd=(/hifiasm-0.15.2/hifiasm -o ~{output_prefix} -t $(nproc))
         for file in "~{sep=' ' raw_reads}"
         do
             cmd+=(${file})
         done
         "${cmd[@]}"
-        awk '$1 ~/S/ {print ">"$2"\n"$3}' ~{output_prefix}.p_ctg.gfa > ~{output_prefix}.fasta
+        ls -lhtr
+        awk '$1 ~/S/ {print ">"$2"\n"$3}' ~{output_prefix}.bp.p_ctg.gfa > ~{output_prefix}.fasta
+        awk '$1 ~/S/ {print ">"$2"\n"$3}' ~{output_prefix}.bp.hap1.p_ctg.gfa > ~{output_prefix}.hap1.fasta
+        awk '$1 ~/S/ {print ">"$2"\n"$3}' ~{output_prefix}.bp.hap2.p_ctg.gfa > ~{output_prefix}.hap2.fasta
     >>>
     output {
-        File haplotype_resolve_raw_unitig = "${output_prefix}.r_utg.gfa"
-        File haplotype_resolve_raw_unitig_no_bubble = "${output_prefix}.p_utg.gfa"
-        File primary_assembly_contig_graph = "${output_prefix}.p_ctg.gfa"
-        File alternate_assembly_contig_graph = "${output_prefix}.a_ctg.gfa"
         File primary_assembly = "${output_prefix}.fasta"
+        File hap1 = "${output_prefix}.hap1.fasta"
+        File hap2 = "${output_prefix}.hap2.fasta"
+        Array[File] all_bed = glob("*.bed")
+        Array[File] all_gfa = glob("*.gfa")
+
     }
     runtime {
-        docker: "quay.io/chai/hifiasm:0.7.0"
+        docker: "quay.io/chai/hifiasm:0.15.2"
         cpu: 64
         memory: "500 GB"
         disk: "/tmp 1000 SSD"
