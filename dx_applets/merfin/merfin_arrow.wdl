@@ -21,7 +21,7 @@ task merfin_arrow{
         working_dir=$(pwd)
         cd /merfin/scripts/reformat_arrow/
         chmod 777 /merfin/scripts/reformat_arrow/reshape_arrow.sh
-        export merfin="/merfin/scripts/reformat_arrow"
+        export merfin="/merfin/scripts"
         /merfin/scripts/reformat_arrow/reshape_arrow.sh "$working_dir"/vcf.vcf
         ls -lh
         cd "$working_dir"
