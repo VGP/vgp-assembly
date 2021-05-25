@@ -1,6 +1,6 @@
 {
-  "name": "scaffold5_part2_merfin 2020-12-20",
-  "title": "scaffold5_part2_merfin 2020-12-20",
+  "name": "scaffold5_part2_merfin 2021-May-25",
+  "title": "scaffold5_part2_merfin 2021-May-25",
   "stages": [
     {
       "id": "stage-FzKgx3Q0j3b5fyFq4vYjvyzp",
@@ -17,7 +17,7 @@
     },
     {
       "id": "stage-FzKgx9j0j3b5fyFq4vYjvyzq",
-      "executable": "applet-FzJGZPj0j3bKZ7GK4vGBP84J",
+      "executable": "applet-G2fQXF00j3b4G56pP0YQ8Z8k",
       "input": {
         "seq_meryl": {
           "$dnanexus_link": {
