@@ -15,7 +15,7 @@ VGP repository for the genome assembly working group
  
 The production of the VGP assemblies is performed on DNAnexus, which is available for anyone that registers.
 We welcome new trainees who are interested in leading the assembly of VGP and other genomes. Feel free to contact us.
-* [Tutorials](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.6_tutorial.md): starting point for new trainees
+* [Tutorials](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md): starting point for new trainees
 * [Workflows](https://github.com/VGP/vgp-assembly/tree/master/dx_workflows): workflow to run each assembly steps
 * [Applets](https://github.com/VGP/vgp-assembly/tree/master/dx_applets): individual applets in the workflow
 * [Retrieve job info](https://github.com/VGP/vgp-assembly/tree/master/dx_scripts)
@@ -30,7 +30,7 @@ The scaffolding pipeline to run on generic architecture and Docker containers is
  
 ## Pipeline for local run
  
-The local pipeline is available for each individual step for scaffolding, polishing, and evaluation as bash scripts. These scripts were used to locally assemble the first 17 genomes described in [Rhie et al. 2020](https://doi.org/10.1101/2020.05.22.110833).
+The local pipeline is available for each individual step for scaffolding, polishing, and evaluation as bash scripts. These scripts were used to locally assemble the first 17 genomes described in [Rhie et al. 2021](https://doi.org/10.1038/s41586-021-03451-0).
  
 Note the scripts are optimized to run on a Slurm schedular and tested on [Biowulf](https://hpc.nih.gov/). All submitter scripts have a prefix of `_submit_`.
  
