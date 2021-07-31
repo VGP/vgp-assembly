@@ -54,7 +54,7 @@ name=$ref_name.map
 walltime=3-0
 log=logs/${name}.%A.log
 script=$VGP_PIPELINE/salsa/arima_mapping_pipeline.sh
-args="$fastq_map $ref_name $ref"
+args="$fastq_map $ref_name $ref $cpu"
 if ! [ -e $ref_name.bam ]; then
 	echo "\
 	sbatch -J $name --mem=$mem --partition=$partition --cpus-per-task=$cpus -D $path $extra --gres=lscratch:600 --time=$walltime --error=$log --output=$log $script $args"
