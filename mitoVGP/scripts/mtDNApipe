@@ -211,7 +211,7 @@ printf "\n"
 #for each Pacbio raw data file do
 while read p; do
 
-if ! [[ -e "${W_URL}/tgs_bam/aligned_$(basename -- "${p%.*}").bam" ]] && ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && ([[ $p == *.bam ]] || [[ $p == *.fastq ]] || [[ $p == *.fasta ]] || [[ $p == *.fa ]] || [[ $p == *.fq ]]); then
+if ! [[ -e "${W_URL}/tgs_bam/aligned_$(basename -- "${p%.*}").bam" ]] && ! [[ $p == *scraps* ]] && ! [[ $p == *.pbi ]] && ([[ $p == *.bam ]] || [[ $p == *.fastq* ]] || [[ $p == *.fasta* ]] || [[ $p == *.fa* ]] || [[ $p == *.fq* ]]); then
 	
 	if [[ -z ${READ1} ]]; then
 
