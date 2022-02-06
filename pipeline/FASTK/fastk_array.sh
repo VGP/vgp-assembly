@@ -16,5 +16,5 @@ arg="-bc23"
 fi
 
 echo "\
-time FastK -v -T${3} -N${2}/$(basename ${SAMPLE} .fastq.gz) -k21 -t1 $SAMPLE -P${TMPDIR} $arg"
-time FastK -v -T${3} -N${2}/$(basename ${SAMPLE} .fastq.gz) -k21 -t1 $SAMPLE -P${TMPDIR} $arg
+time FastK -v -T${3} -N${2}/$(basename ${SAMPLE} .fastq.gz) -k${5} -t1 $SAMPLE -P${TMPDIR} $arg"
+time FastK -v -T${3} -N${2}/$(basename ${SAMPLE} .fastq.gz) -k${5} -t1 $SAMPLE -P${TMPDIR} $arg

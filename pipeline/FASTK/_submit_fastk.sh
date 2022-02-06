@@ -8,7 +8,7 @@ elif [ $1 == "-h" ]; then
 
 	cat << EOF
 	
-	Usage: '$0 -l filelist -o outdir -p partition -c cpu -a optarg (optional)'
+	Usage: '$0 -l filelist -o outdir -p partition -c cpu [-a 10x]'
 	
 	-a use 10x to trim barcodes 
 
@@ -18,7 +18,7 @@ exit 0
 
 fi
 
-while getopts "l:o:p:c:a:" opt; do
+while getopts "l:o:p:c:a:k:" opt; do
 
 	case $opt in
 		l)
@@ -36,6 +36,9 @@ while getopts "l:o:p:c:a:" opt; do
         a)
         	optarg="$OPTARG"
             ;;
+	k)
+          	klen="$OPTARG"
+            ;;
 		\?)
 			echo "ERROR - Invalid option: -$OPTARG" >&2
 			exit 1
@@ -51,11 +54,11 @@ mkdir -p $outdir logs
 rm -f fastk_count.jid
 
 log=logs/$outdir.count.%A_%a.log
-script=$VGP_PIPELINE/FASTK/fastk_array.sh
+script=fastk_array.sh
 
 echo "\
-sbatch -p $partition -c $cpu --array=1-${file_N} --job-name=$outdir.count --error=$log --output=$log $script $filelist $outdir $cpu $optarg | tail -n 1 | cut -d' ' -f4 >> fastk_count.jid"
-sbatch -p $partition -c $cpu --array=1-${file_N} --job-name=$outdir.count --error=$log --output=$log $script $filelist $outdir $cpu $optarg | tail -n 1 | cut -d' ' -f4 >> fastk_count.jid
+sbatch -p $partition -c $cpu --array=1-${file_N} --job-name=$outdir.count --error=$log --output=$log $script $filelist $outdir $cpu $klen $optarg | tail -n 1 | cut -d' ' -f4 >> fastk_count.jid"
+sbatch -p $partition -c $cpu --array=1-${file_N} --job-name=$outdir.count --error=$log --output=$log $script $filelist $outdir $cpu $klen $optarg | tail -n 1 | cut -d' ' -f4 >> fastk_count.jid
 
 WAIT="afterok:"
 
@@ -72,7 +75,7 @@ else
 fi
 
 log=logs/$outdir.sum.%A.log
-script=$VGP_PIPELINE/FASTK/fastk_union.sh
+script=fastk_union.sh
 
 echo "\
 sbatch -p $partition -c $cpu --job-name=$outdir.sum --error=$log --output=$log --dependency=$WAIT $script $filelist $outdir $cpu"
