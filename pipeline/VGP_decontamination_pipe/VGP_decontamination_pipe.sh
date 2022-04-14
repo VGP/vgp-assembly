@@ -2,6 +2,28 @@
 
 ## A shell pipeline for decontaminating VGP genome assemblies post-scaffolding. 
 
+## Help ########################
+
+Help()
+{
+    ##command line syntax 
+    printf "\n"
+    echo "  Syntax for running VGP_decontamination_pipe.sh:"
+    printf "\n"
+    echo "   sh VGP_decontamination_pipe.sh <scaffolded assembly> <unique ID>"
+    echo "   Example: sh VGP_decontamination_pipe.sh bTaeGut2.pri.asm.20211014.fasta bTaeGut2.pri"
+    printf "\n"
+}
+
+while getopts ":h" option; do 
+    case $option in
+        h) Help
+        exit;;
+    esac
+done 
+
+## Variables ################
+
 scaffs=$1 ##Input file containing assembled (scaffolded) genome. 
 genome_id=$2
 
@@ -45,10 +67,6 @@ sbatch -p vgl -c $cores --error=$logs --output=$logs \
 
 jid1=`cat kraken_jid` ## Creating dependencies to delay removal of scaffolds until kraken and mito-blast are both complete. 
 jid2=`cat mito_jid`
-
-echo "Formatting and appending contaminant IDs to $scaffList" ## removed!!! put in their respective scripts 
-# grep -i 'scaffold' $newdir/mito_blast_$scaffs.report | awk '{print $2}' | awk 'NR!=1 {print}'| tee -a $scaffList ## I think I need a dependency here? 
-# grep -i 'scaffold' $newdir/class_$scaffs | sed 's/>//g' | tr A-Z a-z | awk '{print $1}' | tee -a $scaffList
 
 script=clean_fasta.sh
 
