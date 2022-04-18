@@ -28,8 +28,7 @@ def readfile(infile, dfname):
             tabfile.append(line)
 
     ## put in some sort of ... if sum alignment lengths < total scaff length, do not bother checking for coverage 
-    dfname = pd.DataFrame(tabfile, columns = ['qseqid','sseqid','qlen','length','qcovhsp','eval','qstart','qend','qcovs'])
-
+    dfname = pd.DataFrame(tabfile, columns = ['qseqid', 'sseqid', 'length', 'qstart', 'qend', 'evalue' , 'qlen', 'qcovs','qcovhsp'])
     return (dfname)
 
 def calccov(df):
