@@ -1,4 +1,4 @@
-## Parsing blast tabular output. 
+## #!/usr/bin/env python3
 
 import csv
 from pickle import TRUE
