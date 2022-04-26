@@ -1,4 +1,4 @@
-## #!/usr/bin/env python3
+#!/usr/bin/env python3
 
 import csv
 from pickle import TRUE
@@ -86,6 +86,7 @@ def calccov(df):
 
 ## Passing a small test tsv file through the readfile function, then isolating the 'qlen' value from the file row. 
 ## If the test value matches the expected qlen then the script continues, otherwise it exits with an error. 
+
 testfile_path = "./test-data/test_input.tsv"
 
 testdf = readfile(testfile_path, dfname = "testdef1")
@@ -93,12 +94,12 @@ testdf = readfile(testfile_path, dfname = "testdef1")
 actual_read = testdf.iloc[-1].loc['length']
 expected_read = str(3459)
 
+
 if actual_read != expected_read:
     print ("ERROR! line 22: tsv not read in successfully \nexiting parse_mito_blast.py")
     exit()
 else:
     print ("Read in file test successful.")
-
 
 ## Passing the test file to the calcov function - if the first line is as expected then the script continues. Otherwise, it exits.
 testcalccov = calccov(testdf)
