@@ -81,6 +81,7 @@ def calccov(df):
 
     return (highCovReportLines, highCovScaffs)
     
+<<<<<<< Updated upstream
 
 ## Function testing ----
 
@@ -114,6 +115,8 @@ else:
     print ("Pairwise scaffold-accession alignment coverage successfully calculated.")
 
 
+=======
+>>>>>>> Stashed changes
 ## Calculating coverage ----
 
 blastdf = readfile(args.blastout, dfname = "blastdf")
