@@ -81,42 +81,6 @@ def calccov(df):
 
     return (highCovReportLines, highCovScaffs)
     
-<<<<<<< Updated upstream
-
-## Function testing ----
-
-## Passing a small test tsv file through the readfile function, then isolating the 'qlen' value from the file row. 
-## If the test value matches the expected qlen then the script continues, otherwise it exits with an error. 
-
-testfile_path = "./test-data/test_input.tsv"
-
-testdf = readfile(testfile_path, dfname = "testdef1")
-
-actual_read = testdf.iloc[-1].loc['length']
-expected_read = str(3459)
-
-
-if actual_read != expected_read:
-    print ("ERROR! line 22: tsv not read in successfully \nexiting parse_mito_blast.py")
-    exit()
-else:
-    print ("Read in file test successful.")
-
-## Passing the test file to the calcov function - if the first line is as expected then the script continues. Otherwise, it exits.
-testcalccov = calccov(testdf)
-
-testcovline = testcalccov[0][0]
-truecovline =['SCAFFOLD_266', 'NC_007897.1', '33195', 33191, 99.98794999246876]
-
-if testcovline != truecovline:
-    print ("ERROR! line 35: cannot calculate scaffold-accession coverage \nexiting parse_mito_blast.py")
-    exit ()
-else:
-    print ("Pairwise scaffold-accession alignment coverage successfully calculated.")
-
-
-=======
->>>>>>> Stashed changes
 ## Calculating coverage ----
 
 blastdf = readfile(args.blastout, dfname = "blastdf")
