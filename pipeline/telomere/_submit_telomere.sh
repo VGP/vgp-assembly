@@ -1,9 +1,12 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-	echo "Usage: ./_submit_telomere.sh <in.fasta>"
-        echo "\tThis script will submit telomere_analysis.sh genome 0.4 50000 <in.fasta>"
-	exit -1
+  echo "Usage: ./_submit_telomere.sh <in.fasta>"
+  echo
+  echo "This script submits telomere_analysis.sh genome 0.4 50000 <in.fasta>"
+  echo "    <threshold>: threshold to define telomere window. Define from 0.0 to 1.0. Recommended: 0.4"
+  echo "    <ends>     : report ends.bed only if a window is found within <ends> bp of scaffold ends"
+  exit -1
 fi
 
 fasta=$1
