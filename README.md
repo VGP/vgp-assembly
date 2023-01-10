@@ -2,6 +2,7 @@
 VGP repository for the genome assembly working group
 
 ## Contents
+* Galaxy Workflow
 * DNAnexus Workflow
 * Docker images with WDL Workflow
 * Pipeline for local run
@@ -9,11 +10,16 @@ VGP repository for the genome assembly working group
 * Instructions for AWS s3 genomeark
 * Meta data
 * Citation
- 
+
+## Galaxy Workflow
+
+Starting the VGP v2.0 pipeline, the production has been moved to the Galaxy environment. The major difference from the [Rhie et al. 2021](https://doi.org/10.1038/s41586-021-03451-0) is the replacement of the CLR component to HiFi and additional options for QCing and Hi-C scaffolding.
+* [Tutorials](https://training.galaxyproject.org/training-material/topics/assembly/tutorials/vgp_genome_assembly/tutorial.html)
+* [Workflows](https://galaxyproject.org/projects/vgp/workflows/)
  
 ## DNAnexus Workflow
  
-The production of the VGP assemblies is performed on DNAnexus, which is available for anyone that registers.
+The production of the VGP v1.0-1.1 assemblies has been performed on DNAnexus, which is available for anyone that registers.
 We welcome new trainees who are interested in leading the assembly of VGP and other genomes. Feel free to contact us.
 * [Tutorials](https://github.com/VGP/vgp-assembly/blob/master/tutorials/DNAnexus_workflow_1.7_tutorial.md): starting point for new trainees
 * [Workflows](https://github.com/VGP/vgp-assembly/tree/master/dx_workflows): workflow to run each assembly steps
