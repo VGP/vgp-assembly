@@ -15,7 +15,7 @@ VGP repository for the genome assembly working group
 
 Starting the VGP v2.0 pipeline, the production has been moved to the Galaxy environment. The major difference from the [Rhie et al. 2021](https://doi.org/10.1038/s41586-021-03451-0) is the replacement of the CLR component to HiFi and additional options for QCing and Hi-C scaffolding.
 * [Tutorials](https://training.galaxyproject.org/training-material/topics/assembly/tutorials/vgp_genome_assembly/tutorial.html): starting point for new trainees
-* [Workflows](https://galaxyproject.org/projects/vgp/workflows/): docker workflow, input, and output for each assembly steps
+* [Workflows](https://galaxyproject.org/projects/vgp/workflows/): dockstore workflow, input, and output for each assembly steps
  
 ## DNAnexus Workflow
  
