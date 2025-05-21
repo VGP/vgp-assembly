@@ -16,10 +16,10 @@
 # Commands #
 ##########################################
 
-fastq_map=$1	# fastq path file: /path/to/R1.fastq /path/to/R2.fastq
-PREFIX=$2	# prefix for out files
-REF=$3	# ref fasta file with indexes
-SCRATCH=$4 # scratch directory, default to /lscratch
+fastq_map=$1  # fastq path file: /path/to/R1.fastq <tab> /path/to/R2.fastq
+PREFIX=$2     # prefix for out files
+REF=$3        # ref fasta file with indexes
+SCRATCH=$4    # scratch directory, default to /lscratch
 if [ -z $4 ]; then
     SCRATCH="/lscratch"
 fi
@@ -34,8 +34,7 @@ FASTQ1=`awk '{print $1}' $fastq_map`
 FASTQ2=`awk '{print $2}' $fastq_map`
 
 module load bwa/0.7.17
-module load samtools/1.9
-module load picard/2.9.2
+module load samtools/1.21
 
 BWA='bwa'
 SAMTOOLS='samtools'
@@ -99,7 +98,7 @@ echo "#### Finished Mapping!"
 echo ""
 
 :<<'END'
-echo "### Start to dedup"
+echo "### Start dedup (optional)"
 
 echo "\
 dedup.sh $COMB_DIR/$PREFIX.bam $THREADS"
