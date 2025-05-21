@@ -7,8 +7,6 @@ if [[ -z $1 ]] || [[ ! -e input.fofn ]] ; then
 	exit -1
 fi
 
-#export asset=$tools/asset
-
 ref=$1
 ref=`echo $ref | sed 's/.fasta$//g' | sed 's/.fa$//g' | sed 's/.fasta.gz$//g' | sed 's/.fa.gz$//g' `
 mean_cov=$2
